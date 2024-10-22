@@ -25,20 +25,20 @@ const EventInsights = () => {
             id="eventUSP"
             name="eventUSP"
             rows={4}
-            placeholder="Add description"
+            placeholder="Add USP"
             required
             className="w-full p-2 bg-white border rounded-md text-sm shadow-2xl text-gray-800 focus:border-gray-800  focus:outline-none focus:shadow-lg"
           />
         </div>
         <div className="w-full m-2 flex flex-col mb-4">
           <label className="" htmlFor="RewardsAndParticipation">
-            Rewards And Participation
+            Rewards And Prices
           </label>
           <textarea
             id="RewardsAndParticipation"
             name="RewardsAndParticipation"
             rows={4}
-            placeholder="Add description"
+            placeholder="Add Rewards"
             required
             className="w-full p-2 bg-white border rounded-md text-sm shadow-2xl text-gray-800 focus:border-gray-800  focus:outline-none focus:shadow-lg"
           />
@@ -51,7 +51,7 @@ const EventInsights = () => {
             id="PlayingRules"
             name="PlayingRules"
             rows={4}
-            placeholder="Add description"
+            placeholder="Add Rules"
             required
             className="w-full p-2 bg-white border rounded-md text-sm shadow-2xl text-gray-800 focus:border-gray-800  focus:outline-none focus:shadow-lg"
           />

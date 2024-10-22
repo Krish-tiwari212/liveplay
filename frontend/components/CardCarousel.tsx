@@ -43,7 +43,7 @@ const CardCarousel = () => {
     dots: false,
     infinite: false,
     speed: 500,
-    slidesToShow: 3,
+    slidesToShow: 4,
     slidesToScroll: 1,
     nextArrow: <NextArrow />,
     prevArrow: <PrevArrow />,
@@ -74,7 +74,7 @@ const CardCarousel = () => {
       <div className="max-w-7xl mx-auto px-7 sm:px-6 lg:px-8 md:mt-16">
         <Slider {...settings}>
           {events.map((e, i) => (
-            <div className="flex-shrink-0 w-full px-5 md:px-10" key={i}>
+            <div className="flex-shrink-0 w-full px-5 md:px-6" key={i}>
               <EventCard
                 image={e.image}
                 date={e.date}

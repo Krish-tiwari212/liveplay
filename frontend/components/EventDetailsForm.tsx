@@ -1,58 +1,35 @@
 import { Checkbox } from "@/components/ui/checkbox";
 
-const EventDetailsForm: React.FC = () => {
+interface FormField {
+  id: string;
+  label: string;
+  type: string;
+  name: string;
+  placeholder?: string;
+  required?: boolean;
+}
+
+interface EventDetailsFormProps {
+  fields: FormField[];
+}
+
+const EventDetailsForm: React.FC<EventDetailsFormProps> = ({ fields }) => {
   return (
     <form className="bg-white shadow-2xl p-5 rounded-lg">
       <div className="flex flex-wrap w-full">
-        <div className="lg:w-[47%] w-full m-2 flex flex-col">
-          <label className="" htmlFor="eventTitle">
-            Event Name
-          </label>
-          <input
-            id="eventTitle"
-            type="text"
-            name="eventTitle"
-            placeholder="Enter Event Title"
-            required
-            className="h-16 p-2 bg-white border rounded-md text-sm shadow-2xl text-gray-800 focus:border-gray-800 focus:outline-none focus:shadow-lg"
-          />
-        </div>
-        <div className="lg:w-[47%] w-full m-2 flex flex-col">
-          <label className="" htmlFor="eventDate">
-            Last Registration Date
-          </label>
-          <input
-            id="LastRegistrationDate"
-            type="date"
-            name="LastRegistrationDate"
-            required
-            className="h-16 p-2 bg-white border rounded-md text-sm shadow-2xl text-gray-800 focus:border-gray-800  focus:outline-none focus:shadow-lg"
-          />
-        </div>
-        <div className="lg:w-[47%] w-full m-2 flex flex-col">
-          <label className="" htmlFor="eventDate">
-            Last Withdrawal Date
-          </label>
-          <input
-            id="LastWithdrawalDate"
-            type="date"
-            name="LastWithdrawalDate"
-            required
-            className="h-16 p-2 bg-white border rounded-md text-sm shadow-2xl text-gray-800 focus:border-gray-800  focus:outline-none focus:shadow-lg"
-          />
-        </div>
-        <div className="lg:w-[47%] w-full m-2 flex flex-col">
-          <label className="" htmlFor="startTime">
-            Start Time
-          </label>
-          <input
-            id="startTime"
-            type="time"
-            name="startTime"
-            required
-            className="h-16 p-2 bg-white border rounded-md text-sm shadow-2xl text-gray-800 focus:border-gray-800  focus:outline-none focus:shadow-lg"
-          />
-        </div>
+        {fields.map((field) => (
+          <div key={field.id} className="lg:w-[47%] w-full m-2 flex flex-col">
+            <label htmlFor={field.id}>{field.label}</label>
+            <input
+              id={field.id}
+              type={field.type}
+              name={field.name}
+              placeholder={field.placeholder}
+              required={field.required}
+              className="h-16 p-2 bg-white border rounded-md text-sm shadow-2xl text-gray-800 focus:border-gray-800 focus:outline-none focus:shadow-lg"
+            />
+          </div>
+        ))}
         <div className=" w-full mx-2 mt-2 flex flex-col mb-6">
           <label className="" htmlFor="OrganiserContactInfo">
             Organiser Contact Info
@@ -124,4 +101,15 @@ const EventDetailsForm: React.FC = () => {
   );
 };
 
-export default EventDetailsForm;
+// Example usage
+const fields = [
+  { id: "eventTitle", label: "Event Name", type: "text", name: "eventTitle", placeholder: "Enter Event Title", required: true },
+  { id: "LastRegistrationDate", label: "Last Registration Date", type: "date", name: "LastRegistrationDate", required: true },
+  { id: "LastWithdrawalDate", label: "Last Withdrawal Date", type: "date", name: "LastWithdrawalDate", required: true },
+  { id: "startTime", label: "Start Time", type: "time", name: "startTime", required: true },
+  // Add more fields as needed
+];
+
+export default function App() {
+  return <EventDetailsForm fields={fields} />;
+}

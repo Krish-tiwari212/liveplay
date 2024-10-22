@@ -1,63 +1,68 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState } from "react";
+import { useTimer } from "react-timer-hook";
 
-interface CountDownTimerProps {
-  endDate: Date; // Removed startDate
-  enableCountdown: boolean;
-}
-
-const CountDownTimer: React.FC<CountDownTimerProps> = ({ endDate, enableCountdown }) => {
-  const [timeLeft, setTimeLeft] = useState<number>(0);
-  const [isCountdownEnabled, setIsCountdownEnabled] = useState<boolean>(enableCountdown); // New state for toggling
-
-  useEffect(() => {
-    if (isCountdownEnabled) { // Updated to use new state
-      const interval = setInterval(() => {
-        const now = new Date().getTime();
-        const distance = new Date(endDate).getTime() - now; // Countdown to endDate
-        setTimeLeft(distance);
-      }, 1000);
-
-      return () => clearInterval(interval);
-    }
-  }, [isCountdownEnabled, endDate]); // Updated dependency
-
-  const formatTimeLeft = (time: number) => {
-    const seconds = Math.floor((time % (1000 * 60)) / 1000);
-    const minutes = Math.floor((time % (1000 * 60 * 60)) / (1000 * 60));
-    const hours = Math.floor((time % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-    const days = Math.floor(time / (1000 * 60 * 60 * 24));
-    return { days, hours, minutes, seconds };
-  };
-
-  const { days, hours, minutes, seconds } = formatTimeLeft(timeLeft);
+const MyTimer = ({ expiryTimestamp }:any) => {
+  const [showModal, setShowModal] = useState(false);
+  const {
+    totalSeconds,
+    seconds,
+    minutes,
+    hours,
+    days,
+    isRunning,
+    start,
+    pause,
+    resume,
+    restart,
+  } = useTimer({
+    expiryTimestamp,
+    onExpire: () => setShowModal(true),
+  });
 
   return (
-    <div className="bg-white p-5 rounded-lg shadow-2xl">
-      <button 
-        className="bg-gray-800 text-white p-2 rounded" 
-        onClick={() => setIsCountdownEnabled(prev => !prev)} 
-      >
-        {isCountdownEnabled ? 'Disable Countdown' : 'Enable Countdown'}
-      </button>
-      {isCountdownEnabled && timeLeft > 0 ? ( // Updated to use new state
-        <div>
-          <h1 className="text-2xl font-bold">Countdown Timer</h1>
-          <p className="text-lg">
-            {days}d {hours}h {minutes}m {seconds}s
+    <div className="text-center font-sans p-8 bg-gradient-to-r bg-white shadow-lg rounded-lg">
+      <h1 className="text-5xl font-bold mb-4 text-gray-800">Countdown Timer</h1>
+      {showModal ? (
+        <div className="bg-white p-6 rounded-lg shadow-lg">
+          <h2 className="text-xl font-bold mb-4">Time's Up!</h2>
+          <p className="mb-4">
+            The countdown has finished. Thank you for your patience!
           </p>
         </div>
       ) : (
-        <p className="text-lg">Countdown has ended or is disabled.</p>
+        <>
+          <h2 className="text-4xl mb-2 text-gray-800 ">
+            {days} Days {hours} Hours {minutes} Minutes {seconds} Seconds
+          </h2>
+          <p className="text-lg text-gray-800 mb-4">Until the final date!</p>
+          <div className="flex justify-center space-x-4">
+            <button
+              onClick={pause}
+              className="px-4 py-2 bg-gray-800 text-white font-semibold rounded-lg transition duration-300"
+            >
+              Pause
+            </button>
+            <button
+              onClick={resume}
+              className="px-4 py-2 bg-gray-800 text-white font-semibold rounded-lg transition duration-300"
+            >
+              Resume
+            </button>
+            <button
+              onClick={() => {
+                const time = new Date();
+                time.setSeconds(time.getSeconds() + 5);
+                restart(time);
+              }}
+              className="px-4 py-2 bg-gray-800 text-white font-semibold rounded-lg transition duration-300"
+            >
+              Restart
+            </button>
+          </div>
+        </>
       )}
-      {/* Preview Box */}
-      <div className="border border-black p-2 mt-2">
-        <h2 className="text-xl font-semibold">Preview</h2>
-        <p className="text-lg">
-          {days}d {hours}h {minutes}m {seconds}s
-        </p>
-      </div>
     </div>
   );
-}
+};
 
-export default CountDownTimer;
+export default MyTimer;

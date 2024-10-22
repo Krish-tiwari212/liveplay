@@ -1,6 +1,12 @@
 import React, { useState } from "react";
 import { Checkbox } from "@/components/ui/checkbox";
 import TaxInvoice from "@/components/TaxInvoice"; 
+import { Label } from "@/components/ui/label";
+import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
+import { Button } from "./ui/button";
+import { title } from "process";
+import { toast } from "@/hooks/use-toast";
+
 
 const GSTCompliance = () => {
   const [isRegistered, setIsRegistered] = useState(false);
@@ -15,39 +21,42 @@ const GSTCompliance = () => {
           <label htmlFor="gstRegistered">
             Are you a registered GST person?
           </label>
-          <div className="flex space-x-4">
-            <button
-              type="button"
-              onClick={() => setIsRegistered(true)}
-              className={`p-2 ${
-                isRegistered ? "bg-gray-800 text-white" : "bg-gray-200"
-              }`}
-            >
-              Yes
-            </button>
-            <button
-              type="button"
-              onClick={() => setIsRegistered(false)}
-              className={`p-2 ${
-                !isRegistered ? "bg-gray-800 text-white" : "bg-gray-200"
-              }`}
-            >
-              No
-            </button>
-          </div>
+          <RadioGroup defaultValue="option-one">
+            <div className="flex items-center space-x-2">
+              <RadioGroupItem
+                value="Yes"
+                id="yes"
+                onClick={() => setIsRegistered(true)}
+              />
+              <Label htmlFor="yes">Yes</Label>
+            </div>
+            <div className="flex items-center space-x-2">
+              <RadioGroupItem
+                value="No"
+                id="no"
+                onClick={() => setIsRegistered(false)}
+              />
+              <Label htmlFor="no">No</Label>
+            </div>
+          </RadioGroup>
         </div>
         {isRegistered && (
           <>
             <div className="w-full m-2 flex flex-col">
               <label htmlFor="gstNumber">GST Number</label>
-              <input
-                id="gstNumber"
-                type="text"
-                value={gstNumber}
-                onChange={(e) => setGstNumber(e.target.value)}
-                placeholder="Enter GST Number..."
-                className="h-12 p-2 bg-white border rounded-md text-sm shadow-2xl text-gray-800 focus:border-gray-800 focus:outline-none focus:shadow-lg"
-              />
+              <div>
+                <input
+                  id="gstNumber"
+                  type="text"
+                  value={gstNumber}
+                  onChange={(e) => setGstNumber(e.target.value)}
+                  placeholder="Enter GST Number..."
+                  className="h-12 p-2 bg-white border rounded-md text-sm shadow-2xl text-gray-800 focus:border-gray-800 focus:outline-none focus:shadow-lg"
+                />
+                <Button onClick={()=> toast({
+                  title:"Adhar Verified"
+                })}>Verify Adhar</Button>
+              </div>
             </div>
             <div className="w-full m-2 flex flex-col">
               <label htmlFor="gstRate">Select GST Rate</label>

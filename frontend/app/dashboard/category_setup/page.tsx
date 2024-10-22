@@ -1,4 +1,6 @@
-import React from 'react'
+"use client"
+
+import React, { useState } from 'react'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import {
   Select,
@@ -7,27 +9,162 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { Checkbox } from "@/components/ui/checkbox";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
+import { useRouter } from 'next/navigation';
 
+
+const inputFields = [
+  {
+    id: "categoryName",
+    label: "Category Name",
+    type: "text",
+    placeholder: "Enter Category Name",
+    required: true,
+  },
+  {
+    id: "totalQuantity",
+    label: "Total Quantity",
+    type: "number",
+    placeholder: "Enter Total Quantity",
+  },
+  {
+    id: "maxTicketQuantity",
+    label: "Maximum Ticket Quantity",
+    type: "number",
+    placeholder: "Enter Max Ticket Quantity",
+  },
+  {
+    id: "price",
+    label: "Price (INR)",
+    type: "number",
+    placeholder: "Enter Price",
+    required: true,
+  },
+  {
+    id: "ticketDescription",
+    label: "Ticket Description",
+    type: "textarea",
+    placeholder: "Includes participation, e-certificate, refreshments",
+    maxLength: 100,
+  },
+  {
+    id: "discountCode",
+    label: "Discount Code",
+    type: "text",
+    placeholder: "Enter Code",
+    required: true,
+  },
+];
+
+const discountFields = {
+  percentage: [
+    {
+      id: "numberOfDiscounts",
+      label: "Number Of Discounts",
+      type: "number",
+      placeholder: "Enter Number of Discounts",
+      required: true,
+    },
+    {
+      id: "percentageInput",
+      label: "percentage",
+      type: "number",
+      placeholder: "Enter Percentage",
+      required: true,
+    },
+    {
+      id: "fromDate",
+      label: "From Date",
+      type: "date",
+      placeholder: "Enter From Date",
+      required: true,
+    },
+    {
+      id: "tillDate",
+      label: "Till Date",
+      type: "date",
+      placeholder: "Enter Till Date",
+      required: true,
+    },
+  ],
+  amount: [
+    {
+      id: "numberOfDiscounts",
+      label: "Number Of Discounts",
+      type: "number",
+      placeholder: "Enter Number of Discounts",
+      required: true,
+    },
+    {
+      id: "amountInput",
+      label: "amount",
+      type: "number",
+      placeholder: "Enter Amount",
+      required: true,
+    },
+    {
+      id: "fromDate",
+      label: "From Date",
+      type: "date",
+      placeholder: "Enter From Date",
+      required: true,
+    },
+    {
+      id: "tillDate",
+      label: "Till Date",
+      type: "date",
+      placeholder: "Enter Till Date",
+      required: true,
+    },
+  ],
+};
 
 const page = () => {
+  const router=useRouter()
+  const [formData, setFormData] = useState({
+    categoryName: "",
+    categoryType: "",
+    price: "",
+    totalQuantity: "",
+    ticketDescription: "",
+    maxTicketQuantity: "",
+    amount: "",
+    percentage: "",
+    numberOfDiscounts: "",
+    fromDate: "",
+    tillDate:""
+  });
+
+  const [showAmountInput, setShowAmountInput] = useState(false); 
+  const [showPercentageInput, setShowPercentageInput] = useState(false);
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
+    const { name, value } = e.target;
+    setFormData({ ...formData, [name]: value });
+  };
+
+  const handleCheckboxChange = (type: 'amount' | 'percentage') => {
+    if (type === 'amount') {
+      setShowAmountInput(!showAmountInput);
+      if (showPercentageInput) setShowPercentageInput(false); // Uncheck percentage if amount is checked
+    } else {
+      setShowPercentageInput(!showPercentageInput);
+      if (showAmountInput) setShowAmountInput(false); // Uncheck amount if percentage is checked
+    }
+  };
+  
   return (
     <form className="bg-white shadow-2xl p-5 rounded-lg m-3">
       <div className="flex flex-wrap w-full">
         <div className="lg:w-[48%] w-full m-2 flex flex-col">
-          <label htmlFor="categoryName">Category Name</label>
-          <input
-            id="categoryName"
-            type="text"
-            name="categoryName"
-            placeholder="Enter Category Name..."
-            required
-            className="h-16 p-2 bg-white border rounded-md text-sm shadow-2xl text-gray-800 focus:border-gray-800 focus:outline-none focus:shadow-lg"
-          />
-        </div>
-
-        <div className="lg:w-[48%] w-full m-2 flex flex-col">
           <label htmlFor="categoryType">Category Type</label>
-          <Select>
+          <Select
+            onValueChange={(value) =>
+              setFormData({ ...formData, categoryType: value })
+            }
+          >
             <SelectTrigger className="w-full h-16 shadow-2xl">
               <SelectValue placeholder="Category" />
             </SelectTrigger>
@@ -41,147 +178,110 @@ const page = () => {
             </p>
           </Select>
         </div>
-
-        <div className="lg:w-[48%] w-full m-2 flex flex-col">
-          <label htmlFor="price">Price (INR)</label>
-          <input
-            id="price"
-            type="number"
-            name="price"
-            placeholder="Enter Price..."
-            required
-            className="h-16 p-2 bg-white border rounded-md text-sm shadow-2xl text-gray-800 focus:border-gray-800 focus:outline-none focus:shadow-lg"
-          />
-        </div>
-
-        <div
-          className="lg:w-[48%] w-full m-2 flex flex-col"
-          id="totalQuantityContainer"
-        >
-          <label htmlFor="totalQuantity">Total Quantity</label>
-          <input
-            id="totalQuantity"
-            type="number"
-            name="totalQuantity"
-            placeholder="Enter Total Quantity..."
-            className="h-16 p-2 bg-white border rounded-md text-sm shadow-2xl text-gray-800 focus:border-gray-800 focus:outline-none focus:shadow-lg"
-          />
-        </div>
-
-        <div className="lg:w-[48%] w-full m-2 flex flex-col">
-          <label htmlFor="ticketDescription">Ticket Description</label>
-          <textarea
-            id="ticketDescription"
-            name="ticketDescription"
-            placeholder="Includes participation, e-certificate, refreshments..."
-            maxLength={100}
-            className="h-16 p-2 bg-white border rounded-md text-sm shadow-2xl text-gray-800 focus:border-gray-800 focus:outline-none focus:shadow-lg"
-          />
-        </div>
-
-        <div className="lg:w-[48%] w-full m-2 flex flex-col">
-          <label htmlFor="maxTicketQuantity">Maximum Ticket Quantity</label>
-          <input
-            id="maxTicketQuantity"
-            type="number"
-            name="maxTicketQuantity"
-            placeholder="Enter Max Ticket Quantity..."
-            className="h-16 p-2 bg-white border rounded-md text-sm shadow-2xl text-gray-800 focus:border-gray-800 focus:outline-none focus:shadow-lg"
-          />
-        </div>
-
-        <Tabs
-          defaultValue="Percentage"
-          className="w-full lg:w-[48%] my-4 mx-2 border rounded-lg pb-2"
-        >
-          <TabsList className="w-full">
-            <TabsTrigger value="Percentage" className="w-1/2">
-              Percentage
-            </TabsTrigger>
-            <TabsTrigger value="Amount" className="w-1/2">
-              Amount
-            </TabsTrigger>
-          </TabsList>
-          <TabsContent value="Percentage" className="mx-2">
-            <div className="w-full flex flex-col">
-              <label htmlFor="percentageInput">Enter Percentage</label>
-              <input
-                id="percentageInput"
-                type="number"
-                name="percentageInput"
-                placeholder="Enter Percentage..."
-                className="h-10 p-2 bg-white border rounded-md text-sm shadow-2xl text-gray-800 focus:border-gray-800 focus:outline-none focus:shadow-lg"
+        {inputFields.map((field) => (
+          <div
+            key={field.id}
+            className={` ${
+              field.type === "textarea" ? "" : "lg:w-[48%]"
+            } w-full m-2 flex flex-col`}
+          >
+            <label htmlFor={field.id}>{field.label}</label>
+            {field.type === "textarea" ? (
+              <textarea
+                id={field.id}
+                name={field.id}
+                placeholder={field.placeholder}
+                maxLength={field.maxLength}
+                value={formData[field.id as keyof typeof formData]}
+                onChange={handleChange}
+                className="h-20 p-2 bg-white border rounded-md text-sm shadow-2xl text-gray-800 focus:border-gray-800 focus:outline-none focus:shadow-lg"
               />
-              <label htmlFor="promoCodePercentage">Promo Code</label>
+            ) : (
               <input
-                id="promoCodePercentage"
-                type="text"
-                name="promoCodePercentage"
-                placeholder="Enter Promo Code..."
-                className="h-10 p-2 bg-white border rounded-md text-sm shadow-2xl text-gray-800 focus:border-gray-800 focus:outline-none focus:shadow-lg"
+                id={field.id}
+                type={field.type}
+                name={field.id}
+                placeholder={field.placeholder}
+                required={field.required}
+                value={formData[field.id as keyof typeof formData]}
+                onChange={handleChange}
+                className="h-16 p-2 bg-white border rounded-md text-sm shadow-2xl text-gray-800 focus:border-gray-800 focus:outline-none focus:shadow-lg"
               />
-            </div>
-          </TabsContent>
-          <TabsContent value="Amount" className="mx-2">
-            <div className="w-full flex flex-col">
-              <label htmlFor="amountInput">Enter Amount</label>
-              <input
-                id="amountInput"
-                type="number"
-                name="amountInput"
-                placeholder="Enter Amount..."
-                className="h-10 p-2 bg-white border rounded-md text-sm shadow-2xl text-gray-800 focus:border-gray-800 focus:outline-none focus:shadow-lg"
-              />
-              <label htmlFor="promoCodeAmount">Promo Code</label>
-              <input
-                id="promoCodeAmount"
-                type="text"
-                name="promoCodeAmount"
-                placeholder="Enter Promo Code..."
-                className="h-10 p-2 bg-white border rounded-md text-sm shadow-2xl text-gray-800 focus:border-gray-800 focus:outline-none focus:shadow-lg"
-              />
-            </div>
-          </TabsContent>
-        </Tabs>
-
-        {/* <div className="lg:w-[47%] w-full m-2 flex flex-col">
-          <label htmlFor="discountCode">Discount Code</label>
-          <input
-            id="discountCode"
-            type="text"
-            name="discountCode"
-            placeholder="Enter Discount Code..."
-            className="h-16 p-2 bg-white border rounded-md text-sm shadow-2xl text-gray-800 focus:border-gray-800 focus:outline-none focus:shadow-lg"
-          />
-          <div className="flex space-x-2">
-            <label>
-              <input type="radio" name="discountType" value="percentage" /> %
-            </label>
-            <label>
-              <input type="radio" name="discountType" value="amount" /> Amount
-            </label>
+            )}
           </div>
-          <input
-            type="number"
-            name="discountValue"
-            placeholder="Value..."
-            className="h-16 p-2 bg-white border rounded-md text-sm shadow-2xl text-gray-800 focus:border-gray-800 focus:outline-none focus:shadow-lg"
-          />
-          <input
-            type="number"
-            name="numberOfDiscounts"
-            placeholder="Number of Discounts..."
-            className="h-16 p-2 bg-white border rounded-md text-sm shadow-2xl text-gray-800 focus:border-gray-800 focus:outline-none focus:shadow-lg"
-          />
-          <div className="flex space-x-2">
-            <input type="date" name="discountStartDate" />
-            <input type="date" name="discountEndDate" />
-          </div>
-        </div> */}
+        ))}
+        <div className="flex flex-col w-full m-2">
+          <RadioGroup defaultValue="option-one">
+            <div className="flex items-center space-x-2">
+              <RadioGroupItem
+                value="percentage"
+                id="percentage"
+                onClick={() => handleCheckboxChange("percentage")}
+              />
+              <Label htmlFor="percentage">Percentage</Label>
+            </div>
+            <div className="flex items-center space-x-2">
+              <RadioGroupItem
+                value="amount"
+                id="amount"
+                onClick={() => handleCheckboxChange("amount")}
+              />
+              <Label htmlFor="amount">Amount</Label>
+            </div>
+          </RadioGroup>
+
+          {showPercentageInput && (
+            <div className="flex flex-wrap">
+              {discountFields.percentage.map((field) => (
+                <div
+                  key={field.id}
+                  className={` ${
+                    field.type === "textarea" ? "" : "lg:w-[48%]"
+                  } w-full m-2 flex flex-col`}
+                >
+                  <label htmlFor={field.id}>{field.label}</label>
+                  <input
+                    id={field.id}
+                    type={field.type}
+                    name={field.id}
+                    placeholder={field.placeholder}
+                    required={field.required}
+                    value={formData[field.id as keyof typeof formData]}
+                    onChange={handleChange}
+                    className="h-16 p-2 bg-white border rounded-md text-sm shadow-2xl text-gray-800 focus:border-gray-800 focus:outline-none focus:shadow-lg"
+                  />
+                </div>
+              ))}
+            </div>
+          )}
+          {showAmountInput && (
+            <div className="flex flex-wrap">
+              {discountFields.amount.map((field) => (
+                <div
+                  key={field.id}
+                  className={`lg:w-[48%] w-full m-2 flex flex-col`}
+                >
+                  <label htmlFor={field.id}>{field.label}</label>
+                  <input
+                    id={field.id}
+                    type={field.type}
+                    name={field.id}
+                    placeholder={field.placeholder}
+                    required={field.required}
+                    value={formData[field.id as keyof typeof formData]}
+                    onChange={handleChange}
+                    className="h-16 p-2 bg-white border rounded-md text-sm shadow-2xl text-gray-800 focus:border-gray-800 focus:outline-none focus:shadow-lg"
+                  />
+                </div>
+              ))}
+            </div>
+          )}
+        </div>
 
         <button
           type="submit"
           className="w-full bg-gray-800 text-white p-2 mx-2 rounded-md"
+          onClick={()=>{router.push(`/dashboard/category`)}}
         >
           Add Category
         </button>

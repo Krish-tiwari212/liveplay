@@ -35,9 +35,9 @@ export default function Home() {
   }, []);
   return (
     <div className="flex flex-col m-3">
-      <section className="mt-4 bg-gray-800 h-[13rem] shadow-xl  rounded-lg p-4 relative mb-4">
-        {/* <h1 className="hidden absolute md:block font-bold text-[4rem] lg:text-[5rem] right-2 -bottom-0 text-gray-500">
-          Hello Organiser
+      <section className="mt-4 bg-gray-800 h-[9rem] shadow-xl rounded-lg p-4 relative mb-4">
+        {/* <h1 className="hidden absolute md:block font-bold text-[4rem] lg:text-[5rem] right-2 -bottom-5 text-gray-500">
+          liveplay.in
         </h1> */}
         <div className="hidden md:flex gap-4 xl:gap-6 flex-wrap absolute -bottom-10">
           <Card className=" w-auto shadow-xl h-auto">
@@ -95,13 +95,8 @@ export default function Home() {
         </div>
         <div className="p-2 md:w-[60%] lg:w-[50%]">
           <h1 className="text-2xl font-bold text-gray-400 mb-4 md:mb-2">
-            Hello Organiser 👋
+            Hello Mohit 👋
           </h1>
-          <p className="text-md text-gray-400">
-            Lorem ipsum dolor sit amet consectetur adipisicing elit.
-            Repudiandae, et est? Voluptatibus quod eum nam ipsam debitis
-            eligendi quo voluptate.
-          </p>
         </div>
       </section>
       <section className="md:hidden">
