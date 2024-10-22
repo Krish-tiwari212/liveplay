@@ -71,7 +71,7 @@ const CardCarousel = () => {
       <div className="text-center mb-4">
         <h1 className="text-3xl md:text-5xl font-bold text-gray-800">Featured Events</h1>
       </div>
-      <div className="max-w-7xl mx-auto px-7 sm:px-6 lg:px-8 md:mt-16">
+      <div className="mx-auto px-7 sm:px-6 lg:px-8 md:mt-16">
         <Slider {...settings}>
           {events.map((e, i) => (
             <div className="flex-shrink-0 w-full px-5 md:px-6" key={i}>
