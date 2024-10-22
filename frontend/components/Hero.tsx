@@ -18,7 +18,7 @@ const Hero=()=> {
     Autoplay({ delay: 4000, stopOnInteraction: true })
   );
   return (
-    <section className="w-full">
+    <section className="w-full mt-4">
       <Carousel
         className="w-full h-full"
         plugins={[plugin.current]}

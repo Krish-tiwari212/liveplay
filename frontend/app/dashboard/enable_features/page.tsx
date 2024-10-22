@@ -6,6 +6,8 @@ import CountDownTimer from '@/components/CountDownTimer';
 import GSTCompliance from '@/components/GSTCompliance';
 import TaxInvoice from '@/components/TaxInvoice';
 import TshirtForParticipant from '@/components/TshirtForParticipant';
+import MyTimer from '@/components/CountDownTimer';
+import Drawfixtures from '@/components/Drawfixtures';
 
 const OvervieSidebarContentFeatures = [
   {
@@ -15,7 +17,7 @@ const OvervieSidebarContentFeatures = [
     title: "T-Shirt for Participants",
   },
   {
-    title: "Q&A Section",
+    title: "DrawFixtures",
   },
   {
     title: "GST Compliance",
@@ -23,29 +25,28 @@ const OvervieSidebarContentFeatures = [
 ];
 
 const page = () => {
-    
+  const time = new Date();
+  time.setSeconds(time.getSeconds() + 60); 
   const [formType, setFormType] = useState<string>("default"); 
     const renderForm = () => {
         switch (formType) {
           case "Countdown Timer":
             return (
-              <CountDownTimer
-                finalDate={new Date("2024-10-01T11:00:00")}
-                initialActive={true}
-              />
+              <div>
+                <MyTimer expiryTimestamp={time} />
+              </div>
             );
           case "T-Shirt for Participants":
             return <TshirtForParticipant />;
-          case "Q&A Section":
-            return <></>;
+          case "DrawFixtures":
+            return <Drawfixtures/>;
           case "GST Compliance":
             return <GSTCompliance/>;
           default:
             return (
-              <CountDownTimer
-                finalDate={new Date("2024-10-01T11:00:00")}
-                initialActive={true}
-              />
+              <div>
+                <MyTimer expiryTimestamp={time} />
+              </div>
             );
         }
     }

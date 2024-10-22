@@ -7,7 +7,15 @@ import { FC, useState, useEffect, Dispatch, SetStateAction } from "react";
 import { FaTachometerAlt, FaUsers, FaCalendarAlt, FaCogs, FaSignOutAlt, FaBars, FaUserCircle, FaChevronDown, FaChevronUp, FaStreetView } from 'react-icons/fa'; 
 import { IoIosArrowDown, IoIosArrowUp } from "react-icons/io";
 import { BiCategory } from "react-icons/bi";
-import { MdDrafts, MdOutlineBrowserUpdated, MdOutlineFeaturedPlayList, MdSchedule, MdSportsFootball } from "react-icons/md";
+import {
+  MdDrafts,
+  MdOutlineSecurity,
+  MdOutlineFeaturedPlayList,
+  MdSchedule,
+  MdSportsFootball,
+} from "react-icons/md";
+import { useToast } from "@/hooks/use-toast";
+import { useRouter } from "next/navigation";
 
 const Sidebar = ({ setnavexpanded }: { setnavexpanded :Dispatch<SetStateAction<boolean>>}) => {
   const pathname = usePathname();
@@ -17,16 +25,11 @@ const Sidebar = ({ setnavexpanded }: { setnavexpanded :Dispatch<SetStateAction<b
   const [openTeams, setOpenTeams] = useState(false);
   const [openMatches, setOpenMatches] = useState(false);
   const [tooltip, setTooltip] = useState<string | null>(null);
-
+  const {toast}=useToast()
+  const router=useRouter()
   const toggleEvents = () => {
     setOpenEvents(!openEvents);
     if (openTeams) setOpenTeams(false);
-    if (openMatches) setOpenMatches(false);
-  };
-
-  const toggleTeams = () => {
-    setOpenTeams(!openTeams);
-    if (openEvents) setOpenEvents(false);
     if (openMatches) setOpenMatches(false);
   };
 
@@ -43,10 +46,22 @@ const Sidebar = ({ setnavexpanded }: { setnavexpanded :Dispatch<SetStateAction<b
     setOpenTeams(false);
     setOpenMatches(false);
   };
+  const [userStatus,setUserStatus]=useState("organizer")
 
+  const handleLogout = async() => {
+    await new Promise((resolve) => setTimeout(resolve, 2000));
+    localStorage.removeItem("username");
+    localStorage.removeItem("password");
+    toast({
+      title: "Logout Succesful",
+      description: "Succesfully Logged Out!",
+      variant: "default",
+    });
+    router.push("/")
+  };
   return (
     <div
-      className={`sidebar ${
+      className={`lg:hidden ${
         isCollapsed ? "w-16" : "w-64"
       } bg-gray-800 text-white p-4 shadow-lg transition-width duration-300 ease-in-out flex flex-col h-full z-50 fixed`}
     >
@@ -58,175 +73,233 @@ const Sidebar = ({ setnavexpanded }: { setnavexpanded :Dispatch<SetStateAction<b
           <FaBars className="text-2xl" />
         </button>
         {!isCollapsed && (
-          <div className="text-3xl font-bold text-blue-800 ml-2">
-            liveplay.in
-          </div>
+          <Link href={"/"}>
+            <div className="text-3xl font-bold text-gray-500  ml-2">
+              liveplay.in
+            </div>
+          </Link>
         )}
-      </div>
-      <div className="flex items-center mb-4 cursor-pointer">
-        <FaUserCircle className="text-3xl " />
-        {!isCollapsed && <span className="ml-2 text-lg">User Name</span>}
       </div>
       <ul className="space-y-2 flex-grow relative">
         <li>
-          <Link href="/dashboard">
-            <button
-              className="flex items-center w-full py-2 pl-2 hover:bg-gray-700 rounded transition-colors duration-200 relative"
-              onMouseEnter={() => isCollapsed && setTooltip("Dashboard")}
-              onMouseLeave={() => setTooltip(null)}
-            >
-              <FaTachometerAlt className="mr-2 text-xl" />
-              {!isCollapsed && <>Dashboard</>}
-              {isCollapsed && tooltip === "Dashboard" && (
-                <div className="absolute left-8 top-4 bg-white text-black text-sm p-2 rounded-bl rounded-tr rounded-br border border-gray-300 shadow-lg flex flex-col w-48">
-                  <Link href="/dashboard">
-                    <button className="flex items-center w-full text-left hover:bg-gray-200 transition-colors duration-200 p-2 rounded">
-                      <FaTachometerAlt className="mr-2" /> Dashboard
-                    </button>
-                  </Link>
-                </div>
-              )}
-            </button>
-          </Link>
-        </li>
-        <li>
           <button
             className="flex items-center w-full py-2 pl-2 hover:bg-gray-700 rounded transition-colors duration-200 relative"
-            onMouseEnter={() => isCollapsed && setTooltip("Events")}
+            onMouseEnter={() => setTooltip("UserName")}
             onMouseLeave={() => setTooltip(null)}
             onClick={toggleEvents}
           >
-            <FaCalendarAlt className="mr-2 text-xl" />
+            <FaUserCircle className="mr-2 text-4xl" />
             {!isCollapsed && (
-              <>
-                Events
-                {openEvents ? (
-                  <IoIosArrowUp className="ml-auto" />
-                ) : (
-                  <IoIosArrowDown className="ml-auto" />
+              <div className="flex flex-col justify-start items-start ml-2 ">
+                <span className={`text-lg`}>Mohit</span>
+                {userStatus === "organizer" && (
+                  <span className="text-sm">(as an organizer)</span>
                 )}
-              </>
+                {userStatus === "player" && (
+                  <span className="text-sm">(as an player)</span>
+                )}
+              </div>
             )}
-            {isCollapsed && tooltip === "Events" && (
-              <div className="absolute left-8 top-4 bg-white text-black text-sm p-2 rounded-bl rounded-tr rounded-br border border-gray-300 shadow-lg flex flex-col w-40">
-                <Link href="/dashboard/create_event">
-                  <button className="flex items-center w-full text-left hover:bg-gray-200 transition-colors duration-200 p-2 rounded mb-1">
-                    <FaCalendarAlt className="mr-2" /> Create Event
-                  </button>
-                </Link>
-                <Link href="/dashboard/category">
-                  <button className="flex items-center w-full text-left hover:bg-gray-200 transition-colors duration-200 p-2 rounded mb-1">
-                    <BiCategory className="mr-2" /> Category
-                  </button>
-                </Link>
-                <Link href="/dashboard/drafts">
-                  <button className="flex items-center w-full text-left hover:bg-gray-200 transition-colors duration-200 p-2 rounded">
-                    <MdDrafts className="mr-2" /> Drafts
-                  </button>
-                </Link>
-                <Link href="/dashboard/enable_features">
-                  <button className="flex items-center w-full text-left hover:bg-gray-200 transition-colors duration-200 p-2 rounded">
-                    <MdOutlineFeaturedPlayList className="mr-2" /> Enable
-                    Features
-                  </button>
-                </Link>
-                <Link href="/dashboard/view_events">
-                  <button className="flex items-center w-full text-left hover:bg-gray-200 transition-colors duration-200 p-2 rounded">
-                    <FaStreetView className="mr-2" /> View Past Events
-                  </button>
-                </Link>
+            {tooltip === "UserName" && (
+              <div
+                className={`absolute ${
+                  isCollapsed ? "left-8" : "left-48"
+                } top-4 bg-white text-black text-sm p-2 rounded-bl rounded-tr rounded-br border border-gray-300 shadow-lg flex flex-col w-40`}
+              >
+                <button
+                  onClick={() => {
+                    setUserStatus("organizer");
+                  }}
+                  className="flex items-center w-full text-left hover:bg-gray-200 transition-colors duration-200 p-2 rounded mb-1"
+                >
+                  <FaUserCircle className="mr-2" /> As an Organizer
+                </button>
+                <button
+                  onClick={() => {
+                    setUserStatus("player");
+                  }}
+                  className="flex items-center w-full text-left hover:bg-gray-200 transition-colors duration-200 p-2 rounded"
+                >
+                  <MdSportsFootball className="mr-2" /> As a Player
+                </button>
               </div>
             )}
           </button>
-          {!isCollapsed && (
-            <ul
-              className={`ml-4 space-y-1 overflow-hidden transition-all duration-300 ease-in-out ${
-                openEvents ? "max-h-56" : "max-h-0"
-              }`}
-            >
-              <li>
-                <Link href="/dashboard/create_event">
-                  <button className="flex items-center w-full p-2 hover:bg-gray-600 rounded transition-colors duration-200">
-                    {!isCollapsed && "Create Event"}
-                  </button>
-                </Link>
-              </li>
-              <li>
-                <Link href="/dashboard/category">
-                  <button className="flex items-center w-full p-2 hover:bg-gray-600 rounded transition-colors duration-200">
-                    {!isCollapsed && "Category"}
-                  </button>
-                </Link>
-              </li>
-              <li>
-                <Link href="/dashboard/drafts">
-                  <button className="flex items-center w-full p-2 hover:bg-gray-600 rounded transition-colors duration-200">
-                    {!isCollapsed && "Drafts"}
-                  </button>
-                </Link>
-              </li>
-              <li>
-                <Link href="/dashboard/enable_features">
-                  <button className="flex items-center w-full p-2 hover:bg-gray-600 rounded transition-colors duration-200">
-                    {!isCollapsed && "Enable Features"}
-                  </button>
-                </Link>
-              </li>
-              <li>
-                <Link href="/dashboard/view_events">
-                  <button className="flex items-center w-full p-2 hover:bg-gray-600 rounded transition-colors duration-200">
-                    {!isCollapsed && "View Events"}
-                  </button>
-                </Link>
-              </li>
-            </ul>
-          )}
-        </li>
-        <li>
-          <button
-            className="flex items-center w-full py-2 pl-2 hover:bg-gray-700 rounded transition-colors duration-200 relative"
-            onMouseEnter={() => isCollapsed && setTooltip("Teams")}
-            onMouseLeave={() => setTooltip(null)}
-            onClick={toggleTeams}
-          >
-            <FaUsers className="mr-2 text-xl" />
-            {!isCollapsed && (
-              <>
-                Teams
-                {openTeams ? (
-                  <IoIosArrowUp className="ml-auto" />
-                ) : (
-                  <IoIosArrowDown className="ml-auto" />
+
+          <li>
+            <Link href="/dashboard">
+              <button
+                className="flex items-center w-full py-2 pl-2 hover:bg-gray-700 rounded transition-colors duration-200 relative"
+                onMouseEnter={() => isCollapsed && setTooltip("Dashboard")}
+                onMouseLeave={() => setTooltip(null)}
+              >
+                <FaTachometerAlt className="mr-2 text-xl" />
+                {!isCollapsed && <>Dashboard</>}
+                {isCollapsed && tooltip === "Dashboard" && (
+                  <div className="absolute left-8 top-4 bg-white text-black text-sm p-2 rounded-bl rounded-tr rounded-br border border-gray-300 shadow-lg flex flex-col w-48">
+                    <Link href="/dashboard">
+                      <button className="flex items-center w-full text-left hover:bg-gray-200 transition-colors duration-200 p-2 rounded">
+                        <FaTachometerAlt className="mr-2" /> Dashboard
+                      </button>
+                    </Link>
+                  </div>
                 )}
-              </>
-            )}
-            {isCollapsed && tooltip === "Teams" && (
-              <div className="absolute left-8 top-4 bg-white text-black text-sm p-2 rounded-bl rounded-tr rounded-br border border-gray-300 shadow-lg flex flex-col w-48">
-                <Link href="/dashboard/registered_teams">
-                  <button className="flex items-center w-full text-left hover:bg-gray-200 transition-colors duration-200 p-2 rounded">
-                    <FaUsers className="mr-2" /> Registered Teams
-                  </button>
-                </Link>
-              </div>
-            )}
-          </button>
-          {!isCollapsed && (
-            <ul
-              className={`ml-4 space-y-1 overflow-hidden transition-all duration-300 ease-in-out ${
-                openTeams ? "max-h-40" : "max-h-0"
-              }`}
-            >
-              <li>
-                <Link href="/dashboard/registered_teams">
-                  <button className="flex items-center w-full p-2 hover:bg-gray-600 rounded transition-colors duration-200">
-                    {!isCollapsed && "Registered Teams"}
-                  </button>
-                </Link>
-              </li>
-            </ul>
-          )}
+              </button>
+            </Link>
+          </li>
         </li>
-        <li>
+        {userStatus === "organizer" && (
+          <>
+            <li>
+              <button
+                className="flex items-center w-full py-2 pl-2 hover:bg-gray-700 rounded transition-colors duration-200 relative"
+                onMouseEnter={() =>
+                  isCollapsed && setTooltip("OrganizerEvents")
+                }
+                onMouseLeave={() => setTooltip(null)}
+                onClick={toggleEvents}
+              >
+                <FaCalendarAlt className="mr-2 text-xl" />
+                {!isCollapsed && <>Events</>}
+                {isCollapsed && tooltip === "OrganizerEvents" && (
+                  <div className="absolute left-8 top-4 bg-white text-black text-sm p-2 rounded-bl rounded-tr rounded-br border border-gray-300 shadow-lg flex flex-col w-40">
+                    <Link href="/dashboard/create_event">
+                      <button className="flex items-center w-full text-left hover:bg-gray-200 transition-colors duration-200 p-2 rounded mb-1">
+                        <FaCalendarAlt className="mr-2" /> Create Event
+                      </button>
+                    </Link>
+                    <Link href="/dashboard/enable_features">
+                      <button className="flex items-center w-full text-left hover:bg-gray-200 transition-colors duration-200 p-2 rounded">
+                        <MdOutlineFeaturedPlayList className="mr-2" /> Enable
+                        Features
+                      </button>
+                    </Link>
+                  </div>
+                )}
+              </button>
+              {!isCollapsed && (
+                <ul
+                  className={`ml-4 space-y-1 overflow-hidden transition-all duration-300 ease-in-out max-h-56`}
+                >
+                  <li>
+                    <Link href="/dashboard/create_event">
+                      <button className="flex items-center w-full p-2 hover:bg-gray-600 rounded transition-colors duration-200">
+                        {!isCollapsed && (
+                          <>
+                            <MdSchedule className="mr-2" /> Create Event
+                          </>
+                        )}
+                      </button>
+                    </Link>
+                  </li>
+                  <li>
+                    <Link href="/dashboard/enable_features">
+                      <button className="flex items-center w-full p-2 hover:bg-gray-600 rounded transition-colors duration-200">
+                        {!isCollapsed && (
+                          <>
+                            <MdOutlineFeaturedPlayList className="mr-2" />{" "}
+                            Enable Features
+                          </>
+                        )}
+                      </button>
+                    </Link>
+                  </li>
+                  <li>
+                    <Link href="/dashboard/kyc/1234">
+                      <button className="flex items-center w-full p-2 hover:bg-gray-600 rounded transition-colors duration-200">
+                        {!isCollapsed && (
+                          <>
+                            <MdOutlineSecurity className="mr-2" /> Unlock
+                            Earnings (kyc)
+                          </>
+                        )}
+                      </button>
+                    </Link>
+                  </li>
+                </ul>
+              )}
+            </li>
+          </>
+        )}
+        {userStatus === "player" && (
+          <>
+            <li>
+              <button
+                className="flex items-center w-full py-2 pl-2 hover:bg-gray-700 rounded transition-colors duration-200 relative"
+                onMouseEnter={() => isCollapsed && setTooltip("UserEvents")}
+                onMouseLeave={() => setTooltip(null)}
+                onClick={toggleEvents}
+              >
+                <FaCalendarAlt className="mr-2 text-xl" />
+                {!isCollapsed && <>Events</>}
+                {isCollapsed && tooltip === "UserEvents" && (
+                  <div className="absolute left-8 top-4 bg-white text-black text-sm p-2 rounded-bl rounded-tr rounded-br border border-gray-300 shadow-lg flex flex-col w-40">
+                    <Link href="/dashboard/create_event">
+                      <button className="flex items-center w-full text-left hover:bg-gray-200 transition-colors duration-200 p-2 rounded mb-1">
+                        <FaCalendarAlt className="mr-2" /> Manage Events
+                      </button>
+                    </Link>
+                    <Link href="/dashboard/enable_features">
+                      <button className="flex items-center w-full text-left hover:bg-gray-200 transition-colors duration-200 p-2 rounded">
+                        <MdOutlineFeaturedPlayList className="mr-2" /> Events I
+                        am interested in Features
+                      </button>
+                    </Link>
+                    <Link href="/dashboard/enable_features">
+                      <button className="flex items-center w-full text-left hover:bg-gray-200 transition-colors duration-200 p-2 rounded">
+                        <MdOutlineFeaturedPlayList className="mr-2" /> Withdraw
+                        from Events
+                      </button>
+                    </Link>
+                  </div>
+                )}
+              </button>
+              {!isCollapsed && (
+                <ul
+                  className={`ml-4 space-y-1 overflow-hidden transition-all duration-300 ease-in-out max-h-56`}
+                >
+                  <li>
+                    <Link href="/dashboard/create_event">
+                      <button className="flex items-center w-full p-2 hover:bg-gray-600 rounded transition-colors duration-200">
+                        {!isCollapsed && (
+                          <>
+                            <MdSchedule className="mr-2" /> Manage Events
+                          </>
+                        )}
+                      </button>
+                    </Link>
+                  </li>
+                  <li>
+                    <Link href="/dashboard/enable_features">
+                      <button className="flex items-center w-full p-2 hover:bg-gray-600 rounded transition-colors duration-200">
+                        {!isCollapsed && (
+                          <>
+                            <MdOutlineFeaturedPlayList className="mr-2" />
+                            Events I am interested
+                          </>
+                        )}
+                      </button>
+                    </Link>
+                  </li>
+                  <li>
+                    <Link href="/dashboard/enable_features">
+                      <button className="flex items-center w-full p-2 hover:bg-gray-600 rounded transition-colors duration-200">
+                        {!isCollapsed && (
+                          <>
+                            <MdOutlineFeaturedPlayList className="mr-2" />
+                            Withdraw from Events
+                          </>
+                        )}
+                      </button>
+                    </Link>
+                  </li>
+                </ul>
+              )}
+            </li>
+          </>
+        )}
+
+        {/* <li>
           <button
             className="flex items-center w-full py-2 pl-2 hover:bg-gray-700 rounded transition-colors duration-200 relative"
             onMouseEnter={() => isCollapsed && setTooltip("Matches")}
@@ -260,9 +333,7 @@ const Sidebar = ({ setnavexpanded }: { setnavexpanded :Dispatch<SetStateAction<b
             )}
           </button>
           <ul
-            className={`ml-4 space-y-1 overflow-hidden transition-all duration-300 ease-in-out ${
-              openMatches ? "max-h-40" : "max-h-0"
-            }`}
+            className={`ml-4 space-y-1 overflow-hidden transition-all duration-300 ease-in-out max-h-40 `}
           >
             <li>
               <Link href="/dashboard/schedule_matches">
@@ -279,7 +350,7 @@ const Sidebar = ({ setnavexpanded }: { setnavexpanded :Dispatch<SetStateAction<b
               </Link>
             </li>
           </ul>
-        </li>
+        </li> */}
       </ul>
       <hr className="my-4 border-gray-700" />
       <div className="mt-auto">
@@ -301,21 +372,20 @@ const Sidebar = ({ setnavexpanded }: { setnavexpanded :Dispatch<SetStateAction<b
             </Link>
           </li>
           <li>
-            <Link href="/dashboardo">
-              <button
-                className="flex items-center w-full py-2 pl-2 hover:bg-gray-700 rounded transition-colors duration-200 relative"
-                onMouseEnter={() => isCollapsed && setTooltip("Logout")}
-                onMouseLeave={() => setTooltip(null)}
-              >
-                <FaSignOutAlt className="mr-2 text-xl" />{" "}
-                {!isCollapsed && "Logout"}
-                {isCollapsed && tooltip === "Logout" && (
-                  <div className="absolute left-8 bottom-4 bg-white text-black text-sm p-2 rounded-tl rounded-tr rounded-br border border-gray-300 shadow-lg flex flex-col w-20">
-                    Logout
-                  </div>
-                )}
-              </button>
-            </Link>
+            <button
+              onClick={handleLogout}
+              className="flex items-center w-full py-2 pl-2 hover:bg-gray-700 rounded transition-colors duration-200 relative"
+              onMouseEnter={() => isCollapsed && setTooltip("Logout")}
+              onMouseLeave={() => setTooltip(null)}
+            >
+              <FaSignOutAlt className="mr-2 text-xl" />{" "}
+              {!isCollapsed && "Logout"}
+              {isCollapsed && tooltip === "Logout" && (
+                <div className="absolute left-8 bottom-4 bg-white text-black text-sm p-2 rounded-tl rounded-tr rounded-br border border-gray-300 shadow-lg flex flex-col w-20">
+                  Logout
+                </div>
+              )}
+            </button>
           </li>
         </ul>
       </div>
