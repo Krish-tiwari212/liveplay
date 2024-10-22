@@ -18,19 +18,19 @@ const Navbar = () => {
     }
   }, []);
 
-
-  const handleLogout = async() => {
+  const handleLogout = async () => {
     await new Promise((resolve) => setTimeout(resolve, 2000));
     localStorage.removeItem("username");
     localStorage.removeItem("password");
     setIsLoggedIn(false);
     toast({
-      title:"Logout Succesful",
-      description:"Succesfully Logged Out!",
-      variant:"default"
-    })
+      title: "Logout Successful",
+      description: "Successfully Logged Out!",
+      variant: "default"
+    });
   };
-  const router=useRouter()
+
+  const router = useRouter();
 
   return (
     <div className="hidden md:flex items-center justify-between p-4 bg-gray-800 text-white gap-10 shadow-lg">
@@ -39,15 +39,15 @@ const Navbar = () => {
           liveplay.in
         </div>
       </div>
-      <div className="flex items-center">
-        <button className="flex items-center bg-purple-700  text-white px-6 py-1 hover:bg-purple-800  transition transform hover:-translate-y-1 hover:shadow-lg hover:shadow-violet-900 border border-transparent">
+      <div className="flex items-center gap-4">
+        <button className="flex items-center bg-purple-700 text-white px-6 py-2 rounded-lg hover:bg-purple-800 transition transform hover:-translate-y-1 hover:shadow-lg hover:shadow-violet-900 border border-transparent">
           <MdOutlineEvent className="inline mr-2" size={20} />
           Create Event
         </button>
         {isLoggedIn && (
           <button
             onClick={() => router.push("/dashboard")}
-            className="flex items-center bg-white ml-4 text-gray-800 rounded-full px-6 md:px-10 py-1 hover:bg-slate-400  transition transform hover:-translate-y-1 hover:shadow-lg hover:shadow-gray-500 border border-transparent"
+            className="flex items-center bg-white text-gray-800 rounded-full px-6 md:px-10 py-2 hover:bg-slate-400 transition transform hover:-translate-y-1 hover:shadow-lg hover:shadow-gray-500 border border-transparent"
           >
             <MdOutlineEvent className="inline mr-2" size={20} />
             Dashboard
@@ -57,17 +57,17 @@ const Navbar = () => {
           <Link href={"/"}>
             <button
               onClick={handleLogout}
-              className="bg-transparent flex items-center text-white md:px-4 py-2 ml-4"
+              className="bg-transparent flex items-center text-white md:px-4 py-2 ml-4 hover:text-gray-400 transition"
             >
               <FaUserCircle className="inline md:mr-2" size={30} />
-              <h1 className="hidden md:block md:text-lg">LogOut</h1>
+              <h1 className="hidden md:block md:text-lg">Log Out</h1>
             </button>
           </Link>
         ) : (
           <Link href={"/login"}>
-            <button className="bg-transparent flex items-center text-white md:px-4 py-2 ml-4">
+            <button className="bg-transparent flex items-center text-white md:px-4 py-2 ml-4 hover:text-gray-400 transition">
               <FaUserCircle className="inline md:mr-2" size={30} />
-              <h1 className="hidden md:block md:text-lg">SignIn</h1>
+              <h1 className="hidden md:block md:text-lg">Sign In</h1>
             </button>
           </Link>
         )}
@@ -76,4 +76,4 @@ const Navbar = () => {
   );
 }
 
-export default Navbar
+export default Navbar;
