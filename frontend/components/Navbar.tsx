@@ -29,7 +29,7 @@ const Navbar = () => {
         </button>
         <button className="bg-transparent flex items-center text-white md:px-4 py-2 ml-4">
           <FaUserCircle className="inline md:mr-2" size={30} />
-          <h1 className="hidden md:block md:text-lg">LogIn / SignUp</h1>
+          <h1 className="hidden md:block md:text-lg">Log In / Sign Up</h1>
         </button>
       </div>
     </div>
