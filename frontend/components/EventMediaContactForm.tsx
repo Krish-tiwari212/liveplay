@@ -81,44 +81,44 @@ const EventMediaContactForm: React.FC<EventMediaProps> = ({
     };
   const handleClick = (event: React.MouseEvent<HTMLButtonElement>) => {
     event.preventDefault();
-    // const requiredFields = [
-    //   "eventAddress",
-    //   "desktopBanner",
-    //   "eventDescription",
-    //   "eventName",
-    //   "eventPincode",
-    //   "eventStreet",
-    //   "eventUSP",
-    //   "eventenddate",
-    //   "eventstartDate",
-    //   "lastRegistrationDate",
-    //   "lastWithdrawalDate",
-    //   "mobileBanner",
-    //   "organiserName",
-    //   "organiserNumber",
-    //   "organiseremailaddress",
-    //   "playingRules",
-    //   "rewardsAndParticipation",
-    //   "startTime",
-    //   "venueName",
-    // ];
+    const requiredFields = [
+      "eventAddress",
+      "desktopBanner",
+      "eventDescription",
+      "eventName",
+      "eventPincode",
+      "eventStreet",
+      "eventUSP",
+      "eventenddate",
+      "eventstartDate",
+      "lastRegistrationDate",
+      "lastWithdrawalDate",
+      "mobileBanner",
+      "organiserName",
+      "organiserNumber",
+      "organiseremailaddress",
+      "playingRules",
+      "rewardsAndParticipation",
+      "startTime",
+      "venueName",
+    ];
 
-    // const isAnyFieldEmpty = requiredFields.some(
-    //   (field) => !formData[field] || formData[field] === ""
-    // );
+    const isAnyFieldEmpty = requiredFields.some(
+      (field) => !formData[field] || formData[field] === ""
+    );
 
-    // if (isAnyFieldEmpty) {
-    //   toast({
-    //     title: "Please fill out the necessary fields",
-    //   });
-    //   console.log("please fill filed");
-    // } else {
+    if (isAnyFieldEmpty) {
+      toast({
+        title: "Please fill out the necessary fields",
+      });
+      console.log("please fill filed");
+    } else {
       setEventData((prevEventData: any) => ({
         ...prevEventData,
         ...formData,
         }));
       handleNext();
-    // }
+    }
     
   };
   return (
