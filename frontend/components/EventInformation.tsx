@@ -11,7 +11,7 @@ import { Label } from "@radix-ui/react-dropdown-menu";
 import EventInsights from "@/components/EventInsights";
 const OverviewSidebarContent = [
   {
-    title: "Esential",
+    title: "Essential",
   },
   {
     title: "Location",
@@ -39,7 +39,7 @@ const EventInformation: React.FC<EventInformation> = ({
 
   const renderForm = () => {
     switch (formType) {
-      case "Esentioal":
+      case "Essential":
         return (
           <EventDetailsForm
             formData={formData}

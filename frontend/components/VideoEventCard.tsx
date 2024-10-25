@@ -118,7 +118,7 @@ const VideoEventCard = ({
                       <HiOutlineCurrencyDollar className="mr-2" size={20} />
                       {price} onwards
                     </p>
-                    <Button className="text-sm bg-gray-800 hover:shadow-md" size="xs">
+                    <Button className="text-sm bg-gray-800 hover:shadow-md">
                       Register
                     </Button>
                   </div>
