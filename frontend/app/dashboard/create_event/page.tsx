@@ -1,56 +1,78 @@
 "use client"
 
-import React, { useState } from "react";
-import OverviewSidebar from "@/components/OverviewSidebar"; 
-import EventDetailsForm from "@/components/EventDetailsForm"; 
-import EventMediaContactForm from "@/components/EventMediaContactForm";
-import EventLocationForm from "@/components/EventLocationForm";
-import { useAppContext } from "@/lib/context/AppContext";
-import { Switch } from "@/components/ui/switch";
-import { Label } from "@radix-ui/react-dropdown-menu";
-import EventInsights from "@/components/EventInsights";
-const OverviewSidebarContent = [
-  {
-    title: "Esential",
-  },
-  {
-    title: "Location",
-  },
-  {
-    title: "Insights",
-  },
-  {
-    title: "Branding",
-  },
-];
+import React, { useEffect, useState } from 'react'
+import { Progress } from "@/components/ui/progress";
+import EventInformation from '@/components/EventInformation';
+import { Button } from '@/components/ui/button';
+import EnableFeatures from '@/components/EnableFeatures';
+import CategoryPreview from '@/components/CategoryPreview';
+import PreviewEventChanges from '@/components/PreviewEventChanges';
 
-const CreateEvent: React.FC = () => {
-  const [formType, setFormType] = useState<string>("default"); 
-  const { theme } = useAppContext();
-  const renderForm = () => {
-    switch (formType) {
-      case "Esentioal":
-        return <EventDetailsForm />; 
-      case "Location":
-        return <EventLocationForm />;
-      case "Insights":
-        return <EventInsights/>;
-      case "Branding":
-        return <EventMediaContactForm />
-      default:
-        return <EventDetailsForm />;
+
+const page = () => {
+  // const [currentPage, setCurrentPage] = useState(() => {
+  //   const savedPage = localStorage.getItem('currentPage');
+  //   return savedPage ? JSON.parse(savedPage) : 1;
+  // });
+  const [currentPage,setCurrentPage]=useState(1)
+  const [EventData, setEventData] = useState({});
+  const totalPages = 4;
+
+  const handleNext = () => {
+    if (currentPage < totalPages) {
+      const newPage = currentPage + 1;
+      setCurrentPage(newPage);
+      // localStorage.setItem('currentPage', JSON.stringify(newPage)); 
     }
   };
 
+  // Remove the handlePrev function as it's no longer needed
+  // const handlePrev = () => {
+  //   if (currentPage > 1) {
+  //     setCurrentPage(currentPage - 1);
+  //   }
+  // };
+
+  // useEffect(() => {
+  //   localStorage.setItem('currentPage', JSON.stringify(currentPage));
+  // }, [currentPage]);
+
   return (
-    <div className="flex flex-col md:flex-row w-full bg-slate-200 overflow-hidden ">
-      <OverviewSidebar
-        setFormType={setFormType}
-        content={OverviewSidebarContent}
+    <div className="m-3 relative">
+      <Progress
+        value={(currentPage / totalPages) * 100}
+        className="w-[50%] mx-auto h-2 mb-4"
       />
-      <div className="flex-[4] m-3 mb-20">{renderForm()}</div>
+      <div className="text-center mb-2">
+        Step {currentPage} of {totalPages}
+      </div>
+
+      {currentPage === 1 && (
+        <EventInformation handleNext={handleNext} setEventData={setEventData} />
+      )}
+      {currentPage === 2 && (
+        <CategoryPreview
+          EventData={EventData}
+          handleNext={handleNext}
+          setEventData={setEventData}
+        />
+      )}
+      {currentPage === 3 && (
+        <EnableFeatures
+          handleNext={handleNext}
+          setEventData={setEventData}
+          EventData={EventData}
+        />
+      )}
+      {currentPage === 4 && (
+        <PreviewEventChanges
+          handleNext={handleNext}
+          EventData={EventData}
+          setEventData={setEventData}
+        />
+      )}
     </div>
   );
-};
+}
 
-export default CreateEvent;
+export default page

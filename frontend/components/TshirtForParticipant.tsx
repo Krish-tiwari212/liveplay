@@ -1,10 +1,17 @@
 import React, { useState } from 'react';
 
-const TshirtForParticipant = () => {
+interface TshirtForParticipantProps{
+  setFeatureData: React.Dispatch<React.SetStateAction<any>>;
+}
+
+const TshirtForParticipant = ({
+  setFeatureData,
+}: TshirtForParticipantProps) => {
   const [orderTshirts, setOrderTshirts] = useState(false);
   const [forParticipants, setForParticipants] = useState(false);
   const [forOrganizingTeam, setForOrganizingTeam] = useState(false);
   const [quantity, setQuantity] = useState(10);
+  const [oquantity, setoQuantity] = useState(10);
   const [showPopup, setShowPopup] = useState(false);
   const [requestSubmitted, setRequestSubmitted] = useState(false);
 
@@ -21,29 +28,10 @@ const TshirtForParticipant = () => {
   return (
     <div className="bg-white shadow-2xl p-5 rounded-lg">
       <h2 className="text-lg font-bold mb-4">Order T-Shirts</h2>
-
-      <div className="mt-4">
-        <label className="flex items-center">
-          <input
-            type="checkbox"
-            checked={forParticipants}
-            onChange={() => setForParticipants(!forParticipants)}
-            className="mr-2"
-          />
-          T-Shirts for Participants
-        </label>
-        <label className="flex items-center">
-          <input
-            type="checkbox"
-            checked={forOrganizingTeam}
-            onChange={() => setForOrganizingTeam(!forOrganizingTeam)}
-            className="mr-2"
-          />
-          T-Shirts for Organizing Team
-        </label>
-      </div>
       <div className="bg-white p-5 rounded-lg shadow-lg">
-        <h3 className="text-lg font-bold mb-4">Enter Quantity</h3>
+        <h3 className="text-lg font-bold mb-4">
+          Enter Quantity Of Organizer T Shirts
+        </h3>
         <input
           type="number"
           value={quantity}
@@ -52,17 +40,20 @@ const TshirtForParticipant = () => {
           className="h-12 p-2 border rounded-md w-full"
         />
       </div>
-
       <button
         type="button"
-        onClick={() => setShowPopup(true)}
+        onClick={handleSubmitRequest}
         className="mt-2 w-full bg-gray-800 text-white p-2 rounded-md"
       >
         Request T-Shirts
       </button>
-      {requestSubmitted && (
-        <div className="mt-4 text-green-600">
+      {requestSubmitted ? (
+        <div className="mt-4 ml-4 text-green-600">
           <p>Our team will get in touch within 24 hours.</p>
+        </div>
+      ) : (
+        <div className="mt-4 ml-4 text-red-600">
+          <p>Minimum 10 Teashirts for order</p>
         </div>
       )}
     </div>

@@ -83,7 +83,7 @@ const Sidebar = ({ setnavexpanded }: { setnavexpanded :Dispatch<SetStateAction<b
       <ul className="space-y-2 flex-grow relative">
         <li>
           <button
-            className="flex items-center w-full py-2 pl-2 hover:bg-gray-700 rounded transition-colors duration-200 relative"
+            className="flex items-center w-full py-2 pl-2 mb-3 hover:bg-gray-700 rounded transition-colors duration-200 relative"
             onMouseEnter={() => setTooltip("UserName")}
             onMouseLeave={() => setTooltip(null)}
             onClick={toggleEvents}
@@ -92,12 +92,6 @@ const Sidebar = ({ setnavexpanded }: { setnavexpanded :Dispatch<SetStateAction<b
             {!isCollapsed && (
               <div className="flex flex-col justify-start items-start ml-2 ">
                 <span className={`text-lg`}>Mohit</span>
-                {userStatus === "organizer" && (
-                  <span className="text-sm">(as an organizer)</span>
-                )}
-                {userStatus === "player" && (
-                  <span className="text-sm">(as an player)</span>
-                )}
               </div>
             )}
             {tooltip === "UserName" && (
@@ -125,8 +119,6 @@ const Sidebar = ({ setnavexpanded }: { setnavexpanded :Dispatch<SetStateAction<b
               </div>
             )}
           </button>
-
-          <li>
             <Link href="/dashboard">
               <button
                 className="flex items-center w-full py-2 pl-2 hover:bg-gray-700 rounded transition-colors duration-200 relative"
@@ -146,7 +138,6 @@ const Sidebar = ({ setnavexpanded }: { setnavexpanded :Dispatch<SetStateAction<b
                 )}
               </button>
             </Link>
-          </li>
         </li>
         {userStatus === "organizer" && (
           <>

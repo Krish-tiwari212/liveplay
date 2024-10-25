@@ -63,47 +63,9 @@ const MSidebar = () => {
         </Link>
       </div>
       <ul className="space-y-2 flex-grow relative">
-        <li>
-          <button
-            className="flex items-center w-full py-2 pl-2 hover:bg-gray-700 rounded transition-colors duration-200 relative"
-            onMouseEnter={() => setTooltip("UserName")}
-            onMouseLeave={() => setTooltip(null)}
-            onClick={toggleEvents}
-          >
-            <FaUserCircle className="mr-2 text-4xl" />
-            <div className="flex flex-col justify-start items-start ml-2 ">
-              <span className={`text-lg`}>Mohit</span>
-              {userStatus === "organizer" && (
-                <span className="text-sm">(as an organizer)</span>
-              )}
-              {userStatus === "player" && (
-                <span className="text-sm">(as an player)</span>
-              )}
-            </div>
-            {tooltip === "UserName" && (
-              <div
-                className={`absolute left-48 top-4 bg-white text-black text-sm p-2 rounded-bl rounded-tr rounded-br border border-gray-300 shadow-lg flex flex-col w-40`}
-              >
-                <button
-                  onClick={() => {
-                    setUserStatus("organizer");
-                  }}
-                  className="flex items-center w-full text-left hover:bg-gray-200 transition-colors duration-200 p-2 rounded mb-1"
-                >
-                  <FaUserCircle className="mr-2" /> As an Organizer
-                </button>
-                <button
-                  onClick={() => {
-                    setUserStatus("player");
-                  }}
-                  className="flex items-center w-full text-left hover:bg-gray-200 transition-colors duration-200 p-2 rounded"
-                >
-                  <MdSportsFootball className="mr-2" /> As a Player
-                </button>
-              </div>
-            )}
-          </button>
-
+          <div className="w-full py-2 pl-2">
+            <h1 className="text-2xl ">As An Organiser</h1>
+          </div>
           <li>
             <Link href="/dashboard">
               <button className="flex items-center w-full py-2 pl-2 hover:bg-gray-700 rounded transition-colors duration-200 relative">
@@ -111,80 +73,74 @@ const MSidebar = () => {
               </button>
             </Link>
           </li>
-        </li>
         {userStatus === "organizer" && (
-          <>
+          <ul
+            className={`space-y-1 overflow-hidden transition-all duration-300 ease-in-out max-h-56`}
+          >
             <li>
-              <button
-                className="flex items-center w-full py-2 pl-2 hover:bg-gray-700 rounded transition-colors duration-200 relative"
-                onClick={toggleEvents}
-              >
-                <FaCalendarAlt className="mr-2 text-xl" /> Events
-              </button>
-              <ul
-                className={`ml-4 space-y-1 overflow-hidden transition-all duration-300 ease-in-out max-h-56`}
-              >
-                <li>
-                  <Link href="/dashboard/create_event">
-                    <button className="flex items-center w-full p-2 hover:bg-gray-600 rounded transition-colors duration-200">
-                      <MdSchedule className="mr-2" /> Create Event
-                    </button>
-                  </Link>
-                </li>
-                <li>
-                  <Link href="/dashboard/enable_features">
-                    <button className="flex items-center w-full p-2 hover:bg-gray-600 rounded transition-colors duration-200">
-                      <MdOutlineFeaturedPlayList className="mr-2" /> Enable
-                      Features
-                    </button>
-                  </Link>
-                </li>
-                <li>
-                  <Link href="/dashboard/kyc/1234">
-                    <button className="flex items-center w-full p-2 hover:bg-gray-600 rounded transition-colors duration-200">
-                      <MdOutlineSecurity className="mr-2" /> Unlock Earnings
-                      (kyc)
-                    </button>
-                  </Link>
-                </li>
-              </ul>
+              <Link href="/dashboard/create_event">
+                <button className="flex items-center w-full p-2 hover:bg-gray-600 rounded transition-colors duration-200">
+                  <MdSchedule className="mr-2 text-xl" /> Create Events
+                </button>
+              </Link>
             </li>
-          </>
+            <li>
+              <Link href="/dashboard/enable_features">
+                <button className="flex items-center w-full p-2 hover:bg-gray-600 rounded transition-colors duration-200">
+                  <MdOutlineFeaturedPlayList className="mr-2 text-xl" /> mannage
+                  Events
+                </button>
+              </Link>
+            </li>
+            <li>
+              <Link href="/dashboard/kyc/1234">
+                <button className="flex items-center w-full p-2 hover:bg-gray-600 rounded transition-colors duration-200">
+                  <MdOutlineSecurity className="mr-2 text-xl" /> Unlock Earnings
+                  (kyc)
+                </button>
+              </Link>
+            </li>
+            <li>
+              <Link href="/dashboard/kyc/1234">
+                <button className="flex items-center w-full p-2 hover:bg-gray-600 rounded transition-colors duration-200">
+                  <MdOutlineSecurity className="mr-2 text-xl" /> Notifications
+                </button>
+              </Link>
+            </li>
+          </ul>
         )}
         {userStatus === "player" && (
           <>
-            <li>
-              <button className="flex items-center w-full py-2 pl-2 hover:bg-gray-700 rounded transition-colors duration-200 relative">
-                <FaCalendarAlt className="mr-2 text-xl" /> Events
-              </button>
-              <ul
-                className={`ml-4 space-y-1 overflow-hidden transition-all duration-300 ease-in-out max-h-56`}
-              >
-                <li>
-                  <Link href="/dashboard/create_event">
-                    <button className="flex items-center w-full p-2 hover:bg-gray-600 rounded transition-colors duration-200">
-                      <MdSchedule className="mr-2" /> Manage Events
-                    </button>
-                  </Link>
-                </li>
-                <li>
-                  <Link href="/dashboard/enable_features">
-                    <button className="flex items-center w-full p-2 hover:bg-gray-600 rounded transition-colors duration-200">
-                      <MdOutlineFeaturedPlayList className="mr-2" />
-                      Events I am interested
-                    </button>
-                  </Link>
-                </li>
-                <li>
-                  <Link href="/dashboard/enable_features">
-                    <button className="flex items-center w-full p-2 hover:bg-gray-600 rounded transition-colors duration-200">
-                      <MdOutlineFeaturedPlayList className="mr-2" />
-                      Withdraw from Events
-                    </button>
-                  </Link>
-                </li>
-              </ul>
-            </li>
+            <button className="flex items-center w-full py-2 pl-2 hover:bg-gray-700 rounded transition-colors duration-200 relative">
+              <FaCalendarAlt className="mr-2 text-xl" /> Events
+            </button>
+            <ul
+              className={`ml-4 space-y-1 overflow-hidden transition-all duration-300 ease-in-out max-h-56`}
+            >
+              <li>
+                <Link href="/dashboard/create_event">
+                  <button className="flex items-center w-full p-2 hover:bg-gray-600 rounded transition-colors duration-200">
+                    <MdSchedule className="mr-2" /> Manage Events
+                  </button>
+                </Link>
+              </li>
+              <li>
+                <Link href="/dashboard/enable_features">
+                  <button className="flex items-center w-full p-2 hover:bg-gray-600 rounded transition-colors duration-200">
+                    <MdOutlineFeaturedPlayList className="mr-2" />
+                    Events I am interested
+                  </button>
+                </Link>
+              </li>
+              <li>
+                <Link href="/dashboard/enable_features">
+                  <button className="flex items-center w-full p-2 hover:bg-gray-600 rounded transition-colors duration-200">
+                    <MdOutlineFeaturedPlayList className="mr-2" />
+                    Withdraw from Events
+                  </button>
+                </Link>
+              </li>
+            </ul>
           </>
         )}
       </ul>

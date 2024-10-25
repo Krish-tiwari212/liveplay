@@ -1,6 +1,6 @@
-"use client"
+"use client";
 
-import React, { useState } from 'react'
+import React, { useState } from "react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import {
   Select,
@@ -13,8 +13,12 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
-import { useRouter } from 'next/navigation';
+import { useRouter } from "next/navigation";
 
+interface EditCategoryProps {
+  setCategoryData: (newCategory: any) => void;
+  selectedCategory: any;
+}
 
 const inputFields = [
   {
@@ -70,7 +74,7 @@ const discountFields = {
     },
     {
       id: "percentageInput",
-      label: "percentage",
+      label: "Percentage",
       type: "number",
       placeholder: "Enter Percentage",
       required: true,
@@ -100,7 +104,7 @@ const discountFields = {
     },
     {
       id: "amountInput",
-      label: "amount",
+      label: "Amount",
       type: "number",
       placeholder: "Enter Amount",
       required: true,
@@ -122,47 +126,64 @@ const discountFields = {
   ],
 };
 
-const page = () => {
-  const router=useRouter()
-  const [formData, setFormData] = useState({
-    categoryName: "",
-    categoryType: "",
-    price: "",
-    totalQuantity: "",
-    ticketDescription: "",
-    maxTicketQuantity: "",
-    amount: "",
-    percentage: "",
-    numberOfDiscounts: "",
-    fromDate: "",
-    tillDate:""
+const EditCategory = ({ setCategoryData, selectedCategory }: EditCategoryProps) => {
+  const [categoryData, setLocalCategoryData] = useState({
+    categoryName: selectedCategory.categoryName || "",
+    totalQuantity: selectedCategory.totalQuantity || "",
+    maxTicketQuantity: selectedCategory.maxTicketQuantity || "",
+    price: selectedCategory.price || "",
+    ticketDescription: selectedCategory.ticketDescription || "",
+    discountCode: selectedCategory.discountCode || "",
+    categoryType: selectedCategory.categoryType || "",
   });
 
-  const [showAmountInput, setShowAmountInput] = useState(false); 
+  const [showAmountInput, setShowAmountInput] = useState(false);
   const [showPercentageInput, setShowPercentageInput] = useState(false);
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
+
+  const handleChange = (
+    e: React.ChangeEvent<
+      HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement
+    >
+  ) => {
     const { name, value } = e.target;
-    setFormData({ ...formData, [name]: value });
+    setLocalCategoryData({ ...categoryData, [name]: value });
   };
 
-  const handleCheckboxChange = (type: 'amount' | 'percentage') => {
-    if (type === 'amount') {
+  const handleCheckboxChange = (type: "amount" | "percentage") => {
+    if (type === "amount") {
       setShowAmountInput(!showAmountInput);
-      if (showPercentageInput) setShowPercentageInput(false); // Uncheck percentage if amount is checked
+      if (showPercentageInput) setShowPercentageInput(false);
     } else {
       setShowPercentageInput(!showPercentageInput);
-      if (showAmountInput) setShowAmountInput(false); // Uncheck amount if percentage is checked
+      if (showAmountInput) setShowAmountInput(false);
     }
   };
-  
+
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    setCategoryData(categoryData);
+    setLocalCategoryData({
+      categoryName: "",
+      totalQuantity: "",
+      maxTicketQuantity: "",
+      price: "",
+      ticketDescription: "",
+      discountCode: "",
+      categoryType: "",
+    });
+  };
+
   return (
-    <form className="bg-white shadow-2xl p-5 rounded-lg m-3">
+    <form
+      className="bg-white shadow-2xl p-5 rounded-lg m-3"
+      onSubmit={handleSubmit}
+    >
       <div className="flex flex-wrap w-full">
         <div className="lg:w-[48%] w-full m-2 flex flex-col">
           <label htmlFor="categoryType">Category Type</label>
           <Select
             onValueChange={(value) =>
-              setFormData({ ...formData, categoryType: value })
+              setLocalCategoryData({ ...categoryData, categoryType: value })
             }
           >
             <SelectTrigger className="w-full h-16 shadow-2xl">
@@ -182,7 +203,7 @@ const page = () => {
           <div
             key={field.id}
             className={` ${
-              field.type === "textarea" ? "" : "lg:w-[48%]"
+              field.type === "textarea" ? "" : "lg:w-[45%]"
             } w-full m-2 flex flex-col`}
           >
             <label htmlFor={field.id}>{field.label}</label>
@@ -192,7 +213,7 @@ const page = () => {
                 name={field.id}
                 placeholder={field.placeholder}
                 maxLength={field.maxLength}
-                value={formData[field.id as keyof typeof formData]}
+                value={categoryData[field.id as keyof typeof categoryData]}
                 onChange={handleChange}
                 className="h-20 p-2 bg-white border rounded-md text-sm shadow-2xl text-gray-800 focus:border-gray-800 focus:outline-none focus:shadow-lg"
               />
@@ -203,7 +224,7 @@ const page = () => {
                 name={field.id}
                 placeholder={field.placeholder}
                 required={field.required}
-                value={formData[field.id as keyof typeof formData]}
+                value={categoryData[field.id as keyof typeof categoryData]}
                 onChange={handleChange}
                 className="h-16 p-2 bg-white border rounded-md text-sm shadow-2xl text-gray-800 focus:border-gray-800 focus:outline-none focus:shadow-lg"
               />
@@ -236,7 +257,7 @@ const page = () => {
                 <div
                   key={field.id}
                   className={` ${
-                    field.type === "textarea" ? "" : "lg:w-[48%]"
+                    field.type === "textarea" ? "" : "lg:w-[45%]"
                   } w-full m-2 flex flex-col`}
                 >
                   <label htmlFor={field.id}>{field.label}</label>
@@ -246,7 +267,7 @@ const page = () => {
                     name={field.id}
                     placeholder={field.placeholder}
                     required={field.required}
-                    value={formData[field.id as keyof typeof formData]}
+                    value={categoryData[field.id as keyof typeof categoryData]}
                     onChange={handleChange}
                     className="h-16 p-2 bg-white border rounded-md text-sm shadow-2xl text-gray-800 focus:border-gray-800 focus:outline-none focus:shadow-lg"
                   />
@@ -259,7 +280,7 @@ const page = () => {
               {discountFields.amount.map((field) => (
                 <div
                   key={field.id}
-                  className={`lg:w-[48%] w-full m-2 flex flex-col`}
+                  className={`lg:w-[45%] w-full m-2 flex flex-col`}
                 >
                   <label htmlFor={field.id}>{field.label}</label>
                   <input
@@ -268,7 +289,7 @@ const page = () => {
                     name={field.id}
                     placeholder={field.placeholder}
                     required={field.required}
-                    value={formData[field.id as keyof typeof formData]}
+                    value={categoryData[field.id as keyof typeof categoryData]}
                     onChange={handleChange}
                     className="h-16 p-2 bg-white border rounded-md text-sm shadow-2xl text-gray-800 focus:border-gray-800 focus:outline-none focus:shadow-lg"
                   />
@@ -281,13 +302,12 @@ const page = () => {
         <button
           type="submit"
           className="w-full bg-gray-800 text-white p-2 mx-2 rounded-md"
-          onClick={()=>{router.push(`/dashboard/category`)}}
         >
-          Add Category
+          Edit Category
         </button>
       </div>
     </form>
   );
-}
+};
 
-export default page
+export default EditCategory;

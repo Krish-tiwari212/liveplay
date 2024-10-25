@@ -40,7 +40,7 @@ const Kycforms: React.FC<KycFormsProps> = ({ fields, buttonLabel, buttonString, 
   const [isImageLoading, setIsImageLoading] = useState(false);
 
   return (
-    <form className="bg-white shadow-2xl p-5 rounded-lg">
+    <form className="bg-white shadow-2xl p-5 rounded-lg w-full">
       <div className="flex flex-wrap w-full">
         {fields.map((field, index) => (
           <div key={field.id} className="w-full m-2 flex flex-col">
@@ -114,8 +114,7 @@ const Kycforms: React.FC<KycFormsProps> = ({ fields, buttonLabel, buttonString, 
           </div>
         ))}
       </div>
-
-      {buttonLabel && <Button onClick={onButtonClick}>{buttonLabel}</Button>}
+      {buttonLabel && <Button onClick={onButtonClick} className='mt-3 w-full'>{buttonLabel}</Button>}
     </form>
   );
 };

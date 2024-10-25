@@ -59,7 +59,7 @@ const ProfileForm = () => {
     setLoading(true); // Start the loader
 
     // Simulate a delay for 2 seconds (e.g., API call)
-    await new Promise((resolve) => setTimeout(resolve, 2000));
+    await new Promise((resolve) => setTimeout(resolve, 500));
 
     // Check if entered password matches stored password
     if (data.password === storedPassword && data.username === storedUsername) {

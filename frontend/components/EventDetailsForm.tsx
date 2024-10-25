@@ -1,4 +1,5 @@
 import { Checkbox } from "@/components/ui/checkbox";
+import { useEffect } from "react";
 
 interface FormField {
   id: string;
@@ -10,15 +11,41 @@ interface FormField {
 }
 
 interface EventDetailsFormProps {
-  fields: FormField[];
+  fields?: FormField[];
+  formData: any;
+  setFormData: React.Dispatch<React.SetStateAction<any>>;
+  setFormType: React.Dispatch<React.SetStateAction<any>>;
+  setEventData: React.Dispatch<React.SetStateAction<any>>;
 }
 
-const EventDetailsForm: React.FC<EventDetailsFormProps> = ({ fields }) => {
+const EventDetailsForm: React.FC<EventDetailsFormProps> = ({
+  formData,
+  setFormData,
+  setFormType,
+  setEventData,
+}) => {
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const { name, value } = e.target;
+    setFormData({ ...formData, [name]: value });
+  };
+
+  useEffect(() => {
+    const savedData = localStorage.getItem("eventFormData");
+    if (savedData) {
+      setFormData(JSON.parse(savedData));
+    }
+  }, []);
+
   return (
     <form className="bg-white shadow-2xl p-5 rounded-lg">
       <div className="flex flex-wrap w-full">
         {fields.map((field) => (
-          <div key={field.id} className="lg:w-[47%] w-full m-2 flex flex-col">
+          <div
+            key={field.id}
+            className={`${
+              field.id === "eventName" ? "w-full" : "lg:w-[47%]"
+            } w-full m-2 flex flex-col`}
+          >
             <label htmlFor={field.id}>{field.label}</label>
             <input
               id={field.id}
@@ -26,6 +53,8 @@ const EventDetailsForm: React.FC<EventDetailsFormProps> = ({ fields }) => {
               name={field.name}
               placeholder={field.placeholder}
               required={field.required}
+              value={formData[field.name as keyof EventDetailsFormProps] || ""}
+              onChange={handleChange}
               className="h-16 p-2 bg-white border rounded-md text-sm shadow-2xl text-gray-800 focus:border-gray-800 focus:outline-none focus:shadow-lg"
             />
           </div>
@@ -45,6 +74,8 @@ const EventDetailsForm: React.FC<EventDetailsFormProps> = ({ fields }) => {
                 name="organiserName"
                 placeholder="Enter Name"
                 required
+                value={formData.organiserName || ""}
+                onChange={handleChange}
                 className=" w-full h-12 p-2 bg-white border rounded-md text-sm shadow-2xl text-gray-800 focus:border-gray-800 focus:outline-none focus:shadow-lg"
               />
             </div>
@@ -58,6 +89,8 @@ const EventDetailsForm: React.FC<EventDetailsFormProps> = ({ fields }) => {
                 name="organiserNumber"
                 placeholder="Enter Number"
                 required
+                value={formData.organiserNumber || ""}
+                onChange={handleChange}
                 className=" w-full h-12 p-2 bg-white border rounded-md text-sm shadow-2xl text-gray-800 focus:border-gray-800 focus:outline-none focus:shadow-lg"
               />
             </div>
@@ -71,6 +104,8 @@ const EventDetailsForm: React.FC<EventDetailsFormProps> = ({ fields }) => {
                 name="organiseremailaddress"
                 placeholder="Enter Email"
                 required
+                value={formData.organiseremailaddress || ""}
+                onChange={handleChange}
                 className=" w-full h-12 p-2 bg-white border rounded-md text-sm shadow-2xl text-gray-800 focus:border-gray-800 focus:outline-none focus:shadow-lg"
               />
             </div>
@@ -90,26 +125,55 @@ const EventDetailsForm: React.FC<EventDetailsFormProps> = ({ fields }) => {
             </div>
           </div>
         </div>
-        <button
-          type="submit"
-          className="w-full bg-gray-800  text-white p-2 mx-2 rounded-md"
-        >
-          Next
-        </button>
       </div>
     </form>
   );
 };
-
-// Example usage
 const fields = [
-  { id: "eventTitle", label: "Event Name", type: "text", name: "eventTitle", placeholder: "Enter Event Title", required: true },
-  { id: "LastRegistrationDate", label: "Last Registration Date", type: "date", name: "LastRegistrationDate", required: true },
-  { id: "LastWithdrawalDate", label: "Last Withdrawal Date", type: "date", name: "LastWithdrawalDate", required: true },
-  { id: "startTime", label: "Start Time", type: "time", name: "startTime", required: true },
+  {
+    id: "eventName",
+    label: "Event Name",
+    type: "text",
+    name: "eventName",
+    placeholder: "Enter Event Title",
+    required: true,
+  },
+  {
+    id: "LastRegistrationDate",
+    label: "Last Registration Date",
+    type: "date",
+    name: "lastRegistrationDate",
+    required: true,
+  },
+  {
+    id: "LastWithdrawalDate",
+    label: "Last Withdrawal Date",
+    type: "date",
+    name: "lastWithdrawalDate",
+    required: true,
+  },
+  {
+    id: "eventstartDate",
+    label: "Event Start Date",
+    type: "date",
+    name: "eventstartDate",
+    required: true,
+  },
+  {
+    id: "eventenddate",
+    label: "Event End Date",
+    type: "date",
+    name: "eventenddate",
+    required: true,
+  },
+  {
+    id: "startTime",
+    label: "Start Time",
+    type: "time",
+    name: "startTime",
+    required: true,
+  },
   // Add more fields as needed
 ];
 
-export default function App() {
-  return <EventDetailsForm fields={fields} />;
-}
+export default EventDetailsForm;

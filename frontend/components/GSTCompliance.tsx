@@ -7,21 +7,41 @@ import { Button } from "./ui/button";
 import { title } from "process";
 import { toast } from "@/hooks/use-toast";
 
+interface GSTComplianceProps {
+  handleNext: () => void;
+  EventData: any;
+  setEventData: React.Dispatch<React.SetStateAction<any>>;
+  FeatureData: any;
+}
 
-const GSTCompliance = () => {
+const GSTCompliance = ({
+  handleNext,
+  EventData,
+  setEventData,
+  FeatureData,
+}: GSTComplianceProps) => {
   const [isRegistered, setIsRegistered] = useState(false);
   const [gstNumber, setGstNumber] = useState("");
   const [gstRate, setGstRate] = useState("");
   const [isInclusive, setIsInclusive] = useState(false);
-
+  const handleClick = () => {
+    setEventData((prevData: any) => ({
+      ...prevData,
+      GstCompliance: !isRegistered || false,
+      countdown: FeatureData.countdown || false,
+      enableFixtures: FeatureData.enableFixtures || false,
+    }));
+    localStorage.setItem("EventData", JSON.stringify(EventData)); 
+    handleNext();
+  };
   return (
-    <form className="bg-white shadow-2xl p-5 rounded-lg">
+    <div className="bg-white shadow-2xl p-5 rounded-lg">
       <div className="flex flex-wrap w-full">
         <div className="w-full m-2 flex flex-col">
           <label htmlFor="gstRegistered">
             Are you a registered GST person?
           </label>
-          <RadioGroup defaultValue="option-one">
+          <RadioGroup defaultValue="default">
             <div className="flex items-center space-x-2">
               <RadioGroupItem
                 value="Yes"
@@ -32,7 +52,7 @@ const GSTCompliance = () => {
             </div>
             <div className="flex items-center space-x-2">
               <RadioGroupItem
-                value="No"
+                value="default"
                 id="no"
                 onClick={() => setIsRegistered(false)}
               />
@@ -44,18 +64,24 @@ const GSTCompliance = () => {
           <>
             <div className="w-full m-2 flex flex-col">
               <label htmlFor="gstNumber">GST Number</label>
-              <div>
+              <div className="flex gap-5 items-center">
                 <input
                   id="gstNumber"
                   type="text"
                   value={gstNumber}
                   onChange={(e) => setGstNumber(e.target.value)}
-                  placeholder="Enter GST Number..."
-                  className="h-12 p-2 bg-white border rounded-md text-sm shadow-2xl text-gray-800 focus:border-gray-800 focus:outline-none focus:shadow-lg"
+                  placeholder="Enter GST Number"
+                  className="h-12 p-2 bg-white w-[85%] border rounded-md text-sm shadow-2xl text-gray-800 focus:border-gray-800 focus:outline-none focus:shadow-lg"
                 />
-                <Button onClick={()=> toast({
-                  title:"Adhar Verified"
-                })}>Verify Adhar</Button>
+                <Button
+                  onClick={() =>
+                    toast({
+                      title: "Adhar Verified",
+                    })
+                  }
+                >
+                  Verify Adhar
+                </Button>
               </div>
             </div>
             <div className="w-full m-2 flex flex-col">
@@ -75,26 +101,24 @@ const GSTCompliance = () => {
             </div>
             <div className="w-full m-2 flex flex-col">
               <label>Pricing Type</label>
-              <div className="flex space-x-4">
-                <button
-                  type="button"
-                  onClick={() => setIsInclusive(false)}
-                  className={`p-2 ${
-                    !isInclusive ? "bg-gray-800 text-white" : "bg-gray-200"
-                  }`}
-                >
-                  Exclusive
-                </button>
-                <button
-                  type="button"
-                  onClick={() => setIsInclusive(true)}
-                  className={`p-2 ${
-                    isInclusive ? "bg-gray-800 text-white" : "bg-gray-200"
-                  }`}
-                >
-                  Inclusive
-                </button>
-              </div>
+              <RadioGroup defaultValue="exclusive">
+                <div className="flex items-center space-x-2">
+                  <RadioGroupItem
+                    value="default"
+                    id="inclusive"
+                    onClick={() => setIsRegistered(true)}
+                  />
+                  <Label htmlFor="inclusive">Inclusive</Label>
+                </div>
+                <div className="flex items-center space-x-2">
+                  <RadioGroupItem
+                    value="exclusive"
+                    id="exclusive"
+                    onClick={() => setIsRegistered(false)}
+                  />
+                  <Label htmlFor="exclusive">Exclusive</Label>
+                </div>
+              </RadioGroup>
             </div>
             <div className="w-full ">
               <div className="mt-4 text-red-600">
@@ -105,14 +129,14 @@ const GSTCompliance = () => {
           </>
         )}
 
-        <button
-          type="submit"
-          className="w-full bg-gray-800 text-white p-2 mx-2 rounded-md"
+        <Button
+          className="flex justify-center items-center gap-3 mt-4 w-full"
+          onClick={handleClick}
         >
-          Submit
-        </button>
+          Next
+        </Button>
       </div>
-    </form>
+    </div>
   );
 };
 

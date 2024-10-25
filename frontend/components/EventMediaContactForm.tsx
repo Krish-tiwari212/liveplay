@@ -1,8 +1,27 @@
 import { Loader } from "lucide-react";
 import Image from "next/image";
 import { Input } from "./ui/input";
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Label } from "@radix-ui/react-dropdown-menu";
+import { toast } from "@/hooks/use-toast";
+
+interface FormField {
+  id: string;
+  label: string;
+  type: string;
+  name: string;
+  placeholder?: string;
+  required?: boolean;
+}
+
+interface EventMediaProps {
+  fields?: FormField[];
+  formData: any; 
+  setFormData: React.Dispatch<React.SetStateAction<any>>;
+  setFormType: React.Dispatch<React.SetStateAction<any>>;
+  setEventData: React.Dispatch<React.SetStateAction<any>>;
+  handleNext: () => void;
+}
 
 const additionalFields = [
   {
@@ -29,27 +48,79 @@ const additionalFields = [
   },
 ];
 
-const EventMediaContactForm: React.FC = () => {
+const EventMediaContactForm: React.FC<EventMediaProps> = ({
+  formData,
+  setFormData,
+  handleNext,
+  setEventData,
+}) => {
   const [isImageLoading, setIsImageLoading] = useState(false);
-  const [imagePreviews, setImagePreviews] = useState<string[]>([]); 
-  const imageRefs = useRef<(HTMLInputElement | null)[]>([]); 
+  const [imagePreviews, setImagePreviews] = useState<string[]>([]);
+  const imageRefs = useRef<(HTMLInputElement | null)[]>([]);
 
-  const handleFileChange = (index: number) => (event: React.ChangeEvent<HTMLInputElement>) => {
-    const file = event.target.files?.[0];
-    if (file) {
-      const reader = new FileReader();
-      reader.onloadend = () => {
-        setImagePreviews((prev) => {
-          const newPreviews = [...prev];
-          newPreviews[index] = reader.result as string;
-          return newPreviews;
-        });
-      };
-      reader.readAsDataURL(file);
-      setIsImageLoading(false); 
-    }
+  const handleFileChange =
+    (index: number) => (event: React.ChangeEvent<HTMLInputElement>) => {
+      const file = event.target.files?.[0];
+      if (file) {
+        const reader = new FileReader();
+        reader.onloadend = () => {
+          setImagePreviews((prev) => {
+            const newPreviews = [...prev];
+            newPreviews[index] = reader.result as string;
+            const fieldName = index === 0 ? "mobileBanner" : "desktopBanner";
+            setFormData((prevData: any) => ({
+              ...prevData,
+              [fieldName]: file,
+            }));
+            return newPreviews;
+          });
+        };
+        reader.readAsDataURL(file);
+        setIsImageLoading(false);
+      }
+    };
+  const handleClick = (event: React.MouseEvent<HTMLButtonElement>) => {
+    event.preventDefault();
+    // const requiredFields = [
+    //   "eventAddress",
+    //   "desktopBanner",
+    //   "eventDescription",
+    //   "eventName",
+    //   "eventPincode",
+    //   "eventStreet",
+    //   "eventUSP",
+    //   "eventenddate",
+    //   "eventstartDate",
+    //   "lastRegistrationDate",
+    //   "lastWithdrawalDate",
+    //   "mobileBanner",
+    //   "organiserName",
+    //   "organiserNumber",
+    //   "organiseremailaddress",
+    //   "playingRules",
+    //   "rewardsAndParticipation",
+    //   "startTime",
+    //   "venueName",
+    // ];
+
+    // const isAnyFieldEmpty = requiredFields.some(
+    //   (field) => !formData[field] || formData[field] === ""
+    // );
+
+    // if (isAnyFieldEmpty) {
+    //   toast({
+    //     title: "Please fill out the necessary fields",
+    //   });
+    //   console.log("please fill filed");
+    // } else {
+      setEventData((prevEventData: any) => ({
+        ...prevEventData,
+        ...formData,
+        }));
+      handleNext();
+    // }
+    
   };
-
   return (
     <form className="bg-white p-5 rounded-lg">
       <div className="flex flex-wrap ">
@@ -68,7 +139,7 @@ const EventMediaContactForm: React.FC = () => {
                 ref={(el) => {
                   imageRefs.current[index] = el;
                 }}
-                onChange={handleFileChange(index)} 
+                onChange={handleFileChange(index)}
               />
               {!isImageLoading ? (
                 <Image
@@ -95,16 +166,21 @@ const EventMediaContactForm: React.FC = () => {
             </div>
             {imagePreviews[index] && (
               <div className="mt-2 items-center mx-auto">
-                <Image src={imagePreviews[index]} alt="Preview" width={300} height={300} />
+                <Image
+                  src={imagePreviews[index]}
+                  alt="Preview"
+                  width={300}
+                  height={300}
+                />
               </div>
             )}
           </div>
         ))}
         <button
-          type="submit"
           className="w-full bg-gray-700 mt-4  text-white p-2  rounded-md"
+          onClick={(event) => handleClick(event)}
         >
-          Submit
+          Next
         </button>
       </div>
     </form>

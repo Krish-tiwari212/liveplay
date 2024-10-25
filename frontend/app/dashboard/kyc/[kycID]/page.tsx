@@ -201,7 +201,15 @@ const SecondPage = () => (
 
 const ThirdPage = () => (
   <form className="mx-auto w-[60%]">
-    <Kycforms fields={thirdfields} />
+    <Kycforms
+      fields={thirdfields}
+      buttonLabel="Unlock Event Earnings"
+      onButtonClick={() =>
+        toast({
+          title: "Event earnings unlocked succesfully Succesfully!",
+        })
+      }
+    />
   </form>
 );
 

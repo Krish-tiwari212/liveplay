@@ -58,7 +58,7 @@ const ProfileForm = () => {
     setLoading(true); // Start the loader
 
     // Simulate a delay for 2 seconds (e.g., API call)
-    await new Promise((resolve) => setTimeout(resolve, 2000));
+    await new Promise((resolve) => setTimeout(resolve, 500));
 
     // Store username and password in localStorage
     localStorage.setItem("username", data.username);

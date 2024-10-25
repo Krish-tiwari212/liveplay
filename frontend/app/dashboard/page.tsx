@@ -16,12 +16,15 @@ import { IoTicketOutline } from "react-icons/io5";
 import EventCard from "@/components/EventCard";
 import data from "@/data";
 import { Button } from "@/components/ui/button";
+import { useRouter } from "next/navigation";
+import { MdOutlineSecurity } from "react-icons/md";
 const { events } = data;
 
 
 
 export default function Home() {
   const { setTheme } = useAppContext();
+  const router=useRouter()
   useEffect(() => {
     const matchMedia = window.matchMedia("(prefers-color-scheme: dark)");
     const handleThemeChange = (e: MediaQueryListEvent) => {
@@ -35,10 +38,25 @@ export default function Home() {
   }, []);
   return (
     <div className="flex flex-col m-3">
+      <div>
+        <Button
+          onClick={() => router.push("/dashboard/kyc/1234")}
+          className="text-md shadow-md shadow-gray-500 w-auto px-20"
+        >
+          <MdOutlineSecurity className="mr-2" />
+          Unlock Event Earnings (Kyc)
+        </Button>
+      </div>
       <section className="mt-4 bg-gray-800 h-[9rem] shadow-xl rounded-lg p-4 relative mb-4">
         {/* <h1 className="hidden absolute md:block font-bold text-[4rem] lg:text-[5rem] right-2 -bottom-5 text-gray-500">
           liveplay.in
         </h1> */}
+        <Button
+          onClick={() => router.push("/dashboard/create_event")}
+          className="absolute -right-2 -top-3 text-2xl shadow-md shadow-gray-500 "
+        >
+          Create Event +
+        </Button>
         <div className="hidden md:flex gap-4 xl:gap-6 flex-wrap absolute -bottom-10">
           <Card className=" w-auto shadow-xl h-auto">
             <CardContent className="flex justify-between  items-center w-full h-full gap-2 mt-2">
