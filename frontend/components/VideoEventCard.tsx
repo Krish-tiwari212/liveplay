@@ -137,6 +137,7 @@ const VideoEventCard = ({
                   <p className="text-sm text-gray-600">
                     <HiOutlineCalendar className="inline mr-2" />
                     {formattedDate} | {formattedTime}
+                    {formattedDate} | {formattedTime}
                   </p>
                   <p className="flex items-center text-sm text-gray-600">
                     <HiOutlineMapPin className="mr-2" />
