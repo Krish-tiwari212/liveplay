@@ -1,16 +1,14 @@
-import React, { useRef } from "react";
+import React, { useRef, useEffect, useState } from "react";
 import Slider from "react-slick";
 import { FaChevronLeft, FaChevronRight } from "react-icons/fa";
-import data from "../data"; 
-const { events } = data;
-
 import EventCard from "./EventCard";
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
 
-
 const CardCarousel = () => {
   const scrollRef = useRef<HTMLDivElement>(null);
+  const [events, setEvents] = useState([]);
+
   const NextArrow = (props: any) => {
     const { className, onClick } = props;
     return (
@@ -66,6 +64,31 @@ const CardCarousel = () => {
     ],
   };
 
+  useEffect(() => {
+    const fetchEvents = async () => {
+      try {
+        const response = await fetch('/api/event/all_events');
+        const data = await response.json();
+        const formattedEvents = data.events.map((event: any) => ({
+          image: event.desktop_cover_image_url,
+          date: event.start_date,
+          name: event.event_name,
+          eventname: event.event_name,
+          location: `${event.venue_name}, ${event.city}`,
+          time: event.start_time,
+          noOfEntries: 100, 
+          sport: event.venue_name, 
+          price: 500, 
+        }));
+        setEvents(formattedEvents);
+      } catch (error) {
+        console.error('Error fetching events:', error);
+      }
+    };
+
+    fetchEvents();
+  }, []);
+
   return (
     <div className="my-10 ">
       <div className="text-center mb-4">
@@ -79,10 +102,10 @@ const CardCarousel = () => {
                 image={e.image}
                 date={e.date}
                 name={e.name}
-                eventname={e.eventName}
+                eventname={e.eventname}
                 location={e.location}
                 time={e.time}
-                noOfEntries={e.noEntries}
+                noOfEntries={e.noOfEntries}
                 sport={e.sport}
                 price={e.price}
               />
@@ -95,4 +118,3 @@ const CardCarousel = () => {
 };
 
 export default CardCarousel;
-

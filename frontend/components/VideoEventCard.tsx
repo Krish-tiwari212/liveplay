@@ -1,6 +1,6 @@
 "use client";
 import { cn } from "@/lib/utils";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { HiOutlineMapPin, HiOutlineCalendar, HiOutlineClock, HiOutlineCurrencyDollar } from "react-icons/hi2";
 import { MdOutlineSportsScore } from "react-icons/md";
 import { IoMdShareAlt } from "react-icons/io";
@@ -40,6 +40,25 @@ const VideoEventCard = ({
 }: EventCardProps) => {
   const [isHovered, setIsHovered] = useState(false);
   const [openDialog, setOpenDialog] = useState(false);
+  const [formattedDate, setFormattedDate] = useState("");
+  const [formattedTime, setFormattedTime] = useState("");
+
+  useEffect(() => {
+    const eventDate = new Date(date);
+    const eventTime = new Date(`1970-01-01T${time}Z`);
+  
+    setFormattedDate(eventDate.toLocaleDateString('en-US', {
+      year: 'numeric',
+      month: 'long',
+      day: 'numeric',
+    }));
+  
+    setFormattedTime(eventTime.toLocaleTimeString('en-US', {
+      hour: '2-digit',
+      minute: '2-digit',
+      hour12: true,
+    }));
+  }, [date, time]);
 
   return (
     <>
@@ -65,7 +84,7 @@ const VideoEventCard = ({
           <h1 className="font-bold text-xl md:text-2xl">{eventname}</h1>
           <p className="font-normal text-base my-2">
             <HiOutlineCalendar className="inline mr-1" />
-            {date} <HiOutlineClock className="inline mx-1" /> {time}
+            {formattedDate} <HiOutlineClock className="inline mx-1" /> {formattedTime}
           </p>
           <p className="font-normal text-base my-2">
             {name} | {sport} | {noOfEntries} entries
@@ -103,7 +122,7 @@ const VideoEventCard = ({
                   <h2 className="font-bold text-lg">Organised By: {name}</h2>
                   <p className="text-sm text-gray-600">
                     <HiOutlineCalendar className="inline mr-2" />
-                    {date} | {time}
+                    {formattedDate} | {formattedTime}
                   </p>
                   <p className="flex items-center text-sm text-gray-600">
                     <HiOutlineMapPin className="mr-2" />

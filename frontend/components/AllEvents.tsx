@@ -131,7 +131,7 @@ const AllEvents = () => {
             <div className="flex-shrink-0 w-full px-5 md:px-8 py-5" key={e.id}>
               <VideoEventCard
                 image={e.desktop_cover_image_url}
-                gifUrl={e.mobile_cover_image_url}
+                gifUrl={"https://media.giphy.com/media/l2JhKrvxWZprxpf8I/giphy.gif?cid=ecf05e47kl3t3hnjs3leywfiozx8rjvug69rhgdw2ysymdo6&ep=v1_gifs_related&rid=giphy.gif&ct=g"}
                 name={e.event_name}
                 eventname={e.event_name}
                 date={e.start_date}
