@@ -56,7 +56,7 @@ const CategoryPreview = ({
     } else {
       setEventData((prevEventData: any) => ({
         ...prevEventData,
-        selectedCategories,
+        categories,
       }));
       handleNext();
     }
