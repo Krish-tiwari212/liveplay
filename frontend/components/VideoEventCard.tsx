@@ -1,7 +1,12 @@
 "use client";
 import { cn } from "@/lib/utils";
-import { useState } from "react";
-import { HiOutlineMapPin, HiOutlineCalendar, HiOutlineClock, HiOutlineCurrencyDollar } from "react-icons/hi2";
+import { useState, useEffect } from "react";
+import {
+  HiOutlineMapPin,
+  HiOutlineCalendar,
+  HiOutlineClock,
+  HiOutlineCurrencyDollar,
+} from "react-icons/hi2";
 import { MdOutlineSportsScore } from "react-icons/md";
 import { IoMdShareAlt } from "react-icons/io";
 import Image from "next/image";
@@ -40,6 +45,29 @@ const VideoEventCard = ({
 }: EventCardProps) => {
   const [isHovered, setIsHovered] = useState(false);
   const [openDialog, setOpenDialog] = useState(false);
+  const [formattedDate, setFormattedDate] = useState("");
+  const [formattedTime, setFormattedTime] = useState("");
+
+  useEffect(() => {
+    const eventDate = new Date(date);
+    const eventTime = new Date(`1970-01-01T${time}Z`);
+
+    setFormattedDate(
+      eventDate.toLocaleDateString("en-US", {
+        year: "numeric",
+        month: "long",
+        day: "numeric",
+      })
+    );
+
+    setFormattedTime(
+      eventTime.toLocaleTimeString("en-US", {
+        hour: "2-digit",
+        minute: "2-digit",
+        hour12: true,
+      })
+    );
+  }, [date, time]);
 
   return (
     <>
@@ -65,7 +93,8 @@ const VideoEventCard = ({
           <h1 className="font-bold text-xl md:text-2xl">{eventname}</h1>
           <p className="font-normal text-base my-2">
             <HiOutlineCalendar className="inline mr-1" />
-            {date} <HiOutlineClock className="inline mx-1" /> {time}
+            {formattedDate} <HiOutlineClock className="inline mx-1" />{" "}
+            {formattedTime}
           </p>
           <p className="font-normal text-base my-2">
             {name} | {sport} | {noOfEntries} entries
@@ -77,7 +106,9 @@ const VideoEventCard = ({
           <p className="font-bold text-lg flex items-center my-2">
             <HiOutlineCurrencyDollar className="mr-1" />${price.toFixed(2)}
           </p>
-          <Button className="mt-2 w-[92%] bg-[#1f2937] absolute bottom-8 hover:brightness-150">Register</Button>
+          <Button className="mt-2 w-[92%] bg-[#1f2937] absolute bottom-8 hover:brightness-150">
+            Register
+          </Button>
         </div>
       </div>
 
@@ -85,7 +116,9 @@ const VideoEventCard = ({
         <Dialog open={openDialog} onOpenChange={setOpenDialog}>
           <DialogContent className="bg-white rounded-lg shadow-lg transition-transform transform w-[90%] md:w-[55%] p-6 md:p-10">
             <DialogHeader>
-              <DialogTitle className="text-2xl font-bold">{eventname}</DialogTitle>
+              <DialogTitle className="text-2xl font-bold">
+                {eventname}
+              </DialogTitle>
             </DialogHeader>
             <div className="flex flex-col md:flex-row gap-6">
               <div className="flex-[3]">
@@ -103,7 +136,7 @@ const VideoEventCard = ({
                   <h2 className="font-bold text-lg">Organised By: {name}</h2>
                   <p className="text-sm text-gray-600">
                     <HiOutlineCalendar className="inline mr-2" />
-                    {date} | {time}
+                    {formattedDate} | {formattedTime}
                   </p>
                   <p className="flex items-center text-sm text-gray-600">
                     <HiOutlineMapPin className="mr-2" />
@@ -118,7 +151,7 @@ const VideoEventCard = ({
                       <HiOutlineCurrencyDollar className="mr-2" size={20} />
                       {price} onwards
                     </p>
-                    <Button className="text-sm bg-[#17202A] hover:shadow-md" size="xs">
+                    <Button className="text-sm bg-gray-800 hover:shadow-md">
                       Register
                     </Button>
                   </div>
@@ -126,13 +159,17 @@ const VideoEventCard = ({
                 <div className="border rounded-lg shadow-md p-4">
                   <h1 className="font-bold text-lg">Event Guide</h1>
                   <hr className="my-2" />
-                  <p className="text-sm text-gray-600">No of Entries: {noOfEntries}</p>
+                  <p className="text-sm text-gray-600">
+                    No of Entries: {noOfEntries}
+                  </p>
                   <p className="text-sm text-gray-600">Tshirt: provided</p>
                 </div>
                 <div className="border rounded-lg shadow-md p-4 flex justify-between items-center">
                   <div>
                     <h1 className="font-bold text-lg">Invite Your Friends</h1>
-                    <p className="text-sm text-gray-600">and enjoy shared experience</p>
+                    <p className="text-sm text-gray-600">
+                      and enjoy shared experience
+                    </p>
                   </div>
                   <IoMdShareAlt className="mr-2" size={20} />
                 </div>

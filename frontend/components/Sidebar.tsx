@@ -72,7 +72,7 @@ const Sidebar = ({ setnavexpanded }: { setnavexpanded :Dispatch<SetStateAction<b
           className="text-white hover:text-blue-400 transition-colors duration-200"
         >
           <Image
-            src="/images/Asset 2.png"
+            src="/icons/Asset 2.png"
             alt="public/images/Asset 2.png"
             width={40}
             height={40}

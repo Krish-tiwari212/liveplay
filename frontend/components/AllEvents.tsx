@@ -42,14 +42,14 @@ const AllEvents = () => {
   useEffect(() => {
     const fetchEvents = async () => {
       try {
-        const response = await fetch('/api/event/all_events');
+        const response = await fetch("/api/event/all_events");
         if (!response.ok) {
-          throw new Error('Network response was not ok');
+          throw new Error("Network response was not ok");
         }
         const data = await response.json();
         setEvents(data.events);
       } catch (error) {
-        console.error('Error fetching events:', error);
+        console.error("Error fetching events:", error);
       }
     };
 
@@ -63,7 +63,7 @@ const AllEvents = () => {
         className="absolute -right-4 top-1/2 -mt-6 z-50 cursor-pointer"
         onClick={onClick}
       >
-        <div className="bg-[#17202A] rounded-full p-3 transition-colors duration-200 shadow-xl hover:bg-gray-700">
+        <div className="bg-gray-800 rounded-full p-3 transition-colors duration-200 shadow-xl hover:bg-gray-700">
           <FaChevronRight className="text-white text-2xl" />
         </div>
       </div>
@@ -77,7 +77,7 @@ const AllEvents = () => {
         className="absolute -left-4 top-1/2 -mt-6 z-50 cursor-pointer"
         onClick={onClick}
       >
-        <div className="bg-[#17202A] rounded-full p-3 shadow-lg transition-colors duration-200 hover:bg-gray-700">
+        <div className="bg-gray-800 rounded-full p-3 shadow-lg transition-colors duration-200 hover:bg-gray-700">
           <FaChevronLeft className="text-white text-2xl" />
         </div>
       </div>
@@ -121,7 +121,7 @@ const AllEvents = () => {
   return (
     <div className="my-10">
       <div className="text-center mb-4">
-        <h1 className="text-3xl md:text-5xl font-bold text-[#17202A]">
+        <h1 className="text-3xl md:text-5xl font-bold text-gray-800">
           More Events
         </h1>
       </div>
@@ -131,7 +131,9 @@ const AllEvents = () => {
             <div className="flex-shrink-0 w-full px-5 md:px-8 py-5" key={e.id}>
               <VideoEventCard
                 image={e.desktop_cover_image_url}
-                gifUrl={e.mobile_cover_image_url}
+                gifUrl={
+                  "https://media.giphy.com/media/l2JhKrvxWZprxpf8I/giphy.gif?cid=ecf05e47kl3t3hnjs3leywfiozx8rjvug69rhgdw2ysymdo6&ep=v1_gifs_related&rid=giphy.gif&ct=g"
+                }
                 name={e.event_name}
                 eventname={e.event_name}
                 date={e.start_date}

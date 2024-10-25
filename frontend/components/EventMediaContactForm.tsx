@@ -110,27 +110,27 @@ const EventMediaContactForm: React.FC<EventMediaProps> = ({
     event.preventDefault();
     
 
-    if (!venuedecidet) {
-      requiredFields.push("venueName");
-      requiredFields.push("city");
-    }
+    // if (!venuedecidet) {
+    //   requiredFields.push("venueName");
+    //   requiredFields.push("city");
+    // }
 
-    const isAnyFieldEmpty = requiredFields.some(
-      (field) => !formData[field] || formData[field] === ""
-    );
+    // const isAnyFieldEmpty = requiredFields.some(
+    //   (field) => !formData[field] || formData[field] === ""
+    // );
 
-    if (isAnyFieldEmpty) {
-      toast({
-        title: "Please fill out the necessary fields",
-      });
-      console.log("please fill filed");
-    } else {
+    // if (isAnyFieldEmpty) {
+    //   toast({
+    //     title: "Please fill out the necessary fields",
+    //   });
+    //   console.log("please fill filed");
+    // } else {
       setEventData((prevEventData: any) => ({
         ...prevEventData,
         ...formData,
       }));
       handleNext();
-    }
+    // }
   };
   return (
     <form className="bg-white p-5 rounded-lg">

@@ -5,7 +5,7 @@ import { MdDelete } from "react-icons/md";
 import { CiEdit } from "react-icons/ci";
 import { HiDocumentDuplicate } from "react-icons/hi";
 import { Button } from "@/components/ui/button";
-import { FaPlus } from "react-icons/fa";
+import { FaBox, FaClipboardList, FaDollarSign, FaInfoCircle, FaPlus, FaTag, FaTicketAlt } from "react-icons/fa";
 import Image from "next/image";
 import AddCategory from "./AddCategory";
 import { Dialog, DialogContent, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
@@ -87,9 +87,9 @@ const CategoryPreview = ({
   };
 
   const editCategory = (updatedCategory: Category) => {
-    console.log(updatedCategory)
-    setCategories((prevCategories) => 
-      prevCategories.map((category) => 
+  console.log("Updating category:", updatedCategory);
+    setCategories((prevCategories) =>
+      prevCategories.map((category) =>
         category.id === updatedCategory.id ? updatedCategory : category
       )
     );
@@ -97,12 +97,18 @@ const CategoryPreview = ({
   };
 
 
-  const deleteCategory = (category: Category) => {
+  useEffect(() => {
+    // This will ensure the component re-renders when categories change
+    console.log("Categories updated:", categories);
+  }, [categories]);
+
+
+  const deleteCategory = (categoryToDelete: Category) => { // Change parameter name for clarity
     setCategories((prevCategories) => 
-      prevCategories.filter(category => category !== category)
+      prevCategories.filter(category => category.id !== categoryToDelete.id) // Filter by ID
     );
     setSelectedCategories((prevSelected) =>
-      prevSelected.filter((name) => name !== category)
+      prevSelected.filter((cat) => cat.id !== categoryToDelete.id) // Filter selected categories by ID
     );
   };
 
@@ -146,7 +152,7 @@ const CategoryPreview = ({
               key={index}
               className={`relative border shadow-lg rounded-lg p-4 mb-4 cursor-pointer ${
                 selectedCategories.includes(category)
-                  ? "bg-[#17202A] text-white"
+                  ? "bg-[#17202A] "
                   : "bg-white"
               }`}
               onClick={() => {
@@ -164,21 +170,44 @@ const CategoryPreview = ({
                 });
               }}
             >
-              <div className="flex justify-between items-start">
-                <div>
-                  <p className="font-semibold">{category.categoryName}</p>
-                  <p>Price: {category.price}</p>
+              <div className="flex justify-between items-start bg-gray-100 p-4 rounded-lg shadow-sm">
+                <div className="flex justify-between items-start bg-gradient-to-r from-gray-200 to-gray-300 rounded-lg shadow-lg p-4 w-full mr-4">
+                  <div className="flex flex-col">
+                    <h2 className="font-bold text-xl text-[#17202A] flex items-center">
+                      <FaTag className="mr-2 text-gray-800" />
+                      {category.categoryName}
+                    </h2>
+                    <p className="text-gray-600 font-medium mb-2">
+                      {category.ticketDescription}
+                    </p>
+                    <div className="border-t border-gray-300 my-2"></div>
+                    <p className="text-gray-700 flex items-center">
+                      <FaDollarSign className="mr-2 text-gray-800" />
+                      Price:
+                      <span className="text-[#17202A]">${category.price}</span>
+                    </p>
+                    <p className="text-gray-600 flex items-center">
+                      <FaBox className="mr-2 text-gray-800" />
+                      Total Quantity:
+                      <span className="text-[#17202A]">
+                        {category.totalQuantity}
+                      </span>
+                    </p>
+                    <p className="text-gray-600 flex items-center">
+                      <FaTicketAlt className="mr-2 text-gray-800" />
+                      Max Ticket Quantity:{" "}
+                      <span className="text-[#17202A]">
+                        {category.maxTicketQuantity}
+                      </span>
+                    </p>
+                  </div>
                 </div>
                 <div className="flex space-x-2">
                   <TooltipProvider>
                     <Tooltip>
                       <TooltipTrigger>
                         <CiEdit
-                          className={`hover:text-gray-500 ${
-                            selectedCategories.includes(category)
-                              ? "text-white "
-                              : "text-[#17202A]"
-                          }`}
+                          className={`hover:text-gray-500 `}
                           onClick={(e) => {
                             e.stopPropagation();
                             openEditDialog(category);
@@ -194,11 +223,7 @@ const CategoryPreview = ({
                     <Tooltip>
                       <TooltipTrigger>
                         <MdDelete
-                          className={`hover:text-gray-500 ${
-                            selectedCategories.includes(category)
-                              ? "text-white "
-                              : "text-[#17202A]"
-                          }`}
+                          className={`hover:text-gray-500 `}
                           onClick={(e) => {
                             e.stopPropagation();
                             deleteCategory(category);
@@ -214,11 +239,7 @@ const CategoryPreview = ({
                     <Tooltip>
                       <TooltipTrigger>
                         <HiDocumentDuplicate
-                          className={`hover:text-gray-500 ${
-                            selectedCategories.includes(category)
-                              ? "text-white "
-                              : "text-[#17202A]"
-                          }`}
+                          className={`hover:text-gray-500`}
                           onClick={(e) => {
                             e.stopPropagation();
                             duplicateCategory(category);
@@ -263,7 +284,7 @@ const CategoryPreview = ({
           </DialogDescription>
           <EditCategory
             setCategoryData={editCategory}
-            selectedCategory={currentCategory} 
+            selectedCategory={currentCategory}
           />
         </DialogContent>
       </Dialog>
