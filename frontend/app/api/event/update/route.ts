@@ -26,18 +26,12 @@ interface UpdateEventRequest {
 
 export async function PATCH(request: Request, { params }: { params: { event_id: string } }) {
   try {
-    const { data: user, error: authError } = await supabase.auth.getUser();
-    if (authError || !user) {
-      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
-    }
-
     const updates: UpdateEventRequest = await request.json();
 
     const { data: event, error: eventError } = await supabase
       .from('events')
       .update(updates)
       .eq('id', params.event_id)
-      .eq('organizer_id', user.id)  // Ensure the organizer owns the event
       .single();
 
     if (eventError) {

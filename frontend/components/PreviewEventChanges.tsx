@@ -1,8 +1,7 @@
-"use client"
+"use client";
 
 import React, { useEffect, useRef, useState } from "react";
 import { Button } from "@/components/ui/button";
-import { Checkbox } from "@radix-ui/react-checkbox";
 import { Loader } from "lucide-react";
 import { Input } from "./ui/input";
 import Image from "next/image";
@@ -36,7 +35,7 @@ interface Category {
 interface PreviewEventChangesProps {
   handleNext: () => void;
   EventData: any;
-  setEventData:React.Dispatch<React.SetStateAction<any>>;
+  setEventData: React.Dispatch<React.SetStateAction<any>>;
 }
 
 const PreviewEventChanges: React.FC<PreviewEventChangesProps> = ({
@@ -70,155 +69,25 @@ const PreviewEventChanges: React.FC<PreviewEventChangesProps> = ({
   const [initialCategories, setinitialCategories] = useState<Category[]>([]); 
 
   const fields = [
-    {
-      id: "eventName",
-      label: "Event Name",
-      type: "text",
-      name: "eventName",
-      required: true,
-    },
-    {
-      id: "LastRegistrationDate",
-      label: "Last Registration Date",
-      type: "date",
-      name: "lastRegistrationDate",
-      required: true,
-    },
-    {
-      id: "LastWithdrawalDate",
-      label: "Last Withdrawal Date",
-      type: "date",
-      name: "lastWithdrawalDate",
-      required: true,
-    },
-    {
-      id: "eventstartDate",
-      label: "Event Start Date",
-      type: "date",
-      name: "eventstartDate",
-      required: true,
-    },
-    {
-      id: "eventenddate",
-      label: "Event End Date",
-      type: "date",
-      name: "eventenddate",
-      required: true,
-    },
-    {
-      id: "startTime",
-      label: "Start Time",
-      type: "time",
-      name: "startTime",
-      required: true,
-    },
-    {
-      id: "organizerName",
-      label: "Organizer Name",
-      type: "text",
-      name: "organiserName",
-      required: true,
-    },
-    {
-      id: "organizerNumber",
-      label: "Organizer Number",
-      type: "text",
-      name: "organiserNumber",
-      required: true,
-    },
-    {
-      id: "organizeremail",
-      label: "Organizer Email",
-      type: "text",
-      name: "organiseremailaddress",
-      required: true,
-    },
-    {
-      id: "EventDescription",
-      label: "Event Description",
-      name: "eventDescription",
-      type: "textarea",
-      required: true,
-    },
-    {
-      id: "eventusp",
-      label: "Event USP",
-      name: "eventUSP",
-      type: "textarea",
-      required: true,
-    },
-    {
-      id: "rewardsandprices",
-      label: "Rewards And Prices",
-      name: "rewardsAndParticipation",
-      type: "textarea",
-      required: true,
-    },
-    {
-      id: "playingrules",
-      label: "Playing Rules",
-      name: "playingRules",
-      required: true,
-      type: "textarea",
-    },
-    {
-      id: "venueName",
-      label: "Venue Name",
-      type: "text",
-      name: "venueName",
-      required: true,
-    },
-    {
-      id: "eventStreet",
-      label: "Street",
-      type: "text",
-      name: "eventStreet",
-      required: true,
-    },
-    {
-      id: "eventAddress",
-      label: "Address",
-      type: "text",
-      name: "eventAddress",
-      required: true,
-    },
-    {
-      id: "eventPincode",
-      label: "Pincode",
-      type: "text",
-      name: "eventPincode",
-      required: true,
-    },
-    {
-      id: "category",
-      label: "Event category",
-      type: "category",
-      name: "category",
-      required: true,
-    },
-    {
-      id: "MobileBanner",
-      label: "Add Mobile Banner",
-      type: "file",
-      name: "mobileBanner",
-      required: true,
-      filecontnet: {
-        size: "SVG,JPG,PNG or GIF max(480x480px)",
-        label: "Add Mobile Banner",
-      },
-    },
-    {
-      id: "DesktopBanner",
-      label: "Add Desktop Banner",
-      type: "file",
-      name: "desktopBanner",
-      required: true,
-      filecontnet: {
-        size: "SVG,JPG,PNG or GIF max(1080x1080px)",
-        label: "Add Desktop Banner",
-      },
-    },
+    { id: "eventName", label: "Event Name", type: "text", name: "eventName", required: true },
+    { id: "LastRegistrationDate", label: "Last Registration Date", type: "date", name: "lastRegistrationDate", required: true },
+    { id: "LastWithdrawalDate", label: "Last Withdrawal Date", type: "date", name: "lastWithdrawalDate", required: true },
+    { id: "eventstartDate", label: "Event Start Date", type: "date", name: "eventstartDate", required: true },
+    { id: "eventenddate", label: "Event End Date", type: "date", name: "eventenddate", required: true },
+    { id: "startTime", label: "Start Time", type: "time", name: "startTime", required: true },
+    { id: "organizerName", label: "Organizer Name", type: "text", name: "organiserName", required: true },
+    { id: "organizerNumber", label: "Organizer Number", type: "text", name: "organiserNumber", required: true },
+    { id: "organizeremail", label: "Organizer Email", type: "text", name: "organiseremailaddress", required: true },
+    { id: "venueName", label: "Venue Name", type: "text", name: "venueName", required: true },
+    { id: "eventStreet", label: "Street Address", type: "text", name: "eventStreet", required: true },
+    { id: "eventAddress", label: "Additional Details", type: "text", name: "eventAddress" },
+    { id: "eventCity", label: "City", type: "text", name: "eventCity", required: true },
+    { id: "eventPincode", label: "Pincode", type: "text", name: "eventPincode", required: true },
+    { id: "EventDescription", label: "Event Description", name: "eventDescription", type: "textarea", required: true },
+    { id: "eventusp", label: "Event USP", name: "eventUSP", type: "textarea", required: true },
+    { id: "playingRules", label: "Playing Rules", name: "playingRules", type: "textarea", required: true },
   ];
+
   const radioFields = [
     {
       id: "gstcompliance",
@@ -226,27 +95,16 @@ const PreviewEventChanges: React.FC<PreviewEventChangesProps> = ({
       type: "radio",
       name: "GstCompliance",
       required: true,
-      radio: {
-        fieldone: "Yes",
-        fieldtwo: "no",
-      },
+      options: [
+        { label: "Yes", value: "yes" },
+        { label: "No", value: "no" },
+      ],
     },
   ];
+
   const switchFields = [
-    {
-      id: "drafixtures",
-      label: "Enable Fixtures",
-      type: "radio",
-      name: "enableFixtures",
-      required: true,
-    },
-    {
-      id: "timer",
-      label: "Enable Countdown",
-      type: "switch",
-      name: "countdown",
-      required: true,
-    },
+    { id: "enableFixtures", label: "Enable Fixtures", name: "enableFixtures" },
+    { id: "countdown", label: "Enable Countdown", name: "countdown" },
   ];
   const booleanFields = ["gstcompliance", "drafixtures", "tshirts", "timer"];
   const imageRefs = useRef<(HTMLInputElement | null)[]>([]);
@@ -259,9 +117,8 @@ const PreviewEventChanges: React.FC<PreviewEventChangesProps> = ({
   return (
     <div className="space-y-6 bg-white m-3 p-5 rounded-lg shadow-2xl">
       <h2 className="text-2xl font-bold">Preview & Edit Event Details</h2>
-
       <div className="flex flex-wrap w-full gap-4">
-        {fields.map((field, index) => (
+        {fields.map((field) => (
           <React.Fragment key={field.id}>
             {field.type !== "file" &&
               field.type !== "textarea" &&
@@ -281,9 +138,7 @@ const PreviewEventChanges: React.FC<PreviewEventChangesProps> = ({
               )}
             {field.type === "textarea" && (
               <div className="flex flex-col w-full">
-                <label className="text-sm font-medium capitalize">
-                  {field.label}
-                </label>
+                <label className="text-sm font-medium capitalize">{field.label}</label>
                 <textarea
                   id={field.name}
                   name={field.name}
@@ -397,42 +252,43 @@ const PreviewEventChanges: React.FC<PreviewEventChangesProps> = ({
             )}
           </React.Fragment>
         ))}
-        {radioFields.map((field) => (
-          <div className="w-full m-2 flex flex-col" key={field.id}>
-            <label htmlFor={field.name}>{field.label}</label>
-            <RadioGroup defaultValue="default">
-              <div className="flex items-center space-x-2">
-                <RadioGroupItem
-                  value="Yes"
-                  id="yes"
-                  onClick={() =>
-                    setEventData({ ...EventData, [field.name]: true })
-                  }
-                />
-                <Label htmlFor="yes">Yes</Label>
-              </div>
-              <div className="flex items-center space-x-2">
-                <RadioGroupItem
-                  value="default"
-                  id="no"
-                  onClick={() =>
-                    setEventData({ ...EventData, [field.name]: false })
-                  }
-                />
-                <Label htmlFor="no">No</Label>
-              </div>
+        {/* Radio Buttons for Options like GST Compliance */}
+        {radioFields.map((radioField) => (
+          <div key={radioField.id} className="flex flex-col w-full lg:w-[49%]">
+            <label className="text-sm font-medium capitalize">{radioField.label}</label>
+            <RadioGroup
+              onValueChange={(value) => handleRadioChange(radioField.name, value)}
+              value={EventData[radioField.name] || ""}
+            >
+              {radioField.options.map((option) => (
+                <div className="flex items-center space-x-2" key={option.value}>
+                  <RadioGroupItem
+                    value={option.value}
+                    id={`${radioField.id}-${option.value}`}
+                  />
+                  <label
+                    htmlFor={`${radioField.id}-${option.value}`}
+                    className="text-sm font-medium text-gray-800"
+                  >
+                    {option.label}
+                  </label>
+                </div>
+              ))}
             </RadioGroup>
           </div>
         ))}
-        {switchFields.map((field) => (
-          <div className="flex items-center space-x-2 relative" key={field.id}>
+
+        {/* Switch fields for Boolean Options like Enable Fixtures and Countdown */}
+        {switchFields.map((switchField) => (
+          <div key={switchField.id} className="flex items-center justify-between w-full lg:w-[49%]">
+            <Label htmlFor={switchField.id} className="text-sm font-medium capitalize">
+              {switchField.label}
+            </Label>
             <Switch
-              id={field.name}
-              onCheckedChange={(checked) =>
-                setEventData({ ...EventData, [field.name]: checked })
-              }
+              id={switchField.id}
+              checked={!!EventData[switchField.name]}
+              onCheckedChange={(checked) => handleSwitchChange(switchField.name, checked)}
             />
-            <Label htmlFor={field.name}>{field.label}</Label>
           </div>
         ))}
       </div>

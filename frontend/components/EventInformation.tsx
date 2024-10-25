@@ -56,6 +56,8 @@ const EventInformation: React.FC<EventInformation> = ({
             setFormData={setFormData}
             setFormType={setFormType}
             setEventData={setEventData}
+            setVenueDecided={setVenueDecided}
+            venuedecidet={venuedecidet}
           />
         );
       case "Insights":
@@ -75,6 +77,7 @@ const EventInformation: React.FC<EventInformation> = ({
             setFormType={setFormType}
             handleNext={handleNext}
             setEventData={setEventData}
+            venuedecidet={venuedecidet}
           />
         );
       default:
