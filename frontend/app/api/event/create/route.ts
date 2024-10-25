@@ -42,6 +42,7 @@ export async function POST(request: Request) {
   try {
     // Parse the incoming request and files
     const formData = await request.formData();
+    console.log('Form data:', formData);
 
     // Extract event details from formData
     const eventData: EventRequest = JSON.parse(formData.get('eventData') as string);
@@ -49,11 +50,6 @@ export async function POST(request: Request) {
     // Extract mobile and desktop banner files
     const mobileBanner = formData.get('mobileBanner') as File;
     const desktopBanner = formData.get('desktopBanner') as File;
-
-    // Log incoming data for debugging
-    console.log('Incoming event data:', eventData);
-    console.log('Mobile banner file:', mobileBanner);
-    console.log('Desktop banner file:', desktopBanner);
 
     // Required field check
     if (

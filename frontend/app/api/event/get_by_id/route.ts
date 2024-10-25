@@ -3,15 +3,9 @@ import { supabase } from '@/lib/supabaseClient';
 
 export async function GET(request: Request, { params }: { params: { event_id: string } }) {
   try {
-    const { data: user, error: authError } = await supabase.auth.getUser();
-    if (authError || !user) {
-      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
-    }
-
     const { data: event, error: eventError } = await supabase
       .from('events')
       .select('*')
-      .eq('organizer_id', user.id)
       .eq('id', params.event_id)
       .single();
 
