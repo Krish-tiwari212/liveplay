@@ -16,6 +16,7 @@ import { toast } from "@/hooks/use-toast";import {
   TooltipTrigger,
 } from "@/components/ui/tooltip";
 import EditCategory from "./EditCategory";
+import { DialogDescription } from "@radix-ui/react-dialog";
 
 
 interface Category {
@@ -30,18 +31,18 @@ interface Category {
 }
 
 interface CategoryPreviewProps {
-  handleNext: () => void;
+  handleNext?: () => void;
   EventData: any;
   setEventData: React.Dispatch<React.SetStateAction<any>>;
 }
 
 const CategoryPreview = ({
-  handleNext,
+  handleNext=()=>{},
   EventData,
   setEventData,
 }: CategoryPreviewProps) => {
   const [categories, setCategories] = useState<Category[]>([]);
-  const [selectedCategories, setSelectedCategories] = useState<string[]>([]);
+  const [selectedCategories, setSelectedCategories] = useState<Category[]>([]); // Change to store entire category objects
   const [tooltipVisible, setTooltipVisible] = useState<string | null>(null);
   const [isDialogOpen, setIsDialogOpen] = useState(false); 
   const [isEditDialogOpen, setIsEditDialogOpen] = useState(false); 
@@ -54,15 +55,22 @@ const CategoryPreview = ({
         title: "Please select at least one category.",
       });
     } else {
+      localStorage.setItem('categories', JSON.stringify(categories));
+      
       setEventData((prevEventData: any) => ({
         ...prevEventData,
-        categories,
+        selectedCategories, 
       }));
       handleNext();
     }
   };
 
   useEffect(() => {
+    // Fetch categories from local storage on component mount
+    const storedCategories = localStorage.getItem('categories');
+    if (storedCategories) {
+      setCategories(JSON.parse(storedCategories));
+    }
     console.log(EventData);
   }, [EventData]);
 
@@ -79,16 +87,22 @@ const CategoryPreview = ({
   };
 
   const editCategory = (updatedCategory: Category) => {
+    console.log(updatedCategory)
+    setCategories((prevCategories) => 
+      prevCategories.map((category) => 
+        category.id === updatedCategory.id ? updatedCategory : category
+      )
+    );
     setIsEditDialogOpen(false);
   };
 
 
-  const deleteCategory = (categoryName: string) => {
+  const deleteCategory = (category: Category) => {
     setCategories((prevCategories) => 
-      prevCategories.filter(category => category.categoryName !== categoryName)
+      prevCategories.filter(category => category !== category)
     );
-    setSelectedCategories((prevSelected) => 
-      prevSelected.filter(name => name !== categoryName)
+    setSelectedCategories((prevSelected) =>
+      prevSelected.filter((name) => name !== category)
     );
   };
 
@@ -98,20 +112,24 @@ const CategoryPreview = ({
     setNextId((prevId) => prevId + 1); 
   };
 
-  // useEffect(() => {
-  //   console.log(categories);
-  // }, [duplicateCategory, deleteCategory, editCategory, addCategory]);
+  const openEditDialog = (category: Category) => {
+    setCurrentCategory(category); 
+    setIsEditDialogOpen(true);
+  };
 
+  // useEffect(() => {
+  //   console.log(currentCategory);
+  // }, [openEditDialog]);
   return (
     <div className="flex flex-col m-3">
       <div className="flex justify-between">
         <h1 className="text-2xl font-bold mb-4">Manage Categories</h1>
         <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
           <DialogTrigger asChild>
-            <button className="flex items-center gap-3 bg-gray-800 py-2 px-4 text-white rounded-lg">
+            <Button className="flex items-center gap-3 py-2 px-4 rounded-lg">
               <span>Add Category</span>
               <FaPlus size={15} />
-            </button>
+            </Button>
           </DialogTrigger>
           <DialogContent>
             <DialogTitle>Add category</DialogTitle>
@@ -127,18 +145,21 @@ const CategoryPreview = ({
             <div
               key={index}
               className={`relative border shadow-lg rounded-lg p-4 mb-4 cursor-pointer ${
-                selectedCategories.includes(category.categoryName)
-                  ? "bg-gray-800 text-white"
+                selectedCategories.includes(category)
+                  ? "bg-[#17202A] text-white"
                   : "bg-white"
               }`}
               onClick={() => {
                 setSelectedCategories((prevSelected) => {
-                  if (prevSelected.includes(category.categoryName)) {
+                  const isSelected = prevSelected.some(
+                    (cat) => cat.categoryName === category.categoryName
+                  );
+                  if (isSelected) {
                     return prevSelected.filter(
-                      (categoryName) => categoryName !== category.categoryName
+                      (cat) => cat.categoryName !== category.categoryName
                     );
                   } else {
-                    return [...prevSelected, category.categoryName];
+                    return [...prevSelected, category];
                   }
                 });
               }}
@@ -149,56 +170,38 @@ const CategoryPreview = ({
                   <p>Price: {category.price}</p>
                 </div>
                 <div className="flex space-x-2">
-                  <Dialog
-                    open={isEditDialogOpen}
-                    onOpenChange={setIsEditDialogOpen}
-                  >
-                    <DialogTrigger asChild>
-                      <TooltipProvider>
-                        <Tooltip>
-                          <TooltipTrigger>
-                            <CiEdit
-                              className={`hover:text-gray-500 ${
-                                selectedCategories.includes(
-                                  category.categoryName
-                                )
-                                  ? "text-white "
-                                  : "text-gray-800"
-                              }`}
-                              onClick={(e) => {
-                                e.stopPropagation();
-                                setIsEditDialogOpen(true);
-                                setCurrentCategory(category);
-                                setSelectedCategories([category.categoryName]);
-                              }}
-                            />
-                          </TooltipTrigger>
-                          <TooltipContent>
-                            <p>Edit</p>
-                          </TooltipContent>
-                        </Tooltip>
-                      </TooltipProvider>
-                    </DialogTrigger>
-                    <DialogContent>
-                      <DialogTitle>Edit Category</DialogTitle>
-                      <EditCategory
-                        setCategoryData={editCategory}
-                        selectedCategory={currentCategory}
-                      />
-                    </DialogContent>
-                  </Dialog>
+                  <TooltipProvider>
+                    <Tooltip>
+                      <TooltipTrigger>
+                        <CiEdit
+                          className={`hover:text-gray-500 ${
+                            selectedCategories.includes(category)
+                              ? "text-white "
+                              : "text-[#17202A]"
+                          }`}
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            openEditDialog(category);
+                          }}
+                        />
+                      </TooltipTrigger>
+                      <TooltipContent>
+                        <p>Edit</p>
+                      </TooltipContent>
+                    </Tooltip>
+                  </TooltipProvider>
                   <TooltipProvider>
                     <Tooltip>
                       <TooltipTrigger>
                         <MdDelete
                           className={`hover:text-gray-500 ${
-                            selectedCategories.includes(category.categoryName)
+                            selectedCategories.includes(category)
                               ? "text-white "
-                              : "text-gray-800"
+                              : "text-[#17202A]"
                           }`}
                           onClick={(e) => {
                             e.stopPropagation();
-                            deleteCategory(category.categoryName);
+                            deleteCategory(category);
                           }}
                         />
                       </TooltipTrigger>
@@ -212,9 +215,9 @@ const CategoryPreview = ({
                       <TooltipTrigger>
                         <HiDocumentDuplicate
                           className={`hover:text-gray-500 ${
-                            selectedCategories.includes(category.categoryName)
+                            selectedCategories.includes(category)
                               ? "text-white "
-                              : "text-gray-800"
+                              : "text-[#17202A]"
                           }`}
                           onClick={(e) => {
                             e.stopPropagation();
@@ -242,7 +245,7 @@ const CategoryPreview = ({
               width={200}
               height={200}
             />
-            <h1 className="text-3xl text-gray-800 font-bold">
+            <h1 className="text-3xl text-[#17202A] font-bold">
               Add Category to Preview
             </h1>
           </div>
@@ -252,6 +255,18 @@ const CategoryPreview = ({
       <Button className="mt-4" onClick={handleClick}>
         Next
       </Button>
+      <Dialog open={isEditDialogOpen} onOpenChange={setIsEditDialogOpen}>
+        <DialogContent aria-describedby={undefined}>
+          <DialogTitle>Edit Category</DialogTitle>
+          <DialogDescription>
+            This is where you can edit your category details.
+          </DialogDescription>
+          <EditCategory
+            setCategoryData={editCategory}
+            selectedCategory={currentCategory} 
+          />
+        </DialogContent>
+      </Dialog>
     </div>
   );
 };

@@ -149,66 +149,78 @@ const Page = ({ params: kycID }: { params: { kycID: string } }) => {
         value={(currentPage / totalPages) * 100}
         className="w-[50%] mx-auto h-2 mb-4"
       />
-      {currentPage === 1 && <FirstPage />}
-      {currentPage === 2 && <SecondPage />}
-      {currentPage === 3 && <ThirdPage />}
-      <div className="flex justify-between mt-4">
-        <Button
-          onClick={handlePrev}
-          disabled={currentPage === 1}
-          className="absolute left-0 top-[50%]"
-        >
-          Previous
-        </Button>
-        <Button
-          onClick={handleNext}
-          disabled={currentPage === totalPages}
-          className="absolute right-0 top-[50%]"
-        >
-          Next
-        </Button>
-      </div>
+      {currentPage === 1 && (
+        <FirstPage 
+          handleNext={handleNext} 
+          handlePrev={handlePrev} 
+          prevDisabled={true} 
+        />
+      )}
+      {currentPage === 2 && (
+        <SecondPage 
+          handleNext={handleNext} 
+          handlePrev={handlePrev} 
+        />
+      )}
+      {currentPage === 3 && (
+        <ThirdPage 
+          handleNext={handleNext} 
+          handlePrev={handlePrev} 
+        />
+      )}
     </div>
   );
 };
 
+interface Pages {
+  handleNext: () => void;
+  handlePrev: () => void;
+  prevDisabled?:boolean
+  nextDisabled?:boolean
+}
 
-const FirstPage = () => (
+const FirstPage = ({
+  handleNext,
+  handlePrev,
+  prevDisabled,
+  nextDisabled,
+}: Pages) => (
   <form className="mx-auto w-[60%]">
     <Kycforms
       fields={fields}
-      buttonLabel="Verify Pan" 
-      onButtonClick={() => toast({
-        title:"Pan verified Succesfully!"
-      })} 
+      buttonLabel="Next"
+      onButtonClick={() => handleNext()}
+      handlePrev={handlePrev}
+      prevDisabled={prevDisabled || false}
     />
   </form>
 );
 
-const SecondPage = () => (
+const SecondPage = ({ handleNext, handlePrev ,
+  prevDisabled,
+  nextDisabled,}: Pages) => (
   <form className="mx-auto w-[60%]">
     <Kycforms
       fields={additionalFields}
-      buttonLabel="Verify Adhar"
-      onButtonClick={() =>
-        toast({
-          title: "Adhar verified Succesfully!",
-        })
-      }
+      buttonLabel="Next"
+      onButtonClick={() => handleNext()}
+      handlePrev={handlePrev}
     />
   </form>
 );
 
-const ThirdPage = () => (
+const ThirdPage = ({
+  handleNext,
+  handlePrev,
+  prevDisabled,
+  nextDisabled,
+}: Pages) => (
   <form className="mx-auto w-[60%]">
     <Kycforms
       fields={thirdfields}
       buttonLabel="Unlock Event Earnings"
-      onButtonClick={() =>
-        toast({
-          title: "Event earnings unlocked succesfully Succesfully!",
-        })
-      }
+      onButtonClick={() => handleNext()}
+      handlePrev={handlePrev}
     />
   </form>
 );

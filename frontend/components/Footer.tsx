@@ -57,7 +57,7 @@ const Footer = () => {
 
   return (
     <div>
-      <footer className="bg-gray-800 text-white py-6 flex flex-col">
+      <footer className="bg-[#17202A] text-white py-6 flex flex-col">
         <div className="flex flex-col md:flex-row mx-auto w-[90%]">
           <div className="container flex flex-col flex-[1] px-16 py-6">
             <div className="flex items-center">

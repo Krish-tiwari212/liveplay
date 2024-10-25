@@ -1,4 +1,5 @@
 import React, { useState } from 'react'
+import { Label } from './ui/label';
 
 interface FormField {
   id: string;
@@ -16,6 +17,27 @@ interface EventInsights {
   setFormType: React.Dispatch<React.SetStateAction<any>>; 
   setEventData:React.Dispatch<React.SetStateAction<any>>;
 }
+
+const requiredFields = [
+  "eventAddress",
+  "desktopBanner",
+  "eventDescription",
+  "eventName",
+  "eventPincode",
+  "eventStreet",
+  "eventUSP",
+  "eventenddate",
+  "eventstartDate",
+  "lastRegistrationDate",
+  "lastWithdrawalDate",
+  "mobileBanner",
+  "organiserName",
+  "organiserNumber",
+  "organiseremailaddress",
+  "playingRules",
+  "rewardsAndParticipation",
+  "startTime",
+];
 
 const EventInsights: React.FC<EventInsights> = ({
   formData,
@@ -49,9 +71,12 @@ const EventInsights: React.FC<EventInsights> = ({
           },
         ].map((field) => (
           <div key={field.name} className="w-full m-2 flex flex-col mb-4">
-            <label className="" htmlFor={field.name}>
+            <Label className="font-bold text-lg">
               {field.label}
-            </label>
+              {requiredFields.includes(field.name) && !formData[field.name] && (
+                <span className="text-red-500">*</span>
+              )}
+            </Label>
             <textarea
               id={field.name}
               name={field.name}
@@ -60,7 +85,7 @@ const EventInsights: React.FC<EventInsights> = ({
               required
               value={formData[field.name as keyof typeof formData] || ""}
               onChange={handleChange}
-              className="w-full p-2 bg-white border rounded-md text-sm shadow-2xl text-gray-800 focus:border-gray-800 focus:outline-none focus:shadow-lg"
+              className="w-full p-2 bg-white border rounded-md text-sm shadow-2xl text-[#17202A] focus:border-[#17202A] focus:outline-none focus:shadow-lg"
             />
           </div>
         ))}

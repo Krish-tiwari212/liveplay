@@ -5,7 +5,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { FC, useState, useEffect, Dispatch, SetStateAction } from "react"; 
 import { FaTachometerAlt, FaUsers, FaCalendarAlt, FaCogs, FaSignOutAlt, FaBars, FaUserCircle, FaChevronDown, FaChevronUp, FaStreetView } from 'react-icons/fa'; 
-import { IoIosArrowDown, IoIosArrowUp } from "react-icons/io";
+import { IoIosArrowDown, IoIosArrowUp, IoIosNotificationsOutline } from "react-icons/io";
 import { BiCategory } from "react-icons/bi";
 import {
   MdDrafts,
@@ -16,6 +16,7 @@ import {
 } from "react-icons/md";
 import { useToast } from "@/hooks/use-toast";
 import { useRouter } from "next/navigation";
+import Image from "next/image";
 
 const Sidebar = ({ setnavexpanded }: { setnavexpanded :Dispatch<SetStateAction<boolean>>}) => {
   const pathname = usePathname();
@@ -63,19 +64,29 @@ const Sidebar = ({ setnavexpanded }: { setnavexpanded :Dispatch<SetStateAction<b
     <div
       className={`lg:hidden ${
         isCollapsed ? "w-16" : "w-64"
-      } bg-gray-800 text-white p-4 shadow-lg transition-width duration-300 ease-in-out flex flex-col h-full z-50 fixed`}
+      } bg-[#17202A] text-white p-4 shadow-lg transition-width duration-300 ease-in-out flex flex-col h-full z-50 fixed`}
     >
       <div className="flex items-center mb-6 border-b border-gray-700 pb-4">
         <button
           onClick={() => handleCollapse()}
           className="text-white hover:text-blue-400 transition-colors duration-200"
         >
-          <FaBars className="text-2xl" />
+          <Image
+            src="/images/Asset 2.png"
+            alt="public/images/Asset 2.png"
+            width={40}
+            height={40}
+          />
         </button>
         {!isCollapsed && (
           <Link href={"/"}>
             <div className="text-3xl font-bold text-gray-500  ml-2">
-              liveplay.in
+              <Image
+                src="/images/SmallLogo.png"
+                alt="public/images/Logo.png"
+                width={150}
+                height={150}
+              />
             </div>
           </Link>
         )}
@@ -87,62 +98,31 @@ const Sidebar = ({ setnavexpanded }: { setnavexpanded :Dispatch<SetStateAction<b
             onMouseEnter={() => setTooltip("UserName")}
             onMouseLeave={() => setTooltip(null)}
             onClick={toggleEvents}
-          >
-            <FaUserCircle className="mr-2 text-4xl" />
-            {!isCollapsed && (
-              <div className="flex flex-col justify-start items-start ml-2 ">
-                <span className={`text-lg`}>Mohit</span>
-              </div>
-            )}
-            {tooltip === "UserName" && (
-              <div
-                className={`absolute ${
-                  isCollapsed ? "left-8" : "left-48"
-                } top-4 bg-white text-black text-sm p-2 rounded-bl rounded-tr rounded-br border border-gray-300 shadow-lg flex flex-col w-40`}
-              >
-                <button
-                  onClick={() => {
-                    setUserStatus("organizer");
-                  }}
-                  className="flex items-center w-full text-left hover:bg-gray-200 transition-colors duration-200 p-2 rounded mb-1"
-                >
-                  <FaUserCircle className="mr-2" /> As an Organizer
-                </button>
-                <button
-                  onClick={() => {
-                    setUserStatus("player");
-                  }}
-                  className="flex items-center w-full text-left hover:bg-gray-200 transition-colors duration-200 p-2 rounded"
-                >
-                  <MdSportsFootball className="mr-2" /> As a Player
-                </button>
-              </div>
-            )}
-          </button>
-            <Link href="/dashboard">
-              <button
-                className="flex items-center w-full py-2 pl-2 hover:bg-gray-700 rounded transition-colors duration-200 relative"
-                onMouseEnter={() => isCollapsed && setTooltip("Dashboard")}
-                onMouseLeave={() => setTooltip(null)}
-              >
-                <FaTachometerAlt className="mr-2 text-xl" />
-                {!isCollapsed && <>Dashboard</>}
-                {isCollapsed && tooltip === "Dashboard" && (
-                  <div className="absolute left-8 top-4 bg-white text-black text-sm p-2 rounded-bl rounded-tr rounded-br border border-gray-300 shadow-lg flex flex-col w-48">
-                    <Link href="/dashboard">
-                      <button className="flex items-center w-full text-left hover:bg-gray-200 transition-colors duration-200 p-2 rounded">
-                        <FaTachometerAlt className="mr-2" /> Dashboard
-                      </button>
-                    </Link>
-                  </div>
-                )}
-              </button>
-            </Link>
+          ></button>
+          <Link href="/dashboard">
+            <button
+              className="flex items-center w-full py-2 pl-2 hover:bg-gray-700 rounded transition-colors duration-200 relative"
+              onMouseEnter={() => isCollapsed && setTooltip("Dashboard")}
+              onMouseLeave={() => setTooltip(null)}
+            >
+              <FaTachometerAlt className="mr-2 text-xl" />
+              {!isCollapsed && <>Dashboard</>}
+              {isCollapsed && tooltip === "Dashboard" && (
+                <div className="absolute left-8 top-4 bg-white text-black text-sm p-2 rounded-bl rounded-tr rounded-br border border-gray-300 shadow-lg flex flex-col w-48">
+                  <Link href="/dashboard">
+                    <button className="flex items-center w-full text-left hover:bg-gray-200 transition-colors duration-200 p-2 rounded">
+                      <FaTachometerAlt className="mr-2" /> Dashboard
+                    </button>
+                  </Link>
+                </div>
+              )}
+            </button>
+          </Link>
         </li>
         {userStatus === "organizer" && (
           <>
             <li>
-              <button
+              <div
                 className="flex items-center w-full py-2 pl-2 hover:bg-gray-700 rounded transition-colors duration-200 relative"
                 onMouseEnter={() =>
                   isCollapsed && setTooltip("OrganizerEvents")
@@ -159,15 +139,27 @@ const Sidebar = ({ setnavexpanded }: { setnavexpanded :Dispatch<SetStateAction<b
                         <FaCalendarAlt className="mr-2" /> Create Event
                       </button>
                     </Link>
+                    <Link href="/dashboard/manage-events">
+                      <button className="flex items-center w-full text-left hover:bg-gray-200 transition-colors duration-200 p-2 rounded">
+                        <MdOutlineFeaturedPlayList className="mr-2" /> Manage
+                        Events
+                      </button>
+                    </Link>
                     <Link href="/dashboard/enable_features">
                       <button className="flex items-center w-full text-left hover:bg-gray-200 transition-colors duration-200 p-2 rounded">
-                        <MdOutlineFeaturedPlayList className="mr-2" /> Enable
-                        Features
+                        <MdOutlineFeaturedPlayList className="mr-2" /> Unlock
+                        Event Earnings
+                      </button>
+                    </Link>
+                    <Link href="/dashboard/enable_features">
+                      <button className="flex items-center w-full text-left hover:bg-gray-200 transition-colors duration-200 p-2 rounded">
+                        <IoIosNotificationsOutline className="mr-2" />{" "}
+                        Notifications
                       </button>
                     </Link>
                   </div>
                 )}
-              </button>
+              </div>
               {!isCollapsed && (
                 <ul
                   className={`ml-4 space-y-1 overflow-hidden transition-all duration-300 ease-in-out max-h-56`}
@@ -202,6 +194,18 @@ const Sidebar = ({ setnavexpanded }: { setnavexpanded :Dispatch<SetStateAction<b
                           <>
                             <MdOutlineSecurity className="mr-2" /> Unlock
                             Earnings (kyc)
+                          </>
+                        )}
+                      </button>
+                    </Link>
+                  </li>
+                  <li>
+                    <Link href="/dashboard/kyc/1234">
+                      <button className="flex items-center w-full p-2 hover:bg-gray-600 rounded transition-colors duration-200">
+                        {!isCollapsed && (
+                          <>
+                            <IoIosNotificationsOutline className="mr-2" />{" "}
+                            Notifications
                           </>
                         )}
                       </button>

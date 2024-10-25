@@ -30,18 +30,37 @@ interface filecontent {
 
 interface KycFormsProps {
   fields: FormField[];
-  buttonLabel?: string; 
-  buttonString?: string; 
-  onButtonClick?: () => void; 
+  buttonLabel?: string;
+  buttonString?: string;
+  onButtonClick?: () => void;
+  handlePrev?: () => void;
+  prevDisabled?:boolean
+  nextDisabled?:boolean
 }
 
-const Kycforms: React.FC<KycFormsProps> = ({ fields, buttonLabel, buttonString, onButtonClick }) => {
+const Kycforms: React.FC<KycFormsProps> = ({
+  fields,
+  buttonLabel,
+  buttonString,
+  onButtonClick,
+  handlePrev=()=>{},
+  prevDisabled,
+  nextDisabled
+}) => {
   const imageRefs = useRef<(HTMLInputElement | null)[]>([]);
   const [isImageLoading, setIsImageLoading] = useState(false);
 
   return (
-    <form className="bg-white shadow-2xl p-5 rounded-lg w-full">
-      <div className="flex flex-wrap w-full">
+    <form className="bg-white shadow-2xl p-5 rounded-lg w-full relative">
+      <button onClick={(e) => {e.preventDefault();handlePrev()}} disabled={prevDisabled}>
+        <Image
+          src="/icons/BackIcon.svg"
+          alt="backIcon"
+          width={20}
+          height={20}
+        />
+      </button>
+      <div className="flex flex-wrap w-[90%] mx-auto">
         {fields.map((field, index) => (
           <div key={field.id} className="w-full m-2 flex flex-col">
             {field.type !== "file" && (
@@ -53,7 +72,7 @@ const Kycforms: React.FC<KycFormsProps> = ({ fields, buttonLabel, buttonString, 
                   name={field.name}
                   placeholder={field.placeholder}
                   required={field.required}
-                  className="h-10 p-2 bg-white border rounded-md text-sm shadow-2xl text-gray-800 focus:border-gray-800 focus:outline-none focus:shadow-lg"
+                  className="h-10 p-2 bg-white border rounded-md text-sm shadow-2xl text-[#17202A] focus:border-[#17202A] focus:outline-none focus:shadow-lg"
                 />
               </>
             )}
@@ -114,7 +133,15 @@ const Kycforms: React.FC<KycFormsProps> = ({ fields, buttonLabel, buttonString, 
           </div>
         ))}
       </div>
-      {buttonLabel && <Button onClick={onButtonClick} className='mt-3 w-full'>{buttonLabel}</Button>}
+      {buttonLabel && (
+        <Button
+          onClick={(e)=>{e.preventDefault(); onButtonClick}}
+          disabled={nextDisabled}
+          className="mt-3 w-full"
+        >
+          {buttonLabel}
+        </Button>
+      )}
     </form>
   );
 };

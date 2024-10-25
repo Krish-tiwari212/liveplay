@@ -33,7 +33,7 @@ const Navbar = () => {
   const router = useRouter();
 
   return (
-    <div className="hidden md:flex items-center justify-between p-4 bg-gray-800 text-white gap-10 shadow-lg">
+    <div className="hidden md:flex items-center justify-between p-4 bg-[#17202A] text-white gap-10 shadow-lg">
       <div className="flex items-center gap-10">
         <div className="text-lg md:text-3xl font-bold tracking-wider">
           liveplay.in
@@ -47,7 +47,7 @@ const Navbar = () => {
         {isLoggedIn && (
           <button
             onClick={() => router.push("/dashboard")}
-            className="flex items-center bg-white text-gray-800 rounded-full px-6 md:px-10 py-2 hover:bg-slate-400 transition transform hover:-translate-y-1 hover:shadow-lg hover:shadow-gray-500 border border-transparent"
+            className="flex items-center bg-white text-[#17202A] rounded-full px-6 md:px-10 py-2 hover:bg-slate-400 transition transform hover:-translate-y-1 hover:shadow-lg hover:shadow-gray-500 border border-transparent"
           >
             <MdOutlineEvent className="inline mr-2" size={20} />
             Dashboard

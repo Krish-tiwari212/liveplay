@@ -173,7 +173,10 @@ const AddCategory = ({ setCategoryData }: AddCategoryProps) => {
   };
 
   return (
-    <form className="bg-white shadow-2xl p-5 rounded-lg m-3" onSubmit={handleSubmit}>
+    <form
+      className="bg-white shadow-2xl p-5 rounded-lg m-3"
+      onSubmit={handleSubmit}
+    >
       <div className="flex flex-wrap w-full">
         <div className="lg:w-[48%] w-full m-2 flex flex-col">
           <label htmlFor="categoryType">Category Type</label>
@@ -186,19 +189,21 @@ const AddCategory = ({ setCategoryData }: AddCategoryProps) => {
               <SelectValue placeholder="Category" />
             </SelectTrigger>
             <SelectContent>
-              <SelectItem value="light">Singles</SelectItem>
-              <SelectItem value="dark">Double</SelectItem>
-              <SelectItem value="system">Team</SelectItem>
+              <SelectItem value="Singles">Singles</SelectItem>
+              <SelectItem value="Doubles">Double</SelectItem>
+              <SelectItem value="Team">Team</SelectItem>
             </SelectContent>
-            <p className="text-sm text-gray-500">
-              Partner selection will only be available for Doubles categories.
+            <p className="text-sm text-gray-800">
+              Partner selection only for Doubles categories.
             </p>
           </Select>
         </div>
         {inputFields.map((field) => (
           <div
             key={field.id}
-            className={` ${field.type === "textarea" ? "" : "lg:w-[45%]" } w-full m-2 flex flex-col`}
+            className={` ${
+              field.type === "textarea" ? "" : "lg:w-[45%]"
+            } w-full m-2 flex flex-col`}
           >
             <label htmlFor={field.id}>{field.label}</label>
             {field.type === "textarea" ? (
@@ -209,7 +214,7 @@ const AddCategory = ({ setCategoryData }: AddCategoryProps) => {
                 maxLength={field.maxLength}
                 value={categoryData[field.id as keyof typeof categoryData]}
                 onChange={handleChange}
-                className="h-20 p-2 bg-white border rounded-md text-sm shadow-2xl text-gray-800 focus:border-gray-800 focus:outline-none focus:shadow-lg"
+                className="h-20 p-2 bg-white border rounded-md text-sm shadow-2xl text-[#17202A] focus:border-[#17202A] focus:outline-none focus:shadow-lg"
               />
             ) : (
               <input
@@ -220,7 +225,7 @@ const AddCategory = ({ setCategoryData }: AddCategoryProps) => {
                 required={field.required}
                 value={categoryData[field.id as keyof typeof categoryData]}
                 onChange={handleChange}
-                className="h-16 p-2 bg-white border rounded-md text-sm shadow-2xl text-gray-800 focus:border-gray-800 focus:outline-none focus:shadow-lg"
+                className="h-16 p-2 bg-white border rounded-md text-sm shadow-2xl text-[#17202A] focus:border-[#17202A] focus:outline-none focus:shadow-lg"
               />
             )}
           </div>
@@ -250,7 +255,9 @@ const AddCategory = ({ setCategoryData }: AddCategoryProps) => {
               {discountFields.percentage.map((field) => (
                 <div
                   key={field.id}
-                  className={` ${field.type === "textarea" ? "" : "lg:w-[45%]" } w-full m-2 flex flex-col`}
+                  className={` ${
+                    field.type === "textarea" ? "" : "lg:w-[45%]"
+                  } w-full m-2 flex flex-col`}
                 >
                   <label htmlFor={field.id}>{field.label}</label>
                   <input
@@ -261,7 +268,7 @@ const AddCategory = ({ setCategoryData }: AddCategoryProps) => {
                     required={field.required}
                     value={categoryData[field.id as keyof typeof categoryData]}
                     onChange={handleChange}
-                    className="h-16 p-2 bg-white border rounded-md text-sm shadow-2xl text-gray-800 focus:border-gray-800 focus:outline-none focus:shadow-lg"
+                    className="h-16 p-2 bg-white border rounded-md text-sm shadow-2xl text-[#17202A] focus:border-[#17202A] focus:outline-none focus:shadow-lg"
                   />
                 </div>
               ))}
@@ -283,7 +290,7 @@ const AddCategory = ({ setCategoryData }: AddCategoryProps) => {
                     required={field.required}
                     value={categoryData[field.id as keyof typeof categoryData]}
                     onChange={handleChange}
-                    className="h-16 p-2 bg-white border rounded-md text-sm shadow-2xl text-gray-800 focus:border-gray-800 focus:outline-none focus:shadow-lg"
+                    className="h-16 p-2 bg-white border rounded-md text-sm shadow-2xl text-[#17202A] focus:border-[#17202A] focus:outline-none focus:shadow-lg"
                   />
                 </div>
               ))}
@@ -293,7 +300,7 @@ const AddCategory = ({ setCategoryData }: AddCategoryProps) => {
 
         <button
           type="submit"
-          className="w-full bg-gray-800 text-white p-2 mx-2 rounded-md"
+          className="w-full bg-[#17202A] text-white p-2 mx-2 rounded-md"
         >
           Add Category
         </button>

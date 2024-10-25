@@ -47,7 +47,7 @@ export default function Home() {
           Unlock Event Earnings (Kyc)
         </Button>
       </div>
-      <section className="mt-4 bg-gray-800 h-[9rem] shadow-xl rounded-lg p-4 relative mb-4">
+      <section className="mt-4 bg-[#17202A] h-[9rem] shadow-xl rounded-lg p-4 relative mb-4">
         {/* <h1 className="hidden absolute md:block font-bold text-[4rem] lg:text-[5rem] right-2 -bottom-5 text-gray-500">
           liveplay.in
         </h1> */}
@@ -178,7 +178,7 @@ export default function Home() {
                   <span>Interested People: 0</span>
                 </div>
                 <Link href="/event/share-link">
-                  <Button className="w-full mt-2 bg-gray-800  text-white p-1 rounded hover:shadow-xl">
+                  <Button className="w-full mt-2 bg-[#17202A]  text-[#CDDC29] hover:text-white p-1 rounded hover:shadow-xl">
                     Share
                   </Button>
                 </Link>
@@ -203,7 +203,7 @@ export default function Home() {
                   <span>Interested People: 0</span>
                 </div>
                 <Link href="/event/share-link">
-                  <Button className="w-full mt-2 bg-gray-800  text-white p-1 rounded hover:shadow-xl">
+                  <Button className="w-full mt-2  p-1 rounded hover:shadow-xl">
                     Share
                   </Button>
                 </Link>

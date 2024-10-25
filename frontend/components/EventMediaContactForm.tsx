@@ -4,6 +4,7 @@ import { Input } from "./ui/input";
 import { useEffect, useRef, useState } from "react";
 import { Label } from "@radix-ui/react-dropdown-menu";
 import { toast } from "@/hooks/use-toast";
+import { Button } from "./ui/button";
 
 interface FormField {
   id: string;
@@ -16,12 +17,33 @@ interface FormField {
 
 interface EventMediaProps {
   fields?: FormField[];
-  formData: any; 
+  formData: any;
   setFormData: React.Dispatch<React.SetStateAction<any>>;
   setFormType: React.Dispatch<React.SetStateAction<any>>;
   setEventData: React.Dispatch<React.SetStateAction<any>>;
   handleNext: () => void;
+  venuedecidet:any;
 }
+const requiredFields = [
+  "eventAddress",
+  "desktopBanner",
+  "eventDescription",
+  "eventName",
+  "eventPincode",
+  "eventStreet",
+  "eventUSP",
+  "eventenddate",
+  "eventstartDate",
+  "lastRegistrationDate",
+  "lastWithdrawalDate",
+  "mobileBanner",
+  "organiserName",
+  "organiserNumber",
+  "organiseremailaddress",
+  "playingRules",
+  "rewardsAndParticipation",
+  "startTime",
+];
 
 const additionalFields = [
   {
@@ -53,6 +75,7 @@ const EventMediaContactForm: React.FC<EventMediaProps> = ({
   setFormData,
   handleNext,
   setEventData,
+  venuedecidet,
 }) => {
   const [isImageLoading, setIsImageLoading] = useState(false);
   const [imagePreviews, setImagePreviews] = useState<string[]>([]);
@@ -64,14 +87,16 @@ const EventMediaContactForm: React.FC<EventMediaProps> = ({
       if (file) {
         const reader = new FileReader();
         reader.onloadend = () => {
+          const base64Data = reader.result as string;
           setImagePreviews((prev) => {
             const newPreviews = [...prev];
-            newPreviews[index] = reader.result as string;
+            newPreviews[index] = base64Data;
             const fieldName = index === 0 ? "mobileBanner" : "desktopBanner";
             setFormData((prevData: any) => ({
               ...prevData,
               [fieldName]: file,
             }));
+
             return newPreviews;
           });
         };
@@ -79,47 +104,33 @@ const EventMediaContactForm: React.FC<EventMediaProps> = ({
         setIsImageLoading(false);
       }
     };
+
+    
   const handleClick = (event: React.MouseEvent<HTMLButtonElement>) => {
     event.preventDefault();
-    // const requiredFields = [
-    //   "eventAddress",
-    //   "desktopBanner",
-    //   "eventDescription",
-    //   "eventName",
-    //   "eventPincode",
-    //   "eventStreet",
-    //   "eventUSP",
-    //   "eventenddate",
-    //   "eventstartDate",
-    //   "lastRegistrationDate",
-    //   "lastWithdrawalDate",
-    //   "mobileBanner",
-    //   "organiserName",
-    //   "organiserNumber",
-    //   "organiseremailaddress",
-    //   "playingRules",
-    //   "rewardsAndParticipation",
-    //   "startTime",
-    //   "venueName",
-    // ];
+    
 
-    // const isAnyFieldEmpty = requiredFields.some(
-    //   (field) => !formData[field] || formData[field] === ""
-    // );
+    if (!venuedecidet) {
+      requiredFields.push("venueName");
+      requiredFields.push("city");
+    }
 
-    // if (isAnyFieldEmpty) {
-    //   toast({
-    //     title: "Please fill out the necessary fields",
-    //   });
-    //   console.log("please fill filed");
-    // } else {
+    const isAnyFieldEmpty = requiredFields.some(
+      (field) => !formData[field] || formData[field] === ""
+    );
+
+    if (isAnyFieldEmpty) {
+      toast({
+        title: "Please fill out the necessary fields",
+      });
+      console.log("please fill filed");
+    } else {
       setEventData((prevEventData: any) => ({
         ...prevEventData,
         ...formData,
-        }));
+      }));
       handleNext();
-    // }
-    
+    }
   };
   return (
     <form className="bg-white p-5 rounded-lg">
@@ -128,6 +139,9 @@ const EventMediaContactForm: React.FC<EventMediaProps> = ({
           <div className="flex flex-col w-full mt-5" key={field.id}>
             <Label className="font-bold text-lg">
               {field.filecontnet?.label}
+              {requiredFields.includes(field.name) && !formData[field.name] && (
+                <span className="text-red-500">*</span>
+              )}
             </Label>
             <div
               className="flex items-center justify-center mt-1 h-[142px] w-full cursor-pointer flex-col gap-3 rounded-xl border-[3.2px] border-dashed border-gray-600  bg-white "
@@ -176,12 +190,12 @@ const EventMediaContactForm: React.FC<EventMediaProps> = ({
             )}
           </div>
         ))}
-        <button
-          className="w-full bg-gray-700 mt-4  text-white p-2  rounded-md"
+        <Button
+          className="w-full p-2 mt-3 rounded-md"
           onClick={(event) => handleClick(event)}
         >
           Next
-        </button>
+        </Button>
       </div>
     </form>
   );

@@ -18,7 +18,7 @@ const AllEvents = () => {
         className="absolute -right-4 top-1/2 -mt-6 z-50 cursor-pointer"
         onClick={onClick}
       >
-        <div className="bg-gray-800 rounded-full p-3 transition-colors duration-200 shadow-xl hover:bg-gray-700">
+        <div className="bg-[#17202A] rounded-full p-3 transition-colors duration-200 shadow-xl hover:bg-gray-700">
           <FaChevronRight className="text-white text-2xl" />
         </div>
       </div>
@@ -32,7 +32,7 @@ const AllEvents = () => {
         className="absolute -left-4 top-1/2 -mt-6 z-50 cursor-pointer"
         onClick={onClick}
       >
-        <div className="bg-gray-800 rounded-full p-3 shadow-lg transition-colors duration-200 hover:bg-gray-700">
+        <div className="bg-[#17202A] rounded-full p-3 shadow-lg transition-colors duration-200 hover:bg-gray-700">
           <FaChevronLeft className="text-white text-2xl" />
         </div>
       </div>
@@ -76,7 +76,7 @@ const AllEvents = () => {
   return (
     <div className="my-10">
       <div className="text-center mb-4">
-        <h1 className="text-3xl md:text-5xl font-bold text-gray-800">
+        <h1 className="text-3xl md:text-5xl font-bold text-[#17202A]">
           More Events
         </h1>
       </div>

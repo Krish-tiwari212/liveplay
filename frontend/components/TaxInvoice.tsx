@@ -19,7 +19,7 @@ const TaxInvoice = () => {
 
       <button
         onClick={(e) => {setShowFullFormat(!showFullFormat),e.preventDefault() }}
-        className="w-full bg-gray-800 text-white p-2 rounded-md"
+        className="w-full bg-[#17202A] text-white p-2 rounded-md"
       >
         {showFullFormat ? 'Hide Full Format' : 'View Full Format'}
       </button>

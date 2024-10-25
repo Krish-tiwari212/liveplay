@@ -11,7 +11,7 @@ import { Label } from "@radix-ui/react-dropdown-menu";
 import EventInsights from "@/components/EventInsights";
 const OverviewSidebarContent = [
   {
-    title: "Esential",
+    title: "Essential",
   },
   {
     title: "Location",
@@ -36,6 +36,7 @@ const EventInformation: React.FC<EventInformation> = ({
   const [formType, setFormType] = useState<string>("default");
   const { theme } = useAppContext();
   const [formData, setFormData] = useState<any>({});
+  const [venuedecidet,setVenueDecided]=useState(false)
 
   const renderForm = () => {
     switch (formType) {

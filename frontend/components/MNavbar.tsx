@@ -34,7 +34,7 @@ const MNavbar = () => {
   const router = useRouter();
 
   return (
-    <div className="md:hidden flex items-center justify-between p-4 bg-gray-800 text-white gap-10 shadow-lg">
+    <div className="md:hidden flex items-center justify-between p-4 bg-[#17202A] text-white gap-10 shadow-lg">
       <div className="flex items-center gap-10">
         <div className="text-lg font-bold tracking-wider">liveplay.in</div>
       </div>
@@ -42,7 +42,7 @@ const MNavbar = () => {
         <SheetTrigger>
           <IoMdList size={30} />
         </SheetTrigger>
-        <SheetContent className="bg-gray-800 w-[35%] border-none rounded-lg shadow-lg p-4">
+        <SheetContent className="bg-[#17202A] w-[35%] border-none rounded-lg shadow-lg p-4">
           <div className="flex flex-col pt-10">
             {isLoggedIn ? (
               <Link href={"/"}>
@@ -65,7 +65,7 @@ const MNavbar = () => {
             {isLoggedIn && (
               <button
                 onClick={() => router.push("/dashboard")}
-                className="flex items-center bg-white  text-gray-800 rounded-full px-6 md:px-10 py-1 hover:bg-slate-400  transition transform hover:-translate-y-1 hover:shadow-lg hover:shadow-gray-500 border border-transparent"
+                className="flex items-center bg-white  text-[#17202A] rounded-full px-6 md:px-10 py-1 hover:bg-slate-400  transition transform hover:-translate-y-1 hover:shadow-lg hover:shadow-gray-500 border border-transparent"
               >
                 <MdOutlineEvent className="inline mr-2" size={20} />
                 Dashboard

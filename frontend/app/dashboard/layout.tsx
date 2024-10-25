@@ -20,11 +20,11 @@ export default function RootLayout({
       <div
         className={`flex h-screen ${navexpanded ? "opacity-40 bg-black" : ""}`}
       >
-        <div className="flex-[1] w-full">
+        <div className="flex-[2] lg:flex-[1] w-full">
           <MSidebar />
         </div>
         <div
-          className={`bg-slate-200 overflow-x-hidden w-full h-full flex-[5]`}
+          className={`bg-slate-200 overflow-x-hidden w-full h-full ml-16 md:ml-0 md:flex-[5] lg:flex-[4] xl:flex-[5]`}
         >
           <Navbar />
           {children}

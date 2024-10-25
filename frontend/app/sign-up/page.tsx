@@ -80,7 +80,7 @@ const ProfileForm = () => {
   };
 
   return (
-    <div className="flex items-center justify-center min-h-screen bg-gray-800 relative">
+    <div className="flex items-center justify-center min-h-screen bg-[#17202A] relative">
       {/* <Image 
         src="/images/login bg.jpg" 
         alt="logobg" 
@@ -88,7 +88,7 @@ const ProfileForm = () => {
         className="w-full h-full absolute object-cover z-0" 
       /> */}
       <div className="w-full max-w-md p-8 space-y-6 bg-white rounded-lg shadow-md z-10">
-        <h2 className="text-2xl font-bold text-center text-gray-800">
+        <h2 className="text-2xl font-bold text-center text-[#17202A]">
           Create Your Account
         </h2>
         <Form {...form}>
@@ -154,7 +154,7 @@ const ProfileForm = () => {
             <Button
               type="submit"
               disabled={loading}
-              className="w-full bg-gray-800 text-white hover:bg-gray-700"
+              className="w-full bg-[#17202A] text-white hover:bg-gray-700"
             >
               {loading ? "Loading..." : "Submit"}
             </Button>

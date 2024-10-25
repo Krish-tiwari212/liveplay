@@ -45,7 +45,7 @@ const MyTimer = ({ expiryTimestamp, setFeatureData }: MyTimerProps) => {
       </div>
       {showCountdown && (
         <>
-          <h1 className="text-5xl font-bold mt-4 mb-4 text-gray-800">
+          <h1 className="text-5xl font-bold mt-4 mb-4 text-[#17202A]">
             Countdown Timer
           </h1>
           {showModal ? (
@@ -57,10 +57,10 @@ const MyTimer = ({ expiryTimestamp, setFeatureData }: MyTimerProps) => {
             </div>
           ) : (
             <>
-              <h2 className="text-4xl mb-2 text-gray-800 ">
+              <h2 className="text-4xl mb-2 text-[#17202A] ">
                 {days} Days {hours} Hours
               </h2>
-              <p className="text-lg text-gray-800 mb-4">
+              <p className="text-lg text-[#17202A] mb-4">
                 Until the final date!
               </p>
             </>

@@ -19,7 +19,6 @@ const TshirtForParticipant = ({
     if (quantity >= 10) {
       setRequestSubmitted(true);
       setShowPopup(false);
-      // Here you can add the logic to submit the request
     } else {
       alert("Minimum order quantity is 10.");
     }
@@ -43,7 +42,7 @@ const TshirtForParticipant = ({
       <button
         type="button"
         onClick={handleSubmitRequest}
-        className="mt-2 w-full bg-gray-800 text-white p-2 rounded-md"
+        className="mt-2 w-full bg-[#17202A] text-white p-2 rounded-md"
       >
         Request T-Shirts
       </button>

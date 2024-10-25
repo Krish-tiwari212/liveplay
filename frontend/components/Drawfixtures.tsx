@@ -59,13 +59,13 @@ const Drawfixtures = ({ setFeatureData }: DrawfixturesProps) => {
                     }`}
                   >
                     <div className="flex items-center relative">
-                      <div className=" border border-gray-800  p-1 max-w-56 px-4 relative transform -skew-x-12 text-center">
+                      <div className=" border border-[#17202A]  p-1 max-w-56 px-4 relative transform -skew-x-12 text-center">
                         {fixture.teamA}
                       </div>
-                      <div className=" bg-gray-800 text-white rounded transform -skew-x-12  p-2 text-3xl relative">
+                      <div className=" bg-[#17202A] text-white rounded transform -skew-x-12  p-2 text-3xl relative">
                         <h1>Vs</h1>
                       </div>
-                      <div className="  border border-gray-800  p-1 max-w-56 px-4 relative transform -skew-x-12 text-center">
+                      <div className="  border border-[#17202A]  p-1 max-w-56 px-4 relative transform -skew-x-12 text-center">
                         {fixture.teamB}
                       </div>
                     </div>
@@ -94,13 +94,13 @@ const Drawfixtures = ({ setFeatureData }: DrawfixturesProps) => {
                     }`}
                   >
                     <div className="flex items-center relative">
-                      <div className=" border border-gray-800  p-1 max-w-56 px-4 relative transform -skew-x-12 text-center">
+                      <div className=" border border-[#17202A]  p-1 max-w-56 px-4 relative transform -skew-x-12 text-center">
                         {fixture.teamA}
                       </div>
-                      <div className=" bg-gray-800 text-white rounded transform -skew-x-12  p-2 text-3xl relative">
+                      <div className=" bg-[#17202A] text-white rounded transform -skew-x-12  p-2 text-3xl relative">
                         <h1>Vs</h1>
                       </div>
-                      <div className="  border border-gray-800  p-1 max-w-56 px-4 relative transform -skew-x-12 text-center">
+                      <div className="  border border-[#17202A]  p-1 max-w-56 px-4 relative transform -skew-x-12 text-center">
                         {fixture.teamB}
                       </div>
                     </div>

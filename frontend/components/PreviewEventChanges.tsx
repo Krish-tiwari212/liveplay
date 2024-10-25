@@ -18,7 +18,19 @@ import {
 } from "@/components/ui/select";
 import { eventNames } from "process";
 import { effect } from "zod";
+import CategoryPreview from "./CategoryPreview";
 
+
+interface Category {
+  id:number
+  categoryName: string;
+  totalQuantity: string;
+  maxTicketQuantity: string;
+  price: string;
+  ticketDescription: string;
+  discountCode: string;
+  categoryType: string;
+}
 
 
 interface PreviewEventChangesProps {
@@ -32,11 +44,19 @@ const PreviewEventChanges: React.FC<PreviewEventChangesProps> = ({
   EventData,
   setEventData,
 }) => {
-  // Load EventData from local storage on component mount
+  // Initialize selectedCategories with EventData.selectedCategories
+  const [selectedCategories, setSelectedCategories] = useState<Category[]>(EventData.selectedCategories || []); 
+
   useEffect(() => {
     const storedData = localStorage.getItem("EventData");
     if (storedData) {
-      setEventData(JSON.parse(storedData));
+      const parsedData = JSON.parse(storedData);
+      setEventData(parsedData);
+      setSelectedCategories(parsedData.selectedCategories || []); 
+    }
+    const storedCategories = localStorage.getItem("categories"); 
+    if (storedCategories) {
+      setinitialCategories(JSON.parse(storedCategories));
     }
   }, [setEventData]);
 
@@ -47,11 +67,8 @@ const PreviewEventChanges: React.FC<PreviewEventChangesProps> = ({
     const inputValue =  e.target.value; 
     setEventData({ ...EventData, [name]: inputValue }); 
   };
-  const initialCategories = [
-    { name: "Category 1", price: 100 },
-    { name: "Category 2", price: 200 },
-    { name: "Category 3", price: 300 },
-  ];
+  const [initialCategories, setinitialCategories] = useState<Category[]>([]); 
+
   const fields = [
     {
       id: "eventName",
@@ -236,7 +253,8 @@ const PreviewEventChanges: React.FC<PreviewEventChangesProps> = ({
   const [isImageLoading, setIsImageLoading] = useState(false);
 
   useEffect(()=>{
-    console.log(EventData)
+    // console.log(EventData)
+    console.log(selectedCategories);
   },[])
   return (
     <div className="space-y-6 bg-white m-3 p-5 rounded-lg shadow-2xl">
@@ -257,7 +275,7 @@ const PreviewEventChanges: React.FC<PreviewEventChangesProps> = ({
                     name={field.name}
                     value={EventData[field.name] || ""}
                     onChange={handleInputChange}
-                    className="h-16 p-2 bg-white border rounded-md text-sm shadow-2xl text-gray-800 focus:border-gray-800 focus:outline-none focus:shadow-lg"
+                    className="h-16 p-2 bg-white border rounded-md text-sm shadow-2xl text-[#17202A] focus:border-[#17202A] focus:outline-none focus:shadow-lg"
                   />
                 </div>
               )}
@@ -273,28 +291,47 @@ const PreviewEventChanges: React.FC<PreviewEventChangesProps> = ({
                   required
                   value={EventData[field.name as keyof typeof EventData] || ""}
                   onChange={handleInputChange}
-                  className="w-full p-2 bg-white border rounded-md text-sm shadow-2xl text-gray-800 focus:border-gray-800 focus:outline-none focus:shadow-lg"
+                  className="w-full p-2 bg-white border rounded-md text-sm shadow-2xl text-[#17202A] focus:border-[#17202A] focus:outline-none focus:shadow-lg"
                 />
               </div>
             )}
             {field.type === "category" && (
-              <div className="flex flex-col w-full">
-                <label className="text-sm font-medium capitalize">
-                  {field.label}
-                </label>
-                <Select>
-                  <SelectTrigger className="w-full">
-                    <SelectValue placeholder="Select Category" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    {initialCategories.map((category) => (
-                      <SelectItem key={category.name} value={category.name}>
-                        {category.name}
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
-              </div>
+              <section className="mt-4 bg-white shadow-md rounded-lg p-4 w-full">
+                <h2 className="text-xl font-semibold mb-2">Category Preview</h2>
+                {initialCategories.length !== 0 && (
+                  initialCategories.map((category, index) => (
+                    <div
+                      key={index}
+                      className={`relative border shadow-lg rounded-lg p-4 mb-4 cursor-pointer ${
+                        selectedCategories.includes(category) // Use selectedCategories for highlighting
+                          ? "bg-[#17202A] text-white"
+                          : "bg-white"
+                      }`}
+                      onClick={() => {
+                        setSelectedCategories((prevSelected) => {
+                          if (prevSelected.includes(category)) {
+                            return prevSelected.filter(
+                              (categoryName) =>
+                                categoryName !== category
+                            );
+                          } else {
+                            return [...prevSelected, category];
+                          }
+                        });
+                      }}
+                    >
+                      <div className="flex justify-between items-start">
+                        <div>
+                          <p className="font-semibold">
+                            {category.categoryName}
+                          </p>
+                          <p>Price: {category.price}</p>
+                        </div>
+                      </div>
+                    </div>
+                  ))
+                )}
+              </section>
             )}
             {field.type === "file" && (
               <div className="flex w-full">
@@ -401,7 +438,12 @@ const PreviewEventChanges: React.FC<PreviewEventChangesProps> = ({
       </div>
       <Button
         onClick={() => {
-          localStorage.setItem("EventData", JSON.stringify(EventData));
+          localStorage.setItem(
+            "EventData",
+            JSON.stringify({
+              ...EventData,
+            })
+          ); 
           handleNext();
           console.log(EventData);
         }}

@@ -87,7 +87,7 @@ const EventCard = ({
         <Dialog open={openDialog} onOpenChange={setOpenDialog}>
           <DialogContent className="bg-white rounded-lg shadow-2xl transition-transform transform w-[55%] p-10">
             <DialogHeader>
-              <DialogTitle className="text-2xl font-bold text-gray-800">{eventname}</DialogTitle>
+              <DialogTitle className="text-2xl font-bold text-[#17202A]">{eventname}</DialogTitle>
             </DialogHeader>
             <div className="flex items-center relative gap-6">
               <div className="flex flex-col w-full h-full flex-[3] gap-5">
@@ -123,7 +123,7 @@ const EventCard = ({
                         {price} onwards
                       </p>
                       <Button
-                        className="text-sm bg-gray-800 text-white hover:shadow-md"
+                        className="text-sm bg-[#17202A] text-white hover:shadow-md"
                       >
                         Register
                       </Button>

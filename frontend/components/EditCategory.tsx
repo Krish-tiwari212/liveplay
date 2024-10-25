@@ -128,13 +128,13 @@ const discountFields = {
 
 const EditCategory = ({ setCategoryData, selectedCategory }: EditCategoryProps) => {
   const [categoryData, setLocalCategoryData] = useState({
-    categoryName: selectedCategory.categoryName || "",
-    totalQuantity: selectedCategory.totalQuantity || "",
-    maxTicketQuantity: selectedCategory.maxTicketQuantity || "",
-    price: selectedCategory.price || "",
-    ticketDescription: selectedCategory.ticketDescription || "",
-    discountCode: selectedCategory.discountCode || "",
-    categoryType: selectedCategory.categoryType || "",
+    categoryName: selectedCategory?.categoryName || "",
+    totalQuantity: selectedCategory?.totalQuantity || "",
+    maxTicketQuantity: selectedCategory?.maxTicketQuantity || "",
+    price: selectedCategory?.price || "",
+    ticketDescription: selectedCategory?.ticketDescription || "",
+    discountCode: selectedCategory?.discountCode || "",
+    categoryType: selectedCategory?.categoryType || "",
   });
 
   const [showAmountInput, setShowAmountInput] = useState(false);
@@ -161,7 +161,8 @@ const EditCategory = ({ setCategoryData, selectedCategory }: EditCategoryProps) 
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    setCategoryData(categoryData);
+    console.log(categoryData);
+    setCategoryData(categoryData); 
     setLocalCategoryData({
       categoryName: "",
       totalQuantity: "",
@@ -210,23 +211,23 @@ const EditCategory = ({ setCategoryData, selectedCategory }: EditCategoryProps) 
             {field.type === "textarea" ? (
               <textarea
                 id={field.id}
-                name={field.id}
+                name={field.id} // Ensure name attribute is set
                 placeholder={field.placeholder}
                 maxLength={field.maxLength}
                 value={categoryData[field.id as keyof typeof categoryData]}
                 onChange={handleChange}
-                className="h-20 p-2 bg-white border rounded-md text-sm shadow-2xl text-gray-800 focus:border-gray-800 focus:outline-none focus:shadow-lg"
+                className="h-20 p-2 bg-white border rounded-md text-sm shadow-2xl text-[#17202A] focus:border-[#17202A] focus:outline-none focus:shadow-lg"
               />
             ) : (
               <input
                 id={field.id}
                 type={field.type}
-                name={field.id}
+                name={field.id} // Ensure name attribute is set
                 placeholder={field.placeholder}
                 required={field.required}
                 value={categoryData[field.id as keyof typeof categoryData]}
                 onChange={handleChange}
-                className="h-16 p-2 bg-white border rounded-md text-sm shadow-2xl text-gray-800 focus:border-gray-800 focus:outline-none focus:shadow-lg"
+                className="h-16 p-2 bg-white border rounded-md text-sm shadow-2xl text-[#17202A] focus:border-[#17202A] focus:outline-none focus:shadow-lg"
               />
             )}
           </div>
@@ -269,7 +270,7 @@ const EditCategory = ({ setCategoryData, selectedCategory }: EditCategoryProps) 
                     required={field.required}
                     value={categoryData[field.id as keyof typeof categoryData]}
                     onChange={handleChange}
-                    className="h-16 p-2 bg-white border rounded-md text-sm shadow-2xl text-gray-800 focus:border-gray-800 focus:outline-none focus:shadow-lg"
+                    className="h-16 p-2 bg-white border rounded-md text-sm shadow-2xl text-[#17202A] focus:border-[#17202A] focus:outline-none focus:shadow-lg"
                   />
                 </div>
               ))}
@@ -291,7 +292,7 @@ const EditCategory = ({ setCategoryData, selectedCategory }: EditCategoryProps) 
                     required={field.required}
                     value={categoryData[field.id as keyof typeof categoryData]}
                     onChange={handleChange}
-                    className="h-16 p-2 bg-white border rounded-md text-sm shadow-2xl text-gray-800 focus:border-gray-800 focus:outline-none focus:shadow-lg"
+                    className="h-16 p-2 bg-white border rounded-md text-sm shadow-2xl text-[#17202A] focus:border-[#17202A] focus:outline-none focus:shadow-lg"
                   />
                 </div>
               ))}
@@ -301,7 +302,7 @@ const EditCategory = ({ setCategoryData, selectedCategory }: EditCategoryProps) 
 
         <button
           type="submit"
-          className="w-full bg-gray-800 text-white p-2 mx-2 rounded-md"
+          className="w-full bg-[#17202A] text-white p-2 mx-2 rounded-md"
         >
           Edit Category
         </button>

@@ -31,9 +31,7 @@ const GSTCompliance = ({
       countdown: FeatureData.countdown || false,
       enableFixtures: FeatureData.enableFixtures || false,
     }));
-    localStorage.setItem("EventData", JSON.stringify(EventData)); 
     handleNext();
-    console.log(EventData)
   };
   return (
     <div className="bg-white shadow-2xl p-5 rounded-lg">

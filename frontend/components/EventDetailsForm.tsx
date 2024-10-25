@@ -1,5 +1,6 @@
 import { Checkbox } from "@/components/ui/checkbox";
 import { useEffect } from "react";
+import { Label } from "./ui/label";
 
 interface FormField {
   id: string;
@@ -17,6 +18,27 @@ interface EventDetailsFormProps {
   setFormType: React.Dispatch<React.SetStateAction<any>>;
   setEventData: React.Dispatch<React.SetStateAction<any>>;
 }
+
+const requiredFields = [
+  "eventAddress",
+  "desktopBanner",
+  "eventDescription",
+  "eventName",
+  "eventPincode",
+  "eventStreet",
+  "eventUSP",
+  "eventenddate",
+  "eventstartDate",
+  "lastRegistrationDate",
+  "lastWithdrawalDate",
+  "mobileBanner",
+  "organiserName",
+  "organiserNumber",
+  "organiseremailaddress",
+  "playingRules",
+  "rewardsAndParticipation",
+  "startTime",
+];
 
 const EventDetailsForm: React.FC<EventDetailsFormProps> = ({
   formData,
@@ -46,7 +68,12 @@ const EventDetailsForm: React.FC<EventDetailsFormProps> = ({
               field.id === "eventName" ? "w-full" : "lg:w-[47%]"
             } w-full m-2 flex flex-col`}
           >
-            <label htmlFor={field.id}>{field.label}</label>
+            <Label className="font-bold text-lg">
+              {field.label}
+              {requiredFields.includes(field.name) && !formData[field.name] && (
+                <span className="text-red-500">*</span>
+              )}
+            </Label>
             <input
               id={field.id}
               type={field.type}
@@ -55,7 +82,7 @@ const EventDetailsForm: React.FC<EventDetailsFormProps> = ({
               required={field.required}
               value={formData[field.name as keyof EventDetailsFormProps] || ""}
               onChange={handleChange}
-              className="h-16 p-2 bg-white border rounded-md text-sm shadow-2xl text-gray-800 focus:border-gray-800 focus:outline-none focus:shadow-lg"
+              className="h-16 p-2 bg-white border rounded-md text-sm shadow-2xl text-[#17202A] focus:border-[#17202A] focus:outline-none focus:shadow-lg"
             />
           </div>
         ))}
@@ -65,9 +92,13 @@ const EventDetailsForm: React.FC<EventDetailsFormProps> = ({
           </label>
           <div className="flex flex-col xl:flex-row w-full gap-3">
             <div className=" w-full flex flex-col">
-              <label className="text-[0.8rem]" htmlFor="organiserName">
+              <Label className="text-[0.8rem]">
                 Name
-              </label>
+                {requiredFields.includes("organiserName") &&
+                  !formData["organiserName"] && (
+                    <span className="text-red-500">*</span>
+                  )}
+              </Label>
               <input
                 id="organiserName"
                 type="text"
@@ -76,13 +107,17 @@ const EventDetailsForm: React.FC<EventDetailsFormProps> = ({
                 required
                 value={formData.organiserName || ""}
                 onChange={handleChange}
-                className=" w-full h-12 p-2 bg-white border rounded-md text-sm shadow-2xl text-gray-800 focus:border-gray-800 focus:outline-none focus:shadow-lg"
+                className=" w-full h-12 p-2 bg-white border rounded-md text-sm shadow-2xl text-[#17202A] focus:border-[#17202A] focus:outline-none focus:shadow-lg"
               />
             </div>
             <div className=" w-full  flex flex-col">
-              <label className="text-[0.8rem]" htmlFor="organiserNumber">
+              <Label className="text-[0.8rem]">
                 Number
-              </label>
+                {requiredFields.includes("organiserNumber") &&
+                  !formData["organiserNumber"] && (
+                    <span className="text-red-500">*</span>
+                  )}
+              </Label>
               <input
                 id="organiserNumber"
                 type="text"
@@ -91,13 +126,17 @@ const EventDetailsForm: React.FC<EventDetailsFormProps> = ({
                 required
                 value={formData.organiserNumber || ""}
                 onChange={handleChange}
-                className=" w-full h-12 p-2 bg-white border rounded-md text-sm shadow-2xl text-gray-800 focus:border-gray-800 focus:outline-none focus:shadow-lg"
+                className=" w-full h-12 p-2 bg-white border rounded-md text-sm shadow-2xl text-[#17202A] focus:border-[#17202A] focus:outline-none focus:shadow-lg"
               />
             </div>
             <div className=" w-full flex flex-col">
-              <label className="text-[0.8rem]" htmlFor="organiseremailaddress">
+              <Label className="text-[0.8rem]">
                 Email address
-              </label>
+                {requiredFields.includes("organiseremailaddress") &&
+                  !formData["organiseremailaddress"] && (
+                    <span className="text-red-500">*</span>
+                  )}
+              </Label>
               <input
                 id="organiseremailaddress"
                 type="email"
@@ -106,7 +145,7 @@ const EventDetailsForm: React.FC<EventDetailsFormProps> = ({
                 required
                 value={formData.organiseremailaddress || ""}
                 onChange={handleChange}
-                className=" w-full h-12 p-2 bg-white border rounded-md text-sm shadow-2xl text-gray-800 focus:border-gray-800 focus:outline-none focus:shadow-lg"
+                className=" w-full h-12 p-2 bg-white border rounded-md text-sm shadow-2xl text-[#17202A] focus:border-[#17202A] focus:outline-none focus:shadow-lg"
               />
             </div>
           </div>

@@ -39,23 +39,20 @@ const Navbar = () => {
   const [userStatus, setUserStatus] = useState("organizer");
 
   return (
-    <div className="flex justify-between items-center p-4 m-3 bg-gray-800 text-white rounded-lg ">
-      <div className="text-lg font-bold">
-        {pageName === "1234" ? "KYC" : pageName}
+    <div className="flex justify-between items-center p-4 m-3 bg-[#17202A] text-white rounded-lg ">
+      <div className="text-lg text-[#CDDC29] font-bold">
+        {pageName === "1234" ? "Unlock Event Earnings" : pageName}
       </div>
       <div className="flex items-center">
         <div className="flex space-x-4 ml-4 items-center">
-          <MdOutlineChat className="text-white hidden md:block" />
-          <MdNotifications className="text-white hidden md:block" />
-          <MdPublic className="text-white hidden md:block" />
           <div className="flex gap-5 items-center justify-center">
             {/* <Switch id="theme" className="" onClick={(e)=>setTheme(e)} />
             <Label>{theme} Mode</Label> */}
             <Select onValueChange={setTheme}>
-              <SelectTrigger className="w-auto md:w-[180px] bg-gray-800 border focus-visible:ring-offset-gray-600">
+              <SelectTrigger className="w-auto md:w-[180px] bg-[#17202A] border focus-visible:ring-offset-gray-600">
                 <SelectValue placeholder="Theme" />
               </SelectTrigger>
-              <SelectContent className="bg-gray-800 text-white">
+              <SelectContent className="bg-[#17202A] text-white">
                 <SelectItem value="light">Light</SelectItem>
                 <SelectItem value="dark">Dark</SelectItem>
                 <SelectItem value="system">System</SelectItem>
@@ -71,7 +68,7 @@ const Navbar = () => {
             <TooltipProvider>
               <Tooltip>
                 <TooltipTrigger asChild>
-                  <div className="flex items-center w-full pl-2 hover:bg-gray-700 hover:rounded transition-colors relative">
+                  <div className="flex items-center w-full px-2 hover:bg-gray-700 hover:rounded transition-colors relative">
                     <FaUserCircle className="text-3xl" />
                     <div className="flex flex-col justify-start items-start ml-2">
                       <span className={`text-xl`}>Mohit</span>
