@@ -46,7 +46,7 @@ const CategoryPreview = ({
   const [isDialogOpen, setIsDialogOpen] = useState(false); 
   const [isEditDialogOpen, setIsEditDialogOpen] = useState(false); 
   const [currentCategory, setCurrentCategory] = useState<Category | null>(null);
-  const [nextId, setNextId] = useState(1); // State to keep track of the next ID
+  const [nextId, setNextId] = useState(1); 
 
   const handleClick = () => {
     if (selectedCategories.length === 0) {

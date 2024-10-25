@@ -17,6 +17,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { eventNames } from "process";
+import { effect } from "zod";
 
 
 
@@ -234,13 +235,16 @@ const PreviewEventChanges: React.FC<PreviewEventChangesProps> = ({
   const imageRefs = useRef<(HTMLInputElement | null)[]>([]);
   const [isImageLoading, setIsImageLoading] = useState(false);
 
+  useEffect(()=>{
+    console.log(EventData)
+  },[])
   return (
     <div className="space-y-6 bg-white m-3 p-5 rounded-lg shadow-2xl">
       <h2 className="text-2xl font-bold">Preview & Edit Event Details</h2>
 
       <div className="flex flex-wrap w-full gap-4">
         {fields.map((field, index) => (
-          <>
+          <React.Fragment key={field.id}>
             {field.type !== "file" &&
               field.type !== "textarea" &&
               field.type !== "category" && (
@@ -354,25 +358,29 @@ const PreviewEventChanges: React.FC<PreviewEventChangesProps> = ({
                 )}
               </div>
             )}
-          </>
+          </React.Fragment>
         ))}
         {radioFields.map((field) => (
           <div className="w-full m-2 flex flex-col" key={field.id}>
             <label htmlFor={field.name}>{field.label}</label>
             <RadioGroup defaultValue="default">
               <div className="flex items-center space-x-2">
-                <RadioGroupItem 
-                  value="Yes" 
-                  id="yes" 
-                  onClick={() => setEventData({ ...EventData, [field.name]: true })}
+                <RadioGroupItem
+                  value="Yes"
+                  id="yes"
+                  onClick={() =>
+                    setEventData({ ...EventData, [field.name]: true })
+                  }
                 />
                 <Label htmlFor="yes">Yes</Label>
               </div>
               <div className="flex items-center space-x-2">
-                <RadioGroupItem 
-                  value="default" 
-                  id="no" 
-                  onClick={() => setEventData({ ...EventData, [field.name]: false })} 
+                <RadioGroupItem
+                  value="default"
+                  id="no"
+                  onClick={() =>
+                    setEventData({ ...EventData, [field.name]: false })
+                  }
                 />
                 <Label htmlFor="no">No</Label>
               </div>
@@ -381,20 +389,22 @@ const PreviewEventChanges: React.FC<PreviewEventChangesProps> = ({
         ))}
         {switchFields.map((field) => (
           <div className="flex items-center space-x-2 relative" key={field.id}>
-            <Switch 
-              id={field.name} 
-              onCheckedChange={(checked) => setEventData({ ...EventData, [field.name]: checked })}
+            <Switch
+              id={field.name}
+              onCheckedChange={(checked) =>
+                setEventData({ ...EventData, [field.name]: checked })
+              }
             />
             <Label htmlFor={field.name}>{field.label}</Label>
           </div>
         ))}
       </div>
-      <Button 
+      <Button
         onClick={() => {
-          localStorage.setItem("EventData", JSON.stringify(EventData)); 
-          handleNext(); 
-          console.log(EventData); 
-        }} 
+          localStorage.setItem("EventData", JSON.stringify(EventData));
+          handleNext();
+          console.log(EventData);
+        }}
         className="mt-4 w-full"
       >
         Proceed
