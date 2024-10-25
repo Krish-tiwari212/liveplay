@@ -1,16 +1,61 @@
-
-import React, { useRef } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import Slider from "react-slick";
 import { FaChevronLeft, FaChevronRight } from "react-icons/fa";
-import data from "../data"; 
-const { videoEventData } = data;
 import VideoEventCard from "./VideoEventCard";
-import EventCard from "./EventCard";
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
 
+// Define the Event interface
+interface Event {
+  id: string;
+  event_name: string;
+  organizer_contact_number: string;
+  organizer_email: string;
+  start_date: string;
+  end_date: string;
+  last_registration_date: string;
+  last_withdrawal_date: string;
+  venue_name: string;
+  street_address: string;
+  additional_details: string;
+  city: string;
+  pincode: string;
+  venue_not_decided: boolean;
+  map_view: string | null;
+  event_description: string;
+  event_usp: string;
+  rewards_for_participants: string;
+  playing_rules: string;
+  desktop_cover_image_url: string;
+  mobile_cover_image_url: string;
+  created_at: string;
+  updated_at: string;
+  start_time: string;
+  countdown: boolean;
+  enable_fixtures: boolean;
+}
+
 const AllEvents = () => {
+  const [events, setEvents] = useState<Event[]>([]);
   const scrollRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const fetchEvents = async () => {
+      try {
+        const response = await fetch('/api/event/all_events');
+        if (!response.ok) {
+          throw new Error('Network response was not ok');
+        }
+        const data = await response.json();
+        setEvents(data.events);
+      } catch (error) {
+        console.error('Error fetching events:', error);
+      }
+    };
+
+    fetchEvents();
+  }, []);
+
   const NextArrow = (props: any) => {
     const { className, onClick } = props;
     return (
@@ -82,19 +127,19 @@ const AllEvents = () => {
       </div>
       <div className="max-w-9xl mx-auto px-7 sm:px-6 lg:px-8 md:mt-16">
         <Slider {...settings}>
-          {videoEventData.map((e, i) => (
-            <div className="flex-shrink-0 w-full px-5 md:px-8 py-5" key={i}>
+          {events.map((e) => (
+            <div className="flex-shrink-0 w-full px-5 md:px-8 py-5" key={e.id}>
               <VideoEventCard
-                image={e.image}
-                gifUrl={e.gifUrl}
-                name={e.name}
-                eventname={e.eventname}
-                date={e.date}
-                time={e.time}
-                location={e.location}
-                price={e.price}
-                noOfEntries={e.noOfEntries}
-                sport={e.sport}
+                image={e.desktop_cover_image_url}
+                gifUrl={e.mobile_cover_image_url}
+                name={e.event_name}
+                eventname={e.event_name}
+                date={e.start_date}
+                time={e.start_time}
+                location={e.venue_name}
+                price={500}
+                noOfEntries={100}
+                sport={e.venue_name}
               />
             </div>
           ))}
@@ -105,4 +150,3 @@ const AllEvents = () => {
 };
 
 export default AllEvents;
-
