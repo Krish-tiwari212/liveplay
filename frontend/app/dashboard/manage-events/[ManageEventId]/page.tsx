@@ -171,17 +171,19 @@ const page = ({
         totalPages={totalPages}
         checkpoints={ProgressBarCheckpointsManageEventID}
       />
-      <div className="absolute right-3 top-10 lg:top-0">
-        <Button onClick={handleeditButton} className="w-20">
-          Edit
-        </Button>
-      </div>{" "}
+      {currentPage !== 1 && (
+        <div className="absolute right-3 top-10 lg:top-0">
+          <Button onClick={handleeditButton} className="w-20">
+            Edit
+          </Button>
+        </div>
+      )}
       <div className="relative">
         <div className="mt-20 lg:mt-16 w-full rounded-lg shadow-lg">
           {currentPage === 1 && <EventMatrics handleNext={handleNext} />}
           {currentPage === 2 && <EventInformation handleNext={handleNext} />}
-          {currentPage === 2 && <CategoryPreview handleNext={handleNext} />}
-          {currentPage === 3 && <EnableFeatures handleNext={handleNext} />}
+          {currentPage === 3 && <CategoryPreview handleNext={handleNext} />}
+          {currentPage === 4 && <EnableFeatures handleNext={handleNext} />}
         </div>
         {(isLoading || isPlaying) && (
           <div className="absolute inset-0 bg-gray-200  opacity-50 z-10" />

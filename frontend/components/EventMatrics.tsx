@@ -1,4 +1,6 @@
 import React from 'react'
+import { Button } from './ui/button';
+import { useRouter } from 'next/navigation';
 
 const keyMetrics = [
   { title: 'Total Participants', value: 1000, change: '+10%', icon: 'icon-user-group' },
@@ -13,13 +15,9 @@ const keyMetrics = [
 
 const secondaryMetrics = [
   { title: 'Top Performing Teams', data: ['Team A - 300', 'Team B - 250'], icon: 'icon-trophy' },
-  { title: 'Event Engagement', data: ['Shares: 150', 'Comments: 75'], icon: 'icon-engagement' },
   { title: 'Check-in Statistics', data: ['Checked In: 900', 'Registered: 1000'], icon: 'icon-checklist' },
   { title: 'Sponsor Contributions', data: ['Sponsor A: 10,000', 'Sponsor B: 5,000'], icon: 'icon-sponsor' },
-  { title: 'Demographics Breakdown', data: ['Age: 18-24: 40%', 'Gender: Male: 60%'], icon: 'icon-demographics' },
   { title: 'Completion Rate', data: ['Completed: 80%'], icon: 'icon-progress' },
-  { title: 'Feedback Score', data: ['Organization: 4.5', 'Facilities: 4.0'], icon: 'icon-feedback' },
-  { title: 'Support Tickets', data: ['Received: 20', 'Resolved: 18'], icon: 'icon-support' },
 ];
 
 interface EventMatricsProps{
@@ -27,11 +25,18 @@ interface EventMatricsProps{
 }
 
 const EventMatrics = ({ handleNext }: EventMatricsProps) => {
+    const router=useRouter()
   return (
     <div className=" text-gray-800">
-      <header className="p-5 text-gray-800">
-        <h1 className="text-2xl font-bold">Event Metrics Dashboard</h1>
-        <p className="text-gray-600">Current Sports Event Overview</p>
+      <header className="p-5 text-gray-800 flex justify-between">
+        <div>
+          <h1 className="text-2xl font-bold">Event Metrics Dashboard</h1>
+          <p className="text-gray-600">Current Sports Event Overview</p>
+        </div>
+
+        <Button onClick={() => router.push("/dashboard/draw_creation/")}>
+          View Draw Creations
+        </Button>
       </header>
 
       <main className="p-5 bg-white rounded-lg shadow-lg">
