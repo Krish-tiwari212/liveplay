@@ -68,26 +68,26 @@ const ProgressBar: React.FC<ProgressBarProps> = ({
     : requiredFields;
 
   const handlecircel = (checkpoint: Checkpoint) => {
-    if (forpage === "createEvent" && checkpoint.placement === 5 && currentpage < 5) {
-      console.log(fieldsToCheck);
-      const missingFields = fieldsToCheck.filter(
-        (field) => EventData[field] === undefined || EventData[field] === ""
-      );
+    // if (forpage === "createEvent" && checkpoint.placement === 5 && currentpage < 5) {
+    //   console.log(fieldsToCheck);
+    //   const missingFields = fieldsToCheck.filter(
+    //     (field) => EventData[field] === undefined || EventData[field] === ""
+    //   );
 
-      if (missingFields.length > 0) {
-        toast({
-          title: "Please fill out the necessary details",
-          description: `${missingFields.length<5?`Missing fields: ${missingFields.join(
-            ", "
-          )}`:"Please fill necessary details"}`, 
-        });
-      } else {
-        setCurrentPage(checkpoint.placement);
-        console.log(EventData);
-      }
-    } else {
+    //   if (missingFields.length > 0) {
+    //     toast({
+    //       title: "Please fill out the necessary details",
+    //       description: `${missingFields.length<5?`Missing fields: ${missingFields.join(
+    //         ", "
+    //       )}`:"Please fill necessary details"}`, 
+    //     });
+    //   } else {
+    //     setCurrentPage(checkpoint.placement);
+    //     console.log(EventData);
+    //   }
+    // } else {
       setCurrentPage(checkpoint.placement);
-    } 
+    // } 
   };
 
 

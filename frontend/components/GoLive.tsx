@@ -5,10 +5,11 @@ import successAnimation from '@/public/Animations/Success.json'
 import loadingAnimation from "@/public/Animations/loading.json"; 
 import Image from 'next/image';
 import { useRouter } from 'next/navigation';
+
 const GoLive = () => {
   const [isPlaying, setIsPlaying] = useState(false)
   const [isLoading, setIsLoading] = useState(false)
-  const router=useRouter()
+  const router = useRouter()
 
   const handleButtonClick = () => {
     if (!isLoading) {
@@ -18,9 +19,13 @@ const GoLive = () => {
         setIsLoading(false);
         setIsPlaying(true);
       }, 5000);
-      router.push("/dashboard")
     }
   }
+
+  const handleAnimationComplete = () => {
+    router.push("/dashboard");
+  }
+
   return (
     <div className="w-full flex justify-center items-center h-80 mt-32">
       <div className="w-full mx-20 flex flex-col justify-center items-center">
@@ -62,6 +67,7 @@ const GoLive = () => {
             width={400}
             isStopped={!isPlaying}
             isPaused={!isPlaying}
+            eventListeners={[{ eventName: 'complete', callback: handleAnimationComplete }]}
           />
         )}
       </div>
