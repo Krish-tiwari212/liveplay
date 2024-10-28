@@ -51,7 +51,7 @@ const Insightfields = [
     label: "Event USP",
     name: "eventUSP",
     placeholder:
-      "Please describe what makes your event truly unique. Consider aspects such as special features, exclusive experiences, or notable speakers that will entice attendees to participate.",
+      "Please describe what makes your event truly unique.",
   },
   {
     label: "Rewards And Prizes",

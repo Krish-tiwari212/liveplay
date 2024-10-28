@@ -2,7 +2,14 @@ import { useToast } from '@/hooks/use-toast';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { useRouter } from 'next/navigation';
-import React, { useState } from 'react';
+import React, { useState } from 'react';import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+
 import { FaBars, FaCalendarAlt, FaCogs, FaSignOutAlt, FaTachometerAlt, FaUserCircle } from 'react-icons/fa';
 import { MdKeyboardArrowDown, MdKeyboardArrowUp, MdOutlineFeaturedPlayList, MdOutlineSecurity, MdSchedule, MdSportsFootball } from 'react-icons/md';
 import Image from 'next/image';
@@ -65,6 +72,13 @@ const MSidebar = () => {
     setOpenOrganizer(false);
   };
 
+  const [selectedRole, setSelectedRole] = useState<string>("organizer");
+
+  const handleRoleChange = (value: string) => {
+    setSelectedRole(value); 
+    handleCollapse(); 
+  };
+
   return (
     <div
       className={`hidden bg-[#17202A] text-white p-4 shadow-lg transition-width duration-300 ease-in-out md:flex flex-col h-full z-50 sticky flex-[1]`}
@@ -85,6 +99,7 @@ const MSidebar = () => {
           </div>
         </Link>
       </div>
+
       <ul className="space-y-2 flex-grow relative">
         <li>
           <Link href="/dashboard">
@@ -100,21 +115,22 @@ const MSidebar = () => {
             </button>
           </Link>
         </li>
-        <li>
-          <button
-            onClick={toggleOrganizer}
-            className="flex items-center justify-between w-full py-2 pl-1 rounded transition-colors duration-200"
-          >
-            <h1 className="text-xl">Organizer</h1>
-            {openOrganizer ? (
-              <MdKeyboardArrowUp className="text-xl" />
-            ) : (
-              <MdKeyboardArrowDown className="text-xl" />
-            )}
-          </button>
+        <Select defaultValue="organizer" onValueChange={handleRoleChange}>
+          <SelectTrigger className="h-10 p-2 bg-[#17202A] border border-gray-700 rounded-md text-sm shadow-2xl text-white focus:border-[#17202A] focus:outline-none focus:shadow-lg">
+            <SelectValue placeholder="Organizer" />
+          </SelectTrigger>
+          <SelectContent>
+            <SelectItem value="organizer">Organizer</SelectItem>
+            <SelectItem value="player">Player</SelectItem>
+          </SelectContent>
+        </Select>
+        {selectedRole === "organizer" && (
+          <li>
+            <div className="flex items-center justify-between w-full py-2 pl-1 rounded transition-colors duration-200">
+              <h1 className="text-xl">Organizer</h1>
+            </div>
             <ul
-              className={`space-y-1 pl-2 overflow-hidden transition-all duration-300 ease-in-out 
-              ${openOrganizer ? "max-h-96 opacity-100" : "max-h-0 opacity-0"}`}
+              className={`space-y-1 pl-2 overflow-hidden transition-all duration-300 ease-in-out`}
             >
               <li>
                 <Link href="/dashboard/create_event">
@@ -176,22 +192,15 @@ const MSidebar = () => {
                 </Link>
               </li>
             </ul>
-        </li>
-        <li>
-          <button
-            onClick={togglePlayer}
-            className="flex items-center justify-between w-full py-2 pl-1 rounded transition-colors duration-200"
-          >
-            <h1 className="text-xl">Player</h1>
-            {openPlayer ? (
-              <MdKeyboardArrowUp className="text-xl" />
-            ) : (
-              <MdKeyboardArrowDown className="text-xl" />
-            )}
-          </button>
+          </li>
+        )}
+        {selectedRole === "player" && (
+          <li>
+            <div className="flex items-center justify-between w-full py-2 pl-1 rounded transition-colors duration-200">
+              <h1 className="text-xl">Player</h1>
+            </div>
             <ul
-              className={`space-y-1 pl-2 overflow-hidden transition-all duration-300 ease-in-out 
-              ${openPlayer ? "max-h-96 opacity-100" : "max-h-0 opacity-0"}`}
+              className={`space-y-1 pl-2 overflow-hidden transition-all duration-300 ease-in-out `}
             >
               <li>
                 <Link href="/dashboard/manage-events">
@@ -217,7 +226,8 @@ const MSidebar = () => {
                 </Link>
               </li>
             </ul>
-        </li>
+          </li>
+        )}
       </ul>
       <hr className="my-4 border-gray-700" />
       <div className="mt-auto">

@@ -184,9 +184,7 @@ const Kycforms: React.FC<KycFormsProps> = ({
             )}
             {field.type === "select" && (
               <div className="w-full flex flex-col">
-                <Label className="font-bold text-lg" htmlFor="EventSport">
-                  {field.label}
-                </Label>
+                <label htmlFor={field.id}>{field.label}</label>
                 <Select>
                   <SelectTrigger className="h-10 bg-white border rounded-md text-sm shadow-2xl text-[#17202A] focus:border-[#17202A] focus:outline-none focus:shadow-lg">
                     <SelectValue placeholder={field.placeholder} />

@@ -271,7 +271,7 @@ const EventDetailsForm: React.FC<EventDetailsFormProps> = ({
                 <Label className="font-bold text-lg" htmlFor="EventSport">
                   {field.label}
                 </Label>
-                <Select
+                <Select defaultValue={formData.selectsport || ""} 
                   onValueChange={(value) => {
                     setFormData({
                       ...formData,
