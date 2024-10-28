@@ -8,21 +8,82 @@ import { useRouter } from 'next/navigation';
 import { useEventContext } from '@/context/EventDataContext';
 
 const GoLive = () => {
-  const {setEventData}=useEventContext()
+  const {EventData, setEventData}=useEventContext()
   const [isPlaying, setIsPlaying] = useState(false)
   const [isLoading, setIsLoading] = useState(false)
   const router = useRouter()
+  console.log(EventData)
 
-  const handleButtonClick = () => {
+  const handleButtonClick = async () => {
     if (!isLoading) {
       setIsLoading(true);
       setIsPlaying(false);
-      setTimeout(() => {
+  
+      const formData = new FormData();
+      formData.append('event_name', EventData.eventName);
+      formData.append('organizer_contact_number', EventData.organiserNumber);
+      formData.append('organizer_email', EventData.organiseremailaddress);
+      formData.append('start_date', EventData.eventstartDate);
+      formData.append('end_date', EventData.eventenddate);
+      formData.append('last_registration_date', EventData.LastRegistrationDate);
+      formData.append('last_withdrawal_date', EventData.LastWithdrawalDate);
+      formData.append('start_time', EventData.startTime);
+      formData.append('venue_name', EventData.venueName);
+      formData.append('street_address', EventData.eventAddress);
+      formData.append('city', EventData.city);
+      formData.append('pincode', EventData.eventPincode);
+      formData.append('venue_not_decided', EventData.venueNotDecided !== undefined ? EventData.venueNotDecided.toString() : 'false');
+      formData.append('event_description', EventData.eventDescription);
+      formData.append('event_usp', EventData.eventUSP);
+      formData.append('rewards_for_participants', EventData.rewardsAndParticipation);
+      formData.append('playing_rules', EventData.playingRules);
+      formData.append('countdown', EventData.countdown !== undefined ? EventData.countdown.toString() : 'false');
+      formData.append('enable_fixtures', EventData.enableFixtures !== undefined ? EventData.enableFixtures.toString() : 'false');
+      formData.append('venue_link', EventData.venuelink);
+      formData.append('sport', EventData.selectsport);
+      formData.append('selected_plan', EventData.selectedPlan);
+      formData.append('mobileBanner', EventData.mobileBanner);
+      formData.append('desktopBanner', EventData.desktopBanner);
+      formData.append(
+        "eventData",
+        JSON.stringify({
+          categories: EventData.categories.map((category: any) => ({
+            category_name: category.categoryName,
+            total_quantity: category.totalQuantity !== "" ? parseInt(category.totalQuantity, 10) : 0,
+            max_ticket_quantity: category.maxTicketQuantity !== "" ? parseInt(category.maxTicketQuantity, 10) : 0,
+            price: parseFloat(category.price),
+            ticket_description: category.ticketDescription,
+            discount_code: category.discountcode,
+            category_type: category.categoryType,
+            number_of_discounts: category.numberOfDiscounts !== undefined ? parseInt(category.numberOfDiscounts, 10) : undefined,
+            percentage_input: category.percentageInput !== undefined ? parseFloat(category.percentageInput) : undefined,
+            from_date: category.fromDate == "" ? undefined : category.fromDate,
+            till_date: category.tillDate == "" ? undefined : category.tillDate,
+            amount_input: category.amountInput !== "" ? parseFloat(category.amountInput) : 0,
+            discount_value: category.discountValue !== undefined ? parseFloat(category.discountValue) : undefined,
+          })),
+        })
+      );
+  
+      try {
+        const response = await fetch('/api/event/create', {
+          method: 'POST',
+          body: formData,
+        });
+  
+        if (response.ok) {
+          setIsLoading(false);
+          setIsPlaying(true);
+        } else {
+          console.error('Error creating event:', response.statusText);
+          setIsLoading(false);
+        }
+      } catch (error) {
+        console.error('Error creating event:', error);
         setIsLoading(false);
-        setIsPlaying(true);
-      }, 5000);
+      }
     }
-  }
+  };
 
   const handleAnimationComplete = () => {
     router.push("/dashboard");
