@@ -4,6 +4,7 @@ import "./globals.css";
 import Navbar from "@/components/Navbar";
 import { Toast, ToastProvider } from "@radix-ui/react-toast";
 import { Toaster } from "@/components/ui/toaster";
+import { UserProvider } from '@/context/UserContext';
 
 const geistSans = localFont({
   src: "./fonts/GeistVF.woff",

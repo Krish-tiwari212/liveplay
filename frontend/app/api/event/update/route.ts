@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server';
-import { supabase } from '@/lib/supabaseClient';
+import { createClient } from '@/utils/supabase/server'
 
 interface UpdateEventRequest {
   event_name?: string;
@@ -26,6 +26,7 @@ interface UpdateEventRequest {
 
 export async function PATCH(request: Request, { params }: { params: { event_id: string } }) {
   try {
+    const supabase = await createClient();
     const updates: UpdateEventRequest = await request.json();
 
     const { data: event, error: eventError } = await supabase
