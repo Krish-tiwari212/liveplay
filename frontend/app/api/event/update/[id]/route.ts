@@ -24,7 +24,7 @@ interface UpdateEventRequest {
   mobile_cover_image_url?: string;
 }
 
-export async function PATCH(request: Request, { params }: { params: { event_id: string } }) {
+export async function PATCH(request: Request, { params }: { params: { id: string } }) {
   try {
     const supabase = await createClient();
     const updates: UpdateEventRequest = await request.json();
@@ -32,7 +32,7 @@ export async function PATCH(request: Request, { params }: { params: { event_id: 
     const { data: event, error: eventError } = await supabase
       .from('events')
       .update(updates)
-      .eq('id', params.event_id)
+      .eq('id', params.id)
       .single();
 
     if (eventError) {

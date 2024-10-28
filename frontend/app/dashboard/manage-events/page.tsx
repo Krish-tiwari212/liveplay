@@ -1,6 +1,6 @@
 "use client"
 
-import React, { useEffect } from 'react'
+import React, { useEffect, useState } from 'react'
 import Image from 'next/image';
 import { Card, CardContent } from "@/components/ui/card";
 import { FaCalendarAlt } from 'react-icons/fa';
@@ -70,9 +70,26 @@ const drafts = [
 
 const page = () => {
   const router=useRouter()
+  const [events, setEvents] = useState([]);
   const { setDashboardName } = useEventContext();
   useEffect(() => {
     setDashboardName("Manage Events");
+  }, []);
+  useEffect(() => {
+    const fetchEvents = async () => {
+      try {
+        const response = await fetch('/api/event/all_events');
+        if (!response.ok) {
+          throw new Error('Network response was not ok');
+        }
+        const data = await response.json();
+        setEvents(data.events);
+      } catch (error) {
+        console.error('Error fetching events:', error);
+      }
+    };
+  
+    fetchEvents();
   }, []);
   return (
     <div className="m-3 relative ">
@@ -80,45 +97,43 @@ const page = () => {
       <section className="mt-8 bg-white shadow-md rounded-lg px-4 pt-4">
         <h2 className="text-xl font-semibold mb-2">Active Events</h2>
         <div className="flex space-x-4 overflow-x-auto pb-8">
-          {activeEvents.map((event) => (
-            <Card
-              onClick={() =>
-                router.push(`/dashboard/manage-events/${event.id}`)
-              }
-              key={event.id}
-              className="shadow-md cursor-pointer hover:shadow-2xl"
-            >
-              <CardContent className="py-4 flex gap-4">
-                <Image
-                  src={event.image}
-                  alt="eventBanner"
-                  width={200}
-                  height={200}
-                  className="rounded-lg h-44 shadow-xl "
-                />
-                <div>
-                  <h3 className="font-bold">{event.title}</h3>
-                  <div className="flex flex-col justify-between">
-                    <span>Entries: {event.entries}</span>
-                    <span>Revenue: {event.revenue}</span>
-                    <span>Event Views: {event.views}</span>
-                    <span>Interested People: {event.interested}</span>
-                  </div>
-                  <Link href="/event/share-link">
-                    <Button className="w-full mt-2 bg-[#17202A] text-[#CDDC29] hover:text-white p-1 rounded hover:shadow-xl">
-                      Share
-                    </Button>
-                  </Link>
+        {events.map(event => (
+          <Card
+            key={event.id}
+            className="shadow-md cursor-pointer hover:shadow-2xl"
+            onClick={() => router.push(`/dashboard/manage-events/${event.id}`)}
+          >
+            <CardContent className="py-4 flex gap-4">
+              <Image
+                src={event.desktop_cover_image_url || "/images/default.jpeg"}
+                alt="eventBanner"
+                width={200}
+                height={200}
+                className="rounded-lg h-44 shadow-xl"
+              />
+              <div>
+                <h3 className="font-bold">{event.event_name}</h3>
+                <div className="flex flex-col justify-between">
+                  <span>Entries: {event.entries || 'N/A'}</span>
+                  <span>Revenue: {event.revenue || '$0'}</span>
+                  <span>Event Views: {event.event_views || '0'}</span>
+                  <span>Interested People: {event.interested_people || '0'}</span>
                 </div>
-              </CardContent>
-            </Card>
-          ))}
-        </div>
+                <Link href={`/event/${event.id}/share-link`}>
+                  <Button className="w-full mt-2 bg-[#17202A] text-[#CDDC29] hover:text-white p-1 rounded hover:shadow-xl">
+                    Share
+                  </Button>
+                </Link>
+              </div>
+            </CardContent>
+          </Card>
+        ))}
+      </div>
       </section>
 
-      <section className="mt-8 bg-white shadow-md rounded-lg px-4 pt-4">
+      <section className="mt-8 bg-white shadow-md rounded-lg px-4 py-4">
         <h2 className="text-xl font-semibold mb-2">Past Events</h2>
-        <div className="flex space-x-4 overflow-x-auto pb-8">
+        {/* <div className="flex space-x-4 overflow-x-auto pb-8">
           {pastEvents.map((event) => (
             <Card
               key={event.id}
@@ -144,12 +159,12 @@ const page = () => {
               </CardContent>
             </Card>
           ))}
-        </div>
+        </div> */}
       </section>
 
-      <section className="mt-6 bg-white shadow-md rounded-l px-4 pt-4">
+      <section className="mt-6 bg-white shadow-md rounded-l px-4 py-4">
         <h2 className="text-xl font-semibold mb-2">Drafts</h2>
-        <div className="flex space-x-4 overflow-x-auto pb-8">
+        {/* <div className="flex space-x-4 overflow-x-auto pb-8">
           {drafts.map((draft) => (
             <Card
               key={draft.id}
@@ -173,7 +188,7 @@ const page = () => {
               </CardContent>
             </Card>
           ))}
-        </div>
+        </div> */}
       </section>
     </div>
   );

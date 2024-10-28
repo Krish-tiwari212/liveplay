@@ -26,6 +26,7 @@ const { events } = data;
 export default function Home() {
   const { setTheme } = useAppContext();
   const { setDashboardName } = useEventContext();
+  const [events, setEvents] = useState([]);
   const router=useRouter()
   useEffect(() => {
     const matchMedia = window.matchMedia("(prefers-color-scheme: dark)");
@@ -40,6 +41,22 @@ export default function Home() {
   }, []);
   useEffect(() => {
     setDashboardName("Home");
+  }, []);
+  useEffect(() => {
+    const fetchEvents = async () => {
+      try {
+        const response = await fetch('/api/event/all_events');
+        if (!response.ok) {
+          throw new Error('Network response was not ok');
+        }
+        const data = await response.json();
+        setEvents(data.events);
+      } catch (error) {
+        console.error('Error fetching events:', error);
+      }
+    };
+  
+    fetchEvents();
   }, []);
   return (
     <div className="flex flex-col m-3">
@@ -71,7 +88,7 @@ export default function Home() {
                   Total Events Hosted
                 </h1>
                 <h1 className="text-[0.58rem] lg:text-[0.7rem] xl:text-sm ">
-                  7
+                  {events.length}
                 </h1>
               </div>
             </CardContent>
@@ -84,7 +101,7 @@ export default function Home() {
                   Total Entries
                 </h1>
                 <h1 className="text-[0.58rem] lg:text-[0.7rem] xl:text-sm ">
-                  1500
+                  0
                 </h1>
               </div>
             </CardContent>
@@ -97,7 +114,7 @@ export default function Home() {
                   Total Sales
                 </h1>
                 <h1 className="text-[0.58rem] lg:text-[0.7rem] xl:text-sm ">
-                  50000
+                  0
                 </h1>
               </div>
             </CardContent>
@@ -110,7 +127,7 @@ export default function Home() {
                   Total Events views
                 </h1>
                 <h1 className="text-[0.58rem] lg:text-[0.7rem] xl:text-sm ">
-                  4500
+                  0
                 </h1>
               </div>
             </CardContent>
@@ -163,141 +180,43 @@ export default function Home() {
         </div>
       </section>
       <section className="mt-14 bg-white shadow-md rounded-lg px-4 pt-4">
-        <h2 className="text-xl font-semibold mb-2">Active Events</h2>
-        <div className="flex space-x-4 overflow-x-auto pb-8">
-          <Card className="shadow-md cursor-pointer hover:shadow-2xl">
+      <h2 className="text-xl font-semibold mb-2">Active Events</h2>
+      <div className="flex space-x-4 overflow-x-auto pb-8">
+        {events.map(event => (
+          <Card key={event.id} className="shadow-md cursor-pointer hover:shadow-2xl">
             <CardContent className="py-4 flex gap-4">
               <Image
-                src={"/images/img1.jpeg"}
+                src={event.desktop_cover_image_url || "/images/default.jpeg"}
                 alt="eventBanner"
                 width={200}
                 height={200}
-                className="rounded-lg h-44 shadow-xl "
+                className="rounded-lg h-44 shadow-xl"
               />
               <div>
-                <h3 className="font-bold">Badminton Cup</h3>
+                <h3 className="font-bold">{event.event_name}</h3>
                 <div className="flex flex-col justify-between">
-                  <span>Entries: 55</span>
-                  <span>Revenue: $0</span>
-                  <span>Event Views: 0</span>
-                  <span>Interested People: 0</span>
+                  <span>Entries: {event.entries || 'N/A'}</span>
+                  <span>Revenue: {event.revenue || '$0'}</span>
+                  <span>Event Views: {event.event_views || '0'}</span>
+                  <span>Interested People: {event.interested_people || '0'}</span>
                 </div>
-                <Link href="/event/share-link">
-                  <Button className="w-full mt-2 bg-[#17202A]  text-[#CDDC29] hover:text-white p-1 rounded hover:shadow-xl">
+                <Link href={`/event/${event.id}/share-link`}>
+                  <Button className="w-full mt-2 bg-[#17202A] text-[#CDDC29] hover:text-white p-1 rounded hover:shadow-xl">
                     Share
                   </Button>
                 </Link>
               </div>
             </CardContent>
           </Card>
-          <Card className="shadow-md cursor-pointer hover:shadow-2xl">
-            <CardContent className="py-4 flex gap-4">
-              <Image
-                src={"/images/img2.jpeg"}
-                alt="eventBanner"
-                width={200}
-                height={200}
-                className="rounded-lg h-44 shadow-xl "
-              />
-              <div>
-                <h3 className="font-bold">Badminton Cup</h3>
-                <div className="flex flex-col justify-between">
-                  <span>Entries: 55</span>
-                  <span>Revenue: $0</span>
-                  <span>Event Views: 0</span>
-                  <span>Interested People: 0</span>
-                </div>
-                <Link href="/event/share-link">
-                  <Button className="w-full mt-2  p-1 rounded hover:shadow-xl">
-                    Share
-                  </Button>
-                </Link>
-              </div>
-            </CardContent>
-          </Card>
-        </div>
-      </section>
+        ))}
+      </div>
+    </section>
 
       <section className="mt-14 bg-white shadow-md rounded-lg px-4 pt-4">
         <h2 className="text-xl font-semibold mb-2">Past Events</h2>
-        <div className="flex space-x-4 overflow-x-auto pb-8">
-          <Card className="shadow-md cursor-pointer hover:shadow-2xl">
-            <CardContent className="py-4 flex gap-4">
-              <Image
-                src={"/images/img3.jpeg"}
-                alt="eventBanner"
-                width={200}
-                height={200}
-                className="rounded-lg h-44 shadow-xl "
-              />
-              <div>
-                <h3 className="font-bold">Badminton Cup</h3>
-                <div className="flex flex-col justify-between">
-                  <span>Entries: 400</span>
-                  <span>Revenue: $0</span>
-                  <span>Event Views: 0</span>
-                  <span>Interested People: 0</span>
-                </div>
-              </div>
-            </CardContent>
-          </Card>
-          <Card className="shadow-md cursor-pointer hover:shadow-2xl">
-            <CardContent className="py-4 flex gap-4">
-              <Image
-                src={"/images/img5.jpeg"}
-                alt="eventBanner"
-                width={200}
-                height={200}
-                className="rounded-lg h-44 shadow-xl "
-              />
-              <div>
-                <h3 className="font-bold">Badminton Cup</h3>
-                <div className="flex flex-col justify-between">
-                  <span>Entries: 55</span>
-                  <span>Revenue: $0</span>
-                  <span>Event Views: 0</span>
-                  <span>Interested People: 0</span>
-                </div>
-              </div>
-            </CardContent>
-          </Card>
-        </div>
+        
       </section>
-      <section className="mt-6 bg-white shadow-md rounded-l px-4 pt-4">
-        <h2 className="text-xl font-semibold mb-2">Drafts</h2>
-        <div className="flex space-x-4 overflow-x-auto pb-8">
-          <Card className="shadow-md cursor-pointer hover:shadow-2xl">
-            <CardContent className="py-4 flex gap-4">
-              <Image
-                src={"/images/default.jpeg"}
-                alt="eventBanner"
-                width={200}
-                height={200}
-                className="rounded-lg h-44 shadow-xl "
-              />
-              <div>
-                <h3 className="font-bold">Badminton Cup</h3>
-                <div className="text-center items-center h-36 mt-2 rounded-lg bg-slate-100 w-36 shadow-xl"></div>
-              </div>
-            </CardContent>
-          </Card>
-          <Card className="shadow-md cursor-pointer hover:shadow-2xl">
-            <CardContent className="py-4 flex gap-4">
-              <Image
-                src={"/images/img7.jpeg"}
-                alt="eventBanner"
-                width={200}
-                height={200}
-                className="rounded-lg h-44 shadow-xl "
-              />
-              <div className="">
-                <h3 className="font-bold">Badminton Cup</h3>
-                <div className="text-center items-center h-36 mt-2 rounded-lg bg-slate-100 w-36 shadow-xl"></div>
-              </div>
-            </CardContent>
-          </Card>
-        </div>
-      </section>
+     
     </div>
   );
 }
