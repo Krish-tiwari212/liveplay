@@ -1,8 +1,9 @@
 import { NextResponse } from 'next/server';
-import { supabase } from '@/lib/supabaseClient';
+import { createClient } from '@/utils/supabase/server'
 
 export async function DELETE(request: Request, { params }: { params: { event_id: string } }) {
   try {
+    const supabase = await createClient();
     const { data: deletedEvent, error: eventError } = await supabase
       .from('events')
       .delete()

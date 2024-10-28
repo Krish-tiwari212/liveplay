@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server';
-import { supabase } from '@/lib/supabaseClient';
+import { createClient } from '@/utils/supabase/server'
 
 interface EventRequest {
   event_name: string;
@@ -40,6 +40,8 @@ interface EventRequest {
 
 export async function POST(request: Request) {
   try {
+    // Create a Supabase client
+    const supabase = await createClient();
     // Parse the incoming request and files
     const formData = await request.formData();
     console.log('Form data:', formData);
@@ -121,6 +123,7 @@ export async function POST(request: Request) {
         desktop_cover_image_url: desktopBannerUrl.data.publicUrl,
         mobile_cover_image_url: mobileBannerUrl.data.publicUrl,
       })
+      .select('id')
       .single();
 
     if (eventError) {
@@ -133,6 +136,7 @@ export async function POST(request: Request) {
       const { error: categoryError } = await supabase
         .from('event_categories')
         .insert({
+          event_id: event.id,
           category_name: category.category_name,
           total_quantity: category.total_quantity,
           max_ticket_quantity: category.max_ticket_quantity,

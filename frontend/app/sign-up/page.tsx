@@ -1,168 +1,210 @@
 "use client";
 
 import { useState } from "react";
-import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
-
+import { useRouter } from "next/navigation";
+import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import {
   Form,
-  FormControl,
-  FormDescription,
   FormField,
   FormItem,
   FormLabel,
+  FormControl,
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import { useRouter } from "next/navigation";
 import { useToast } from "@/hooks/use-toast";
-import { Toast } from "@radix-ui/react-toast";
-import Image from "next/image";
+import { FaGoogle } from "react-icons/fa";
 
-// Define the schema using zod
+// Validation schema for form fields
 const formSchema = z
   .object({
-    username: z.string().min(2, {
-      message: "Username must be at least 2 characters.",
-    }),
-    password: z.string().min(6, {
-      message: "Password must be at least 6 characters.",
-    }),
-    confirmPassword: z.string().min(6, {
-      message: "Confirm Password must match the Password.",
-    }),
+    full_name: z.string().min(2, { message: "Full Name is required" }),
+    contact_number: z.string().min(10, { message: "Contact number must be valid" }),
+    city: z.string().min(2, { message: "City is required" }),
+    pincode: z.string().min(5, { message: "Pincode must be valid" }),
+    email: z.string().email({ message: "Invalid email address" }),
+    password: z.string().min(6, { message: "Password must be at least 6 characters" }),
+    confirmPassword: z.string().min(6, { message: "Confirm Password must match Password" }),
+    role: z.enum(["participant", "organizer"], { errorMap: () => ({ message: "Select a role" }) }),
   })
   .refine((data) => data.password === data.confirmPassword, {
-    message: "Passwords do not match.",
+    message: "Passwords do not match",
     path: ["confirmPassword"],
   });
 
-const ProfileForm = () => {
+const SignUpForm = () => {
   const router = useRouter();
+  const { toast } = useToast();
   const [loading, setLoading] = useState(false);
-  const {toast}=useToast()
+  const [step, setStep] = useState(1);
 
   const form = useForm({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      username: "",
+      full_name: "",
+      contact_number: "",
+      city: "",
+      pincode: "",
+      email: "",
       password: "",
       confirmPassword: "",
+      role: "participant",
     },
   });
 
-  // Submit handler
+  // Form submission for email-based sign-up
   const onSubmit = async (data: any) => {
-    setLoading(true); // Start the loader
-
-    // Simulate a delay for 2 seconds (e.g., API call)
-    await new Promise((resolve) => setTimeout(resolve, 500));
-
-    // Store username and password in localStorage
-    localStorage.setItem("username", data.username);
-    localStorage.setItem("password", data.password);
-
-
-    toast({
-      title: "Successfull",
-      variant: "default",
-      description: "Successfully logged in!",
+    setLoading(true);
+    const response = await fetch("/api/auth/signup", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(data),
     });
-
-    // Stop the loader
+    const result = await response.json();
     setLoading(false);
 
-    setTimeout(() => {
+    if (response.ok) {
+      toast({ title: "Signup Successful", description: "Your account has been created!" });
       router.push("/dashboard");
-    }, 1000);
+    } else {
+      toast({ title: "Signup Failed", description: result.error || "An error occurred. Please try again.", variant: "destructive" });
+    }
+  };
+
+  // Navigate between steps
+  const handleNextStep = async () => {
+    setStep(step + 1);
+  };
+
+  const handlePreviousStep = () => setStep((prevStep) => prevStep - 1);
+
+  // Google OAuth signup
+  const handleGoogleSignup = async () => {
+    const response = await fetch("/api/auth/signup", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ provider: "google" }),
+    });
+    const result = await response.json();
+
+    if (result.url) {
+      window.location.href = result.url; // Redirect to Google OAuth
+    } else {
+      toast({ title: "Google Signup Failed", description: "Please try again.", variant: "destructive" });
+    }
   };
 
   return (
-    <div className="flex items-center justify-center min-h-screen bg-[#17202A] relative">
-      {/* <Image 
-        src="/images/login bg.jpg" 
-        alt="logobg" 
-        fill 
-        className="w-full h-full absolute object-cover z-0" 
-      /> */}
-      <div className="w-full max-w-md p-8 space-y-6 bg-white rounded-lg shadow-md z-10">
-        <h2 className="text-2xl font-bold text-center text-[#17202A]">
-          Create Your Account
-        </h2>
+    <div className="flex items-center justify-center min-h-screen bg-gray-50" key={step}>
+      <div className="w-full max-w-lg p-8 bg-white rounded shadow-md">
+        <div className="flex justify-between items-center mb-6">
+          {step > 1 && (
+            <button onClick={handlePreviousStep} className="text-gray-600">
+              ← Back
+            </button>
+          )}
+        </div>
+        <h2 className="text-2xl font-bold text-center mb-6">Create an Account</h2>
+        <div className="w-full flex justify-center mb-5" >
+          <Button onClick={handleGoogleSignup} className="w-full bg-white text-black border border-gray-300 flex items-center justify-center space-x-2 hover:bg-slate-200">
+            <FaGoogle className="text-xl" />
+            <span>Sign up with Google</span>
+          </Button>
+        </div>
         <Form {...form}>
-          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
-            <FormField
-              control={form.control}
-              name="username"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel className="text-gray-700">Username</FormLabel>
-                  <FormControl>
-                    <Input
-                      className="border-gray-300 rounded-md focus:ring focus:ring-gray-300"
-                      placeholder="username"
-                      {...field}
-                    />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-            <FormField
-              control={form.control}
-              name="password"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel className="text-gray-700">Password</FormLabel>
-                  <FormControl>
-                    <Input
-                      className="border-gray-300 rounded-md focus:ring focus:ring-gray-300"
-                      type="password"
-                      placeholder="password"
-                      {...field}
-                    />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-            <FormField
-              control={form.control}
-              name="confirmPassword"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel className="text-gray-700">
-                    Confirm Password
-                  </FormLabel>
-                  <FormControl>
-                    <Input
-                      className="border-gray-300 rounded-md focus:ring focus:ring-gray-300"
-                      type="password"
-                      placeholder="confirm password"
-                      {...field}
-                    />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-            <FormDescription className="text-gray-500">
-              Please fill to login
-            </FormDescription>
-            <Button
-              type="submit"
-              disabled={loading}
-              className="w-full bg-[#17202A] text-white hover:bg-gray-700"
-            >
-              {loading ? "Loading..." : "Submit"}
-            </Button>
+          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
+            {step === 1 && (
+              <>
+                <FormField control={form.control} name="full_name" render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Full Name</FormLabel>
+                    <FormControl><Input placeholder="Enter your full name" {...field} /></FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )} />
+                <FormField control={form.control} name="contact_number" render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Contact Number</FormLabel>
+                    <FormControl><Input placeholder="Enter your contact number" {...field} /></FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )} />
+                <FormField control={form.control} name="city" render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>City</FormLabel>
+                    <FormControl><Input placeholder="Enter your city" {...field} /></FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )} />
+                <FormField control={form.control} name="pincode" render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Pincode</FormLabel>
+                    <FormControl><Input placeholder="Enter your pincode" {...field} /></FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )} />
+                <Button type="button" onClick={handleNextStep} className="w-full">Next</Button>
+              </>
+            )}
+            {step === 2 && (
+              <>
+                <FormField control={form.control} name="email" render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Email</FormLabel>
+                    <FormControl><Input type="email" placeholder="Enter your email" {...field} /></FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )} />
+                <FormField control={form.control} name="password" render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Password</FormLabel>
+                    <FormControl><Input type="password" placeholder="Enter your password" {...field} /></FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )} />
+                <FormField control={form.control} name="confirmPassword" render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Confirm Password</FormLabel>
+                    <FormControl><Input type="password" placeholder="Confirm your password" {...field} /></FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )} />
+                <Button type="button" onClick={handleNextStep} className="w-full">Next</Button>
+              </>
+            )}
+            {step === 3 && (
+              <>
+                <FormField control={form.control} name="role" render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Are you a participant or an organizer in events?</FormLabel>
+                    <FormControl>
+                      <select {...field} className="border p-2 rounded">
+                        <option value="participant">Participant</option>
+                        <option value="organizer">Organizer</option>
+                      </select>
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )} />
+                <div className="flex items-center space-x-2">
+                  <input type="checkbox" {...form.register("terms")} />
+                  <span className="text-sm text-gray-600">
+                    I agree to the <Link href="#" className="text-blue-500">terms and conditions</Link>
+                  </span>
+                </div>
+                <Button type="submit" disabled={loading} className="w-full">{loading ? "Signing up..." : "Sign Up"}</Button>
+              </>
+            )}
           </form>
         </Form>
+        <Link href="/login" className="text-blue-500 text-center block mt-4">Already have an account? Login here</Link>
       </div>
     </div>
   );
 };
 
-export default ProfileForm;
+export default SignUpForm;

@@ -26,6 +26,8 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
+import { useUser } from '@/context/UserContext';
 
 import { Value } from "@radix-ui/react-select";
 import { FaUserCircle } from "react-icons/fa";
@@ -40,6 +42,7 @@ const Navbar = () => {
   const { theme, setTheme } = useAppContext();
   const [tooltip, setTooltip] = useState<string | null>(null);
   const [userStatus, setUserStatus] = useState("organizer");
+  const { user, loading } = useUser();
 
   return (
     <div className="flex justify-between items-center p-4 m-3 bg-[#17202A] text-white rounded-lg ">
@@ -58,7 +61,10 @@ const Navbar = () => {
               <Tooltip>
                 <TooltipTrigger asChild>
                   <div className="flex items-center w-full px-2 hover:bg-gray-700 hover:rounded transition-colors relative">
-                    <FaUserCircle className="text-3xl" />
+                    <Avatar>
+                      <AvatarImage src={user?.user_metadata.avatar_url} />
+                      <AvatarFallback>CN</AvatarFallback>
+                    </Avatar>
                   </div>
                 </TooltipTrigger>
                 <TooltipContent className="relative">

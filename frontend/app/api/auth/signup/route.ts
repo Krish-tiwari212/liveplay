@@ -1,63 +1,61 @@
+// app/api/auth/signup/route.ts
 import { NextResponse } from 'next/server';
-import { supabase } from '@/lib/supabaseClient';
+import { createClient } from '@/utils/supabase/server';
 
 interface SignupRequest {
-  full_name: string;
-  email: string;
-  password: string;
-  role: 'participant' | 'organizer';
-  contact_number: string;
-  city: string;
-  pincode: string;
-  pan?: string;  // Only required for organizers
-  aadhar_front?: string;  // Only for organizers
-  aadhar_back?: string;   // Only for organizers
-  bank_name?: string;     // Only for organizers
-  account_number?: string;  // Only for organizers
-  ifsc_code?: string;     // Only for organizers
+  full_name?: string;
+  email?: string;
+  password?: string;
+  role?: 'participant' | 'organizer';
+  contact_number?: string;
+  city?: string;
+  pincode?: string;
+  provider?: string; // add provider for OAuth
 }
 
 export async function POST(request: Request) {
-  try {
-    const { full_name, email, password, role, contact_number, city, pincode, pan, aadhar_front, aadhar_back, bank_name, account_number, ifsc_code }: SignupRequest = await request.json();
-    
-    const { data: user, error: authError } = await supabase.auth.signUp({
-      email,
-      password
-    });
+  const supabase = await createClient();
 
-    if (authError) {
-      return NextResponse.json({ error: authError.message }, { status: 400 });
+  try {
+    const { full_name, email, password, role, contact_number, city, pincode, provider }: SignupRequest = await request.json();
+
+    // Check if it's an OAuth signup
+    if (provider === 'google') {
+      const { data, error } = await supabase.auth.signInWithOAuth({
+        provider: 'google',
+        options: { redirectTo: `${process.env.NEXT_PUBLIC_SITE_URL}/auth/callback` }
+      });
+      if (error) {
+        return NextResponse.json({ error: error.message }, { status: 400 });
+      }
+      return NextResponse.json({ url: data.url });
     }
 
+    // Regular email signup
+    const { data: authData, error: authError } = await supabase.auth.signUp({
+      email,
+      password,
+      options: {
+        data: { full_name, role, contact_number, city, pincode },
+      },
+    });
+
+    if (authError || !authData.user) {
+      return NextResponse.json({ error: authError?.message || 'Signup failed' }, { status: 400 });
+    }
+
+    // Insert user into the 'users' table
     const { error: insertError } = await supabase.from('users').insert({
-      id: user?.user?.id || '', 
       full_name,
       email,
       contact_number,
       role,
       city,
-      pincode
+      pincode,
     });
 
     if (insertError) {
       return NextResponse.json({ error: insertError.message }, { status: 400 });
-    }
-
-    if (role === 'organizer') {
-      const { error: organizerError } = await supabase.from('organizer_details').insert({
-        user_id: user?.user?.id || '',
-        pan,
-        aadhar_front,
-        aadhar_back,
-        bank_name,
-        account_number,
-        ifsc_code
-      });
-
-      if (organizerError) {
-        return NextResponse.json({ error: organizerError.message }, { status: 400 });
-      }
     }
 
     return NextResponse.json({ message: 'User created successfully' }, { status: 200 });
