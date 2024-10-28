@@ -15,7 +15,7 @@ interface Checkpoint {
 }
 
 interface ProgressBarProps {
-  forpage:string;
+  forpage?:string;
   checkpoints: Checkpoint[];
   currentpage: any;
   setCurrentPage: React.Dispatch<React.SetStateAction<any>>;

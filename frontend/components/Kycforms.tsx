@@ -1,3 +1,5 @@
+"use client"
+
 import { Checkbox } from '@/components/ui/checkbox';
 import React, { useRef, useState } from 'react'
 import { Input } from "@/components/ui/input";
@@ -5,6 +7,63 @@ import { Label } from "@/components/ui/label";
 import { Loader } from 'lucide-react';
 import Image from 'next/image';
 import { Button } from './ui/button';
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+
+const banks = [
+  "Allahabad Bank",
+  "Andhra Bank",
+  "Axis Bank",
+  "Bank of Bahrain and Kuwait",
+  "Bank of Baroda - Corporate Banking",
+  "Bank of Baroda - Retail Banking",
+  "Bank of India",
+  "Bank of Maharashtra",
+  "Canara Bank",
+  "Central Bank of India",
+  "City Union Bank",
+  "Corporation Bank",
+  "Deutsche Bank",
+  "Development Credit Bank",
+  "Dhanlaxmi Bank",
+  "Federal Bank",
+  "ICICI Bank",
+  "IDBI Bank",
+  "Indian Bank",
+  "Indian Overseas Bank",
+  "IndusInd Bank",
+  "ING Vysya Bank",
+  "Jammu and Kashmir Bank",
+  "Karnataka Bank Ltd",
+  "Karur Vysya Bank",
+  "Kotak Bank",
+  "Laxmi Vilas Bank",
+  "Oriental Bank of Commerce",
+  "Punjab National Bank - Corporate Banking",
+  "Punjab National Bank - Retail Banking",
+  "Punjab & Sind Bank",
+  "Shamrao Vitthal Co-operative Bank",
+  "South Indian Bank",
+  "State Bank of Bikaner & Jaipur",
+  "State Bank of Hyderabad",
+  "State Bank of India",
+  "State Bank of Mysore",
+  "State Bank of Patiala",
+  "State Bank of Travancore",
+  "Syndicate Bank",
+  "Tamilnad Mercantile Bank Ltd.",
+  "UCO Bank",
+  "Union Bank of India",
+  "United Bank of India",
+  "Vijaya Bank",
+  "Yes Bank Ltd",
+];
+
 
 interface FormField {
   id: string;
@@ -52,7 +111,13 @@ const Kycforms: React.FC<KycFormsProps> = ({
 
   return (
     <form className="bg-white shadow-2xl p-5 rounded-lg w-full relative">
-      <button onClick={(e) => {e.preventDefault();handlePrev()}} disabled={prevDisabled}>
+      <button
+        onClick={(e) => {
+          e.preventDefault();
+          handlePrev();
+        }}
+        disabled={prevDisabled}
+      >
         <Image
           src="/icons/BackIcon.svg"
           alt="backIcon"
@@ -63,7 +128,7 @@ const Kycforms: React.FC<KycFormsProps> = ({
       <div className="flex flex-wrap w-[90%] mx-auto">
         {fields.map((field, index) => (
           <div key={field.id} className="w-full m-2 flex flex-col">
-            {field.type !== "file" && (
+            {field.type !== "file" && field.type !== "select" && (
               <>
                 <label htmlFor={field.id}>{field.label}</label>
                 <input
@@ -117,6 +182,25 @@ const Kycforms: React.FC<KycFormsProps> = ({
                 </div>
               </div>
             )}
+            {field.type === "select" && (
+              <div className="w-full flex flex-col">
+                <Label className="font-bold text-lg" htmlFor="EventSport">
+                  {field.label}
+                </Label>
+                <Select>
+                  <SelectTrigger className="h-10 bg-white border rounded-md text-sm shadow-2xl text-[#17202A] focus:border-[#17202A] focus:outline-none focus:shadow-lg">
+                    <SelectValue placeholder={field.placeholder} />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {banks.map((bank, i) => (
+                      <SelectItem value={bank} key={i}>
+                        {bank}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
+            )}
             {field.checkbox && (
               <div className="mt-2 mx-2 items-top flex justify-start space-x-2">
                 <Checkbox id={field.checkbox.id} />
@@ -135,7 +219,10 @@ const Kycforms: React.FC<KycFormsProps> = ({
       </div>
       {buttonLabel && (
         <Button
-          onClick={(e)=>{e.preventDefault(); onButtonClick()}}
+          onClick={(e) => {
+            e.preventDefault();
+            onButtonClick();
+          }}
           disabled={nextDisabled}
           className="mt-3 w-full"
         >

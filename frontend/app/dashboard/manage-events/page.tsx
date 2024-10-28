@@ -82,7 +82,9 @@ const page = () => {
         <div className="flex space-x-4 overflow-x-auto pb-8">
           {activeEvents.map((event) => (
             <Card
-              onClick={()=>router.push(`/dashboard/manage-events/${event.id}`)}
+              onClick={() =>
+                router.push(`/dashboard/manage-events/${event.id}`)
+              }
               key={event.id}
               className="shadow-md cursor-pointer hover:shadow-2xl"
             >
@@ -152,6 +154,9 @@ const page = () => {
             <Card
               key={draft.id}
               className="shadow-md cursor-pointer hover:shadow-2xl"
+              onClick={() =>
+                router.push(`/dashboard/manage-events/${draft.id}`)
+              }
             >
               <CardContent className="py-4 flex gap-4">
                 <Image

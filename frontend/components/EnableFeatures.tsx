@@ -31,9 +31,7 @@ interface EnableFeaturesProps {
 }
 
 
-const EnableFeatures = ({
-  handleNext,
-}: EnableFeaturesProps) => {
+const EnableFeatures = ({ handleNext }: EnableFeaturesProps) => {
   const { EventData, setEventData } = useEventContext();
   const time = new Date();
   time.setSeconds(time.getSeconds() + 1000000);

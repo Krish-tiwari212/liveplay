@@ -74,7 +74,7 @@ const EventMediaContactForm: React.FC<EventMediaProps> = ({
   setFormData,
   handleNext,
 }) => {
-  const { EventData, setEventData } = useEventContext();
+  const { EventData, setEventData,setEventEditData,EventEditData,editPage } = useEventContext();
 
   const [isImageLoading, setIsImageLoading] = useState(false);
   const [imagePreviews, setImagePreviews] = useState<string[]>([]);
@@ -95,10 +95,16 @@ const EventMediaContactForm: React.FC<EventMediaProps> = ({
               ...prevData,
               [fieldName]: file,
             }));
-            setEventData((prevData: any) => ({
+            if (editPage==="manageEvent"){
+              setEventEditData((prevData: any) => ({
+                ...prevData,
+                [fieldName]: file,
+              }));
+            }else{setEventData((prevData: any) => ({
               ...prevData,
               [fieldName]: file,
-            }));
+            }));}
+              
             return newPreviews;
           });
         };
@@ -114,14 +120,20 @@ const EventMediaContactForm: React.FC<EventMediaProps> = ({
   };
 
   useEffect(() => {
-    if (EventData && !formData) {
+    if (editPage === "manageEvent" && EventEditData) {
       setFormData((prevEventData: any) => ({
         ...prevEventData,
-        mobileBanner:EventData.mobileBanner || {},
-        desktopBanner:EventData.desktopBanner || {},
+        mobileBanner: EventEditData.mobileBanner || {},
+        desktopBanner: EventEditData.desktopBanner || {},
+      }));
+    } else if (editPage === "createEvent" && EventData) {
+      setFormData((prevEventData: any) => ({
+        ...prevEventData,
+        mobileBanner: EventData.mobileBanner || {},
+        desktopBanner: EventData.desktopBanner || {},
       }));
     }
-  }, [EventData]);
+  }, [EventData, EventEditData]);
 
   return (
     <form className="bg-white p-5 rounded-lg">

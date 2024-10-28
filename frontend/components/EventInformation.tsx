@@ -6,6 +6,7 @@ import EventDetailsForm from "@/components/EventDetailsForm";
 import EventMediaContactForm from "@/components/EventMediaContactForm";
 import EventLocationForm from "@/components/EventLocationForm";
 import EventInsights from "@/components/EventInsights";
+import { useEventContext } from "@/context/EventDataContext";
 const OverviewSidebarContent = [
   {
     title: "Essential",
@@ -25,11 +26,13 @@ interface EventInformation {
   handleNext: () => void;
 }
 
-const EventInformation: React.FC<EventInformation> = ({
-  handleNext,
-}) => {
+const EventInformation: React.FC<EventInformation> = ({ handleNext }) => {
+  const {EventEditData}=useEventContext()
   const [formType, setFormType] = useState<string>("default");
   const [formData, setFormData] = useState<any>({});
+  useEffect(()=>{
+    console.log(EventEditData)
+  },[])
   const renderForm = () => {
     switch (formType) {
       case "Essential":

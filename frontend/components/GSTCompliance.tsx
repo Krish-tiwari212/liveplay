@@ -17,7 +17,7 @@ const GSTCompliance = ({
   handleNext,
   FeatureData,
 }: GSTComplianceProps) => {
-  const { EventData, setEventData } = useEventContext();
+  const { EventData, setEventData,editPage,EventEditData,setEventEditData } = useEventContext();
   const [isRegistered, setIsRegistered] = useState(false);
   const [gstNumber, setGstNumber] = useState("");
   const [gstRate, setGstRate] = useState("");
@@ -25,10 +25,17 @@ const GSTCompliance = ({
   const [isInclusive, setIsInclusive] = useState(false);
   const handleChange = (value: string) => {
     setIsRegistered(value === "Yes"); 
-    setEventData((prevData: any) => ({
-      ...prevData,
-      GstCompliance: value === "Yes", 
-    }));
+    if(editPage==="manageEvent"){
+      setEventEditData((prevData: any) => ({
+        ...prevData,
+        GstCompliance: value === "Yes",
+      }));
+    }else{
+      setEventData((prevData: any) => ({
+        ...prevData,
+        GstCompliance: value === "Yes",
+      }));
+    }
   };
 
   const handleVerify = () => {
@@ -40,9 +47,13 @@ const GSTCompliance = ({
     }
   };
 
-  useEffect(()=>{
-    setIsRegistered(EventData.GstCompliance || false);
-  },[EventData])
+  useEffect(() => {
+    if (editPage === "manageEvent" && EventEditData) {
+      setIsRegistered(EventEditData.GstCompliance || false);
+    } else if (editPage === "createEvent" && EventData) {
+      setIsRegistered(EventData.GstCompliance || false);
+    }
+  }, [EventData, EventEditData]);
   return (
     <div className="bg-white shadow-2xl p-5 rounded-lg w-full h-full">
       <div className="flex flex-wrap w-full">

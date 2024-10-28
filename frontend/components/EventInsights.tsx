@@ -44,18 +44,26 @@ const Insightfields = [
   {
     label: "Event Description",
     name: "eventDescription",
-    placeholder: "Add description",
+    placeholder:
+      "Briefly describe your event, including the theme, key activities, and what makes it exciting for attendees.",
   },
-  { label: "Event USP", name: "eventUSP", placeholder: "Add USP" },
+  {
+    label: "Event USP",
+    name: "eventUSP",
+    placeholder:
+      "Please describe what makes your event truly unique. Consider aspects such as special features, exclusive experiences, or notable speakers that will entice attendees to participate.",
+  },
   {
     label: "Rewards And Prizes",
     name: "rewardsAndParticipation",
-    placeholder: "Add Rewards",
+    placeholder:
+      "List the prizes for participants, eligibility criteria, and how winners will be chosen.",
   },
   {
     label: "Playing Rules",
     name: "playingRules",
-    placeholder: "Add Rules",
+    placeholder:
+      "Summarize the main rules for the event, including guidelines and scoring methods to ensure fair play.",
   },
 ];
 
@@ -65,15 +73,28 @@ const EventInsights: React.FC<EventInsights> = ({
   setFormType,
 }) => {
   
-  const { EventData, setEventData } = useEventContext();
+  const { EventData, setEventData,setEventEditData,EventEditData,editPage } = useEventContext();
   const handleChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
     const { name, value } = e.target;
       setFormData((prevData: any) => ({ ...prevData, [name]: value })); 
-      setEventData((prevData: any) => ({ ...prevData, [name]: value })); 
+      if(editPage==="manageEvent"){
+        setEventEditData((prevData: any) => ({ ...prevData, [name]: value })); 
+      }else{
+        setEventData((prevData: any) => ({ ...prevData, [name]: value })); 
+      }
+      
   };
   useEffect(() => {
-    if (EventData) {
-      setFormData((previousEventDate:any)=>({
+    if (editPage === "manageEvent" && EventEditData) {
+      setFormData((previousEventData: any) => ({
+        ...previousEventData,
+        eventDescription: EventEditData.eventDescription || "",
+        rewardsAndParticipation: EventEditData.rewardsAndParticipation || "",
+        eventUSP: EventEditData.eventUSP || "",
+        playingRules: EventEditData.playingRules || "",
+      }));
+    } else if (editPage === "createEvent" && EventData) {
+      setFormData((previousEventDate: any) => ({
         ...previousEventDate,
         eventDescription: EventData.eventDescription || "",
         rewardsAndParticipation: EventData.rewardsAndParticipation || "",
@@ -81,7 +102,7 @@ const EventInsights: React.FC<EventInsights> = ({
         playingRules: EventData.playingRules || "",
       }));
     }
-  }, [EventData]);
+  }, [EventData, EventEditData]); 
 
   const handleNext=(e:any)=>{
     e.preventDefault(); 

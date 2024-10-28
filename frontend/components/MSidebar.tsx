@@ -56,13 +56,13 @@ const MSidebar = () => {
   const [openPlayer, setOpenPlayer] = useState(false);
 
   const toggleOrganizer = () => {
-    setOpenOrganizer(!openOrganizer);
-    if (openPlayer) setOpenPlayer(false);
+    setOpenOrganizer(true); 
+    setOpenPlayer(false); 
   };
 
   const togglePlayer = () => {
-    setOpenPlayer(!openPlayer);
-    if (openOrganizer) setOpenOrganizer(false); 
+    setOpenPlayer(true); 
+    setOpenOrganizer(false);
   };
 
   return (
@@ -103,7 +103,7 @@ const MSidebar = () => {
         <li>
           <button
             onClick={toggleOrganizer}
-            className="flex items-center justify-between w-full py-2 pl-4 rounded transition-colors duration-200"
+            className="flex items-center justify-between w-full py-2 pl-1 rounded transition-colors duration-200"
           >
             <h1 className="text-xl">Organizer</h1>
             {openOrganizer ? (
@@ -112,9 +112,8 @@ const MSidebar = () => {
               <MdKeyboardArrowDown className="text-xl" />
             )}
           </button>
-          {openOrganizer && (
             <ul
-              className={`space-y-1 pl-6 overflow-hidden transition-all duration-300 ease-in-out 
+              className={`space-y-1 pl-2 overflow-hidden transition-all duration-300 ease-in-out 
               ${openOrganizer ? "max-h-96 opacity-100" : "max-h-0 opacity-0"}`}
             >
               <li>
@@ -177,12 +176,11 @@ const MSidebar = () => {
                 </Link>
               </li>
             </ul>
-          )}
         </li>
         <li>
           <button
             onClick={togglePlayer}
-            className="flex items-center justify-between w-full py-2 pl-4 rounded transition-colors duration-200"
+            className="flex items-center justify-between w-full py-2 pl-1 rounded transition-colors duration-200"
           >
             <h1 className="text-xl">Player</h1>
             {openPlayer ? (
@@ -191,9 +189,8 @@ const MSidebar = () => {
               <MdKeyboardArrowDown className="text-xl" />
             )}
           </button>
-          {openPlayer && (
             <ul
-              className={`space-y-1 pl-6 overflow-hidden transition-all duration-300 ease-in-out 
+              className={`space-y-1 pl-2 overflow-hidden transition-all duration-300 ease-in-out 
               ${openPlayer ? "max-h-96 opacity-100" : "max-h-0 opacity-0"}`}
             >
               <li>
@@ -220,7 +217,6 @@ const MSidebar = () => {
                 </Link>
               </li>
             </ul>
-          )}
         </li>
       </ul>
       <hr className="my-4 border-gray-700" />

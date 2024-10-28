@@ -11,6 +11,10 @@ interface EventContextType {
   setIsVenueNotDecided: React.Dispatch<React.SetStateAction<boolean>>;
   DashboardName: string;
   setDashboardName: React.Dispatch<React.SetStateAction<string>>;
+  EventEditData: EventData;
+  setEventEditData: React.Dispatch<React.SetStateAction<EventData>>;
+  editPage: string;
+  setEditPage: React.Dispatch<React.SetStateAction<string>>;
 }
 
 const EventContext = createContext<EventContextType | undefined>(undefined);
@@ -19,7 +23,9 @@ export const EventProvider: React.FC<{ children: ReactNode }> = ({
   children,
 }) => {
   const [EventData, setEventData] = useState<EventData>({});
-  const [isVenueNotDecided, setIsVenueNotDecided] = useState(false); 
+  const [EventEditData, setEventEditData] = useState<EventData>({});
+  const [isVenueNotDecided, setIsVenueNotDecided] = useState(false);
+  const [editPage, setEditPage] = useState("");  
   const [DashboardName, setDashboardName] = useState(""); 
 
   return (
@@ -30,7 +36,11 @@ export const EventProvider: React.FC<{ children: ReactNode }> = ({
         isVenueNotDecided,
         setIsVenueNotDecided,
         DashboardName,
-        setDashboardName
+        setDashboardName,
+        EventEditData,
+        editPage, 
+        setEditPage,
+        setEventEditData
       }}
     >
       {children}

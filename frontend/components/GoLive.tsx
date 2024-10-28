@@ -5,8 +5,10 @@ import successAnimation from '@/public/Animations/Success.json'
 import loadingAnimation from "@/public/Animations/loading.json"; 
 import Image from 'next/image';
 import { useRouter } from 'next/navigation';
+import { useEventContext } from '@/context/EventDataContext';
 
 const GoLive = () => {
+  const {setEventData}=useEventContext()
   const [isPlaying, setIsPlaying] = useState(false)
   const [isLoading, setIsLoading] = useState(false)
   const router = useRouter()
@@ -24,6 +26,7 @@ const GoLive = () => {
 
   const handleAnimationComplete = () => {
     router.push("/dashboard");
+    setEventData({})
   }
 
   return (

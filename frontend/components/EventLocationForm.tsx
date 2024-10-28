@@ -89,17 +89,31 @@ const EventLocationForm: React.FC<EventLocationFormData> = ({
   setFormData,
   setFormType,
 }) => {
-  const { EventData, setEventData, isVenueNotDecided, setIsVenueNotDecided } =
+  const { EventData, setEventData, isVenueNotDecided, setIsVenueNotDecided,EventEditData,setEventEditData,editPage } =
     useEventContext();
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
     setFormData((prevData: any) => ({ ...prevData, [name]: value }));
-    setEventData((prevData: any) => ({ ...prevData, [name]: value }));
+    if(editPage==="manageEvent"){
+      setEventEditData((prevData: any) => ({ ...prevData, [name]: value }));
+    }else{
+      setEventData((prevData: any) => ({ ...prevData, [name]: value }));
+    }
+    
   };
 
   useEffect(() => {
-    if (EventData) {
+    if (editPage === "manageEvent" && EventEditData) {
+      setFormData((previousEventData: any) => ({
+        ...previousEventData,
+        venueName: EventEditData.venueName || "",
+        eventAddress: EventEditData.eventAddress || "",
+        city: EventEditData.city || "",
+        eventPincode: EventEditData.eventPincode || "",
+        venuelink: EventEditData.venuelink || "",
+      }));
+    } else if (editPage === "createEvent" && EventData) {
       setFormData((previousEventDate: any) => ({
         ...previousEventDate,
         venueName: EventData.venueName || "",
@@ -109,7 +123,7 @@ const EventLocationForm: React.FC<EventLocationFormData> = ({
         venuelink: EventData.venuelink || "",
       }));
     }
-  }, [EventData]);
+  }, [EventData, EventEditData]);
 
   const handleNext = (e: any) => {
     e.preventDefault(); 
@@ -160,13 +174,22 @@ const EventLocationForm: React.FC<EventLocationFormData> = ({
                   venuelink: "",
                   eventPincode: "",
                 }));
-                setEventData((prevData: any) => ({
+                if(editPage==="manageEvent"){
+                  setEventEditData((prevData: any) => ({
+                    ...prevData,
+                    venueName: "",
+                    eventAddress: "",
+                    venuelink: "",
+                    eventPincode: "",
+                  }));
+                }else{setEventData((prevData: any) => ({
                   ...prevData,
                   venueName: "",
                   eventAddress: "",
                   venuelink: "",
                   eventPincode: "",
-                }));
+                }));}
+                
               }
             }}
           />

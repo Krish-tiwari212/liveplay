@@ -10,27 +10,33 @@ interface MyTimerProps {
 }
 
 const MyTimer = ({ expiryTimestamp, setFeatureData }: MyTimerProps) => {
-  const { EventData, setEventData } = useEventContext();
+  const { EventData, setEventData,EventEditData,setEventEditData,editPage } = useEventContext();
   const [showModal, setShowModal] = useState(false);
   const [showCountdown, setShowCountdown] = useState(false);
 
   const handlecountdown = () => {
     setShowCountdown((prev) => !prev);
-    // setFeatureData((prevData: any) => ({
-    //   ...prevData,
-    //   countdown: !showCountdown, 
-    // }));
-    setEventData((prevData: any) => ({
-      ...prevData,
-      countdown: !showCountdown,
-    }));
+    if(editPage==="manageEvent"){
+       setEventEditData((prevData: any) => ({
+         ...prevData,
+         countdown: !showCountdown,
+       }));
+    }else{
+       setEventData((prevData: any) => ({
+         ...prevData,
+         countdown: !showCountdown,
+       }));
+    }
+   
   };
 
   useEffect(() => {
-    if (EventData) {
-      setShowCountdown(EventData.countdown || false); 
+    if (editPage === "manageEvent" && EventEditData) {
+      setShowCountdown(EventEditData.countdown || false);
+    } else if (editPage === "createEvent" && EventData) {
+      setShowCountdown(EventData.countdown || false);
     }
-  }, [EventData])
+  }, [EventEditData]);
 
   return (
     <div className="text-center font-sans p-8 bg-gradient-to-r bg-white shadow-lg rounded-lg relative">

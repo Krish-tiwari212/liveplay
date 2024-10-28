@@ -1,7 +1,8 @@
 import { Checkbox } from "@/components/ui/checkbox";
 import React,{  useEffect, useState } from "react";
 import { Label } from "./ui/label";
-import { eventNames } from "process";import {
+import { eventNames } from "process";
+import {
   Select,
   SelectContent,
   SelectItem,
@@ -93,7 +94,6 @@ const SportsType = [
   "Field Hockey",
   "Ice Hockey",
 ];
-
 
 const requiredFields = [
   "eventAddress",
@@ -215,16 +215,33 @@ const EventDetailsForm: React.FC<EventDetailsFormProps> = ({
   setFormData,
   setFormType,
 }) => {
-  const { EventData, setEventData } = useEventContext();
+  const { EventData,EventEditData, setEventData,editPage,setEventEditData } = useEventContext();
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
     setFormData({ ...formData, [name]: value });
-    setEventData({ ...EventData, [name]: value });
+    if (editPage==="manageEvent"){
+       setEventEditData({ ...EventEditData, [name]: value });
+    } else{
+       setEventData({ ...EventData, [name]: value });
+    }
   };
   useEffect(() => {
-    if (EventData) {
+    if (editPage === "manageEvent" && EventEditData) {
       setFormData({
-        selectsport: EventData.selectsport || "",
+        selectsport: EventEditData.selectsport || "",
+        eventName: EventEditData.eventName || "",
+        LastRegistrationDate: EventEditData.LastRegistrationDate || "",
+        LastWithdrawalDate: EventEditData.LastWithdrawalDate || "",
+        eventstartDate: EventEditData.eventstartDate || "",
+        eventenddate: EventEditData.eventenddate || "",
+        startTime: EventEditData.startTime || "",
+        organiserName: EventEditData.organiserName || "",
+        organiserNumber: EventEditData.organiserNumber || "",
+        organiseremailaddress: EventEditData.organiseremailaddress || "",
+      });
+    } else if (EventData) {
+      setFormData({
+        selectsport: EventData.selectsport || "", 
         eventName: EventData.eventName || "",
         LastRegistrationDate: EventData.LastRegistrationDate || "",
         LastWithdrawalDate: EventData.LastWithdrawalDate || "",
@@ -236,7 +253,8 @@ const EventDetailsForm: React.FC<EventDetailsFormProps> = ({
         organiseremailaddress: EventData.organiseremailaddress || "",
       });
     }
-  }, [EventData]);
+  }, [EventData, EventEditData]);
+  
 
    const handleNext = (e: any) => {
     e.preventDefault(); 
@@ -254,13 +272,19 @@ const EventDetailsForm: React.FC<EventDetailsFormProps> = ({
                   {field.label}
                 </Label>
                 <Select
-                  value={formData.selectsport}
                   onValueChange={(value) => {
                     setFormData({
                       ...formData,
                       selectsport: value,
                     });
-                    setEventData({ ...EventData, selectsport: value });
+                    if (editPage === "manageEvent") {
+                      setEventEditData({
+                        ...EventEditData,
+                        selectsport: value,
+                      });
+                    } else {
+                      setEventData({ ...EventData, selectsport: value });
+                    }
                   }}
                 >
                   <SelectTrigger className="h-16 p-2 bg-white border rounded-md text-sm shadow-2xl text-[#17202A] focus:border-[#17202A] focus:outline-none focus:shadow-lg">

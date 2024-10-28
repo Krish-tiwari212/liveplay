@@ -17,7 +17,7 @@ import { useEventContext } from '@/context/EventDataContext';
 const ProgressBarCheckpoints = [
   {
     icon: <MdPersonalInjury />,
-    label: "Enter Details",
+    label: "Identity Details",
     placement: 1,
   },
   {
@@ -28,12 +28,12 @@ const ProgressBarCheckpoints = [
         className="w-5 h-5"
       />
     ),
-    label: "Upload Adhar",
+    label: "Upload Aadhar",
     placement: 2,
   },
   {
     icon: <MdAccountBalance />,
-    label: "Account Details",
+    label: "Bank Details",
     placement: 3,
   },
 ];
@@ -125,7 +125,7 @@ const thirdfields = [
   {
     id: "bankName",
     label: "Bank Name",
-    type: "text",
+    type: "select",
     name: "bankName",
     placeholder: "Enter Bank Name",
     required: true,

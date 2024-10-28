@@ -28,6 +28,7 @@ interface Category {
   price: string;
   ticketDescription: string;
   discountCode: string;
+  discount:boolean;
   categoryType: string;
 }
 
@@ -38,7 +39,7 @@ interface CategoryPreviewProps {
 const CategoryPreview = ({
   handleNext=()=>{},
 }: CategoryPreviewProps) => {
-  const { EventData, setEventData } = useEventContext();
+  const { EventData, setEventData,editPage,EventEditData,setEventEditData } = useEventContext();
   const [categories, setCategories] = useState<Category[]>([]);
   const [tooltipVisible, setTooltipVisible] = useState<string | null>(null);
   const [isDialogOpen, setIsDialogOpen] = useState(false); 
@@ -47,10 +48,6 @@ const CategoryPreview = ({
   const [nextId, setNextId] = useState(1); 
 
   const handleClick = () => {
-    setEventData((prevEventData: any) => ({
-      ...prevEventData,
-      categories, 
-    }));
     handleNext();
   };
 
@@ -63,10 +60,18 @@ const CategoryPreview = ({
     setCategories((prevCategories) => [...prevCategories, categoryWithId]);
     setNextId((prevId) => prevId + 1); 
     setIsDialogOpen(false);
-    setEventData((prevEventData: any) => ({
-      ...prevEventData,
-      categories: [...categories, categoryWithId],
-    }));
+    if (editPage==="manageEvent"){
+      setEventEditData((prevEventData: any) => ({
+        ...prevEventData,
+        categories: [...categories, categoryWithId],
+      }));
+    }else{
+      setEventData((prevEventData: any) => ({
+        ...prevEventData,
+        categories: [...categories, categoryWithId],
+      }));
+    }
+      
   };
 
   const editCategory = (updatedCategory: Category) => {
@@ -76,32 +81,62 @@ const CategoryPreview = ({
       )
     );
     setIsEditDialogOpen(false);
-    setEventData((prevEventData: any) => ({
-      ...prevEventData,
-      categories: categories.map((category) =>
-        category.id === updatedCategory.id ? updatedCategory : category
-      ),
-    }));
+    if (editPage==="manageEvent"){
+      setEventEditData((prevEventData: any) => ({
+        ...prevEventData,
+        categories: categories.map((category) =>
+          category.id === updatedCategory.id ? updatedCategory : category
+        ),
+      }));
+    }else{
+      setEventData((prevEventData: any) => ({
+        ...prevEventData,
+        categories: categories.map((category) =>
+          category.id === updatedCategory.id ? updatedCategory : category
+        ),
+      }));
+    }
+    
   };
 
   const deleteCategory = (categoryToDelete: Category) => { 
     setCategories((prevCategories) => 
       prevCategories.filter(category => category.id !== categoryToDelete.id) 
     );
-    setEventData((prevEventData: any) => ({
-      ...prevEventData,
-      categories: categories.filter(category => category.id !== categoryToDelete.id),
-    }));
+    if (editPage==="manageEvent"){
+      setEventEditData((prevEventData: any) => ({
+        ...prevEventData,
+        categories: categories.filter(
+          (category) => category.id !== categoryToDelete.id
+        ),
+      }));
+    }else{
+      setEventData((prevEventData: any) => ({
+        ...prevEventData,
+        categories: categories.filter(
+          (category) => category.id !== categoryToDelete.id
+        ),
+      }));
+    }
+    
   };
 
   const duplicateCategory = (category: Category) => {
     const duplicatedCategory = { ...category, id: nextId, categoryName: `${category.categoryName} (Copy)` }; 
     setCategories((prevCategories) => [...prevCategories, duplicatedCategory]);
-    setNextId((prevId) => prevId + 1); 
-    setEventData((prevEventData: any) => ({
-      ...prevEventData,
-      categories: [...categories, duplicatedCategory],
-    }));
+    setNextId((prevId) => prevId + 1);
+    if (editPage==="manageEvent"){
+      setEventEditData((prevEventData: any) => ({
+        ...prevEventData,
+        categories: [...categories, duplicatedCategory],
+      }));
+    } else{
+      setEventData((prevEventData: any) => ({
+        ...prevEventData,
+        categories: [...categories, duplicatedCategory],
+      }));
+    }
+    
   };
 
   const openEditDialog = (category: Category) => {
@@ -110,10 +145,12 @@ const CategoryPreview = ({
   };
 
   useEffect(() => {
-    if (EventData) {
-      setCategories(EventData.categories||[]);
+    if (editPage === "manageEvent" && EventEditData) {
+      setCategories(EventEditData.categories || []);
+    } else if (editPage === "createEvent" && EventData) {
+      setCategories(EventData.categories || []);
     }
-  }, [EventData]);
+  }, [EventData, EventEditData]);
 
   return (
     <div className="flex flex-col mx-3 mt-20">
@@ -123,7 +160,6 @@ const CategoryPreview = ({
           <DialogTrigger asChild>
             <Button className="flex items-center gap-3 py-2 px-4 rounded-lg">
               <span>Add Category</span>
-              <FaPlus size={15} />
             </Button>
           </DialogTrigger>
           <DialogContent>

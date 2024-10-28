@@ -18,7 +18,26 @@ import { useEventContext } from "@/context/EventDataContext";
 import { MdKeyboardArrowDown, MdKeyboardArrowUp } from "react-icons/md";
 
 interface AddCategoryProps {
-  setCategoryData: (newCategory: any) => void; // Change to accept a new category
+  setCategoryData: (newCategory: any) => void; 
+}
+
+interface Category {
+  id?: number;
+  categoryName?: string;
+  totalQuantity?: string;
+  maxTicketQuantity?: string;
+  price?: string;
+  ticketDescription?: string;
+  discountcode?: string;
+  discount?: boolean;
+  categoryType?: string;
+  discountType?:string;
+  numberOfDiscounts?:string;
+  fromDate?:string;
+  tillDate?:string;
+  discountValue?:string;
+  percentageInput?:string;
+  amountInput?:string;
 }
 
 const inputFields = [
@@ -135,27 +154,27 @@ const discountFields = {
 };
 
 const AddCategory = ({ setCategoryData }: AddCategoryProps) => {
-  const [categoryData, setLocalCategoryData] = useState({
+  const [categoryData, setLocalCategoryData] = useState<Category>({
     categoryName: "",
     totalQuantity: "",
     maxTicketQuantity: "",
     price: "",
     ticketDescription: "",
     categoryType: "",
-    discount:"",
-    discountcode:"",
-    discountType:"",
-    numberOfDiscounts:"",
-    fromDate:"",
-    tillDate:"",
-    discountValue:"",
-    percentageInput:"",
-    amountInput:"",
+    discount: false,
+    discountcode: "",
+    discountType: "",
+    numberOfDiscounts: "",
+    fromDate: "",
+    tillDate: "",
+    discountValue: "",
+    percentageInput: "",
+    amountInput: "",
   });
   const {EventData}=useEventContext()
   const [showAmountInput, setShowAmountInput] = useState(false);
   const [showPercentageInput, setShowPercentageInput] = useState(false);
-  const [isDiscount, setisDiscount] = useState(false); // State to control dropdown visibility
+  const [isDiscount, setisDiscount] = useState(false); 
 
   const handleChange = (
     e: React.ChangeEvent<
@@ -184,7 +203,6 @@ const AddCategory = ({ setCategoryData }: AddCategoryProps) => {
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault(); 
-    // Add discount details if discounts are enabled
     const discountDetails = isDiscount
       ? {
           discount: true,
@@ -207,7 +225,7 @@ const AddCategory = ({ setCategoryData }: AddCategoryProps) => {
       price: "",
       ticketDescription: "",
       categoryType: "",
-      discount: "",
+      discount: false,
       discountcode: "",
       discountType: "",
       numberOfDiscounts: "",
@@ -259,7 +277,7 @@ const AddCategory = ({ setCategoryData }: AddCategoryProps) => {
                 name={field.id}
                 placeholder={field.placeholder}
                 maxLength={field.maxLength}
-                value={categoryData[field.id as keyof typeof categoryData]}
+                value={categoryData[field.id as keyof typeof categoryData] || "" }
                 onChange={handleChange}
                 className="h-20 p-2 bg-white border rounded-md text-sm shadow-2xl text-[#17202A] focus:border-[#17202A] focus:outline-none focus:shadow-lg"
               />
@@ -270,7 +288,7 @@ const AddCategory = ({ setCategoryData }: AddCategoryProps) => {
                 name={field.id}
                 placeholder={field.placeholder}
                 required={field.required}
-                value={categoryData[field.id as keyof typeof categoryData]}
+                value={categoryData[field.id as keyof typeof categoryData] || ""}
                 onChange={handleChange}
                 className="h-16 p-2 bg-white border rounded-md text-sm shadow-2xl text-[#17202A] focus:border-[#17202A] focus:outline-none focus:shadow-lg"
               />
@@ -292,7 +310,7 @@ const AddCategory = ({ setCategoryData }: AddCategoryProps) => {
           <div
             className={`${
               isDiscount
-                ? "max-h-[30rem] transition-max-height duration-200 ease-in-out"
+                ? "max-h-[40rem] transition-max-height duration-200 ease-in-out"
                 : "max-h-0 transition-max-height duration-200 ease-in-out overflow-hidden"
             }`}
           >

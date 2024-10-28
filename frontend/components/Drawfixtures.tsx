@@ -24,28 +24,34 @@ const Drawfixtures = ({ setFeatureData }: DrawfixturesProps) => {
     { id: 12, teamA: "Team W", teamB: "Team X", buy: true },
   ]);
   const [showFixtures,setShowFixtures]=useState(false)
-  const { EventData, setEventData } = useEventContext();
+  const { EventData, setEventData,editPage,setEventEditData,EventEditData } = useEventContext();
 
   const midIndex = Math.ceil(fixtures.length / 2);
   const firstHalf = fixtures.slice(0, midIndex);
   const secondHalf = fixtures.slice(midIndex);
   const handleFixtures=()=>{
     setShowFixtures((prev)=>!prev)
-    // setFeatureData((prevData: any) => ({
-    //   ...prevData,
-    //   enableFixtures: !showFixtures,
-    // }));
-    setEventData((prevData: any) => ({
-      ...prevData,
-      enableFixtures: !showFixtures,
-    }));
+    if (editPage==="manageEvent"){
+      setEventEditData((prevData: any) => ({
+        ...prevData,
+        enableFixtures: !showFixtures,
+      }));
+    }else{
+      setEventData((prevData: any) => ({
+        ...prevData,
+        enableFixtures: !showFixtures,
+      }));
+    }
+      
   }
 
   useEffect(() => {
-    if (EventData) {
-      setShowFixtures(EventData.enableFixtures || false); 
+    if (editPage === "manageEvent" && EventEditData) {
+      setShowFixtures(EventEditData.enableFixtures || false);
+    } else if (editPage === "createEvent" && EventData) {
+      setShowFixtures(EventData.enableFixtures || false);
     }
-  }, [EventData]);
+  }, [EventData, EventEditData]);
 
   return (
     <div className="flex flex-col bg-white shadow-lg rounded-lg w-full p-8">
