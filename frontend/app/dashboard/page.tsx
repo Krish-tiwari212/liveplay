@@ -18,12 +18,14 @@ import data from "@/data";
 import { Button } from "@/components/ui/button";
 import { useRouter } from "next/navigation";
 import { MdOutlineSecurity } from "react-icons/md";
+import { useEventContext } from "@/context/EventDataContext";
 const { events } = data;
 
 
 
 export default function Home() {
   const { setTheme } = useAppContext();
+  const { setDashboardName } = useEventContext();
   const router=useRouter()
   useEffect(() => {
     const matchMedia = window.matchMedia("(prefers-color-scheme: dark)");
@@ -36,9 +38,12 @@ export default function Home() {
       matchMedia.removeEventListener("change", handleThemeChange);
     };
   }, []);
+  useEffect(() => {
+    setDashboardName("Home");
+  }, []);
   return (
     <div className="flex flex-col m-3">
-      <div>
+      <div className="flex justify-between ">
         <Button
           onClick={() => router.push("/dashboard/kyc/1234")}
           className="text-md shadow-md shadow-gray-500 w-auto px-20"
@@ -46,17 +51,17 @@ export default function Home() {
           <MdOutlineSecurity className="mr-2" />
           Unlock Event Earnings (Kyc)
         </Button>
+        <Button
+          onClick={() => router.push("/dashboard/create_event")}
+          className="text-2xl shadow-md shadow-gray-500 "
+        >
+          Create Event +
+        </Button>
       </div>
       <section className="mt-4 bg-[#17202A] h-[9rem] shadow-xl rounded-lg p-4 relative mb-4">
         {/* <h1 className="hidden absolute md:block font-bold text-[4rem] lg:text-[5rem] right-2 -bottom-5 text-gray-500">
           liveplay.in
         </h1> */}
-        <Button
-          onClick={() => router.push("/dashboard/create_event")}
-          className="absolute -right-2 -top-3 text-2xl shadow-md shadow-gray-500 "
-        >
-          Create Event +
-        </Button>
         <div className="hidden md:flex gap-4 xl:gap-6 flex-wrap absolute -bottom-10">
           <Card className=" w-auto shadow-xl h-auto">
             <CardContent className="flex justify-between  items-center w-full h-full gap-2 mt-2">
@@ -293,105 +298,6 @@ export default function Home() {
           </Card>
         </div>
       </section>
-
-      {/* <section className="mt-4 bg-white shadow-md rounded-lg p-4">
-        <h2 className="text-xl font-semibold">Drafts</h2>
-        <ul className="list-disc pl-5">
-          <li className="flex justify-between items-center py-2 border-b">
-            <span>Draft Title - Last Edited</span>
-            <button className="bg-blue-500 text-white p-1 rounded">Edit</button>
-          </li>
-        </ul>
-      </section>
-
-      <section className="mt-4 bg-white shadow-md rounded-lg p-4">
-        <h2 className="text-xl font-semibold">Past Events</h2>
-        <ul className="list-disc pl-5">
-          <li className="flex justify-between items-center py-2 border-b">
-            <span>Past Event Title - Attendance - Feedback</span>
-            <button className="bg-green-500 text-white p-1 rounded">
-              View
-            </button>
-          </li>
-        </ul>
-      </section>
-
-      <section className="mt-4 bg-white shadow-md rounded-lg p-4">
-        <h2 className="text-xl font-semibold">Notifications</h2>
-        <div>Important notifications here...</div>
-      </section>
-
-      <section className="mt-4 bg-white shadow-md rounded-lg p-4">
-        <h2 className="text-xl font-semibold">Support</h2>
-        <div className="flex space-x-4">
-          <a className="text-blue-500" href="/faq">
-            FAQs
-          </a>
-          <a className="text-blue-500" href="/contact-support">
-            Contact Support
-          </a>
-        </div>
-      </section>
-
-      <section className="mt-4 bg-white shadow-md rounded-lg p-4">
-        <h2 className="text-xl font-semibold">Recent Activity</h2>
-        <div>Activity log here...</div>
-      </section>
-
-      <section className="mt-4 bg-white shadow-md rounded-lg p-4">
-        <h2 className="text-xl font-semibold">Analytics</h2>
-        <div>Graphs/Charts here...</div>
-      </section>
-
-      <section className="mt-4 bg-white shadow-md rounded-lg p-4">
-        <h2 className="text-xl font-semibold">Total Events</h2>
-        <div className="flex flex-col space-y-2">
-          <div>Total Events Hosted: X</div>
-          <div>Total Entries: Y</div>
-          <div>Total Event Views: Z</div>
-          <div>Total People Interested: A</div>
-          <div>Active Events:</div>
-          <ul className="list-disc pl-5">
-            <li className="flex justify-between items-center py-2 border-b">
-              <span>Event Name - Entries - Revenue - Views - Interested</span>
-              <Link href="/event/share-link">
-                <button className="bg-blue-500 text-white p-1 rounded">Share</button>
-              </Link>
-            </li>
-          </ul>
-        </div>
-      </section>
-
-      <section className="mt-4 bg-white shadow-md rounded-lg p-4">
-        <h2 className="text-xl font-semibold">Draft Events</h2>
-        <ul className="list-disc pl-5">
-          <li className="flex justify-between items-center py-2 border-b">
-            <span>Draft Event Title</span>
-            <Link href="/dashboard/draft_event">
-              <button className="bg-blue-500 text-white p-1 rounded">Edit</button>
-            </Link>
-          </li>
-        </ul>
-      </section>
-
-      <section className="mt-4 bg-white shadow-md rounded-lg p-4">
-        <h2 className="text-xl font-semibold">Unlock Event Earnings</h2>
-        <Link href="/kyc">
-          <button className="mt-2 bg-green-500 text-white p-2 rounded">
-            Complete KYC
-          </button>
-        </Link>
-      </section>
-
-      <section className="mt-4 bg-white shadow-md rounded-lg p-4">
-        <h2 className="text-xl font-semibold">Recent Activity</h2>
-        <div>Activity log here...</div>
-      </section>
-
-      <section className="mt-4 bg-white shadow-md rounded-lg p-4">
-        <h2 className="text-xl font-semibold">Analytics</h2>
-        <div>Graphs/Charts here...</div>
-      </section> */}
     </div>
   );
 }

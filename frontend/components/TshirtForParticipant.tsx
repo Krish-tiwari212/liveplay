@@ -52,7 +52,7 @@ const TshirtForParticipant = ({
         </div>
       ) : (
         <div className="mt-4 ml-4 text-red-600">
-          <p>Minimum 10 Teashirts for order</p>
+          <p>Minimum 10 T-shirts for order</p>
         </div>
       )}
     </div>

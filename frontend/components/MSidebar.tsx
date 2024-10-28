@@ -4,7 +4,7 @@ import { usePathname } from 'next/navigation';
 import { useRouter } from 'next/navigation';
 import React, { useState } from 'react';
 import { FaBars, FaCalendarAlt, FaCogs, FaSignOutAlt, FaTachometerAlt, FaUserCircle } from 'react-icons/fa';
-import { MdOutlineFeaturedPlayList, MdOutlineSecurity, MdSchedule, MdSportsFootball } from 'react-icons/md';
+import { MdKeyboardArrowDown, MdKeyboardArrowUp, MdOutlineFeaturedPlayList, MdOutlineSecurity, MdSchedule, MdSportsFootball } from 'react-icons/md';
 import Image from 'next/image';
 import { IoIosNotificationsOutline } from 'react-icons/io';
 
@@ -36,8 +36,6 @@ const MSidebar = () => {
     setOpenMatches(false);
   };
 
-  const [userStatus, setUserStatus] = useState("organizer");
-
   const handleLogout = async () => {
     await new Promise((resolve) => setTimeout(resolve, 2000));
     localStorage.removeItem("username");
@@ -51,7 +49,20 @@ const MSidebar = () => {
   };
 
   const handleButtonClick = (page: string) => {
-    setActivePage(page); // Set the active page when a button is clicked
+    setActivePage(page); 
+  };
+
+  const [openOrganizer, setOpenOrganizer] = useState(true); 
+  const [openPlayer, setOpenPlayer] = useState(false);
+
+  const toggleOrganizer = () => {
+    setOpenOrganizer(!openOrganizer);
+    if (openPlayer) setOpenPlayer(false);
+  };
+
+  const togglePlayer = () => {
+    setOpenPlayer(!openPlayer);
+    if (openOrganizer) setOpenOrganizer(false); 
   };
 
   return (
@@ -75,74 +86,127 @@ const MSidebar = () => {
         </Link>
       </div>
       <ul className="space-y-2 flex-grow relative">
-        <div className="w-full py-2 pl-2">
-          <h1 className="text-2xl">As An Organiser</h1>
-        </div>
         <li>
           <Link href="/dashboard">
-            <button 
-              onClick={() => handleButtonClick("Dashboard")} // Update active page on click
-              className={`flex items-center w-full py-2 pl-2 rounded transition-colors duration-200 relative ${activePage === "Dashboard" ? "bg-[#CDDC29] text-[#17202A]" : "hover:bg-[#CDDC29] hover:text-[#17202A]"}`}
+            <button
+              onClick={() => handleButtonClick("Dashboard")}
+              className={`flex items-center w-full py-2 pl-2 rounded transition-colors duration-200 relative ${
+                activePage === "Dashboard"
+                  ? "bg-[#CDDC29] text-[#17202A]"
+                  : "hover:bg-[#CDDC29] hover:text-[#17202A]"
+              }`}
             >
               <FaTachometerAlt className="mr-2 text-xl" /> Dashboard
             </button>
           </Link>
         </li>
-        {userStatus === "organizer" && (
-          <ul className={`space-y-1 overflow-hidden transition-all duration-300 ease-in-out max-h-56`}>
-            <li>
-              <Link href="/dashboard/create_event">
-                <button 
-                  onClick={() => handleButtonClick("Create Events")} // Update active page on click
-                  className={`flex items-center w-full p-2 rounded transition-colors duration-200 ${activePage === "Create Events" ? "bg-[#CDDC29] text-[#17202A]" : "hover:bg-[#CDDC29] hover:text-[#17202A]"}`}
-                >
-                  <MdSchedule className="mr-2 text-xl" /> Create Events
-                </button>
-              </Link>
-            </li>
-            <li>
-              <Link href="/dashboard/manage-events">
-                <button 
-                  onClick={() => handleButtonClick("Manage Events")} // Update active page on click
-                  className={`flex items-center w-full p-2 rounded transition-colors duration-200 ${activePage === "Manage Events" ? "bg-[#CDDC29] text-[#17202A]" : "hover:bg-[#CDDC29] hover:text-[#17202A]"}`}
-                >
-                  <MdOutlineFeaturedPlayList className="mr-2 text-xl" /> Manage Events
-                </button>
-              </Link>
-            </li>
-            <li>
-              <Link href="/dashboard/kyc/1234">
-                <button className="flex items-center w-full p-2 hover:bg-[#CDDC29] hover:text-[#17202A] rounded transition-colors duration-200">
-                  <MdOutlineSecurity className="mr-2 text-xl" /> Unlock Earnings (kyc)
-                </button>
-              </Link>
-            </li>
-            <li>
-              <Link href="/dashboard/kyc/1234">
-                <button className="flex items-center w-full p-2 hover:bg-[#CDDC29] hover:text-[#17202A] rounded transition-colors duration-200">
-                  <IoIosNotificationsOutline className="mr-2 text-xl" /> Notifications
-                </button>
-              </Link>
-            </li>
-          </ul>
-        )}
-        {userStatus === "player" && (
-          <>
-            <button className="flex items-center w-full py-2 pl-2 hover:bg-[#CDDC29] hover:text-[#17202A] rounded transition-colors duration-200 relative">
-              <FaCalendarAlt className="mr-2 text-xl" /> Events
-            </button>
-            <ul className={`ml-4 space-y-1 overflow-hidden transition-all duration-300 ease-in-out max-h-56`}>
+        <li>
+          <button
+            onClick={toggleOrganizer}
+            className="flex items-center justify-between w-full py-2 pl-4 rounded transition-colors duration-200"
+          >
+            <h1 className="text-xl">Organizer</h1>
+            {openOrganizer ? (
+              <MdKeyboardArrowUp className="text-xl" />
+            ) : (
+              <MdKeyboardArrowDown className="text-xl" />
+            )}
+          </button>
+          {openOrganizer && (
+            <ul
+              className={`space-y-1 pl-6 overflow-hidden transition-all duration-300 ease-in-out 
+              ${openOrganizer ? "max-h-96 opacity-100" : "max-h-0 opacity-0"}`}
+            >
+              <li>
+                <Link href="/dashboard/create_event">
+                  <button
+                    onClick={() => handleButtonClick("Create Events")}
+                    className={`flex items-center w-full p-2 rounded transition-colors duration-200 ${
+                      activePage === "Create Events"
+                        ? "bg-[#CDDC29] text-[#17202A]"
+                        : "hover:bg-[#CDDC29] hover:text-[#17202A]"
+                    }`}
+                  >
+                    <MdSchedule className="mr-2 text-xl" /> Create Events
+                  </button>
+                </Link>
+              </li>
+              <li>
+                <Link href="/dashboard/manage-events">
+                  <button
+                    onClick={() => handleButtonClick("Manage Events")}
+                    className={`flex items-center w-full p-2 rounded transition-colors duration-200 ${
+                      activePage === "Manage Events"
+                        ? "bg-[#CDDC29] text-[#17202A]"
+                        : "hover:bg-[#CDDC29] hover:text-[#17202A]"
+                    }`}
+                  >
+                    <MdOutlineFeaturedPlayList className="mr-2 text-xl" />
+                    Manage Events
+                  </button>
+                </Link>
+              </li>
+              <li>
+                <Link href="/dashboard/kyc/1234">
+                  <button
+                    onClick={() => handleButtonClick("Unlock Earnings")}
+                    className={`flex items-center w-full p-2 rounded transition-colors duration-200 ${
+                      activePage === "Unlock Earnings"
+                        ? "bg-[#CDDC29] text-[#17202A]"
+                        : "hover:bg-[#CDDC29] hover:text-[#17202A]"
+                    }`}
+                  >
+                    <MdOutlineSecurity className="mr-2 text-xl" /> Unlock
+                    Earnings KYC
+                  </button>
+                </Link>
+              </li>
+              <li>
+                <Link href="/dashboard/notifications">
+                  <button
+                    onClick={() => handleButtonClick("Notifications")}
+                    className={`flex items-center w-full p-2 rounded transition-colors duration-200 ${
+                      activePage === "Notifications"
+                        ? "bg-[#CDDC29] text-[#17202A]"
+                        : "hover:bg-[#CDDC29] hover:text-[#17202A]"
+                    }`}
+                  >
+                    <IoIosNotificationsOutline className="mr-2 text-xl" />{" "}
+                    Notifications
+                  </button>
+                </Link>
+              </li>
+            </ul>
+          )}
+        </li>
+        <li>
+          <button
+            onClick={togglePlayer}
+            className="flex items-center justify-between w-full py-2 pl-4 rounded transition-colors duration-200"
+          >
+            <h1 className="text-xl">Player</h1>
+            {openPlayer ? (
+              <MdKeyboardArrowUp className="text-xl" />
+            ) : (
+              <MdKeyboardArrowDown className="text-xl" />
+            )}
+          </button>
+          {openPlayer && (
+            <ul
+              className={`space-y-1 pl-6 overflow-hidden transition-all duration-300 ease-in-out 
+              ${openPlayer ? "max-h-96 opacity-100" : "max-h-0 opacity-0"}`}
+            >
               <li>
                 <Link href="/dashboard/manage-events">
                   <button className="flex items-center w-full p-2 hover:bg-[#CDDC29] hover:text-[#17202A] rounded transition-colors duration-200">
-                    <MdSchedule className="mr-2" /> Manage Events
+                    <MdSchedule className="mr-2 text-xl" /> Manage Events
                   </button>
                 </Link>
               </li>
               <li>
                 <Link href="/dashboard/enable_features">
                   <button className="flex items-center w-full p-2 hover:bg-[#CDDC29] hover:text-[#17202A] rounded transition-colors duration-200">
-                    <MdOutlineFeaturedPlayList className="mr-2" />
+                    <MdOutlineFeaturedPlayList className="mr-2 text-xl" />
                     Events I am interested
                   </button>
                 </Link>
@@ -150,14 +214,14 @@ const MSidebar = () => {
               <li>
                 <Link href="/dashboard/enable_features">
                   <button className="flex items-center w-full p-2 hover:bg-[#CDDC29] hover:text-[#17202A] rounded transition-colors duration-200">
-                    <MdOutlineFeaturedPlayList className="mr-2" />
+                    <MdOutlineFeaturedPlayList className="mr-2 text-xl" />
                     Withdraw from Events
                   </button>
                 </Link>
               </li>
             </ul>
-          </>
-        )}
+          )}
+        </li>
       </ul>
       <hr className="my-4 border-gray-700" />
       <div className="mt-auto">

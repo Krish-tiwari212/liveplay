@@ -5,6 +5,7 @@ import { useEffect, useRef, useState } from "react";
 import { Label } from "@radix-ui/react-dropdown-menu";
 import { toast } from "@/hooks/use-toast";
 import { Button } from "./ui/button";
+import { useEventContext } from "@/context/EventDataContext";
 
 interface FormField {
   id: string;
@@ -20,9 +21,7 @@ interface EventMediaProps {
   formData: any;
   setFormData: React.Dispatch<React.SetStateAction<any>>;
   setFormType: React.Dispatch<React.SetStateAction<any>>;
-  setEventData: React.Dispatch<React.SetStateAction<any>>;
   handleNext: () => void;
-  venuedecidet:any;
 }
 const requiredFields = [
   "eventAddress",
@@ -74,9 +73,9 @@ const EventMediaContactForm: React.FC<EventMediaProps> = ({
   formData,
   setFormData,
   handleNext,
-  setEventData,
-  venuedecidet,
 }) => {
+  const { EventData, setEventData } = useEventContext();
+
   const [isImageLoading, setIsImageLoading] = useState(false);
   const [imagePreviews, setImagePreviews] = useState<string[]>([]);
   const imageRefs = useRef<(HTMLInputElement | null)[]>([]);
@@ -96,7 +95,10 @@ const EventMediaContactForm: React.FC<EventMediaProps> = ({
               ...prevData,
               [fieldName]: file,
             }));
-
+            setEventData((prevData: any) => ({
+              ...prevData,
+              [fieldName]: file,
+            }));
             return newPreviews;
           });
         };
@@ -108,30 +110,19 @@ const EventMediaContactForm: React.FC<EventMediaProps> = ({
     
   const handleClick = (event: React.MouseEvent<HTMLButtonElement>) => {
     event.preventDefault();
-    
-
-    // if (!venuedecidet) {
-    //   requiredFields.push("venueName");
-    //   requiredFields.push("city");
-    // }
-
-    // const isAnyFieldEmpty = requiredFields.some(
-    //   (field) => !formData[field] || formData[field] === ""
-    // );
-
-    // if (isAnyFieldEmpty) {
-    //   toast({
-    //     title: "Please fill out the necessary fields",
-    //   });
-    //   console.log("please fill filed");
-    // } else {
-      setEventData((prevEventData: any) => ({
-        ...prevEventData,
-        ...formData,
-      }));
       handleNext();
-    // }
   };
+
+  useEffect(() => {
+    if (EventData && !formData) {
+      setFormData((prevEventData: any) => ({
+        ...prevEventData,
+        mobileBanner:EventData.mobileBanner || {},
+        desktopBanner:EventData.desktopBanner || {},
+      }));
+    }
+  }, [EventData]);
+
   return (
     <form className="bg-white p-5 rounded-lg">
       <div className="flex flex-wrap ">
@@ -139,8 +130,10 @@ const EventMediaContactForm: React.FC<EventMediaProps> = ({
           <div className="flex flex-col w-full mt-5" key={field.id}>
             <Label className="font-bold text-lg">
               {field.filecontnet?.label}
-              {requiredFields.includes(field.name) && !formData[field.name] && (
+              {requiredFields.includes(field.name) && !formData[field.name] ? (
                 <span className="text-red-500">*</span>
+              ) : (
+                <></>
               )}
             </Label>
             <div

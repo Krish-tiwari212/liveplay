@@ -3,16 +3,20 @@
 import { useEventContext } from "@/context/EventDataContext";
 import React, { useEffect } from "react";
 
-const Profile = () => {
+const page = ({
+  params: ManageEventId,
+}: {
+  params: { ManageEventId: string };
+}) => {
   const { setDashboardName } = useEventContext();
   useEffect(() => {
-    setDashboardName("Profile");
+    setDashboardName("ManageEventId");
   }, []);
   return (
-    <div className="w-full bg-slate-200 p-2">
-      <h1 className="">Profile</h1>
+    <div>
+      <h1>{ManageEventId.ManageEventId}</h1>
     </div>
   );
 };
 
-export default Profile;
+export default page;

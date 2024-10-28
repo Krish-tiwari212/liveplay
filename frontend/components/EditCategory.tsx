@@ -14,6 +14,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { useRouter } from "next/navigation";
+import { useEventContext } from "@/context/EventDataContext";
 
 interface EditCategoryProps {
   setCategoryData: (newCategory: any) => void;
@@ -136,6 +137,13 @@ const EditCategory = ({ setCategoryData, selectedCategory }: EditCategoryProps) 
     discountCode: selectedCategory?.discountCode || "",
     categoryType: selectedCategory?.categoryType || "",
   });
+  const { EventData } = useEventContext();
+  const fields =
+    EventData.selectsport === "Marathon"
+      ? inputFields
+      : inputFields.filter(
+          ({ id }) => id !== "totalQuantity" && id !== "maxTicketQuantity"
+        );
 
   const [showAmountInput, setShowAmountInput] = useState(false);
   const [showPercentageInput, setShowPercentageInput] = useState(false);
@@ -161,7 +169,6 @@ const EditCategory = ({ setCategoryData, selectedCategory }: EditCategoryProps) 
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    console.log(categoryData);
     setCategoryData(categoryData); 
     setLocalCategoryData({
       categoryName: "",
@@ -200,7 +207,7 @@ const EditCategory = ({ setCategoryData, selectedCategory }: EditCategoryProps) 
             </p>
           </Select>
         </div>
-        {inputFields.map((field) => (
+        {fields.map((field) => (
           <div
             key={field.id}
             className={` ${

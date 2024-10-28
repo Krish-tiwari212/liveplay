@@ -1,5 +1,5 @@
 "use client"
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Progress } from "@/components/ui/progress";
 import { Button } from '@/components/ui/button';
 import { Label } from "@/components/ui/label";
@@ -7,6 +7,36 @@ import { Input } from "@/components/ui/input";
 import Kycforms from '@/components/Kycforms';
 import { verify } from 'crypto';
 import { toast } from '@/hooks/use-toast';
+import { IoCreate } from 'react-icons/io5';
+import { MdAccountBalance, MdOutlineCategory, MdOutlineFeaturedPlayList, MdPersonalInjury } from 'react-icons/md';
+import ProgressBar from '@/components/ProgressBar';
+import { useEventContext } from '@/context/EventDataContext';
+
+
+
+const ProgressBarCheckpoints = [
+  {
+    icon: <MdPersonalInjury />,
+    label: "Enter Details",
+    placement: 1,
+  },
+  {
+    icon: (
+      <img
+        src="/icons/Aadhar-White.svg"
+        alt="Upload Adhar"
+        className="w-5 h-5"
+      />
+    ),
+    label: "Upload Adhar",
+    placement: 2,
+  },
+  {
+    icon: <MdAccountBalance />,
+    label: "Account Details",
+    placement: 3,
+  },
+];
 
 const fields = [
   {
@@ -128,8 +158,9 @@ const additionalFields = [
 ];
 
 const Page = ({ params: kycID }: { params: { kycID: string } }) => {
+  const { setDashboardName } = useEventContext();
   const [currentPage, setCurrentPage] = useState(1);
-  const totalPages = 3;
+  const totalPages = 4;
 
   const handleNext = () => {
     if (currentPage < totalPages) {
@@ -143,30 +174,31 @@ const Page = ({ params: kycID }: { params: { kycID: string } }) => {
     }
   };
 
+  useEffect(() => {
+    setDashboardName("Unlock Event Earnings");
+  }, []);
+
   return (
     <div className="m-3 relative">
-      <Progress
-        value={(currentPage / totalPages) * 100}
-        className="w-[50%] mx-auto h-2 mb-4"
+      <ProgressBar
+        forpage="KYC"
+        currentpage={currentPage}
+        setCurrentPage={setCurrentPage}
+        totalPages={totalPages}
+        checkpoints={ProgressBarCheckpoints}
       />
       {currentPage === 1 && (
-        <FirstPage 
-          handleNext={handleNext} 
-          handlePrev={handlePrev} 
-          prevDisabled={true} 
+        <FirstPage
+          handleNext={handleNext}
+          handlePrev={handlePrev}
+          prevDisabled={true}
         />
       )}
       {currentPage === 2 && (
-        <SecondPage 
-          handleNext={handleNext} 
-          handlePrev={handlePrev} 
-        />
+        <SecondPage handleNext={handleNext} handlePrev={handlePrev} />
       )}
       {currentPage === 3 && (
-        <ThirdPage 
-          handleNext={handleNext} 
-          handlePrev={handlePrev} 
-        />
+        <ThirdPage handleNext={handleNext} handlePrev={handlePrev} />
       )}
     </div>
   );

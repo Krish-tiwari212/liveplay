@@ -1,4 +1,6 @@
-import React from 'react'
+"use client"
+
+import React, { useEffect } from 'react'
 import Image from 'next/image';
 import { Card, CardContent } from "@/components/ui/card";
 import { FaCalendarAlt } from 'react-icons/fa';
@@ -7,6 +9,8 @@ import { FaHandHoldingDollar } from 'react-icons/fa6';
 import { LiaStreetViewSolid } from 'react-icons/lia';
 import { Button } from '@/components/ui/button';
 import Link from 'next/link';
+import { useRouter } from 'next/navigation';
+import { useEventContext } from '@/context/EventDataContext';
 
 
 const activeEvents = [
@@ -65,6 +69,11 @@ const drafts = [
 ];
 
 const page = () => {
+  const router=useRouter()
+  const { setDashboardName } = useEventContext();
+  useEffect(() => {
+    setDashboardName("Manage Events");
+  }, []);
   return (
     <div className="m-3 relative ">
       <h1 className="text-[#17202A] text-3xl font-bold">Manage Events</h1>
@@ -73,6 +82,7 @@ const page = () => {
         <div className="flex space-x-4 overflow-x-auto pb-8">
           {activeEvents.map((event) => (
             <Card
+              onClick={()=>router.push(`/dashboard/manage-events/${event.id}`)}
               key={event.id}
               className="shadow-md cursor-pointer hover:shadow-2xl"
             >

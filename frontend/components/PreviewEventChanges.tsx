@@ -331,7 +331,7 @@ const PreviewEventChanges: React.FC<PreviewEventChangesProps> = ({
                 />
               </div>
             )}
-            {/* {field.type === "file" && (
+            {field.type === "file" && (
               <div className="flex w-full">
                 <div className="flex flex-col w-full mt-5 flex-[4]">
                   <Label className="font-bold text-lg">
@@ -392,7 +392,7 @@ const PreviewEventChanges: React.FC<PreviewEventChangesProps> = ({
                   </div>
                 )}
               </div>
-            )} */}
+            )}
           </React.Fragment>
         ))}
         {/* Radio Buttons for Options like GST Compliance */}

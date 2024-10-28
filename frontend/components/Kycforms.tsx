@@ -42,7 +42,7 @@ const Kycforms: React.FC<KycFormsProps> = ({
   fields,
   buttonLabel,
   buttonString,
-  onButtonClick,
+  onButtonClick=()=>{},
   handlePrev=()=>{},
   prevDisabled,
   nextDisabled
@@ -135,7 +135,7 @@ const Kycforms: React.FC<KycFormsProps> = ({
       </div>
       {buttonLabel && (
         <Button
-          onClick={(e)=>{e.preventDefault(); onButtonClick}}
+          onClick={(e)=>{e.preventDefault(); onButtonClick()}}
           disabled={nextDisabled}
           className="mt-3 w-full"
         >

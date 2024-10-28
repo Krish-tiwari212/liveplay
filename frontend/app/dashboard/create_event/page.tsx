@@ -7,70 +7,77 @@ import { Button } from '@/components/ui/button';
 import EnableFeatures from '@/components/EnableFeatures';
 import CategoryPreview from '@/components/CategoryPreview';
 import PreviewEventChanges from '@/components/PreviewEventChanges';
+import ProgressBar from '@/components/ProgressBar';
+import { RiContactsBookUploadFill } from 'react-icons/ri';
+import { MdOutlineCategory, MdOutlineFeaturedPlayList, MdOutlineRocketLaunch } from 'react-icons/md';
+import { IoCreate } from 'react-icons/io5';
+import EventBoosters from '@/components/EventBoosters';
+import GoLive from '@/components/GoLive';
+import { useEventContext } from '@/context/EventDataContext';
 
+const ProgressBarCheckpoints = [
+  {
+    icon: <IoCreate />,
+    label: "Event Setup",
+    placement: 1,
+  },
+  {
+    icon: <MdOutlineCategory />,
+    label: "Category Setup",
+    placement: 2,
+  },
+  {
+    icon: <MdOutlineFeaturedPlayList />,
+    label: "Enable Features",
+    placement: 3,
+  },
+  {
+    icon: <MdOutlineRocketLaunch />,
+    label: "Event Boosters",
+    placement: 4,
+  },
+  {
+    icon: <RiContactsBookUploadFill />,
+    label: "Go Live",
+    placement: 5,
+  },
+];
 
 const page = () => {
-  // const [currentPage, setCurrentPage] = useState(() => {
-  //   const savedPage = localStorage.getItem('currentPage');
-  //   return savedPage ? JSON.parse(savedPage) : 1;
-  // });
+  const { EventData, setEventData,DashboardName,setDashboardName } = useEventContext();
   const [currentPage,setCurrentPage]=useState(1)
-  const [EventData, setEventData] = useState({});
-  const totalPages = 4;
+  const totalPages = 6;
 
   const handleNext = () => {
     if (currentPage < totalPages) {
       const newPage = currentPage + 1;
-      setCurrentPage(newPage);
-      // localStorage.setItem('currentPage', JSON.stringify(newPage)); 
+      setCurrentPage(newPage); 
     }
   };
-
-  // Remove the handlePrev function as it's no longer needed
-  // const handlePrev = () => {
-  //   if (currentPage > 1) {
-  //     setCurrentPage(currentPage - 1);
-  //   }
-  // };
-
-  // useEffect(() => {
-  //   localStorage.setItem('currentPage', JSON.stringify(currentPage));
-  // }, [currentPage]);
+   const handlePrev = () => {
+    if (currentPage > 0) {
+      setCurrentPage(currentPage - 1);
+    }
+   };
+   
+   useEffect(()=>{
+    setDashboardName("Create Event")
+   },[])
 
   return (
     <div className="m-3 relative">
-      <Progress
-        value={(currentPage / totalPages) * 100}
-        className="w-[50%] mx-auto h-2 mb-4"
+      <ProgressBar
+        forpage="createEvent"
+        currentpage={currentPage}
+        setCurrentPage={setCurrentPage}
+        totalPages={totalPages}
+        checkpoints={ProgressBarCheckpoints}
       />
-      <div className="text-center mb-2">
-        Step {currentPage} of {totalPages}
-      </div>
-
-      {currentPage === 1 && (
-        <EventInformation handleNext={handleNext} setEventData={setEventData} />
-      )}
-      {currentPage === 2 && (
-        <CategoryPreview
-          EventData={EventData}
-          handleNext={handleNext}
-          setEventData={setEventData}
-        />
-      )}
-      {currentPage === 3 && (
-        <EnableFeatures
-          handleNext={handleNext}
-          setEventData={setEventData}
-          EventData={EventData}
-        />
-      )}
-      {currentPage === 4 && (
-        <PreviewEventChanges
-          handleNext={handleNext}
-          EventData={EventData}
-          setEventData={setEventData}
-        />
-      )}
+      {currentPage === 1 && <EventInformation handleNext={handleNext} />}
+      {currentPage === 2 && <CategoryPreview handleNext={handleNext} />}
+      {currentPage === 3 && <EnableFeatures handleNext={handleNext} />}
+      {currentPage === 4 && <EventBoosters handleNext={handleNext} />}
+      {currentPage === 5 && <GoLive />}
     </div>
   );
 }

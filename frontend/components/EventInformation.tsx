@@ -1,13 +1,10 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import OverviewSidebar from "@/components/OverviewSidebar";
 import EventDetailsForm from "@/components/EventDetailsForm";
 import EventMediaContactForm from "@/components/EventMediaContactForm";
 import EventLocationForm from "@/components/EventLocationForm";
-import { useAppContext } from "@/lib/context/AppContext";
-import { Switch } from "@/components/ui/switch";
-import { Label } from "@radix-ui/react-dropdown-menu";
 import EventInsights from "@/components/EventInsights";
 const OverviewSidebarContent = [
   {
@@ -26,18 +23,13 @@ const OverviewSidebarContent = [
 
 interface EventInformation {
   handleNext: () => void;
-  setEventData: React.Dispatch<React.SetStateAction<any>>;
 }
 
 const EventInformation: React.FC<EventInformation> = ({
   handleNext,
-  setEventData,
 }) => {
   const [formType, setFormType] = useState<string>("default");
-  const { theme } = useAppContext();
   const [formData, setFormData] = useState<any>({});
-  const [venuedecidet,setVenueDecided]=useState(false)
-
   const renderForm = () => {
     switch (formType) {
       case "Essential":
@@ -46,7 +38,6 @@ const EventInformation: React.FC<EventInformation> = ({
             formData={formData}
             setFormData={setFormData}
             setFormType={setFormType}
-            setEventData={setEventData}
           />
         );
       case "Location":
@@ -55,9 +46,6 @@ const EventInformation: React.FC<EventInformation> = ({
             formData={formData}
             setFormData={setFormData}
             setFormType={setFormType}
-            setEventData={setEventData}
-            setVenueDecided={setVenueDecided}
-            venuedecidet={venuedecidet}
           />
         );
       case "Insights":
@@ -66,7 +54,6 @@ const EventInformation: React.FC<EventInformation> = ({
             formData={formData}
             setFormData={setFormData}
             setFormType={setFormType}
-            setEventData={setEventData}
           />
         );
       case "Branding":
@@ -76,8 +63,6 @@ const EventInformation: React.FC<EventInformation> = ({
             setFormData={setFormData}
             setFormType={setFormType}
             handleNext={handleNext}
-            setEventData={setEventData}
-            venuedecidet={venuedecidet}
           />
         );
       default:
@@ -86,7 +71,6 @@ const EventInformation: React.FC<EventInformation> = ({
             formData={formData}
             setFormData={setFormData}
             setFormType={setFormType}
-            setEventData={setEventData}
           />
         );
     }

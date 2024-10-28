@@ -1,5 +1,4 @@
 import React, { useRef, useEffect, useState } from "react";
-import React, { useRef, useEffect, useState } from "react";
 import Slider from "react-slick";
 import { FaChevronLeft, FaChevronRight } from "react-icons/fa";
 import EventCard from "./EventCard";
@@ -8,8 +7,6 @@ import "slick-carousel/slick/slick-theme.css";
 
 const CardCarousel = () => {
   const scrollRef = useRef<HTMLDivElement>(null);
-  const [events, setEvents] = useState([]);
-
   const [events, setEvents] = useState([]);
 
   const NextArrow = (props: any) => {
@@ -108,10 +105,8 @@ const CardCarousel = () => {
                 date={e.date}
                 name={e.name}
                 eventname={e.eventname}
-                eventname={e.eventname}
                 location={e.location}
                 time={e.time}
-                noOfEntries={e.noOfEntries}
                 noOfEntries={e.noOfEntries}
                 sport={e.sport}
                 price={e.price}

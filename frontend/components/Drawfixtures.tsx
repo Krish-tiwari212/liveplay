@@ -1,7 +1,8 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import Image from "next/image";
 import { Label } from "./ui/label";
 import { Switch } from "./ui/switch";
+import { useEventContext } from "@/context/EventDataContext";
 
 interface DrawfixturesProps{
   setFeatureData: React.Dispatch<React.SetStateAction<any>>;
@@ -23,22 +24,37 @@ const Drawfixtures = ({ setFeatureData }: DrawfixturesProps) => {
     { id: 12, teamA: "Team W", teamB: "Team X", buy: true },
   ]);
   const [showFixtures,setShowFixtures]=useState(false)
+  const { EventData, setEventData } = useEventContext();
 
   const midIndex = Math.ceil(fixtures.length / 2);
   const firstHalf = fixtures.slice(0, midIndex);
   const secondHalf = fixtures.slice(midIndex);
   const handleFixtures=()=>{
     setShowFixtures((prev)=>!prev)
-    setFeatureData((prevData: any) => ({
+    // setFeatureData((prevData: any) => ({
+    //   ...prevData,
+    //   enableFixtures: !showFixtures,
+    // }));
+    setEventData((prevData: any) => ({
       ...prevData,
       enableFixtures: !showFixtures,
     }));
   }
 
+  useEffect(() => {
+    if (EventData) {
+      setShowFixtures(EventData.enableFixtures || false); 
+    }
+  }, [EventData]);
+
   return (
-    <div className="flex flex-col bg-white shadow-lg rounded-lg w-full h-full p-4">
+    <div className="flex flex-col bg-white shadow-lg rounded-lg w-full p-8">
       <div className="flex items-center space-x-2 relative">
-        <Switch id="enable-countdown" onCheckedChange={handleFixtures} />
+        <Switch
+          id="enable-countdown"
+          onCheckedChange={handleFixtures}
+          checked={showFixtures}
+        />
         <Label htmlFor="airplane-mode">Enable Fixtures</Label>
       </div>
       {showFixtures && (

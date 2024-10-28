@@ -29,39 +29,28 @@ import {
 
 import { Value } from "@radix-ui/react-select";
 import { FaUserCircle } from "react-icons/fa";
+import { IoIosNotificationsOutline } from "react-icons/io";
+import { useEventContext } from "@/context/EventDataContext";
 
 
 const Navbar = () => {
   const pathname = usePathname();
-  const pageName = pathname ? pathname.split("/").pop()?.toUpperCase() : "HOME"; 
+  const {DashboardName}=useEventContext()
+  const pageName = pathname ? pathname.split("/").pop()?.toUpperCase() : "Home"; 
   const { theme, setTheme } = useAppContext();
   const [tooltip, setTooltip] = useState<string | null>(null);
   const [userStatus, setUserStatus] = useState("organizer");
 
   return (
     <div className="flex justify-between items-center p-4 m-3 bg-[#17202A] text-white rounded-lg ">
-      <div className="text-lg text-[#CDDC29] font-bold">
-        {pageName === "1234" ? "Unlock Event Earnings" : pageName}
-      </div>
+      <div className="text-lg text-[#CDDC29] font-bold">{DashboardName || "Home"}</div>
       <div className="flex items-center">
         <div className="flex space-x-4 ml-4 items-center">
-          <div className="flex gap-5 items-center justify-center">
-            {/* <Switch id="theme" className="" onClick={(e)=>setTheme(e)} />
-            <Label>{theme} Mode</Label> */}
-            <Select onValueChange={setTheme}>
-              <SelectTrigger className="w-auto md:w-[180px] bg-[#17202A] border focus-visible:ring-offset-gray-600">
-                <SelectValue placeholder="Theme" />
-              </SelectTrigger>
-              <SelectContent className="bg-[#17202A] text-white">
-                <SelectItem value="light">Light</SelectItem>
-                <SelectItem value="dark">Dark</SelectItem>
-                <SelectItem value="system">System</SelectItem>
-              </SelectContent>
-            </Select>
-          </div>
-
+          <button>
+            <IoIosNotificationsOutline className="text-xl" />
+          </button>
           <button
-            className="flex items-center w-full py-2 pl-2 hover:bg-gray-700 rounded transition-colors duration-200 relative"
+            className="flex items-center w-full py-2 hover:bg-gray-700 rounded transition-colors duration-200 relative"
             onMouseEnter={() => setTooltip("UserName")}
             onMouseLeave={() => setTooltip(null)}
           >
@@ -70,9 +59,6 @@ const Navbar = () => {
                 <TooltipTrigger asChild>
                   <div className="flex items-center w-full px-2 hover:bg-gray-700 hover:rounded transition-colors relative">
                     <FaUserCircle className="text-3xl" />
-                    <div className="flex flex-col justify-start items-start ml-2">
-                      <span className={`text-xl`}>Mohit</span>
-                    </div>
                   </div>
                 </TooltipTrigger>
                 <TooltipContent className="relative">

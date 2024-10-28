@@ -1,6 +1,18 @@
 import { Checkbox } from "@/components/ui/checkbox";
-import { useEffect } from "react";
+import React,{  useEffect, useState } from "react";
 import { Label } from "./ui/label";
+import { eventNames } from "process";import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import { LiaMicrophoneAltSlashSolid, LiaMoneyBillWaveAltSolid } from "react-icons/lia";
+import { useEventContext } from "@/context/EventDataContext";
+import { effect } from "zod";
+import { Button } from "./ui/button";
+
 
 interface FormField {
   id: string;
@@ -11,13 +23,77 @@ interface FormField {
   required?: boolean;
 }
 
+interface DetailFields {
+  Eventname?: FormField[];
+  registration?: FormField[];
+  EventDates?: FormField[];
+  organizerContactInfo?: FormField[];
+}
+
 interface EventDetailsFormProps {
-  fields?: FormField[];
+  fields?: DetailFields[];
   formData: any;
   setFormData: React.Dispatch<React.SetStateAction<any>>;
   setFormType: React.Dispatch<React.SetStateAction<any>>;
-  setEventData: React.Dispatch<React.SetStateAction<any>>;
 }
+
+const SportsType = [
+  "Soccer",
+  "Basketball",
+  "Tennis",
+  "Baseball",
+  "Golf",
+  "Cricket",
+  "Rugby",
+  "Volleyball",
+  "Hockey",
+  "Boxing",
+  "Marathon",
+  "Table Tennis",
+  "Badminton",
+  "Cycling",
+  "Swimming",
+  "Gymnastics",
+  "Skating",
+  "Skiing",
+  "Snowboarding",
+  "Surfing",
+  "Athletics",
+  "Wrestling",
+  "Weightlifting",
+  "Fencing",
+  "Handball",
+  "Rowing",
+  "Sailing",
+  "Archery",
+  "Equestrian",
+  "Karate",
+  "Judo",
+  "Taekwondo",
+  "Motorsport",
+  "Billiards",
+  "Bowling",
+  "Lacrosse",
+  "Polo",
+  "Racquetball",
+  "Softball",
+  "Triathlon",
+  "Water Polo",
+  "Darts",
+  "Kickboxing",
+  "Snooker",
+  "Canoeing",
+  "Kayaking",
+  "Mountain Biking",
+  "Rock Climbing",
+  "Paragliding",
+  "Fishing",
+  "Horse Racing",
+  "American Football",
+  "Field Hockey",
+  "Ice Hockey",
+];
+
 
 const requiredFields = [
   "eventAddress",
@@ -40,115 +116,288 @@ const requiredFields = [
   "startTime",
 ];
 
+const fields = [
+  {
+    Eventname: [
+      {
+        id: "selectsport",
+        label: "Event Sport",
+        type: "select",
+        name: "selectsport",
+        placeholder: "Select Sport",
+        required: true,
+      },
+      {
+        id: "eventName",
+        label: "Event Name",
+        type: "text",
+        name: "eventName",
+        placeholder: "Enter Event Title",
+        required: true,
+      },
+    ],
+  },
+  {
+    registration: [
+      {
+        id: "LastRegistrationDate",
+        label: "Last Date to Register",
+        type: "date",
+        name: "LastRegistrationDate",
+        required: true,
+      },
+      {
+        id: "LastWithdrawalDate",
+        label: "Last Date to Withdraw",
+        type: "date",
+        name: "LastWithdrawalDate",
+        required: true,
+      },
+    ],
+  },
+  {
+    EventDates: [
+      {
+        id: "eventstartDate",
+        label: "Event Start Date",
+        type: "date",
+        name: "eventstartDate",
+        required: true,
+      },
+      {
+        id: "eventenddate",
+        label: "Event End Date",
+        type: "date",
+        name: "eventenddate",
+        required: true,
+      },
+      {
+        id: "startTime",
+        label: "Start Time",
+        type: "time",
+        name: "startTime",
+        required: true,
+      },
+    ],
+  },
+  {
+    organizerContactInfo: [
+      {
+        id: "organiserName",
+        label: "Name",
+        type: "text",
+        name: "organiserName",
+        required: true,
+        placeholder: "Enter Name",
+      },
+      {
+        id: "organiserNumber",
+        label: "Contact",
+        type: "text",
+        name: "organiserNumber",
+        placeholder: "Enter Contact Number",
+        required: true,
+      },
+      {
+        id: "organiseremailaddress",
+        label: "Email",
+        type: "email",
+        name: "organiseremailaddress",
+        placeholder: "Enter Email",
+        required: true,
+      },
+    ],
+  },
+];
+
 const EventDetailsForm: React.FC<EventDetailsFormProps> = ({
   formData,
   setFormData,
   setFormType,
-  setEventData,
 }) => {
+  const { EventData, setEventData } = useEventContext();
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
     setFormData({ ...formData, [name]: value });
+    setEventData({ ...EventData, [name]: value });
   };
-
   useEffect(() => {
-    const savedData = localStorage.getItem("eventFormData");
-    if (savedData) {
-      setFormData(JSON.parse(savedData));
+    if (EventData) {
+      setFormData({
+        selectsport: EventData.selectsport || "",
+        eventName: EventData.eventName || "",
+        LastRegistrationDate: EventData.LastRegistrationDate || "",
+        LastWithdrawalDate: EventData.LastWithdrawalDate || "",
+        eventstartDate: EventData.eventstartDate || "",
+        eventenddate: EventData.eventenddate || "",
+        startTime: EventData.startTime || "",
+        organiserName: EventData.organiserName || "",
+        organiserNumber: EventData.organiserNumber || "",
+        organiseremailaddress: EventData.organiseremailaddress || "",
+      });
     }
-  }, []);
+  }, [EventData]);
+
+   const handleNext = (e: any) => {
+    e.preventDefault(); 
+     setFormType("Location");
+   };
 
   return (
     <form className="bg-white shadow-2xl p-5 rounded-lg">
       <div className="flex flex-wrap w-full">
-        {fields.map((field) => (
-          <div
-            key={field.id}
-            className={`${
-              field.id === "eventName" ? "w-full" : "lg:w-[47%]"
-            } w-full m-2 flex flex-col`}
-          >
-            <Label className="font-bold text-lg">
-              {field.label}
-              {requiredFields.includes(field.name) && !formData[field.name] && (
-                <span className="text-red-500">*</span>
-              )}
-            </Label>
-            <input
-              id={field.id}
-              type={field.type}
-              name={field.name}
-              placeholder={field.placeholder}
-              required={field.required}
-              value={formData[field.name as keyof EventDetailsFormProps] || ""}
-              onChange={handleChange}
-              className="h-16 p-2 bg-white border rounded-md text-sm shadow-2xl text-[#17202A] focus:border-[#17202A] focus:outline-none focus:shadow-lg"
-            />
-          </div>
+        {fields[0].Eventname?.map((field, i) => (
+          <React.Fragment key={i}>
+            {field.type === "select" && (
+              <div className="w-full mx-2">
+                <Label className="font-bold text-lg" htmlFor="EventSport">
+                  {field.label}
+                </Label>
+                <Select
+                  value={formData.selectsport}
+                  onValueChange={(value) => {
+                    setFormData({
+                      ...formData,
+                      selectsport: value,
+                    });
+                    setEventData({ ...EventData, selectsport: value });
+                  }}
+                >
+                  <SelectTrigger className="h-16 p-2 bg-white border rounded-md text-sm shadow-2xl text-[#17202A] focus:border-[#17202A] focus:outline-none focus:shadow-lg">
+                    <SelectValue placeholder={field.placeholder} />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {SportsType.map((sport, i) => (
+                      <SelectItem value={sport} key={i}>
+                        {sport}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
+            )}
+            {field.type !== "select" && (
+              <div key={field.id} className={` w-full m-2 flex flex-col`}>
+                <Label className="font-bold text-lg">
+                  {field.label}
+                  {requiredFields.includes(field.name) &&
+                  !formData[field.name] ? (
+                    <span className="text-red-500">*</span>
+                  ) : (
+                    <></>
+                  )}
+                </Label>
+                <input
+                  id={field.id}
+                  type={field.type}
+                  name={field.name}
+                  placeholder={field.placeholder}
+                  required={field.required}
+                  value={
+                    formData[field.name as keyof EventDetailsFormProps] || ""
+                  }
+                  onChange={handleChange}
+                  className="h-16 p-2 bg-white border rounded-md text-sm shadow-2xl text-[#17202A] focus:border-[#17202A] focus:outline-none focus:shadow-lg"
+                />
+              </div>
+            )}
+          </React.Fragment>
         ))}
         <div className=" w-full mx-2 mt-2 flex flex-col mb-6">
-          <label className="" htmlFor="OrganiserContactInfo">
-            Organiser Contact Info
-          </label>
+          <Label className="font-bold text-lg" htmlFor="registrationdetails">
+            Event Registration Details
+          </Label>
           <div className="flex flex-col xl:flex-row w-full gap-3">
-            <div className=" w-full flex flex-col">
-              <Label className="text-[0.8rem]">
-                Name
-                {requiredFields.includes("organiserName") &&
-                  !formData["organiserName"] && (
+            {fields[1].registration?.map((field, i) => (
+              <div className=" w-full flex flex-col" key={i}>
+                <Label className="text-[0.8rem]">
+                  {field.label}
+                  {requiredFields.includes(field.name) &&
+                  !formData[field.name] ? (
                     <span className="text-red-500">*</span>
+                  ) : (
+                    <></>
                   )}
-              </Label>
-              <input
-                id="organiserName"
-                type="text"
-                name="organiserName"
-                placeholder="Enter Name"
-                required
-                value={formData.organiserName || ""}
-                onChange={handleChange}
-                className=" w-full h-12 p-2 bg-white border rounded-md text-sm shadow-2xl text-[#17202A] focus:border-[#17202A] focus:outline-none focus:shadow-lg"
-              />
-            </div>
-            <div className=" w-full  flex flex-col">
-              <Label className="text-[0.8rem]">
-                Number
-                {requiredFields.includes("organiserNumber") &&
-                  !formData["organiserNumber"] && (
-                    <span className="text-red-500">*</span>
-                  )}
-              </Label>
-              <input
-                id="organiserNumber"
-                type="text"
-                name="organiserNumber"
-                placeholder="Enter Number"
-                required
-                value={formData.organiserNumber || ""}
-                onChange={handleChange}
-                className=" w-full h-12 p-2 bg-white border rounded-md text-sm shadow-2xl text-[#17202A] focus:border-[#17202A] focus:outline-none focus:shadow-lg"
-              />
-            </div>
-            <div className=" w-full flex flex-col">
-              <Label className="text-[0.8rem]">
-                Email address
-                {requiredFields.includes("organiseremailaddress") &&
-                  !formData["organiseremailaddress"] && (
-                    <span className="text-red-500">*</span>
-                  )}
-              </Label>
-              <input
-                id="organiseremailaddress"
-                type="email"
-                name="organiseremailaddress"
-                placeholder="Enter Email"
-                required
-                value={formData.organiseremailaddress || ""}
-                onChange={handleChange}
-                className=" w-full h-12 p-2 bg-white border rounded-md text-sm shadow-2xl text-[#17202A] focus:border-[#17202A] focus:outline-none focus:shadow-lg"
-              />
-            </div>
+                </Label>
+                <input
+                  id={field.id}
+                  type={field.type}
+                  name={field.name}
+                  required={field.required}
+                  value={
+                    formData[field.name as keyof EventDetailsFormProps] || ""
+                  }
+                  onChange={handleChange}
+                  className=" w-full h-12 p-2 bg-white border rounded-md text-sm shadow-2xl text-[#17202A] focus:border-[#17202A] focus:outline-none focus:shadow-lg"
+                />
+              </div>
+            ))}
           </div>
+        </div>
+        <div className=" w-full mx-2 mt-2 flex flex-col mb-6">
+          <Label className="font-bold text-lg" htmlFor="eventDates">
+            Event Dates
+          </Label>
+          <div className="flex flex-col xl:flex-row w-full gap-3">
+            {fields[2].EventDates?.map((field, i) => (
+              <div className=" w-full flex flex-col" key={i}>
+                <Label className="text-[0.8rem]">
+                  {field.label}
+                  {requiredFields.includes(field.name) &&
+                  !formData[field.name] ? (
+                    <span className="text-red-500">*</span>
+                  ) : (
+                    <></>
+                  )}
+                </Label>
+                <input
+                  id={field.id}
+                  type={field.type}
+                  name={field.name}
+                  required={field.required}
+                  value={
+                    formData[field.name as keyof EventDetailsFormProps] || ""
+                  }
+                  onChange={handleChange}
+                  className=" w-full h-12 p-2 bg-white border rounded-md text-sm shadow-2xl text-[#17202A] focus:border-[#17202A] focus:outline-none focus:shadow-lg"
+                />
+              </div>
+            ))}
+          </div>
+        </div>
+        <div className=" w-full mx-2 mt-2 flex flex-col">
+          <Label className="font-bold text-lg" htmlFor="OrganiserContactInfo">
+            Organiser Contact Info
+          </Label>
+          <div className="flex flex-col xl:flex-row w-full gap-3">
+            {fields[3].organizerContactInfo?.map((field, i) => (
+              <div className=" w-full flex flex-col" key={i}>
+                <Label className="text-[0.8rem]">
+                  {field.label}
+                  {requiredFields.includes(field.name) &&
+                  !formData[field.name] ? (
+                    <span className="text-red-500">*</span>
+                  ) : (
+                    <></>
+                  )}
+                </Label>
+                <input
+                  id={field.id}
+                  type={field.type}
+                  name={field.name}
+                  required={field.required}
+                  placeholder={field.placeholder}
+                  value={
+                    formData[field.name as keyof EventDetailsFormProps] || ""
+                  }
+                  onChange={handleChange}
+                  className=" w-full h-12 p-2 bg-white border rounded-md text-sm shadow-2xl text-[#17202A] focus:border-[#17202A] focus:outline-none focus:shadow-lg"
+                />
+              </div>
+            ))}
+          </div>
+        </div>
+        <div className=" w-full mx-2 flex flex-col mb-6">
           <div className="mt-2 items-top flex justify-start  space-x-2">
             <Checkbox id="contactInfo" />
             <div className="flex flex-col leading-none">
@@ -165,54 +414,11 @@ const EventDetailsForm: React.FC<EventDetailsFormProps> = ({
           </div>
         </div>
       </div>
+      <Button onClick={(e) => handleNext(e)} className="w-full mt-4">
+        Next
+      </Button>
     </form>
   );
 };
-const fields = [
-  {
-    id: "eventName",
-    label: "Event Name",
-    type: "text",
-    name: "eventName",
-    placeholder: "Enter Event Title",
-    required: true,
-  },
-  {
-    id: "LastRegistrationDate",
-    label: "Last Registration Date",
-    type: "date",
-    name: "lastRegistrationDate",
-    required: true,
-  },
-  {
-    id: "LastWithdrawalDate",
-    label: "Last Withdrawal Date",
-    type: "date",
-    name: "lastWithdrawalDate",
-    required: true,
-  },
-  {
-    id: "eventstartDate",
-    label: "Event Start Date",
-    type: "date",
-    name: "eventstartDate",
-    required: true,
-  },
-  {
-    id: "eventenddate",
-    label: "Event End Date",
-    type: "date",
-    name: "eventenddate",
-    required: true,
-  },
-  {
-    id: "startTime",
-    label: "Start Time",
-    type: "time",
-    name: "startTime",
-    required: true,
-  },
-  // Add more fields as needed
-];
 
 export default EventDetailsForm;
