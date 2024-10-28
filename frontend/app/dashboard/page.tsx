@@ -79,6 +79,7 @@ const drafts = [
 export default function Home() {
   const { setTheme } = useAppContext();
   const { setDashboardName } = useEventContext();
+  const [events, setEvents] = useState([]);
   const router=useRouter()
   useEffect(() => {
     const matchMedia = window.matchMedia("(prefers-color-scheme: dark)");
@@ -93,6 +94,22 @@ export default function Home() {
   }, []);
   useEffect(() => {
     setDashboardName("Home");
+  }, []);
+  useEffect(() => {
+    const fetchEvents = async () => {
+      try {
+        const response = await fetch('/api/event/all_events');
+        if (!response.ok) {
+          throw new Error('Network response was not ok');
+        }
+        const data = await response.json();
+        setEvents(data.events);
+      } catch (error) {
+        console.error('Error fetching events:', error);
+      }
+    };
+  
+    fetchEvents();
   }, []);
   return (
     <div className="flex flex-col m-3">
