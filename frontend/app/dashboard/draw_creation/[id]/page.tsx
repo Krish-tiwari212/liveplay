@@ -1,4 +1,5 @@
 "use client";
+import { useEventContext } from '@/context/EventDataContext';
 import { useState, useEffect } from 'react';
 
 // Dummy function to fetch event details
@@ -69,6 +70,7 @@ const dummyEntries = [
   ];  
 
 const EventDetailsPage = ({ params }) => {
+  const {setDashboardName}=useEventContext()
   const { id } = params;
   const [event, setEvent] = useState(null);
   const [entries, setEntries] = useState([]);
@@ -77,6 +79,7 @@ const EventDetailsPage = ({ params }) => {
   const [categories, setCategories] = useState([]);
 
   useEffect(() => {
+    setDashboardName("Draw Creations")
     if (id) {
       const loadEventDetails = async () => {
         const event = await fetchEventDetails(id);
@@ -116,7 +119,7 @@ const EventDetailsPage = ({ params }) => {
     rounds.push(roundEntries);
   
     return (
-      <div className="brackets space-y-8">
+      <div className="brackets space-y-8 m-3">
         {rounds.map((round, i) => (
           <div key={i} className="round space-y-4">
             <h3 className="text-2xl font-semibold mb-4 border-b border-gray-300 pb-2 text-gray-800">
@@ -140,7 +143,7 @@ const EventDetailsPage = ({ params }) => {
     const losersBracket = renderSingleElimination();
   
     return (
-      <div className="double-elimination space-y-12">
+      <div className="double-elimination space-y-12 m-3">
         <div>
           <h3 className="text-2xl font-semibold mb-4 text-gray-800">Winners Bracket</h3>
           {winnersBracket}
@@ -166,7 +169,7 @@ const EventDetailsPage = ({ params }) => {
     ];
   
     return (
-      <div className="group-playoffs space-y-8">
+      <div className="group-playoffs space-y-8 m-3">
         {groups.map((group, i) => (
           <div key={i} className="group space-y-4">
             <h3 className="text-2xl font-semibold mb-4 border-b border-gray-300 pb-2 text-gray-800">
@@ -194,7 +197,7 @@ const EventDetailsPage = ({ params }) => {
     }
   
     return (
-      <div className="round-robin space-y-8">
+      <div className="round-robin space-y- m-3">
         <h3 className="text-2xl font-semibold mb-4 text-gray-800">Round Robin Matches</h3>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           {matches.map((match, idx) => (
@@ -208,7 +211,7 @@ const EventDetailsPage = ({ params }) => {
   };  
 
   return (
-    <div className="container mx-auto">
+    <div className="container w-[95%] mx-auto m-3 p-6 bg-gray-100">
       {event && (
         <>
           <h1 className="text-4xl font-bold my-8">{event.event_name}</h1>

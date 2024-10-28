@@ -9,17 +9,25 @@ const fetchEvents = async () => {
 };
 
 const EventCard = ({ event }) => (
-  <Link href={`/dashboard/draw_creation/${event.id}`}>
-    <div className="max-w-sm rounded overflow-hidden shadow-lg m-4 cursor-pointer">
-      <img className="w-full" src={event.desktop_cover_image_url} alt={event.event_name} />
-      <div className="px-6 py-4">
-        <div className="font-bold text-xl mb-2">{event.event_name}</div>
-        <p className="text-gray-700 text-base">{event.event_description}</p>
-        <p className="text-gray-700 text-base">{new Date(event.start_date).toLocaleDateString()}</p>
-        <p className="text-gray-700 text-base">{event.venue_name}</p>
+  <div  className='bg-white m-3'>
+    <Link href={`/dashboard/draw_creation/${event.id}`}>
+      <div className="max-w-sm rounded overflow-hidden shadow-lg m-4 cursor-pointer">
+        <img
+          className="w-full"
+          src={event.desktop_cover_image_url}
+          alt={event.event_name}
+        />
+        <div className="px-6 py-4">
+          <div className="font-bold text-xl mb-2">{event.event_name}</div>
+          <p className="text-gray-700 text-base">{event.event_description}</p>
+          <p className="text-gray-700 text-base">
+            {new Date(event.start_date).toLocaleDateString()}
+          </p>
+          <p className="text-gray-700 text-base">{event.venue_name}</p>
+        </div>
       </div>
-    </div>
-  </Link>
+    </Link>
+  </div>
 );
 
 const EventsPage = () => {

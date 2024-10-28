@@ -14,22 +14,28 @@ import loadingAnimation from "@/public/Animations/loading.json";
 import { IoCreate } from "react-icons/io5";
 import { MdOutlineCategory, MdOutlineFeaturedPlayList } from "react-icons/md";
 import Lottie from "react-lottie";
+import EventMatrics from "@/components/EventMatrics";
 
 const ProgressBarCheckpointsManageEventID = [
   {
     icon: <IoCreate />,
-    label: "Event Setup",
+    label: "Event Matrics",
     placement: 1,
+  },
+  {
+    icon: <IoCreate />,
+    label: "Event Setup",
+    placement: 2,
   },
   {
     icon: <MdOutlineCategory />,
     label: "Category Setup",
-    placement: 2,
+    placement: 3,
   },
   {
     icon: <MdOutlineFeaturedPlayList />,
     label: "Enable Features",
-    placement: 3,
+    placement: 4,
   },
 ];
 
@@ -119,7 +125,7 @@ const page = ({
     setEditPage("manageEvent")
   }, []);
   const [currentPage, setCurrentPage] = useState(1);
-  const totalPages = 4;
+  const totalPages = 5;
 
   const handleNext = () => {
     if (currentPage < totalPages) {
@@ -172,7 +178,8 @@ const page = ({
       </div>{" "}
       <div className="relative">
         <div className="mt-20 lg:mt-16 w-full rounded-lg shadow-lg">
-          {currentPage === 1 && <EventInformation handleNext={handleNext} />}
+          {currentPage === 1 && <EventMatrics handleNext={handleNext} />}
+          {currentPage === 2 && <EventInformation handleNext={handleNext} />}
           {currentPage === 2 && <CategoryPreview handleNext={handleNext} />}
           {currentPage === 3 && <EnableFeatures handleNext={handleNext} />}
         </div>

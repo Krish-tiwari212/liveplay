@@ -37,8 +37,7 @@ const page = () => {
     { label: "Reminders" },
   ];
   return (
-    <div className="bg-white text-gray-800 rounded-lg min-h-screen p-4 m-3">
-      <h1 className="text-4xl font-bold mb-2">Notifications</h1>
+    <div className="bg-white text-gray-800 rounded-lg p-4 m-3">
       <p className="text-gray-800 mb-6">You have {filteredNotifications.length} notifications</p>
       <div className="flex space-x-4 mb-6">
         {buttons.map((button) => (
@@ -53,7 +52,7 @@ const page = () => {
       </div>
       <div className="space-y-4">
         {filteredNotifications.map(notification => (
-          <div key={notification.id} className="bg-white border border-gray-800 shadow-md rounded-lg p-4 flex justify-between items-start">
+          <div key={notification.id} className="bg-white border border-gray-800 shadow-md rounded-lg p-4 flex justify-between items-start transition-transform transform hover:scale-95  hover:shadow-lg">
             <div className="flex items-start">
               <span className="material-icons text-gray-800 mr-2">event</span>
               <div>
