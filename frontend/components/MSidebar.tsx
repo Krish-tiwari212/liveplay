@@ -7,6 +7,7 @@ import { FaBars, FaCalendarAlt, FaCogs, FaSignOutAlt, FaTachometerAlt, FaUserCir
 import { MdKeyboardArrowDown, MdKeyboardArrowUp, MdOutlineFeaturedPlayList, MdOutlineSecurity, MdSchedule, MdSportsFootball } from 'react-icons/md';
 import Image from 'next/image';
 import { IoIosNotificationsOutline } from 'react-icons/io';
+import { useUser } from '@/context/UserContext';
 
 const MSidebar = () => {
   const pathname = usePathname();
@@ -17,6 +18,7 @@ const MSidebar = () => {
   const [tooltip, setTooltip] = useState<string | null>(null);
   const { toast } = useToast();
   const router = useRouter();
+  const { user, setUser } = useUser();
 
   const toggleEvents = () => {
     setOpenEvents(!openEvents);
@@ -37,15 +39,34 @@ const MSidebar = () => {
   };
 
   const handleLogout = async () => {
-    await new Promise((resolve) => setTimeout(resolve, 2000));
-    localStorage.removeItem("username");
-    localStorage.removeItem("password");
-    toast({
-      title: "Logout Successful",
-      description: "Successfully Logged Out!",
-      variant: "default",
-    });
-    router.push("/");
+    try {
+      const response = await fetch('/api/auth/logout', {
+        method: 'POST',
+      });
+  
+      if (response.ok) {
+        setUser(null);
+        toast({
+          title: "Logout Successful",
+          description: "Successfully Logged Out!",
+          variant: "default",
+        });
+        router.push("/");
+      } else {
+        const data = await response.json();
+        toast({
+          title: "Logout Failed",
+          description: data.error || "An error occurred during logout.",
+          variant: "error",
+        });
+      }
+    } catch (error) {
+      toast({
+        title: "Logout Failed",
+        description: "Server error occurred during logout.",
+        variant: "error",
+      });
+    }
   };
 
   const handleButtonClick = (page: string) => {

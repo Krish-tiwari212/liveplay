@@ -23,6 +23,9 @@ interface EventRequest {
   playing_rules?: string;
   countdown: boolean;
   enable_fixtures: boolean;
+  venue_link?: string;
+  sport: string;
+  selected_plan: string;
   categories: Array<{
     category_name: string;
     total_quantity: number;
@@ -35,6 +38,8 @@ interface EventRequest {
     percentage_input?: number;
     from_date?: string;  // ISO string
     till_date?: string;  // ISO string
+    amount_input?: number;
+    discount_value?: number;
   }>;
 }
 
@@ -120,6 +125,9 @@ export async function POST(request: Request) {
         playing_rules: formData.get('playing_rules'),
         countdown: formData.get('countdown'),
         enable_fixtures: formData.get('enable_fixtures'),
+        venue_link: formData.get('venue_link'),
+        sport: formData.get('sport'),
+        selected_plan: formData.get('selected_plan'),
         desktop_cover_image_url: desktopBannerUrl.data.publicUrl,
         mobile_cover_image_url: mobileBannerUrl.data.publicUrl,
       })
@@ -139,6 +147,8 @@ export async function POST(request: Request) {
           event_id: event.id,
           category_name: category.category_name,
           total_quantity: category.total_quantity,
+          discount_value: category.discount_value,
+          amount_input: category.amount_input,
           max_ticket_quantity: category.max_ticket_quantity,
           price: category.price,
           ticket_description: category.ticket_description,
