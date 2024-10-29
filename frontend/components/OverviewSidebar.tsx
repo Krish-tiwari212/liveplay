@@ -12,7 +12,7 @@ const Sidebar: React.FC<SidebarProps> = ({ setFormType,content }) => {
   const { theme, setTheme } = useAppContext();
   return (
     <div
-      className={`h-full flex-[1] rounded-lg p-6 justify-between flex flex-col m-3 shadow-lg bg-white`}
+      className={`h-full flex-[1] rounded-lg p-6 justify-between flex flex-col shadow-lg bg-white`}
     >
       <h2 className="text-lg font-bold mb-4 text-black">Create Event</h2>
       <div className="space-y-2">

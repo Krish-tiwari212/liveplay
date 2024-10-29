@@ -20,47 +20,93 @@ const GoLive = () => {
       setIsPlaying(false);
   
       const formData = new FormData();
-      formData.append('event_name', EventData.eventName);
-      formData.append('organizer_contact_number', EventData.organiserNumber);
-      formData.append('organizer_email', EventData.organiseremailaddress);
-      formData.append('start_date', EventData.eventstartDate);
-      formData.append('end_date', EventData.eventenddate);
-      formData.append('last_registration_date', EventData.LastRegistrationDate);
-      formData.append('last_withdrawal_date', EventData.LastWithdrawalDate);
-      formData.append('start_time', EventData.startTime);
-      formData.append('venue_name', EventData.venueName);
-      formData.append('street_address', EventData.eventAddress);
-      formData.append('city', EventData.city);
-      formData.append('pincode', EventData.eventPincode);
-      formData.append('venue_not_decided', EventData.venueNotDecided !== undefined ? EventData.venueNotDecided.toString() : 'false');
-      formData.append('event_description', EventData.eventDescription);
-      formData.append('event_usp', EventData.eventUSP);
-      formData.append('rewards_for_participants', EventData.rewardsAndParticipation);
-      formData.append('playing_rules', EventData.playingRules);
+      formData.append("event_name", EventData.event_name);
+      formData.append('organizer_contact_number', EventData.organizer_contact_number);
+      // formData.append("organizer_name", EventData.organizer_name);
+      formData.append("organizer_email", EventData.organizer_email);
+      formData.append("start_date", EventData.start_date);
+      formData.append("end_date", EventData.end_date);
+      formData.append('last_registration_date', EventData.last_registration_date);
+      formData.append("last_withdrawal_date", EventData.last_withdrawal_date);
+      formData.append("start_time", EventData.start_time);
+      formData.append("venue_name", EventData.venue_name);
+      formData.append("street_address", EventData.street_address);
+      formData.append("city", EventData.city);
+      formData.append("pincode", EventData.pincode);
+      formData.append(
+        "venue_not_decided",
+        EventData.venue_not_decided !== undefined
+          ? EventData.venue_not_decided.toString()
+          : "false"
+      );
+      formData.append("event_description", EventData.event_description);
+      formData.append("event_usp", EventData.event_usp);
+      formData.append(
+        "rewards_for_participants",
+        EventData.rewards_for_participants
+      );
+      formData.append("playing_rules", EventData.playing_rules);
       formData.append('countdown', EventData.countdown !== undefined ? EventData.countdown.toString() : 'false');
-      formData.append('enable_fixtures', EventData.enableFixtures !== undefined ? EventData.enableFixtures.toString() : 'false');
-      formData.append('venue_link', EventData.venuelink);
-      formData.append('sport', EventData.selectsport);
-      formData.append('selected_plan', EventData.selectedPlan);
-      formData.append('mobileBanner', EventData.mobileBanner);
-      formData.append('desktopBanner', EventData.desktopBanner);
+      // formData.append(
+      //   "Gst_Compliance",
+      //   EventData.Gst_Compliance !== undefined
+      //     ? EventData.Gst_Compliance.toString()
+      //     : "false"
+      // );
+      // formData.append(
+      //   "want_Tshirts",
+      //   EventData.want_Tshirts !== undefined
+      //     ? EventData.want_Tshirts.toString()
+      //     : "false"
+      // );
+      formData.append(
+        "enable_fixtures",
+        EventData.enable_fixtures !== undefined
+          ? EventData.enable_fixtures.toString()
+          : "false"
+      );
+      formData.append("venue_link", EventData.venue_link);
+      formData.append("sport", EventData.sport);
+      formData.append("selected_plan", EventData.selected_plan);
+      formData.append("mobileBanner", EventData.mobileBanner);
+      formData.append("desktopBanner", EventData.desktopBanner);
       formData.append(
         "eventData",
         JSON.stringify({
           categories: EventData.categories.map((category: any) => ({
-            category_name: category.categoryName,
-            total_quantity: category.totalQuantity !== "" ? parseInt(category.totalQuantity, 10) : 0,
-            max_ticket_quantity: category.maxTicketQuantity !== "" ? parseInt(category.maxTicketQuantity, 10) : 0,
+            category_name: category.category_name,
+            total_quantity:
+              category.total_quantity !== ""
+                ? parseInt(category.total_quantity, 10)
+                : 0,
+            max_ticket_quantity:
+              category.max_ticket_quantity !== ""
+                ? parseInt(category.max_ticket_quantity, 10)
+                : 0,
             price: parseFloat(category.price),
-            ticket_description: category.ticketDescription,
-            discount_code: category.discountcode,
-            category_type: category.categoryType,
-            number_of_discounts: category.numberOfDiscounts !== undefined ? parseInt(category.numberOfDiscounts, 10) : undefined,
-            percentage_input: category.percentageInput !== undefined ? parseFloat(category.percentageInput) : undefined,
-            from_date: category.fromDate == "" ? undefined : category.fromDate,
-            till_date: category.tillDate == "" ? undefined : category.tillDate,
-            amount_input: category.amountInput !== "" ? parseFloat(category.amountInput) : 0,
-            discount_value: category.discountValue !== undefined ? parseFloat(category.discountValue) : undefined,
+            ticket_description: category.ticket_description,
+            discount_code: category.discoundiscount_codetcode,
+            category_type: category.category_type,
+            number_of_discounts:
+              category.number_of_discounts !== undefined
+                ? parseInt(category.number_of_discounts, 10)
+                : undefined,
+            percentage_input:
+              category.percentage_input !== undefined
+                ? parseFloat(category.percentage_input)
+                : undefined,
+            from_date:
+              category.from_date == "" ? undefined : category.from_date,
+            till_date:
+              category.till_date == "" ? undefined : category.till_date,
+            amount_input:
+              category.amount_input !== ""
+                ? parseFloat(category.amount_input)
+                : 0,
+            discount_value:
+              category.discount_value !== undefined
+                ? parseFloat(category.discount_value)
+                : undefined,
           })),
         })
       );

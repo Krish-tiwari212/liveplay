@@ -27,11 +27,12 @@ interface EventInformation {
 }
 
 const EventInformation: React.FC<EventInformation> = ({ handleNext }) => {
-  const {EventEditData}=useEventContext()
+  const {EventEditData,EventData}=useEventContext()
   const [formType, setFormType] = useState<string>("default");
   const [formData, setFormData] = useState<any>({});
   useEffect(()=>{
     console.log(EventEditData)
+    console.log(EventData);
   },[])
   const renderForm = () => {
     switch (formType) {
@@ -80,12 +81,15 @@ const EventInformation: React.FC<EventInformation> = ({ handleNext }) => {
   };
 
   return (
-    <div className="flex flex-col md:flex-row w-full bg-slate-200 overflow-hidden ">
-      <OverviewSidebar
-        setFormType={setFormType}
-        content={OverviewSidebarContent}
-      />
-      <div className="flex-[4] m-3 mb-20">{renderForm()}</div>
+    <div className="m-6">
+      <h1 className="text-3xl font-bold mb-8">Event Setup</h1>
+      <div className="flex flex-col md:flex-row w-full bg-slate-200 overflow-hidden ">
+        <OverviewSidebar
+          setFormType={setFormType}
+          content={OverviewSidebarContent}
+        />
+        <div className="flex-[4] my-3 lg:my-0 lg:mx-3 mb-20">{renderForm()}</div>
+      </div>
     </div>
   );
 };

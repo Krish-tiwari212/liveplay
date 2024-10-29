@@ -19,37 +19,39 @@ import { MdKeyboardArrowDown, MdKeyboardArrowUp } from "react-icons/md";
 
 interface AddCategoryProps {
   setCategoryData: (newCategory: any) => void; 
+  type:string;
+  category?:any;
 }
 
 interface Category {
   id?: number;
-  categoryName?: string;
-  totalQuantity?: string;
-  maxTicketQuantity?: string;
+  category_name?: string;
+  total_quantity?: string;
+  max_ticket_quantity?: string;
   price?: string;
-  ticketDescription?: string;
-  discountcode?: string;
+  ticket_description?: string;
+  discount_code?: string;
   discount?: boolean;
-  categoryType?: string;
-  discountType?:string;
-  numberOfDiscounts?:string;
-  fromDate?:string;
-  tillDate?:string;
-  discountValue?:string;
-  percentageInput?:string;
-  amountInput?:string;
+  category_type?: string;
+  discountType?: string;
+  number_of_discounts?: string;
+  from_date?: string;
+  till_date?: string;
+  discountValue?: string;
+  percentage_input?: string;
+  amount_input?: string;
 }
 
 const inputFields = [
   {
-    id: "categoryName",
+    id: "category_name",
     label: "Category Name",
     type: "text",
     placeholder: "Enter Category Name",
     required: true,
   },
   {
-    id: "ticketDescription",
+    id: "ticket_description",
     label: "Ticket Description",
     type: "textarea",
     placeholder: "Includes participation, e-certificate, refreshments",
@@ -63,13 +65,13 @@ const inputFields = [
     required: true,
   },
   {
-    id: "totalQuantity",
+    id: "total_quantity",
     label: "Total Quantity",
     type: "number",
     placeholder: "Enter Total Quantity",
   },
   {
-    id: "maxTicketQuantity",
+    id: "max_ticket_quantity",
     label: "Maximum Ticket Quantity",
     type: "number",
     placeholder: "Enter Max Ticket Quantity",
@@ -79,35 +81,35 @@ const inputFields = [
 const discountFields = {
   percentage: [
     {
-      id: "discountcode",
+      id: "discount_code",
       label: "Discount Code",
       type: "text",
       placeholder: "Enter Discount Code",
       required: true,
     },
     {
-      id: "numberOfDiscounts",
+      id: "number_of_discounts",
       label: "Number Of Discounts",
       type: "number",
       placeholder: "Enter Number of Discounts",
       required: true,
     },
     {
-      id: "percentageInput",
+      id: "percentage_input",
       label: "Percentage",
       type: "number",
       placeholder: "Enter Percentage",
       required: true,
     },
     {
-      id: "fromDate",
+      id: "from_date",
       label: "From Date",
       type: "date",
       placeholder: "Enter From Date",
       required: true,
     },
     {
-      id: "tillDate",
+      id: "till_date",
       label: "Till Date",
       type: "date",
       placeholder: "Enter Till Date",
@@ -116,35 +118,35 @@ const discountFields = {
   ],
   amount: [
     {
-      id: "discountcode",
+      id: "discount_code",
       label: "Discount Code",
       type: "text",
       placeholder: "Enter Discount Code",
       required: true,
     },
     {
-      id: "numberOfDiscounts",
+      id: "number_of_discounts",
       label: "Number Of Discounts",
       type: "number",
       placeholder: "Enter Number of Discounts",
       required: true,
     },
     {
-      id: "amountInput",
+      id: "amount_input",
       label: "Amount",
       type: "number",
       placeholder: "Enter Amount",
       required: true,
     },
     {
-      id: "fromDate",
+      id: "from_date",
       label: "From Date",
       type: "date",
       placeholder: "Enter From Date",
       required: true,
     },
     {
-      id: "tillDate",
+      id: "till_date",
       label: "Till Date",
       type: "date",
       placeholder: "Enter Till Date",
@@ -153,23 +155,23 @@ const discountFields = {
   ],
 };
 
-const AddCategory = ({ setCategoryData }: AddCategoryProps) => {
+const AddCategory = ({ setCategoryData ,type,category}: AddCategoryProps) => {
   const [categoryData, setLocalCategoryData] = useState<Category>({
-    categoryName: "",
-    totalQuantity: "",
-    maxTicketQuantity: "",
+    category_name: "",
+    ticket_description: "",
     price: "",
-    ticketDescription: "",
-    categoryType: "",
+    total_quantity: "",
+    max_ticket_quantity: "",
+    category_type: "",
     discount: false,
-    discountcode: "",
+    discount_code: "",
     discountType: "",
-    numberOfDiscounts: "",
-    fromDate: "",
-    tillDate: "",
+    number_of_discounts: "",
+    from_date: "",
+    till_date: "",
     discountValue: "",
-    percentageInput: "",
-    amountInput: "",
+    percentage_input: "",
+    amount_input: "",
   });
   const {EventData}=useEventContext()
   const [showAmountInput, setShowAmountInput] = useState(false);
@@ -194,60 +196,64 @@ const AddCategory = ({ setCategoryData }: AddCategoryProps) => {
       if (showAmountInput) setShowAmountInput(false);
     }
   };
-  const fields =
-    EventData.selectsport === "Marathon"
-      ? inputFields
-      : inputFields.filter(
-          ({ id }) => id !== "totalQuantity" && id !== "maxTicketQuantity"
-        );
+  
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault(); 
     const discountDetails = isDiscount
       ? {
           discount: true,
-          discountcode: categoryData.discountcode,
+          discount_code: categoryData.discount_code,
           discountType: showPercentageInput ? "percentage" : "amount",
-          numberOfDiscounts: categoryData.numberOfDiscounts,
-          fromDate: categoryData.fromDate,
-          tillDate: categoryData.tillDate,
+          numberOfDiscounts: categoryData.number_of_discounts,
+          fromDate: categoryData.from_date,
+          tillDate: categoryData.till_date,
           discountValue: showPercentageInput
-            ? categoryData.percentageInput
-            : categoryData.amountInput,
+            ? categoryData.percentage_input
+            : categoryData.amount_input,
         }
       : {};
 
     setCategoryData({ ...categoryData, ...discountDetails }); 
     setLocalCategoryData({
-      categoryName: "",
-      totalQuantity: "",
-      maxTicketQuantity: "",
+      category_name: "",
+      category_type:"",
+      ticket_description: "",
       price: "",
-      ticketDescription: "",
-      categoryType: "",
+      total_quantity: "",
+      max_ticket_quantity: "",
       discount: false,
-      discountcode: "",
+      discount_code: "",
       discountType: "",
-      numberOfDiscounts: "",
-      fromDate: "",
-      tillDate: "",
+      number_of_discounts: "",
+      from_date: "",
+      till_date: "",
       discountValue: "",
-      percentageInput: "",
-      amountInput: "",
+      percentage_input: "",
+      amount_input: "",
     });
   };
+  const fields =
+    EventData.sport === "Marathon"
+      ? inputFields
+      : inputFields.filter(
+          ({ id }) => id !== "total_quantity" && id !== "max_ticket_quantity"
+        );
+
+  useEffect(() => {
+    if (type === "edit" && category) {
+      setLocalCategoryData(category);
+    }
+  }, [type, category]);
 
   return (
-    <form
-      className="bg-white shadow-2xl p-5 rounded-lg m-3"
-      onSubmit={handleSubmit}
-    >
+    <form className="bg-white shadow-2xl p-5 rounded-lg m-3">
       <div className="flex flex-wrap w-full">
         <div className="lg:w-[46%] w-full m-2 flex flex-col">
-          <label htmlFor="categoryType">Category Type</label>
+          <label htmlFor="category_type">Category Type</label>
           <Select
             onValueChange={(value) =>
-              setLocalCategoryData({ ...categoryData, categoryType: value })
+              setLocalCategoryData({ ...categoryData, category_type: value })
             }
           >
             <SelectTrigger className="w-full h-16 shadow-2xl focus:border-[#17202A] focus:outline-none focus:shadow-lg">
@@ -277,7 +283,9 @@ const AddCategory = ({ setCategoryData }: AddCategoryProps) => {
                 name={field.id}
                 placeholder={field.placeholder}
                 maxLength={field.maxLength}
-                value={categoryData[field.id as keyof typeof categoryData] || "" }
+                value={
+                  categoryData[field.id as keyof typeof categoryData] || ""
+                }
                 onChange={handleChange}
                 className="h-20 p-2 bg-white border rounded-md text-sm shadow-2xl text-[#17202A] focus:border-[#17202A] focus:outline-none focus:shadow-lg"
               />
@@ -288,7 +296,9 @@ const AddCategory = ({ setCategoryData }: AddCategoryProps) => {
                 name={field.id}
                 placeholder={field.placeholder}
                 required={field.required}
-                value={categoryData[field.id as keyof typeof categoryData] || ""}
+                value={
+                  categoryData[field.id as keyof typeof categoryData] || ""
+                }
                 onChange={handleChange}
                 className="h-16 p-2 bg-white border rounded-md text-sm shadow-2xl text-[#17202A] focus:border-[#17202A] focus:outline-none focus:shadow-lg"
               />
@@ -314,7 +324,6 @@ const AddCategory = ({ setCategoryData }: AddCategoryProps) => {
                 : "max-h-0 transition-max-height duration-200 ease-in-out overflow-hidden"
             }`}
           >
-
             <div className="mt-2">
               <RadioGroup defaultValue="option-one">
                 <div className="flex items-center space-x-2">
@@ -390,10 +399,10 @@ const AddCategory = ({ setCategoryData }: AddCategoryProps) => {
         </div>
 
         <button
-          type="submit"
           className="w-full bg-[#17202A] text-white p-2 mx-2 rounded-md"
+          onClick={handleSubmit}
         >
-          Add Category
+          {type === "edit" ? "Update Category" : "Add Category"}
         </button>
       </div>
     </form>

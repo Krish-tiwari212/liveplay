@@ -34,12 +34,12 @@ const Drawfixtures = ({ setFeatureData }: DrawfixturesProps) => {
     if (editPage==="manageEvent"){
       setEventEditData((prevData: any) => ({
         ...prevData,
-        enableFixtures: !showFixtures,
+        enable_fixtures: !showFixtures,
       }));
     }else{
       setEventData((prevData: any) => ({
         ...prevData,
-        enableFixtures: !showFixtures,
+        enable_fixtures: !showFixtures,
       }));
     }
       
@@ -47,9 +47,9 @@ const Drawfixtures = ({ setFeatureData }: DrawfixturesProps) => {
 
   useEffect(() => {
     if (editPage === "manageEvent" && EventEditData) {
-      setShowFixtures(EventEditData.enableFixtures || false);
+      setShowFixtures(EventEditData.enable_fixtures || false);
     } else if (editPage === "createEvent" && EventData) {
-      setShowFixtures(EventData.enableFixtures || false);
+      setShowFixtures(EventData.enable_fixtures || false);
     }
   }, [EventData, EventEditData]);
 

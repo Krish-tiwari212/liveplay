@@ -6,36 +6,56 @@ import EventInformation from "@/components/EventInformation";
 import ProgressBar from "@/components/ProgressBar";
 import { Button } from "@/components/ui/button";
 import { useEventContext } from "@/context/EventDataContext";
-import { useParams } from "next/navigation";
-import { useRouter } from "next/navigation";
+import { GrOverview } from "react-icons/gr";
+import { useParams, useRouter } from "next/navigation";
 import React, { useEffect, useState } from "react";
 import successAnimation from "@/public/Animations/Success.json";
 import loadingAnimation from "@/public/Animations/loading.json"; 
 import { IoCreate } from "react-icons/io5";
-import { MdOutlineCategory, MdOutlineFeaturedPlayList } from "react-icons/md";
+import { TbReportSearch, TbTournament } from "react-icons/tb";
+import { MdLiveTv, MdOutlineCategory, MdOutlineFeaturedPlayList, MdOutlineRocketLaunch } from "react-icons/md";
 import Lottie from "react-lottie";
 import EventMatrics from "@/components/EventMatrics";
+import EventBoosters from "@/components/EventBoosters";
+import Report from "@/components/Report";
+import LiveMatchTracking from "@/components/LiveMatchTracking";
+import DrawCreation from "@/components/DrawCreation";
 
 const ProgressBarCheckpointsManageEventID = [
   {
-    icon: <IoCreate />,
-    label: "Event Matrics",
+    icon: <GrOverview />,
+    label: "Event Overview",
     placement: 1,
+  },
+  {
+    icon: <TbReportSearch />,
+    label: "Event Reports",
+    placement: 2,
   },
   {
     icon: <IoCreate />,
     label: "Event Setup",
-    placement: 2,
+    placement: 3,
   },
   {
     icon: <MdOutlineCategory />,
     label: "Category Setup",
-    placement: 3,
+    placement: 4,
   },
   {
     icon: <MdOutlineFeaturedPlayList />,
     label: "Enable Features",
-    placement: 4,
+    placement: 5,
+  },
+  {
+    icon: <TbTournament />,
+    label: "Draw Creation",
+    placement: 6,
+  },
+  {
+    icon: <MdLiveTv />,
+    label: "Live Match Tracker",
+    placement: 7,
   },
 ];
 
@@ -109,29 +129,79 @@ const data = {
   venuelink: "yf oufy uyfou",
 };
 
-const page = ({
-  params: ManageEventId,
-}: {
-  params: { ManageEventId: string };
-}) => {
-  const {EventEditData,setEventEditData,setEditPage}=useEventContext()
+// Define the type for the event data
+interface EventData {
+  LastRegistrationDate: string;
+  LastWithdrawalDate: string;
+  categories: Array<{
+    amountInput: string;
+    categoryName: string;
+    categoryType: string;
+    discount: boolean;
+    discountType: string;
+    discountValue: string;
+    discountcode: string;
+    fromDate: string;
+    id: number;
+    maxTicketQuantity: string;
+    numberOfDiscounts: string;
+    percentageInput: string;
+    price: string;
+    ticketDescription: string;
+    tillDate: string;
+    totalQuantity: string;
+  }>;
+  city: string;
+  countdown: boolean;
+  desktopBanner: File;
+  enableFixtures: boolean;
+  eventAddress: string;
+  eventDescription: string;
+  eventName: string;
+  eventPincode: string;
+  eventUSP: string;
+  eventenddate: string;
+  eventstartDate: string;
+  mobileBanner: File;
+  organiserName: string;
+  organiserNumber: string;
+  organiseremailaddress: string;
+  playingRules: string;
+  rewardsAndParticipation: string;
+  selectedPlan: string;
+  selectsport: string;
+  startTime: string;
+  venueName: string;
+  venuelink: string;
+}
+
+const page = ({params}:any) => {
+  const {EventEditData,setEventEditData,setEditPage}=useEventContext();
   const router=useRouter()
+  const {ManageEventId}=useParams();
   const [isPlaying, setIsPlaying] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
+  const [fetchedData, setFetchedData] = useState<EventData | null>(null);
   const { setDashboardName } = useEventContext();
   useEffect(() => {
     setDashboardName(`${"Event Name"}`); 
-    setEventEditData(data);
     setEditPage("manageEvent")
   }, []);
   const [currentPage, setCurrentPage] = useState(1);
-  const totalPages = 5;
+  const totalPages = 8;
 
   const handleNext = () => {
     if (currentPage < totalPages) {
       const newPage = currentPage + 1;
       setCurrentPage(newPage);
     }
+  };
+
+  const fetchEventDetails = async (id: any) => {
+    const response = await fetch(`/api/event/get_by_id/${id}`);
+    const data = await response.json();
+    setFetchedData(data);
+    return data;
   };
 
   const handlePrev = () => {
@@ -145,45 +215,91 @@ const page = ({
     setEventEditData({});
   };
 
-  const handleeditButton = () => {
+  const handleeditButton = async () => {
     if (!isLoading) {
       setIsLoading(true);
       setIsPlaying(false);
       setTimeout(() => {
         setIsLoading(false);
-        setIsPlaying(true); 
+        setIsPlaying(true);
       }, 5000);
-    }
-    const differences = Object.keys(EventEditData).reduce((acc:any, key:any) => {
-      if (JSON.stringify(data[key]) !== JSON.stringify(EventEditData[key])) {
-        acc[key] = EventEditData[key] ;
+
+      const differences = Object.keys(EventEditData || {}).reduce(
+        (acc: Record<string, any>, key: keyof EventData) => {
+          if (
+            JSON.stringify(fetchedData?.[key]) !==
+            JSON.stringify(EventEditData?.[key])
+          ) {
+            acc[key] = EventEditData?.[key];
+          }
+          return acc;
+        },
+        {}
+      );
+
+      try {
+        const response = await fetch(`/api/event/update/${ManageEventId}`, {
+          method: "PATCH",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(differences),
+        });
+
+        const result = await response.json();
+        if (response.ok) {
+          console.log("Event updated successfully:", result);
+        } else {
+          console.error("Failed to update event:", result.error);
+        }
+      } catch (error) {
+        console.error("An error occurred:", error);
       }
-      return acc;
-    }, {});
-    console.log(differences);
+    }
   };
+
+
+
+  useEffect(() => {
+    setDashboardName("Draw Creations");
+    if (ManageEventId) {
+      const loadEventDetails = async () => {
+        const event = await fetchEventDetails(ManageEventId);
+        setEventEditData(event);
+      };
+      loadEventDetails();
+    }
+  }, [ManageEventId]);
 
   return (
     <div className={`m-3 h-full relative `}>
       <ProgressBar
+        forpage="manageEvent"
         currentpage={currentPage}
         setCurrentPage={setCurrentPage}
         totalPages={totalPages}
         checkpoints={ProgressBarCheckpointsManageEventID}
       />
-      {currentPage !== 1 && (
-        <div className="absolute right-3 top-10 lg:top-0">
-          <Button onClick={handleeditButton} className="w-20">
-            Edit
-          </Button>
-        </div>
-      )}
+      {(currentPage === 3 ||
+        currentPage === 4 ||
+        currentPage === 5) && (
+          <div className="absolute right-3 top-10 lg:top-30">
+            <Button onClick={handleeditButton} className="w-20">
+              Edit
+            </Button>
+          </div>
+        )}
       <div className="relative">
-        <div className="mt-20 lg:mt-16 w-full rounded-lg shadow-lg">
+        <div className="mt-20 lg:mt-16 w-full rounded-lg">
           {currentPage === 1 && <EventMatrics handleNext={handleNext} />}
-          {currentPage === 2 && <EventInformation handleNext={handleNext} />}
-          {currentPage === 3 && <CategoryPreview handleNext={handleNext} />}
-          {currentPage === 4 && <EnableFeatures handleNext={handleNext} />}
+          {currentPage === 2 && <Report handleNext={handleNext} />}
+          {currentPage === 3 && <EventInformation handleNext={handleNext} />}
+          {currentPage === 4 && <CategoryPreview handleNext={handleNext} />}
+          {currentPage === 5 && <EnableFeatures handleNext={handleNext} />}
+          {currentPage === 6 && (
+            <DrawCreation id={ManageEventId} handleNext={handleNext} />
+          )}
+          {currentPage === 7 && <LiveMatchTracking handleNext={handleNext} />}
         </div>
         {(isLoading || isPlaying) && (
           <div className="absolute inset-0 bg-gray-200  opacity-50 z-10" />

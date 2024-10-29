@@ -28,12 +28,12 @@ const GSTCompliance = ({
     if(editPage==="manageEvent"){
       setEventEditData((prevData: any) => ({
         ...prevData,
-        GstCompliance: value === "Yes",
+        Gst_Compliance: value === "Yes",
       }));
     }else{
       setEventData((prevData: any) => ({
         ...prevData,
-        GstCompliance: value === "Yes",
+        Gst_Compliance: value === "Yes",
       }));
     }
   };
@@ -49,9 +49,9 @@ const GSTCompliance = ({
 
   useEffect(() => {
     if (editPage === "manageEvent" && EventEditData) {
-      setIsRegistered(EventEditData.GstCompliance || false);
+      setIsRegistered(EventEditData.Gst_Compliance || false);
     } else if (editPage === "createEvent" && EventData) {
-      setIsRegistered(EventData.GstCompliance || false);
+      setIsRegistered(EventData.Gst_Compliance || false);
     }
   }, [EventData, EventEditData]);
   return (

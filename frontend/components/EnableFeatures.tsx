@@ -40,14 +40,14 @@ const EnableFeatures = ({ handleNext }: EnableFeaturesProps) => {
     drawFixtures: false,
   });
   return (
-    <div className="mt-20 flex flex-col w-[80%] mx-auto bg-slate-200 overflow-hidden gap-5">
-      <h1 className="text-2xl font-bold">Enable Features</h1>
+    <div className="mt-20 mx-6 flex flex-col bg-slate-200 overflow-hidden gap-5">
+      <h1 className="text-3xl font-bold">Enable Features</h1>
       <MyTimer expiryTimestamp={time} setFeatureData={setFeatureData} />
       <TshirtForParticipant setFeatureData={setFeatureData} />
       <Drawfixtures setFeatureData={setFeatureData} />
       <GSTCompliance handleNext={handleNext} FeatureData={FeatureData} />
       <Button
-        className="flex justify-center items-center gap-3 mt-4 w-full"
+        className="flex justify-center items-center gap-3 my-4 w-full"
         onClick={handleNext}
       >
         Next

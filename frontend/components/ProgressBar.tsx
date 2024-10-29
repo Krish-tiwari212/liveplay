@@ -23,27 +23,24 @@ interface ProgressBarProps {
 }
 
 const requiredFields = [
-  "LastRegistrationDate",
-  "LastWithdrawalDate",
+  "event_name",
+  "organizer_contact_number",
+  "organizer_name",
+  "organizer_email",
+  "start_date",
+  "end_date",
+  "last_registration_date",
+  "last_withdrawal_date",
+  "start_time",
   "city",
-  "desktopBanner",
-  "eventAddress",
-  "eventDescription",
-  "eventName",
-  "eventPincode",
-  "eventUSP",
-  "eventenddate",
-  "eventstartDate",
+  "event_description",
+  "event_usp",
+  "rewards_for_participants",
+  "playing_rules",
+  "sport",
+  "selected_plan",
   "mobileBanner",
-  "organiserName",
-  "organiserNumber",
-  "organiseremailaddress",
-  "playingRules",
-  "rewardsAndParticipation",
-  "selectsport",
-  "venueName",
-  "venuelink",
-  "selectedPlan",
+  "desktopBanner",
   "categories",
 ];
 
@@ -93,16 +90,18 @@ const ProgressBar: React.FC<ProgressBarProps> = ({
 
   return (
     <div
-      className={`relative ${
-        checkpoints.length === 5 ? "w-[95%] lg:w-[80%]" : "w-[95%] xl:w-[50%]"
-      } mx-auto mt-6 mb-12`}
+      className={`relative ${checkpoints.length === 7 && "w-[85%]"} ${
+        checkpoints.length === 5 && "w-[95%] lg:w-[80%]"
+      } ${checkpoints.length === 3 && "w-[95%] xl:w-[50%]"} mx-auto mt-6 mb-12`}
     >
       <Progress
         value={(currentpage / (totalPages - 1)) * 100}
         className="h-2"
       />
       <div
-        className={`flex justify-between -top-3 w-[80%] left-[10%] items-center absolute`}
+        className={`flex justify-between -top-3 ${
+          checkpoints.length === 7 && "w-[90%] left-[5%]"
+        } w-[80%] left-[10%] items-center absolute`}
       >
         {checkpoints.map((checkpoint, index) => (
           <div
@@ -115,7 +114,11 @@ const ProgressBar: React.FC<ProgressBarProps> = ({
             >
               {checkpoint.icon}
             </div>
-            <h1 className="font-semibold text-gray-800 mt-2 hidden lg:block">
+            <h1
+              className={`font-semibold text-gray-800 mt-2 hidden ${
+                checkpoints.length === 7 ? "xl:block" : " lg:block"
+              }`}
+            >
               {checkpoint.label}
             </h1>
           </div>

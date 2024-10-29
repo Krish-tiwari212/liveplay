@@ -15,6 +15,8 @@ interface EventContextType {
   setEventEditData: React.Dispatch<React.SetStateAction<EventData>>;
   editPage: string;
   setEditPage: React.Dispatch<React.SetStateAction<string>>;
+  nextId: number;
+  setNextId: React.Dispatch<React.SetStateAction<number>>;
 }
 
 const EventContext = createContext<EventContextType | undefined>(undefined);
@@ -27,11 +29,14 @@ export const EventProvider: React.FC<{ children: ReactNode }> = ({
   const [isVenueNotDecided, setIsVenueNotDecided] = useState(false);
   const [editPage, setEditPage] = useState("");  
   const [DashboardName, setDashboardName] = useState(""); 
+  const [nextId, setNextId] = useState(1); 
 
   return (
     <EventContext.Provider
       value={{
         EventData,
+        nextId,
+        setNextId,
         setEventData,
         isVenueNotDecided,
         setIsVenueNotDecided,

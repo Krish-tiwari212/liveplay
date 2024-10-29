@@ -13,6 +13,16 @@ import { useRouter } from 'next/navigation';
 import { useEventContext } from '@/context/EventDataContext';
 
 
+interface EventCard {
+  id:number,
+  desktop_cover_image_url: string;
+  event_name: string;
+  entries: string;
+  revenue: string;
+  event_views: string;
+  interested_people: string;
+}
+
 const activeEvents = [
   {
     id: 1,
@@ -68,9 +78,11 @@ const drafts = [
   },
 ];
 
+
+
 const page = () => {
   const router=useRouter()
-  const [events, setEvents] = useState([]);
+  const [events, setEvents] = useState<EventCard[]>([]);
   const { setDashboardName } = useEventContext();
   useEffect(() => {
     setDashboardName("Manage Events");
@@ -96,14 +108,14 @@ const page = () => {
       <h1 className="text-[#17202A] text-3xl font-bold">Manage Events</h1>
       <section className="mt-8 bg-white shadow-md rounded-lg px-4 pt-4">
         <h2 className="text-xl font-semibold mb-2">Active Events</h2>
-        <div className="flex space-x-4 overflow-x-auto pb-8">
-        {events.map(event => (
+        <div className="flex flex-col md:flex-row space-x-4 overflow-x-auto pb-8">
+        {events.map((event) => (
           <Card
             key={event.id}
             className="shadow-md cursor-pointer hover:shadow-2xl"
             onClick={() => router.push(`/dashboard/manage-events/${event.id}`)}
           >
-            <CardContent className="py-4 flex gap-4">
+            <CardContent className="py-4 flex flex-col md:flex-row gap-4">
               <Image
                 src={event.desktop_cover_image_url || "/images/default.jpeg"}
                 alt="eventBanner"

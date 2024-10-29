@@ -43,18 +43,18 @@ const requiredFields = [
 
 const formFields: FormField[] = [
   {
-    id: "venueName",
+    id: "venue_name",
     label: "Venue Name",
     type: "text",
-    name: "venueName",
+    name: "venue_name",
     placeholder: "Enter Venue",
     required: true,
   },
   {
-    id: "eventAddress",
+    id: "street_address",
     label: "Address",
     type: "text",
-    name: "eventAddress",
+    name: "street_address",
     placeholder: "Enter address",
     required: true,
   },
@@ -67,18 +67,18 @@ const formFields: FormField[] = [
     required: true,
   },
   {
-    id: "eventPincode",
+    id: "pincode",
     label: "Pincode",
     type: "text",
-    name: "eventPincode",
+    name: "pincode",
     placeholder: "Enter pincode",
     required: true,
   },
   {
-    id: "venuelink",
+    id: "venue_link",
     label: "Venue Link",
     type: "text",
-    name: "venuelink",
+    name: "venue_link",
     placeholder: "Enter Link",
     required: true,
   },
@@ -107,20 +107,20 @@ const EventLocationForm: React.FC<EventLocationFormData> = ({
     if (editPage === "manageEvent" && EventEditData) {
       setFormData((previousEventData: any) => ({
         ...previousEventData,
-        venueName: EventEditData.venueName || "",
-        eventAddress: EventEditData.eventAddress || "",
+        venue_name: EventEditData.venue_name || "",
+        street_address: EventEditData.street_address || "",
         city: EventEditData.city || "",
-        eventPincode: EventEditData.eventPincode || "",
-        venuelink: EventEditData.venuelink || "",
+        pincode: EventEditData.pincode || "",
+        venue_link: EventEditData.venue_link || "",
       }));
     } else if (editPage === "createEvent" && EventData) {
       setFormData((previousEventDate: any) => ({
         ...previousEventDate,
-        venueName: EventData.venueName || "",
-        eventAddress: EventData.eventAddress || "",
+        venue_name: EventData.venue_name || "",
+        street_address: EventData.street_address || "",
         city: EventData.city || "",
-        eventPincode: EventData.eventPincode || "",
-        venuelink: EventData.venuelink || "",
+        pincode: EventData.pincode || "",
+        venue_link: EventData.venue_link || "",
       }));
     }
   }, [EventData, EventEditData]);

@@ -6,20 +6,8 @@ import { Switch } from "@/components/ui/switch";
 import { usePathname } from "next/navigation";
 import React, { useState } from "react";
 import {
-  MdNotifications,
-  MdOutlineChat,
-  MdPublic,
-  MdSearch,
   MdSportsFootball,
 } from "react-icons/md";
-import { Label } from "@radix-ui/react-dropdown-menu";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
 import {
   Tooltip,
   TooltipContent,
@@ -28,11 +16,10 @@ import {
 } from "@/components/ui/tooltip";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { useUser } from '@/context/UserContext';
-
-import { Value } from "@radix-ui/react-select";
 import { FaUserCircle } from "react-icons/fa";
 import { IoIosNotificationsOutline } from "react-icons/io";
 import { useEventContext } from "@/context/EventDataContext";
+import { useRouter } from "next/navigation";
 
 
 const Navbar = () => {
@@ -43,14 +30,20 @@ const Navbar = () => {
   const [tooltip, setTooltip] = useState<string | null>(null);
   const [userStatus, setUserStatus] = useState("organizer");
   const { user, loading } = useUser();
+  const router=useRouter()
 
   return (
     <div className="flex justify-between items-center p-4 m-3 bg-[#17202A] text-white rounded-lg ">
-      <div className="text-lg text-[#CDDC29] font-bold">{DashboardName || "Home"}</div>
+      <div className="text-lg text-[#CDDC29] font-bold">
+        {DashboardName || "Home"}
+      </div>
       <div className="flex items-center">
         <div className="flex space-x-4 ml-4 items-center">
-          <button>
-            <IoIosNotificationsOutline className="text-xl" />
+          <button className="relative" onClick={() => router.push("/dashboard/notifications")}>
+            <IoIosNotificationsOutline className="text-3xl" />
+            <div className="absolute -top-2 -right-2 text-[0.6rem] bg-red-700  rounded-full py-1 px-2 flex items-center justify-center">
+              1
+            </div>
           </button>
           <button
             className="flex items-center w-full py-2 hover:bg-gray-700 rounded transition-colors duration-200 relative"

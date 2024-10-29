@@ -14,7 +14,7 @@ const TshirtForParticipant = ({
   const [oquantity, setoQuantity] = useState(10);
   const [showPopup, setShowPopup] = useState(false);
   const [requestSubmitted, setRequestSubmitted] = useState(false);
-  const { EventData, setEventData,setEventEditData,editPage } = useEventContext();
+  const { EventData, setEventData ,EventEditData,setEventEditData,editPage } = useEventContext();
   const [showTShirt,setShowTshirt]=useState(false)
 
   const handleSubmitRequest = () => {
@@ -31,15 +31,23 @@ const TshirtForParticipant = ({
     if (editPage === "manageEvent") {
       setEventEditData((prevData: any) => ({
         ...prevData,
-        showTshirts: !showTShirt,
+        want_Tshirts: !showTShirt,
       }));
     } else {
       setEventData((prevData: any) => ({
         ...prevData,
-        showTshirts: !showTShirt,
+        want_Tshirts: !showTShirt,
       }));
     }
    }
+
+   useEffect(() => {
+     if (editPage === "manageEvent" && EventEditData) {
+       setShowTshirt(EventEditData.want_Tshirts || false);
+     } else if (editPage === "createEvent" && EventData) {
+       setShowTshirt(EventData.want_Tshirts || false);
+     }
+   }, [EventData, EventEditData]);
 
   return (
     <div className="bg-white shadow-2xl p-6 rounded-lg">
@@ -53,10 +61,9 @@ const TshirtForParticipant = ({
       </div>
       {showTShirt && (
         <>
-          <h2 className="text-lg font-bold mb-4">Order T-Shirts</h2>
           <div className="bg-white p-5 rounded-lg shadow-lg">
             <h3 className="text-lg font-bold mb-4">
-              Enter Quantity Of Organizer T Shirts
+              Enter Quantity Of T Shirts
             </h3>
             <input
               type="number"
@@ -75,15 +82,11 @@ const TshirtForParticipant = ({
           >
             Request T-Shirts
           </button>
-          {requestSubmitted ? (
+          {requestSubmitted && (
             <div className="mt-4 ml-4 text-green-600">
               <p>Our team will get in touch within 24 hours.</p>
             </div>
-          ) : (
-            <div className="mt-4 ml-4 text-red-600">
-              <p>Minimum 10 T-shirts for order</p>
-            </div>
-          )}
+          ) }
         </>
       )}
     </div>

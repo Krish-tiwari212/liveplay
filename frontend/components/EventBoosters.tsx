@@ -32,27 +32,28 @@ const features = {
 };
 
 const requiredFields = [
-  "LastRegistrationDate",
-  "LastWithdrawalDate",
+  "event_name",
+  "organizer_contact_number",
+  "organizer_name",
+  "organizer_email",
+  "start_date",
+  "end_date",
+  "last_registration_date",
+  "last_withdrawal_date",
+  "start_time",
   "city",
-  "desktopBanner",
-  "eventAddress",
-  "eventDescription",
-  "eventName",
-  "eventPincode",
-  "eventUSP",
-  "eventenddate",
-  "eventstartDate",
+  "event_description",
+  "event_usp",
+  "rewards_for_participants",
+  "playing_rules",
+  "sport",
+  "selected_plan",
   "mobileBanner",
-  "organiserName",
-  "organiserNumber",
-  "organiseremailaddress",
-  "playingRules",
-  "rewardsAndParticipation",
-  "selectsport",
-  "venueName",
-  "venuelink",
-  "selectedPlan",
+  "desktopBanner",
+  "categories",
+  "category_name",
+  "price",
+  "ticket_description",
 ];
 
 interface EventBoostersProps {
@@ -62,13 +63,14 @@ interface EventBoostersProps {
 const EventBoosters = ({
   handleNext,
 }: EventBoostersProps) => {
-  const { EventData, setEventData, isVenueNotDecided, setIsVenueNotDecided } =
+  const { EventData, setEventData,EventEditData,setEventEditData, isVenueNotDecided, setIsVenueNotDecided } =
     useEventContext();
   const [selectedPlan, setSelectedPlan] = useState<string | null>("elite");
 
   const handlePlanClick = (plan: string) => {
     setSelectedPlan(selectedPlan === plan ? null : plan);
-    setEventData({ ...EventData, selectedPlan: plan || "elite" });
+    setEventData({ ...EventData, selected_plan: plan || "elite" });
+    setEventEditData({ ...EventEditData, selected_plan: plan || "elite" });
   };
 
   const handleProceed = () => {
@@ -94,15 +96,15 @@ const EventBoosters = ({
       });
     } else {
       handleNext();
-      console.log(EventData);
     }
   };
 
-  useEffect(()=>{
-    console.log(EventData);
-  },[])
+  
+   useEffect(() => {
+     console.log(EventData);
+   }, []);
   return (
-    <div className="m-3 h-full w-full">
+    <div className="m-3 w-full">
       <h1 className="text-5xl text-center font-semibold  mt-10">
         Event Boosters
       </h1>

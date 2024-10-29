@@ -46,7 +46,7 @@ const requiredFields = [
 
 const additionalFields = [
   {
-    id: "MobileBanner",
+    id: "mobileBanner",
     label: "Add Mobile Banner",
     type: "file",
     name: "mobileBanner",
@@ -57,7 +57,7 @@ const additionalFields = [
     },
   },
   {
-    id: "DesktopBanner",
+    id: "desktopBanner",
     label: "Add Desktop Banner",
     type: "file",
     name: "desktopBanner",

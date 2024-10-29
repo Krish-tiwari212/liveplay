@@ -43,25 +43,25 @@ const requiredFields = [
 const Insightfields = [
   {
     label: "Event Description",
-    name: "eventDescription",
+    name: "event_description",
     placeholder:
       "Briefly describe your event, including the theme, key activities, and what makes it exciting for attendees.",
   },
   {
     label: "Event USP",
-    name: "eventUSP",
+    name: "event_usp",
     placeholder:
       "Please describe what makes your event truly unique.",
   },
   {
     label: "Rewards And Prizes",
-    name: "rewardsAndParticipation",
+    name: "rewards_for_participants",
     placeholder:
       "List the prizes for participants, eligibility criteria, and how winners will be chosen.",
   },
   {
     label: "Playing Rules",
-    name: "playingRules",
+    name: "playing_rules",
     placeholder:
       "Summarize the main rules for the event, including guidelines and scoring methods to ensure fair play.",
   },
@@ -88,18 +88,18 @@ const EventInsights: React.FC<EventInsights> = ({
     if (editPage === "manageEvent" && EventEditData) {
       setFormData((previousEventData: any) => ({
         ...previousEventData,
-        eventDescription: EventEditData.eventDescription || "",
-        rewardsAndParticipation: EventEditData.rewardsAndParticipation || "",
-        eventUSP: EventEditData.eventUSP || "",
-        playingRules: EventEditData.playingRules || "",
+        event_description: EventEditData.event_description || "",
+        rewards_for_participants: EventEditData.rewards_for_participants || "",
+        event_usp: EventEditData.event_usp || "",
+        playing_rules: EventEditData.playing_rules || "",
       }));
     } else if (editPage === "createEvent" && EventData) {
       setFormData((previousEventDate: any) => ({
         ...previousEventDate,
-        eventDescription: EventData.eventDescription || "",
-        rewardsAndParticipation: EventData.rewardsAndParticipation || "",
-        eventUSP: EventData.eventUSP || "",
-        playingRules: EventData.playingRules || "",
+        event_description: EventData.event_description || "",
+        rewards_for_participants: EventData.rewards_for_participants || "",
+        event_usp: EventData.event_usp || "",
+        playing_rules: EventData.playing_rules || "",
       }));
     }
   }, [EventData, EventEditData]); 

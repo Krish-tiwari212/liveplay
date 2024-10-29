@@ -13,6 +13,7 @@ import { LiaMicrophoneAltSlashSolid, LiaMoneyBillWaveAltSolid } from "react-icon
 import { useEventContext } from "@/context/EventDataContext";
 import { effect } from "zod";
 import { Button } from "./ui/button";
+import { format } from "date-fns"; 
 
 
 interface FormField {
@@ -120,18 +121,18 @@ const fields = [
   {
     Eventname: [
       {
-        id: "selectsport",
+        id: "sport",
         label: "Event Sport",
         type: "select",
-        name: "selectsport",
+        name: "sport",
         placeholder: "Select Sport",
         required: true,
       },
       {
-        id: "eventName",
+        id: "event_name",
         label: "Event Name",
         type: "text",
-        name: "eventName",
+        name: "event_name",
         placeholder: "Enter Event Title",
         required: true,
       },
@@ -140,17 +141,17 @@ const fields = [
   {
     registration: [
       {
-        id: "LastRegistrationDate",
+        id: "last_registration_date",
         label: "Last Date to Register",
         type: "date",
-        name: "LastRegistrationDate",
+        name: "last_registration_date",
         required: true,
       },
       {
-        id: "LastWithdrawalDate",
+        id: "last_withdrawal_date",
         label: "Last Date to Withdraw",
         type: "date",
-        name: "LastWithdrawalDate",
+        name: "last_withdrawal_date",
         required: true,
       },
     ],
@@ -158,24 +159,24 @@ const fields = [
   {
     EventDates: [
       {
-        id: "eventstartDate",
+        id: "start_date",
         label: "Event Start Date",
         type: "date",
-        name: "eventstartDate",
+        name: "start_date",
         required: true,
       },
       {
-        id: "eventenddate",
+        id: "end_date",
         label: "Event End Date",
         type: "date",
-        name: "eventenddate",
+        name: "end_date",
         required: true,
       },
       {
-        id: "startTime",
+        id: "start_time",
         label: "Start Time",
         type: "time",
-        name: "startTime",
+        name: "start_time",
         required: true,
       },
     ],
@@ -183,26 +184,26 @@ const fields = [
   {
     organizerContactInfo: [
       {
-        id: "organiserName",
+        id: "organizer_name",
         label: "Name",
         type: "text",
-        name: "organiserName",
+        name: "organizer_name",
         required: true,
         placeholder: "Enter Name",
       },
       {
-        id: "organiserNumber",
+        id: "organizer_contact_number",
         label: "Contact",
         type: "text",
-        name: "organiserNumber",
+        name: "organizer_contact_number",
         placeholder: "Enter Contact Number",
         required: true,
       },
       {
-        id: "organiseremailaddress",
+        id: "organizer_email",
         label: "Email",
         type: "email",
-        name: "organiseremailaddress",
+        name: "organizer_email",
         placeholder: "Enter Email",
         required: true,
       },
@@ -219,41 +220,50 @@ const EventDetailsForm: React.FC<EventDetailsFormProps> = ({
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
     setFormData({ ...formData, [name]: value });
-    if (editPage==="manageEvent"){
-       setEventEditData({ ...EventEditData, [name]: value });
-    } else{
-       setEventData({ ...EventData, [name]: value });
+    if (editPage === "manageEvent") {
+      setEventEditData({ ...EventEditData, [name]: value });
+    } else {
+      setEventData({ ...EventData, [name]: value });
     }
   };
+
   useEffect(() => {
+    const formatDate = (dateString: string | undefined) => {
+      if (!dateString) return "";
+      return format(new Date(dateString), "yyyy-MM-dd"); // format to 'YYYY-MM-DD'
+    };
+
     if (editPage === "manageEvent" && EventEditData) {
       setFormData({
-        selectsport: EventEditData.selectsport || "",
-        eventName: EventEditData.eventName || "",
-        LastRegistrationDate: EventEditData.LastRegistrationDate || "",
-        LastWithdrawalDate: EventEditData.LastWithdrawalDate || "",
-        eventstartDate: EventEditData.eventstartDate || "",
-        eventenddate: EventEditData.eventenddate || "",
-        startTime: EventEditData.startTime || "",
-        organiserName: EventEditData.organiserName || "",
-        organiserNumber: EventEditData.organiserNumber || "",
-        organiseremailaddress: EventEditData.organiseremailaddress || "",
+        sport: EventEditData.sport || "",
+        event_name: EventEditData.event_name || "",
+        last_registration_date: formatDate(
+          EventEditData.last_registration_date
+        ),
+        last_withdrawal_date: formatDate(EventEditData.last_withdrawal_date),
+        start_date: formatDate(EventEditData.start_date),
+        end_date: formatDate(EventEditData.end_date),
+        start_time: EventEditData.start_time || "",
+        organizer_name: EventEditData.organizer_name || "",
+        organizer_contact_number: EventEditData.organizer_contact_number || "",
+        organizer_email: EventEditData.organizer_email || "",
       });
     } else if (EventData) {
       setFormData({
-        selectsport: EventData.selectsport || "", 
-        eventName: EventData.eventName || "",
-        LastRegistrationDate: EventData.LastRegistrationDate || "",
-        LastWithdrawalDate: EventData.LastWithdrawalDate || "",
-        eventstartDate: EventData.eventstartDate || "",
-        eventenddate: EventData.eventenddate || "",
-        startTime: EventData.startTime || "",
-        organiserName: EventData.organiserName || "",
-        organiserNumber: EventData.organiserNumber || "",
-        organiseremailaddress: EventData.organiseremailaddress || "",
+        sport: EventData.sport || "",
+        event_name: EventData.event_name || "",
+        last_registration_date: formatDate(EventData.last_registration_date),
+        last_withdrawal_date: formatDate(EventData.last_withdrawal_date),
+        start_date: formatDate(EventData.start_date),
+        end_date: formatDate(EventData.end_date),
+        start_time: EventData.start_time || "",
+        organizer_name: EventData.organizer_name || "",
+        organizer_contact_number: EventData.organizer_contact_number || "",
+        organizer_email: EventData.organizer_email || "",
       });
     }
-  }, [EventData, EventEditData]);
+  }, [EventData, EventEditData, editPage]);
+
   
 
    const handleNext = (e: any) => {
@@ -268,22 +278,23 @@ const EventDetailsForm: React.FC<EventDetailsFormProps> = ({
           <React.Fragment key={i}>
             {field.type === "select" && (
               <div className="w-full mx-2">
-                <Label className="font-bold text-lg" htmlFor="EventSport">
+                <Label className="font-bold text-lg" htmlFor="sport">
                   {field.label}
                 </Label>
-                <Select defaultValue={formData.selectsport || ""} 
+                <Select
+                  defaultValue={formData.sport || ""}
                   onValueChange={(value) => {
                     setFormData({
                       ...formData,
-                      selectsport: value,
+                      sport: value,
                     });
                     if (editPage === "manageEvent") {
                       setEventEditData({
                         ...EventEditData,
-                        selectsport: value,
+                        sport: value,
                       });
                     } else {
-                      setEventData({ ...EventData, selectsport: value });
+                      setEventData({ ...EventData, sport: value });
                     }
                   }}
                 >
