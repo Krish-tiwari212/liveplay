@@ -108,17 +108,33 @@ const SignUpForm = () => {
             </button>
           )}
         </div>
-        <h2 className="text-2xl font-bold text-center mb-6">Create an Account</h2>
-        <div className="w-full flex justify-center mb-5" >
-          <Button onClick={handleGoogleSignup} className="w-full bg-white text-black border border-gray-300 flex items-center justify-center space-x-2 hover:bg-slate-200">
-            <FaGoogle className="text-xl" />
-            <span>Sign up with Google</span>
-          </Button>
-        </div>
+        {step == 1 && (
+          <>
+            <h2 className="text-2xl font-bold text-center mb-6">Create an Account</h2>
+            <div className="w-full flex justify-center mb-5" >
+              <Button onClick={handleGoogleSignup} className="w-full bg-white text-black border border-gray-300 flex items-center justify-center space-x-2 hover:bg-slate-200">
+                <FaGoogle className="text-xl" />
+                <span>Sign up with Google</span>
+              </Button>
+            </div>
+          </>
+        )}
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
             {step === 1 && (
               <>
+                <FormField control={form.control} name="role" render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Are you a participant or an organizer in events?</FormLabel>
+                    <FormControl>
+                      <select {...field} className="border p-2 rounded ml-2">
+                        <option value="participant">Participant</option>
+                        <option value="organizer">Organizer</option>
+                      </select>
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )} />
                 <FormField control={form.control} name="full_name" render={({ field }) => (
                   <FormItem>
                     <FormLabel>Full Name</FormLabel>
@@ -178,18 +194,6 @@ const SignUpForm = () => {
             )}
             {step === 3 && (
               <>
-                <FormField control={form.control} name="role" render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Are you a participant or an organizer in events?</FormLabel>
-                    <FormControl>
-                      <select {...field} className="border p-2 rounded">
-                        <option value="participant">Participant</option>
-                        <option value="organizer">Organizer</option>
-                      </select>
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )} />
                 <div className="flex items-center space-x-2">
                   <input type="checkbox" {...form.register("terms")} />
                   <span className="text-sm text-gray-600">
