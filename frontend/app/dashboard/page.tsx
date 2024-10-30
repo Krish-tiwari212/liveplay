@@ -1,0 +1,229 @@
+"use client";
+
+import Sidebar from "@/components/Sidebar";
+import { useAppContext } from "@/lib/context/AppContext";
+import Image from "next/image";
+import Link from "next/link";
+import { useEffect, useState } from "react";
+import { FaCalendarAlt } from "react-icons/fa";
+import { Card, CardContent } from "@/components/ui/card";
+import { FaHandHoldingDollar } from "react-icons/fa6";
+import { LiaStreetViewSolid } from "react-icons/lia";
+import { IoTicketOutline } from "react-icons/io5";
+import EventCard from "@/components/EventCard";
+import data from "@/data";
+import { Button } from "@/components/ui/button";
+import { useRouter } from "next/navigation";
+import { MdOutlineSecurity } from "react-icons/md";
+import { useEventContext } from "@/context/EventDataContext";
+const { events } = data;
+
+interface EventCard {
+  id: number;
+  desktop_cover_image_url: string;
+  event_name: string;
+  entries: string;
+  revenue: string;
+  event_views: string;
+  interested_people: string;
+}
+
+export default function Home() {
+  const { setTheme } = useAppContext();
+  const { setDashboardName } = useEventContext();
+  const [events, setEvents] = useState<EventCard[]>([]);
+  const router = useRouter();
+  useEffect(() => {
+    const matchMedia = window.matchMedia("(prefers-color-scheme: dark)");
+    const handleThemeChange = (e: MediaQueryListEvent) => {
+      setTheme(e.matches ? "dark" : "light");
+    };
+    setTheme(matchMedia.matches ? "dark" : "light");
+    matchMedia.addEventListener("change", handleThemeChange);
+    return () => {
+      matchMedia.removeEventListener("change", handleThemeChange);
+    };
+  }, []);
+  useEffect(() => {
+    setDashboardName("Home");
+  }, []);
+  useEffect(() => {
+    const fetchEvents = async () => {
+      try {
+        const response = await fetch("/api/event/all_events");
+        if (!response.ok) {
+          throw new Error("Network response was not ok");
+        }
+        const data = await response.json();
+        setEvents(data.events);
+      } catch (error) {
+        console.error("Error fetching events:", error);
+      }
+    };
+
+    fetchEvents();
+  }, []);
+  return (
+    <div className="flex flex-col m-3">
+      <div className="flex justify-between ">
+        <Button
+          onClick={() => router.push("/dashboard/kyc/1234")}
+          className="text-md shadow-md shadow-gray-500 w-auto px-20"
+        >
+          Unlock Event Earnings KYC
+        </Button>
+        <Button
+          onClick={() => router.push("/dashboard/create_event")}
+          className="text-md shadow-md shadow-gray-500 px-5"
+        >
+          Create Event
+        </Button>
+      </div>
+      <section className="mt-4 bg-[#17202A] h-[9rem] shadow-xl rounded-lg p-4 relative mb-4">
+        <div className="hidden md:flex gap-4 xl:gap-6 flex-wrap absolute -bottom-10">
+          <Card className=" w-auto shadow-xl h-auto">
+            <CardContent className="flex justify-between  items-center w-full h-full gap-2 mt-2">
+              <FaCalendarAlt className="xl:text-[1.5rem]" />
+              <div className="flex flex-col text-start">
+                <h1 className="text-[0.62rem] lg:text-[0.79rem] xl:text-[1rem]  font-bold">
+                  Total Events Hosted
+                </h1>
+                <h1 className="text-[0.58rem] lg:text-[0.7rem] xl:text-sm ">
+                  {events.length}
+                </h1>
+              </div>
+            </CardContent>
+          </Card>
+          <Card className=" w-auto shadow-xl h-auto">
+            <CardContent className="flex justify-between  items-center w-full h-full gap-2 mt-2">
+              <IoTicketOutline className="xl:text-[1.5rem]" />
+              <div className="flex flex-col text-start">
+                <h1 className="text-[0.62rem] lg:text-[0.79rem] xl:text-[1rem] font-bold">
+                  Total Entries
+                </h1>
+                <h1 className="text-[0.58rem] lg:text-[0.7rem] xl:text-sm ">
+                  0
+                </h1>
+              </div>
+            </CardContent>
+          </Card>
+          <Card className=" w-auto shadow-xl h-auto">
+            <CardContent className="flex justify-between items-center w-full h-full gap-2 mt-2">
+              <FaHandHoldingDollar className="xl:text-[1.5rem]" />
+              <div className="flex flex-col text-start">
+                <h1 className="text-[0.62rem] lg:text-[0.79rem] xl:text-[1rem]  font-bold">
+                  Total Sales
+                </h1>
+                <h1 className="text-[0.58rem] lg:text-[0.7rem] xl:text-sm ">
+                  0
+                </h1>
+              </div>
+            </CardContent>
+          </Card>
+          <Card className=" w-auto shadow-xl h-auto">
+            <CardContent className="flex justify-between  items-center w-full h-full gap-2 mt-2">
+              <LiaStreetViewSolid className="xl:text-[1.5rem]" />
+              <div className="flex flex-col text-start">
+                <h1 className="text-[0.62rem] lg:text-[0.79rem] xl:text-[1rem]  font-bold">
+                  Total Events views
+                </h1>
+                <h1 className="text-[0.58rem] lg:text-[0.7rem] xl:text-sm ">
+                  0
+                </h1>
+              </div>
+            </CardContent>
+          </Card>
+        </div>
+        <div className="p-2 md:w-[60%] lg:w-[50%]">
+          <h1 className="text-2xl font-bold text-gray-400 mb-4 md:mb-2">
+            Hello Mohit 👋
+          </h1>
+        </div>
+      </section>
+      <section className="md:hidden">
+        <div className="flex gap-6 flex-wrap">
+          <Card className="w-1/2 h-full shadow-xl">
+            <CardContent className="flex items-center w-full h-full gap-4 mt-2">
+              <FaCalendarAlt className="text-[1.5rem]" />
+              <div className="flex flex-col text-start">
+                <h1 className="text-[1rem] font-bold">Total Events Hosted</h1>
+                <h1 className="text-[0.7rem] xl:text-sm ">7</h1>
+              </div>
+            </CardContent>
+          </Card>
+          <Card className="w-1/2 h-full shadow-xl">
+            <CardContent className="flex items-center w-full h-full gap-4 mt-2">
+              <IoTicketOutline className="text-[1.5rem]" />
+              <div className="flex flex-col text-start">
+                <h1 className="text-[1rem] font-bold">Total Entries</h1>
+                <h1 className="text-[0.7rem] xl:text-sm ">1500</h1>
+              </div>
+            </CardContent>
+          </Card>
+          <Card className="w-1/2 h-full shadow-xl">
+            <CardContent className="flex items-center w-full h-full gap-4 mt-2">
+              <FaHandHoldingDollar className="text-[1.5rem]" />
+              <div className="flex flex-col text-start">
+                <h1 className="text-[1rem] font-bold">Total Sales</h1>
+                <h1 className="text-[0.7rem] xl:text-sm ">500000</h1>
+              </div>
+            </CardContent>
+          </Card>
+          <Card className="w-1/2 h-full shadow-xl">
+            <CardContent className="flex items-center w-full h-full gap-4 mt-2">
+              <LiaStreetViewSolid className="text-[1.5rem]" />
+              <div className="flex flex-col text-start">
+                <h1 className="text-[1rem] font-bold">Total Events views</h1>
+                <h1 className="text-[0.7rem] xl:text-sm ">4500</h1>
+              </div>
+            </CardContent>
+          </Card>
+        </div>
+      </section>
+      <section className="mt-14 bg-white shadow-md rounded-lg px-4 pt-4">
+        <h2 className="text-xl font-semibold mb-2">Active Events</h2>
+        <div className="flex space-x-4 overflow-x-auto pb-8">
+          {events.map((event) => (
+            <Card
+              key={event.id}
+              className="shadow-md cursor-pointer hover:shadow-2xl"
+              onClick={() =>
+                router.push(`/dashboard/manage-events/${event.id}`)
+              }
+            >
+              <CardContent className="py-4 flex gap-4">
+                <Image
+                  src={event.desktop_cover_image_url || "/images/default.jpeg"}
+                  alt="eventBanner"
+                  width={200}
+                  height={200}
+                  className="rounded-lg h-44 shadow-xl"
+                />
+                <div>
+                  <h3 className="font-bold">{event.event_name}</h3>
+                  <div className="flex flex-col justify-between">
+                    <span>Entries: {event.entries || "N/A"}</span>
+                    <span>Revenue: {event.revenue || "$0"}</span>
+                    <span>Event Views: {event.event_views || "0"}</span>
+                    <span>
+                      Interested People: {event.interested_people || "0"}
+                    </span>
+                  </div>
+                  <Link href={`/event/${event.id}/share-link`}>
+                    <Button className="w-full mt-2 bg-[#17202A] text-[#CDDC29] hover:text-white p-1 rounded hover:shadow-xl">
+                      Share
+                    </Button>
+                  </Link>
+                </div>
+              </CardContent>
+            </Card>
+          ))}
+        </div>
+      </section>
+
+      <section className="mt-14 bg-white shadow-md rounded-lg px-4 py-4">
+        <h2 className="text-xl font-semibold mb-2">Past Events</h2>
+      </section>
+    </div>
+  );
+}
