@@ -136,7 +136,7 @@ const LoginForm = () => {
           {loading ? "Logging in..." : "Login with Google"}
         </Button> */}
         <div className="text-center mt-4">
-          <Link href="/register" className="">
+          <Link href="/sign-up" className="">
             Don't have an account? Sign up
           </Link>
         </div>

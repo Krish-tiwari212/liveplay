@@ -221,7 +221,7 @@ export default function Home() {
         </div>
       </section>
 
-      <section className="mt-14 bg-white shadow-md rounded-lg px-4 pt-4">
+      <section className="mt-14 bg-white shadow-md rounded-lg px-4 py-4">
         <h2 className="text-xl font-semibold mb-2">Past Events</h2>
       </section>
     </div>
