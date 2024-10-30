@@ -186,7 +186,7 @@ export default function Home() {
           {events.map((event) => (
             <Card
               key={event.id}
-              className="shadow-md cursor-pointer hover:shadow-2xl"
+              className="shadow-md cursor-pointer hover:shadow-2xl flex-none"
               onClick={() =>
                 router.push(`/dashboard/manage-events/${event.id}`)
               }
@@ -197,9 +197,9 @@ export default function Home() {
                   alt="eventBanner"
                   width={200}
                   height={200}
-                  className="rounded-lg h-44 shadow-xl"
+                  className="rounded-lg h-44 shadow-xl flex-[1]"
                 />
-                <div>
+                <div className="flex-[1]">
                   <h3 className="font-bold">{event.event_name}</h3>
                   <div className="flex flex-col justify-between">
                     <span>Entries: {event.entries || "N/A"}</span>

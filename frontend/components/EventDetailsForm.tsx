@@ -230,7 +230,7 @@ const EventDetailsForm: React.FC<EventDetailsFormProps> = ({
   useEffect(() => {
     const formatDate = (dateString: string | undefined) => {
       if (!dateString) return "";
-      return format(new Date(dateString), "yyyy-MM-dd"); // format to 'YYYY-MM-DD'
+      return format(new Date(dateString), "yyyy-MM-dd");
     };
 
     if (editPage === "manageEvent" && EventEditData) {
@@ -303,8 +303,15 @@ const EventDetailsForm: React.FC<EventDetailsFormProps> = ({
                   </SelectTrigger>
                   <SelectContent>
                     {SportsType.map((sport, i) => (
-                      <SelectItem value={sport} key={i}>
-                        {sport}
+                      <SelectItem
+                        key={sport}
+                        value={sport}
+                        className="flex items-center space-x-2"
+                      >
+                        <div className="flex items-center space-x-2">
+                          <LiaMicrophoneAltSlashSolid className="w-4 h-4" />
+                          <span>{sport}</span>
+                        </div>
                       </SelectItem>
                     ))}
                   </SelectContent>

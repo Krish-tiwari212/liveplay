@@ -109,38 +109,42 @@ const page = () => {
       <section className="mt-8 bg-white shadow-md rounded-lg px-4 pt-4">
         <h2 className="text-xl font-semibold mb-2">Active Events</h2>
         <div className="flex flex-col md:flex-row space-x-4 overflow-x-auto pb-8">
-        {events.map((event) => (
-          <Card
-            key={event.id}
-            className="shadow-md cursor-pointer hover:shadow-2xl"
-            onClick={() => router.push(`/dashboard/manage-events/${event.id}`)}
-          >
-            <CardContent className="py-4 flex flex-col md:flex-row gap-4">
-              <Image
-                src={event.desktop_cover_image_url || "/images/default.jpeg"}
-                alt="eventBanner"
-                width={200}
-                height={200}
-                className="rounded-lg h-44 shadow-xl"
-              />
-              <div>
-                <h3 className="font-bold">{event.event_name}</h3>
-                <div className="flex flex-col justify-between">
-                  <span>Entries: {event.entries || 'N/A'}</span>
-                  <span>Revenue: {event.revenue || '$0'}</span>
-                  <span>Event Views: {event.event_views || '0'}</span>
-                  <span>Interested People: {event.interested_people || '0'}</span>
+          {events.map((event) => (
+            <Card
+              key={event.id}
+              className="shadow-md cursor-pointer hover:shadow-2xl flex-none"
+              onClick={() =>
+                router.push(`/dashboard/manage-events/${event.id}`)
+              }
+            >
+              <CardContent className="py-4 flex flex-col md:flex-row gap-4">
+                <Image
+                  src={event.desktop_cover_image_url || "/images/default.jpeg"}
+                  alt="eventBanner"
+                  width={200}
+                  height={200}
+                  className="rounded-lg h-44 shadow-xl"
+                />
+                <div>
+                  <h3 className="font-bold">{event.event_name}</h3>
+                  <div className="flex flex-col justify-between">
+                    <span>Entries: {event.entries || "N/A"}</span>
+                    <span>Revenue: {event.revenue || "$0"}</span>
+                    <span>Event Views: {event.event_views || "0"}</span>
+                    <span>
+                      Interested People: {event.interested_people || "0"}
+                    </span>
+                  </div>
+                  <Link href={`/event/${event.id}/share-link`}>
+                    <Button className="w-full mt-2 bg-[#17202A] text-[#CDDC29] hover:text-white p-1 rounded hover:shadow-xl">
+                      Share
+                    </Button>
+                  </Link>
                 </div>
-                <Link href={`/event/${event.id}/share-link`}>
-                  <Button className="w-full mt-2 bg-[#17202A] text-[#CDDC29] hover:text-white p-1 rounded hover:shadow-xl">
-                    Share
-                  </Button>
-                </Link>
-              </div>
-            </CardContent>
-          </Card>
-        ))}
-      </div>
+              </CardContent>
+            </Card>
+          ))}
+        </div>
       </section>
 
       <section className="mt-8 bg-white shadow-md rounded-lg px-4 py-4">

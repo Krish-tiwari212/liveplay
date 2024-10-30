@@ -110,7 +110,7 @@ const Kycforms: React.FC<KycFormsProps> = ({
   const [isImageLoading, setIsImageLoading] = useState(false);
 
   return (
-    <form className="bg-white shadow-2xl p-5 rounded-lg w-full relative">
+    <form className="bg-white shadow-2xl p-5 rounded-lg w-full relative mt-10">
       <button
         onClick={(e) => {
           e.preventDefault();
