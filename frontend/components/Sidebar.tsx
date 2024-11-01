@@ -99,7 +99,7 @@ const Sidebar = ({ setnavexpanded }: { setnavexpanded :Dispatch<SetStateAction<b
             onMouseLeave={() => setTooltip(null)}
             onClick={toggleEvents}
           ></button>
-          <Link href="/dashboard">
+          <Link href="organizerDashboard">
             <button
               className="flex items-center w-full py-2 pl-2 hover:bg-gray-700 rounded transition-colors duration-200 relative"
               onMouseEnter={() => isCollapsed && setTooltip("Dashboard")}
@@ -109,7 +109,7 @@ const Sidebar = ({ setnavexpanded }: { setnavexpanded :Dispatch<SetStateAction<b
               {!isCollapsed && <>Dashboard</>}
               {isCollapsed && tooltip === "Dashboard" && (
                 <div className="absolute left-8 top-4 bg-white text-black text-sm p-2 rounded-bl rounded-tr rounded-br border border-gray-300 shadow-lg flex flex-col w-48">
-                  <Link href="/dashboard">
+                  <Link href="organizerDashboard">
                     <button className="flex items-center w-full text-left hover:bg-gray-200 transition-colors duration-200 p-2 rounded">
                       <FaTachometerAlt className="mr-2" /> Dashboard
                     </button>
@@ -134,24 +134,24 @@ const Sidebar = ({ setnavexpanded }: { setnavexpanded :Dispatch<SetStateAction<b
                 {!isCollapsed && <>Events</>}
                 {isCollapsed && tooltip === "OrganizerEvents" && (
                   <div className="absolute left-8 top-4 bg-white text-black text-sm p-2 rounded-bl rounded-tr rounded-br border border-gray-300 shadow-lg flex flex-col w-40">
-                    <Link href="/dashboard/create_event">
+                    <Link href="organizerDashboard/create_event">
                       <button className="flex items-center w-full text-left hover:bg-gray-200 transition-colors duration-200 p-2 rounded mb-1">
                         <FaCalendarAlt className="mr-2" /> Create Event
                       </button>
                     </Link>
-                    <Link href="/dashboard/manage-events">
+                    <Link href="organizerDashboard/manage-events">
                       <button className="flex items-center w-full text-left hover:bg-gray-200 transition-colors duration-200 p-2 rounded">
                         <MdOutlineFeaturedPlayList className="mr-2" /> Manage
                         Events
                       </button>
                     </Link>
-                    <Link href="/dashboard/enable_features">
+                    <Link href="organizerDashboard/enable_features">
                       <button className="flex items-center w-full text-left hover:bg-gray-200 transition-colors duration-200 p-2 rounded">
                         <MdOutlineFeaturedPlayList className="mr-2" /> Unlock
                         Event Earnings
                       </button>
                     </Link>
-                    <Link href="/dashboard/enable_features">
+                    <Link href="organizerDashboard/enable_features">
                       <button className="flex items-center w-full text-left hover:bg-gray-200 transition-colors duration-200 p-2 rounded">
                         <IoIosNotificationsOutline className="mr-2" />{" "}
                         Notifications
@@ -165,7 +165,7 @@ const Sidebar = ({ setnavexpanded }: { setnavexpanded :Dispatch<SetStateAction<b
                   className={`ml-4 space-y-1 overflow-hidden transition-all duration-300 ease-in-out max-h-56`}
                 >
                   <li>
-                    <Link href="/dashboard/create_event">
+                    <Link href="organizerDashboard/create_event">
                       <button className="flex items-center w-full p-2 hover:bg-gray-600 rounded transition-colors duration-200">
                         {!isCollapsed && (
                           <>
@@ -176,7 +176,7 @@ const Sidebar = ({ setnavexpanded }: { setnavexpanded :Dispatch<SetStateAction<b
                     </Link>
                   </li>
                   <li>
-                    <Link href="/dashboard/enable_features">
+                    <Link href="organizerDashboard/enable_features">
                       <button className="flex items-center w-full p-2 hover:bg-gray-600 rounded transition-colors duration-200">
                         {!isCollapsed && (
                           <>
@@ -188,7 +188,7 @@ const Sidebar = ({ setnavexpanded }: { setnavexpanded :Dispatch<SetStateAction<b
                     </Link>
                   </li>
                   <li>
-                    <Link href="/dashboard/kyc/1234">
+                    <Link href="organizerDashboard/kyc/1234">
                       <button className="flex items-center w-full p-2 hover:bg-gray-600 rounded transition-colors duration-200">
                         {!isCollapsed && (
                           <>
@@ -200,7 +200,7 @@ const Sidebar = ({ setnavexpanded }: { setnavexpanded :Dispatch<SetStateAction<b
                     </Link>
                   </li>
                   <li>
-                    <Link href="/dashboard/kyc/1234">
+                    <Link href="organizerDashboard/kyc/1234">
                       <button className="flex items-center w-full p-2 hover:bg-gray-600 rounded transition-colors duration-200">
                         {!isCollapsed && (
                           <>
@@ -229,18 +229,18 @@ const Sidebar = ({ setnavexpanded }: { setnavexpanded :Dispatch<SetStateAction<b
                 {!isCollapsed && <>Events</>}
                 {isCollapsed && tooltip === "UserEvents" && (
                   <div className="absolute left-8 top-4 bg-white text-black text-sm p-2 rounded-bl rounded-tr rounded-br border border-gray-300 shadow-lg flex flex-col w-40">
-                    <Link href="/dashboard/create_event">
+                    <Link href="organizerDashboard/create_event">
                       <button className="flex items-center w-full text-left hover:bg-gray-200 transition-colors duration-200 p-2 rounded mb-1">
                         <FaCalendarAlt className="mr-2" /> Manage Events
                       </button>
                     </Link>
-                    <Link href="/dashboard/enable_features">
+                    <Link href="organizerDashboard/enable_features">
                       <button className="flex items-center w-full text-left hover:bg-gray-200 transition-colors duration-200 p-2 rounded">
                         <MdOutlineFeaturedPlayList className="mr-2" /> Events I
                         am interested in Features
                       </button>
                     </Link>
-                    <Link href="/dashboard/enable_features">
+                    <Link href="organizerDashboard/enable_features">
                       <button className="flex items-center w-full text-left hover:bg-gray-200 transition-colors duration-200 p-2 rounded">
                         <MdOutlineFeaturedPlayList className="mr-2" /> Withdraw
                         from Events
@@ -254,7 +254,7 @@ const Sidebar = ({ setnavexpanded }: { setnavexpanded :Dispatch<SetStateAction<b
                   className={`ml-4 space-y-1 overflow-hidden transition-all duration-300 ease-in-out max-h-56`}
                 >
                   <li>
-                    <Link href="/dashboard/create_event">
+                    <Link href="organizerDashboard/create_event">
                       <button className="flex items-center w-full p-2 hover:bg-gray-600 rounded transition-colors duration-200">
                         {!isCollapsed && (
                           <>
@@ -265,7 +265,7 @@ const Sidebar = ({ setnavexpanded }: { setnavexpanded :Dispatch<SetStateAction<b
                     </Link>
                   </li>
                   <li>
-                    <Link href="/dashboard/enable_features">
+                    <Link href="organizerDashboard/enable_features">
                       <button className="flex items-center w-full p-2 hover:bg-gray-600 rounded transition-colors duration-200">
                         {!isCollapsed && (
                           <>
@@ -277,7 +277,7 @@ const Sidebar = ({ setnavexpanded }: { setnavexpanded :Dispatch<SetStateAction<b
                     </Link>
                   </li>
                   <li>
-                    <Link href="/dashboard/enable_features">
+                    <Link href="organizerDashboard/enable_features">
                       <button className="flex items-center w-full p-2 hover:bg-gray-600 rounded transition-colors duration-200">
                         {!isCollapsed && (
                           <>
@@ -314,12 +314,12 @@ const Sidebar = ({ setnavexpanded }: { setnavexpanded :Dispatch<SetStateAction<b
             )}
             {isCollapsed && tooltip === "Matches" && (
               <div className="absolute left-8 top-4 bg-white text-black text-sm p-2 rounded-bl rounded-tr rounded-br border border-gray-300 shadow-lg flex flex-col w-48">
-                <Link href="/dashboard/schedule_matches">
+                <Link href="organizerDashboard/schedule_matches">
                   <button className=" w-full text-left hover:bg-gray-200 transition-colors duration-200 p-2 rounded mb-1 flex items-center">
                     <MdSchedule className="mr-2" /> Schedule Matches
                   </button>
                 </Link>
-                <Link href="/dashboard/update_score">
+                <Link href="organizerDashboard/update_score">
                   <button className="w-full text-left hover:bg-gray-200 transition-colors duration-200 p-2 rounded mb-1 flex items-center">
                     <MdOutlineBrowserUpdated className="mr-2" /> Update Scores
                   </button>
@@ -331,14 +331,14 @@ const Sidebar = ({ setnavexpanded }: { setnavexpanded :Dispatch<SetStateAction<b
             className={`ml-4 space-y-1 overflow-hidden transition-all duration-300 ease-in-out max-h-40 `}
           >
             <li>
-              <Link href="/dashboard/schedule_matches">
+              <Link href="organizerDashboard/schedule_matches">
                 <button className="flex items-center w-full p-2 hover:bg-gray-600 rounded transition-colors duration-200">
                   {!isCollapsed && "Schedule Matches"}
                 </button>
               </Link>
             </li>
             <li>
-              <Link href="/dashboard/update_score">
+              <Link href="organizerDashboard/update_score">
                 <button className="flex items-center w-full p-2 hover:bg-gray-600 rounded transition-colors duration-200">
                   {!isCollapsed && "Update Scores"}
                 </button>
@@ -351,7 +351,7 @@ const Sidebar = ({ setnavexpanded }: { setnavexpanded :Dispatch<SetStateAction<b
       <div className="mt-auto">
         <ul>
           <li>
-            <Link href="/dashboard/setting">
+            <Link href="organizerDashboard/setting">
               <button
                 className="flex items-center w-full py-2 pl-2 hover:bg-gray-700 rounded transition-colors duration-200 relative"
                 onMouseEnter={() => isCollapsed && setTooltip("Settings")}

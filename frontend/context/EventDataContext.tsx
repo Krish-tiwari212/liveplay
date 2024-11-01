@@ -4,6 +4,10 @@ interface EventData {
   [key: string]: any; 
 }
 
+interface NotificationData {
+  [key: string]: any;
+}
+
 interface EventContextType {
   EventData: EventData;
   setEventData: React.Dispatch<React.SetStateAction<EventData>>;
@@ -17,6 +21,10 @@ interface EventContextType {
   setEditPage: React.Dispatch<React.SetStateAction<string>>;
   nextId: number;
   setNextId: React.Dispatch<React.SetStateAction<number>>;
+  UserType: string;
+  setUserType: React.Dispatch<React.SetStateAction<string>>;
+  notification: NotificationData[];
+  setNotification: React.Dispatch<React.SetStateAction<NotificationData[]>>;
 }
 
 const EventContext = createContext<EventContextType | undefined>(undefined);
@@ -29,7 +37,9 @@ export const EventProvider: React.FC<{ children: ReactNode }> = ({
   const [isVenueNotDecided, setIsVenueNotDecided] = useState(false);
   const [editPage, setEditPage] = useState("");  
   const [DashboardName, setDashboardName] = useState(""); 
-  const [nextId, setNextId] = useState(1); 
+  const [nextId, setNextId] = useState(0); 
+  const [UserType,setUserType]=useState("organizer")
+  const [notification, setNotification] = useState<NotificationData[]>([]);
 
   return (
     <EventContext.Provider
@@ -45,7 +55,11 @@ export const EventProvider: React.FC<{ children: ReactNode }> = ({
         EventEditData,
         editPage, 
         setEditPage,
-        setEventEditData
+        setEventEditData,
+        UserType,
+        setUserType,
+        notification,
+        setNotification
       }}
     >
       {children}

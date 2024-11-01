@@ -23,33 +23,34 @@ import { useRouter } from "next/navigation";
 
 
 const Navbar = () => {
-  const pathname = usePathname();
-  const {DashboardName}=useEventContext()
-  const pageName = pathname ? pathname.split("/").pop()?.toUpperCase() : "Home"; 
-  const { theme, setTheme } = useAppContext();
-  const [tooltip, setTooltip] = useState<string | null>(null);
+  const {DashboardName, notification} = useEventContext();
+  const unreadNotifications = notification.filter(notif => !notif.read);
   const [userStatus, setUserStatus] = useState("organizer");
   const { user, loading } = useUser();
   const router=useRouter()
+  const path = usePathname();
+  const isplayerdashboard = path.includes("playerdashboard");
+  const defaultname=isplayerdashboard?"Player Dashboard":"Organizer Dashboard";
 
   return (
     <div className="flex justify-between items-center p-4 m-3 bg-[#17202A] text-white rounded-lg ">
-      <div className="text-lg text-[#CDDC29] font-bold">
-        {DashboardName || "Home"}
+      <div className="text-2xl text-[#CDDC29] font-bold">
+        {DashboardName || defaultname}
       </div>
       <div className="flex items-center">
         <div className="flex space-x-4 ml-4 items-center">
-          <button className="relative" onClick={() => router.push("/dashboard/notifications")}>
-            <IoIosNotificationsOutline className="text-3xl" />
-            <div className="absolute -top-2 -right-2 text-[0.6rem] bg-red-700  rounded-full py-1 px-2 flex items-center justify-center">
-              1
-            </div>
-          </button>
-          <button
-            className="flex items-center w-full py-2 hover:bg-gray-700 rounded transition-colors duration-200 relative"
-            onMouseEnter={() => setTooltip("UserName")}
-            onMouseLeave={() => setTooltip(null)}
-          >
+          {!isplayerdashboard && (
+            <button
+              className="relative"
+              onClick={() => router.push("organizerDashboard/notifications")}
+            >
+              <IoIosNotificationsOutline className="text-3xl" />
+              <div className="absolute -top-2 -right-2 text-[0.6rem] bg-red-700  rounded-full py-1 px-2 flex items-center justify-center">
+                {unreadNotifications.length}
+              </div>
+            </button>
+          )}
+          <button className="flex items-center w-full py-2 hover:bg-gray-700 rounded transition-colors duration-200 relative">
             <TooltipProvider>
               <Tooltip>
                 <TooltipTrigger asChild>

@@ -4,7 +4,7 @@ import "./globals.css";
 import Navbar from "@/components/Navbar";
 import { Toast, ToastProvider } from "@radix-ui/react-toast";
 import { Toaster } from "@/components/ui/toaster";
-import { UserProvider } from '@/context/UserContext';
+import { Icon } from "lucide-react";
 
 const geistSans = localFont({
   src: "./fonts/GeistVF.woff",
@@ -20,6 +20,9 @@ const geistMono = localFont({
 export const metadata: Metadata = {
   title: "LivePlay",
   description: "",
+  icons: [
+    "/images/LiveplayLogoIcon.png"
+  ]
 };
 
 export default function RootLayout({
@@ -30,7 +33,7 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased`}
+        className={`${geistSans.variable} ${geistMono.variable} antialiased overflow-hidden`}
       >
         <Toaster />
         {children}

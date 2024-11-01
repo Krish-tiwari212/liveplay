@@ -2,7 +2,7 @@ import { useToast } from '@/hooks/use-toast';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { useRouter } from 'next/navigation';
-import React, { useState } from 'react';import {
+import React, { useEffect, useState } from 'react';import {
   Select,
   SelectContent,
   SelectItem,
@@ -15,35 +15,16 @@ import { MdKeyboardArrowDown, MdKeyboardArrowUp, MdOutlineFeaturedPlayList, MdOu
 import Image from 'next/image';
 import { IoIosNotificationsOutline } from 'react-icons/io';
 import { useUser } from '@/context/UserContext';
+import { useEventContext } from '@/context/EventDataContext';
 
 const MSidebar = () => {
-  const pathname = usePathname();
   const [activePage, setActivePage] = useState("Dashboard");
-  const [openEvents, setOpenEvents] = useState(false);
-  const [openTeams, setOpenTeams] = useState(false);
-  const [openMatches, setOpenMatches] = useState(false);
-  const [tooltip, setTooltip] = useState<string | null>(null);
   const { toast } = useToast();
   const router = useRouter();
   const { user, setUser } = useUser();
-
-  const toggleEvents = () => {
-    setOpenEvents(!openEvents);
-    if (openTeams) setOpenTeams(false);
-    if (openMatches) setOpenMatches(false);
-  };
-
-  const toggleMatches = () => {
-    setOpenMatches(!openMatches);
-    if (openEvents) setOpenEvents(false);
-    if (openTeams) setOpenTeams(false);
-  };
-
-  const handleCollapse = () => {
-    setOpenEvents(false);
-    setOpenTeams(false);
-    setOpenMatches(false);
-  };
+  const { setUserType, UserType } = useEventContext();
+  const path = usePathname();
+  const isplayerdashboard = path.includes("playerdashboard");
 
   const handleLogout = async () => {
     try {
@@ -64,14 +45,14 @@ const MSidebar = () => {
         toast({
           title: "Logout Failed",
           description: data.error || "An error occurred during logout.",
-          variant: "error",
+          variant: "destructive",
         });
       }
     } catch (error) {
       toast({
         title: "Logout Failed",
         description: "Server error occurred during logout.",
-        variant: "error",
+        variant: "destructive",
       });
     }
   };
@@ -80,35 +61,18 @@ const MSidebar = () => {
     setActivePage(page); 
   };
 
-  const [openOrganizer, setOpenOrganizer] = useState(true); 
-  const [openPlayer, setOpenPlayer] = useState(false);
-
-  const toggleOrganizer = () => {
-    setOpenOrganizer(true); 
-    setOpenPlayer(false); 
-  };
-
-  const togglePlayer = () => {
-    setOpenPlayer(true); 
-    setOpenOrganizer(false);
-  };
-
-  const [selectedRole, setSelectedRole] = useState<string>("organizer");
 
   const handleRoleChange = (value: string) => {
-    setSelectedRole(value); 
-    handleCollapse(); 
+    setUserType(value)
+    value === "organizer" ? router.push("/organizerDashboard") : router.push("playerdashboard");
+    
   };
 
   return (
     <div
       className={`hidden bg-[#17202A] text-white p-4 shadow-lg transition-width duration-300 ease-in-out md:flex flex-col h-full z-50 sticky flex-[1]`}
     >
-      <div className="flex items-center mb-6 border-b border-gray-700 pb-4">
-        <button
-          onClick={() => handleCollapse()}
-          className="text-white hover:text-blue-400 transition-colors duration-200"
-        ></button>
+      <div className="flex items-center mb-6 border-b border-gray-700 pb-6 pt-6">
         <Link href={"/"}>
           <div className="text-3xl font-bold text-gray-500 ml-2">
             <Image
@@ -122,22 +86,11 @@ const MSidebar = () => {
       </div>
 
       <ul className="space-y-2 flex-grow relative">
-        <li>
-          <Link href="/dashboard">
-            <button
-              onClick={() => handleButtonClick("Dashboard")}
-              className={`flex items-center w-full py-2 pl-2 rounded transition-colors duration-200 relative ${
-                activePage === "Dashboard"
-                  ? "bg-[#CDDC29] text-[#17202A]"
-                  : "hover:bg-[#CDDC29] hover:text-[#17202A]"
-              }`}
-            >
-              <FaTachometerAlt className="mr-2 text-xl" /> Dashboard
-            </button>
-          </Link>
-        </li>
-        <Select defaultValue="organizer" onValueChange={handleRoleChange}>
-          <SelectTrigger className="h-10 p-2 bg-[#17202A] border border-gray-700 rounded-md text-sm shadow-2xl text-white focus:border-[#17202A] focus:outline-none focus:shadow-lg">
+        <Select
+          defaultValue={isplayerdashboard ? "player" : "organizer"}
+          onValueChange={handleRoleChange}
+        >
+          <SelectTrigger className="h-10 p-2 bg-[#17202A] border-2 border-gray-700 rounded-md text-sm shadow-2xl text-white focus:border-[#17202A] focus:shadow-lg">
             <SelectValue placeholder="Organizer" />
           </SelectTrigger>
           <SelectContent>
@@ -145,8 +98,20 @@ const MSidebar = () => {
             <SelectItem value="player">Player</SelectItem>
           </SelectContent>
         </Select>
-        {selectedRole === "organizer" && (
+        {!isplayerdashboard && (
           <li>
+            <Link href="/organizerDashboard">
+              <button
+                onClick={() => handleButtonClick("Dashboard")}
+                className={`flex items-center w-full py-2 pl-2 rounded transition-colors duration-200 relative ${
+                  activePage === "Dashboard"
+                    ? "bg-[#CDDC29] text-[#17202A]"
+                    : "hover:bg-[#CDDC29] hover:text-[#17202A]"
+                }`}
+              >
+                <FaTachometerAlt className="mr-2 text-xl" /> Dashboard
+              </button>
+            </Link>
             <div className="flex items-center justify-between w-full py-2 pl-1 rounded transition-colors duration-200">
               <h1 className="text-xl">Organizer</h1>
             </div>
@@ -154,7 +119,7 @@ const MSidebar = () => {
               className={`space-y-1 pl-2 overflow-hidden transition-all duration-300 ease-in-out`}
             >
               <li>
-                <Link href="/dashboard/create_event">
+                <Link href="/organizerDashboard/create_event">
                   <button
                     onClick={() => handleButtonClick("Create Events")}
                     className={`flex items-center w-full p-2 rounded transition-colors duration-200 ${
@@ -163,12 +128,12 @@ const MSidebar = () => {
                         : "hover:bg-[#CDDC29] hover:text-[#17202A]"
                     }`}
                   >
-                    <MdSchedule className="mr-2 text-xl" /> Create Events
+                    <MdSchedule className="mr-2 text-xl" /> Create New Events
                   </button>
                 </Link>
               </li>
               <li>
-                <Link href="/dashboard/manage-events">
+                <Link href="/organizerDashboard/manage-events">
                   <button
                     onClick={() => handleButtonClick("Manage Events")}
                     className={`flex items-center w-full p-2 rounded transition-colors duration-200 ${
@@ -178,12 +143,12 @@ const MSidebar = () => {
                     }`}
                   >
                     <MdOutlineFeaturedPlayList className="mr-2 text-xl" />
-                    Manage Events
+                    Event Management
                   </button>
                 </Link>
               </li>
               <li>
-                <Link href="/dashboard/kyc/1234">
+                <Link href="/organizerDashboard/kyc/1234">
                   <button
                     onClick={() => handleButtonClick("Unlock Earnings")}
                     className={`flex items-center w-full p-2 rounded transition-colors duration-200 ${
@@ -198,7 +163,7 @@ const MSidebar = () => {
                 </Link>
               </li>
               <li>
-                <Link href="/dashboard/notifications">
+                <Link href="/organizerDashboard/notifications">
                   <button
                     onClick={() => handleButtonClick("Notifications")}
                     className={`flex items-center w-full p-2 rounded transition-colors duration-200 ${
@@ -215,8 +180,20 @@ const MSidebar = () => {
             </ul>
           </li>
         )}
-        {selectedRole === "player" && (
+        {isplayerdashboard && (
           <li>
+            <Link href="/playerdashboard">
+              <button
+                onClick={() => handleButtonClick("Dashboard")}
+                className={`flex items-center w-full py-2 pl-2 rounded transition-colors duration-200 relative ${
+                  activePage === "Dashboard"
+                    ? "bg-[#CDDC29] text-[#17202A]"
+                    : "hover:bg-[#CDDC29] hover:text-[#17202A]"
+                }`}
+              >
+                <FaTachometerAlt className="mr-2 text-xl" /> Dashboard
+              </button>
+            </Link>
             <div className="flex items-center justify-between w-full py-2 pl-1 rounded transition-colors duration-200">
               <h1 className="text-xl">Player</h1>
             </div>
@@ -224,14 +201,14 @@ const MSidebar = () => {
               className={`space-y-1 pl-2 overflow-hidden transition-all duration-300 ease-in-out `}
             >
               <li>
-                <Link href="/dashboard/manage-events">
+                <Link href="/playerdashboard/manage-events">
                   <button className="flex items-center w-full p-2 hover:bg-[#CDDC29] hover:text-[#17202A] rounded transition-colors duration-200">
                     <MdSchedule className="mr-2 text-xl" /> Manage Events
                   </button>
                 </Link>
               </li>
               <li>
-                <Link href="/dashboard/enable_features">
+                <Link href="/playerdashboard">
                   <button className="flex items-center w-full p-2 hover:bg-[#CDDC29] hover:text-[#17202A] rounded transition-colors duration-200">
                     <MdOutlineFeaturedPlayList className="mr-2 text-xl" />
                     Events I am interested
@@ -239,7 +216,7 @@ const MSidebar = () => {
                 </Link>
               </li>
               <li>
-                <Link href="/dashboard/enable_features">
+                <Link href="/playerdashboard">
                   <button className="flex items-center w-full p-2 hover:bg-[#CDDC29] hover:text-[#17202A] rounded transition-colors duration-200">
                     <MdOutlineFeaturedPlayList className="mr-2 text-xl" />
                     Withdraw from Events
@@ -254,7 +231,7 @@ const MSidebar = () => {
       <div className="mt-auto">
         <ul>
           <li>
-            <Link href="/dashboard/setting">
+            <Link href="/organizerDashboard/setting">
               <button className="flex lg:text-md items-center w-full py-2 pl-2 hover:bg-[#CDDC29] hover:text-[#17202A] rounded transition-colors duration-200 relative">
                 <FaCogs className="mr-2 text-xl" /> Settings
               </button>

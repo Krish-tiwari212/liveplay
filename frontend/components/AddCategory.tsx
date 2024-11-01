@@ -257,7 +257,7 @@ const AddCategory = ({ setCategoryData ,type,category}: AddCategoryProps) => {
             }
           >
             <SelectTrigger className="w-full h-16 shadow-2xl focus:border-[#17202A] focus:outline-none focus:shadow-lg">
-              <SelectValue placeholder="Category" />
+              <SelectValue placeholder={categoryData.category_type || "Category Type"} />
             </SelectTrigger>
             <SelectContent>
               <SelectItem value="Singles">Singles</SelectItem>

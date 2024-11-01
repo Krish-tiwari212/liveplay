@@ -69,7 +69,7 @@ const SignUpForm = () => {
 
     if (response.ok) {
       toast({ title: "Signup Successful", description: "Your account has been created!" });
-      router.push("/dashboard");
+      router.push("organizerDashboard");
     } else {
       toast({ title: "Signup Failed", description: result.error || "An error occurred. Please try again.", variant: "destructive" });
     }

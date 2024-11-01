@@ -52,7 +52,7 @@ const ProgressBar: React.FC<ProgressBarProps> = ({
   totalPages,
   forpage,
 }) => {
-  const { EventData, setEventData, isVenueNotDecided, setIsVenueNotDecided } =
+  const { EventData, setEventData,EventEditData, isVenueNotDecided, setIsVenueNotDecided } =
     useEventContext();
 
   const fieldsToCheck = isVenueNotDecided
@@ -63,6 +63,17 @@ const ProgressBar: React.FC<ProgressBarProps> = ({
           )
       )
     : requiredFields;
+
+  const updatedProgress =
+    forpage === "manageEvent" && !EventEditData.enable_fixtures
+      ? checkpoints
+          .filter((field) => !["Draw Creation"].includes(field.label))
+          .map((checkpoint) => ({
+            ...checkpoint,
+            placement:
+              checkpoint.label === "Event Boosters" ? 6 : checkpoint.placement,
+          }))
+      : checkpoints;
 
   const handlecircel = (checkpoint: Checkpoint) => {
     if (forpage === "createEvent" && checkpoint.placement === 5 && currentpage < 5) {
@@ -92,27 +103,39 @@ const ProgressBar: React.FC<ProgressBarProps> = ({
     <div
       className={`relative ${checkpoints.length === 7 && "w-[85%]"} ${
         checkpoints.length === 5 && "w-[95%] lg:w-[80%]"
-      } ${checkpoints.length === 3 && "w-[95%] xl:w-[50%]"} mx-auto mt-6 mb-12`}
+      } ${checkpoints.length === 3 && "w-[95%] xl:w-[50%]"} mx-auto mt-6 ${
+        forpage !== "manageEvent" ? "mb-12" : "mb-5"
+      } `}
     >
-      <Progress
-        value={(currentpage / (totalPages - 1)) * 100}
-        className="h-2"
-      />
+      {forpage !== "manageEvent" && (
+        <Progress
+          value={(currentpage / (totalPages - 1)) * 100}
+          className="h-2"
+        />
+      )}
       <div
-        className={`flex justify-between -top-3 ${
+        className={`flex justify-between  ${
+          forpage !== "manageEvent" ? "absolute -top-3" : "relative"
+        } ${
           checkpoints.length === 7 && "w-[90%] left-[5%]"
-        } w-[80%] left-[10%] items-center absolute`}
+        } w-[80%] left-[10%] items-center `}
       >
-        {checkpoints.map((checkpoint, index) => (
+        {updatedProgress.map((checkpoint, index) => (
           <div
             key={index}
-            className="flex flex-col relative items-center justify-center cursor-pointer"
+            className={`flex flex-col relative items-center justify-center cursor-pointer`}
           >
             <div
               onClick={() => handlecircel(checkpoint)}
-              className={`w-8 h-8 rounded-full bg-gray-800 text-white flex items-center justify-center`}
+              className={` ${
+                forpage !== "manageEvent" ? "w-8 h-8" : "w-11 h-11"
+              } rounded-full bg-gray-800 text-white flex items-center justify-center  ${
+                currentpage === checkpoint.placement
+                  ? "shadow-lg shadow-gray-800"
+                  : ""
+              }`}
             >
-              {checkpoint.icon}
+              <span>{checkpoint.icon}</span>
             </div>
             <h1
               className={`font-semibold text-gray-800 mt-2 hidden ${

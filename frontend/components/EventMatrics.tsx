@@ -1,6 +1,6 @@
 "use client"
 
-import React from 'react'
+import React, { useEffect } from 'react'
 import { Button } from './ui/button';
 import { useRouter } from 'next/navigation';
 import { FaBarsProgress, FaUserGroup } from 'react-icons/fa6';
@@ -21,33 +21,35 @@ import {
 } from "@/components/ui/card";
 import { useState } from 'react';
 import EventBoosters from './EventBoosters';
+import { Dialog, DialogHeader } from "@/components/ui/dialog";
+import { DialogContent, DialogDescription, DialogTitle, DialogTrigger } from '@radix-ui/react-dialog';
 
 const metrics = [
-    {
-      title: "Total Sales",
-      description: "Total sales from the event",
-      icon: <FaRupeeSign />,
-      data: 5000,
-    },
-    {
-      title: "Total Page Views",
-      description: "Number of People who viewd this event",
-      icon: <FaUser />,
-      data: 150,
-    },
-    {
-      title: "Number of Registrations",
-      description: "Total number of registrations",
-      icon: <FaEye />,
-      data: 75,
-    },
-    {
-      title: "Number of Interested People",
-      description: "Number of People interested in the event",
-      icon: <FaTimes />,
-      data: 10,
-    },
-  ];
+  {
+    title: "Event Sales",
+    description: "Total Entry Fees Collected",
+    icon: <FaRupeeSign />,
+    data: 5000,
+  },
+  {
+    title: "Event Views",
+    description: "Total number of users who have viewed this event",
+    icon: <FaUser />,
+    data: 150,
+  },
+  {
+    title: "Number of Registrations",
+    description: "Total number of event registrations",
+    icon: <FaEye />,
+    data: 75,
+  },
+  {
+    title: "Number of Interested People",
+    description: "Total number of users interested in this event",
+    icon: <FaTimes />,
+    data: 10,
+  },
+];
 
 const secondaryMetrics = [
   {
@@ -79,14 +81,33 @@ interface EventMatricsProps{
 const EventMatrics = ({ handleNext }: EventMatricsProps) => {
     const router = useRouter();
     const [showUpsell, setShowUpsell] = useState(true);
+    const [isModalOpen, setIsModalOpen] = useState(false);
 
     const handleUpgradeClick = () => {
         router.push('/payment');
     };
 
+    const handleCancelClick = () => {
+        if (window.confirm("Are you sure you want to cancel the event?")) {
+            setIsModalOpen(true);
+        }
+    };
+
+    const handleModalClose = () => {
+        setIsModalOpen(false);
+    };
+
+    const handleConfirmCancel = () => {
+        console.log("Event cancelled");
+        setIsModalOpen(false);
+    };
+
     return (
-      <div className="text-gray-800 p-5 ">
-        <h1 className="text-3xl text-gray-800 font-bold mb-4">Event Report</h1>
+      <div className="text-gray-800 px-5 ">
+        <div className="flex justify-between items-center mb-8">
+          <h1 className="text-3xl text-gray-800 font-bold">Event Overview</h1>
+          <Button onClick={handleCancelClick}>Cancel Event</Button>
+        </div>
         <main className="rounded-lg">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-5 mb-5">
             {metrics.map((metric, i) => (

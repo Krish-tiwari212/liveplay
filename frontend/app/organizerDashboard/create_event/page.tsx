@@ -75,13 +75,13 @@ const page = () => {
         checkpoints={ProgressBarCheckpoints}
       />
       {currentPage === 1 && (
-        <EventInformation handleNext={handleNext} page="createEvent" />
+        <EventInformation handleNext={handleNext}/>
       )}
       {currentPage === 2 && (
-        <CategoryPreview handleNext={handleNext} page="createEvent" />
+        <CategoryPreview handleNext={handleNext}/>
       )}
       {currentPage === 3 && (
-        <EnableFeatures handleNext={handleNext} page="createEvent" />
+        <EnableFeatures handleNext={handleNext}/>
       )}
       {currentPage === 4 && <EventBoosters handleNext={handleNext} />}
       {currentPage === 5 && <GoLive />}

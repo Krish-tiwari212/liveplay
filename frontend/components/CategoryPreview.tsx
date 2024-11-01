@@ -154,7 +154,7 @@ const CategoryPreview = ({
   }, [EventData, EventEditData]);
 
   return (
-    <div className="flex flex-col mx-6 mt-20">
+    <div className="flex flex-col mx-6">
       <div className="flex justify-between">
         <h1 className="text-3xl font-bold mb-4">Category Setup</h1>
         <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
@@ -178,8 +178,8 @@ const CategoryPreview = ({
                 key={index}
                 className={`relative border shadow-lg rounded-lg p-4 mb-4 w-[46%] xl:w-[48%] cursor-pointer bg-[#17202A]`}
               >
-                <div className="flex justify-between items-start bg-gray-100 p-4 rounded-lg shadow-sm w-full">
-                  <div className="flex justify-between items-start bg-gradient-to-r from-gray-200 to-gray-300 rounded-lg shadow-lg p-4 mr-4 w-[80%]">
+                <div className="flex justify-between items-start bg-gray-100 p-4 rounded-lg shadow-sm w-full h-full">
+                  <div className="flex justify-between items-start bg-gradient-to-r from-gray-200 to-gray-300 rounded-lg shadow-lg p-4 mr-4 w-[90%] h-full">
                     <div className="flex flex-col w-full">
                       <h2 className="font-bold text-xl text-[#17202A] flex items-center">
                         {category.category_name}
@@ -202,7 +202,7 @@ const CategoryPreview = ({
                       </p>
                     </div>
                   </div>
-                  <div className="flex flex-col gap-4">
+                  <div className="flex flex-col gap-4 justify-center ">
                     <TooltipProvider>
                       <Tooltip>
                         <TooltipTrigger>
@@ -221,24 +221,27 @@ const CategoryPreview = ({
                         </TooltipContent>
                       </Tooltip>
                     </TooltipProvider>
-                    <TooltipProvider>
-                      <Tooltip>
-                        <TooltipTrigger>
-                          <div
-                            className={`bg-gray-300 hover:bg-gray-200 rounded-lg text-5xl shadow-xl`}
-                            onClick={(e) => {
-                              e.stopPropagation();
-                              deleteCategory(category);
-                            }}
-                          >
-                            <MdDelete />
-                          </div>
-                        </TooltipTrigger>
-                        <TooltipContent>
-                          <p>Delete</p>
-                        </TooltipContent>
-                      </Tooltip>
-                    </TooltipProvider>
+                    {editPage !== "manageEvent" && (
+                      <TooltipProvider>
+                        <Tooltip>
+                          <TooltipTrigger>
+                            <div
+                              className={`bg-gray-300 hover:bg-gray-200 rounded-lg text-5xl shadow-xl`}
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                deleteCategory(category);
+                              }}
+                            >
+                              <MdDelete />
+                            </div>
+                          </TooltipTrigger>
+                          <TooltipContent>
+                            <p>Delete</p>
+                          </TooltipContent>
+                        </Tooltip>
+                      </TooltipProvider>
+                    )}
+
                     <TooltipProvider>
                       <Tooltip>
                         <TooltipTrigger>

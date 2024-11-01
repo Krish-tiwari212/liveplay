@@ -32,7 +32,6 @@ const EventInformation: React.FC<EventInformation> = ({ handleNext }) => {
   const [formData, setFormData] = useState<any>({});
   useEffect(()=>{
     console.log(EventEditData)
-    console.log(EventData);
   },[])
   const renderForm = () => {
     switch (formType) {
@@ -88,7 +87,7 @@ const EventInformation: React.FC<EventInformation> = ({ handleNext }) => {
           setFormType={setFormType}
           content={OverviewSidebarContent}
         />
-        <div className="flex-[4] my-3 lg:my-0 lg:mx-3 mb-20">{renderForm()}</div>
+        <div className="flex-[4] my-3 md:my-0 md:mx-3 pb-10">{renderForm()}</div>
       </div>
     </div>
   );

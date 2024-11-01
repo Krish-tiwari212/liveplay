@@ -56,7 +56,7 @@ const LoginForm = () => {
         title: "Login Successful",
         description: "You are now logged in!",
       });
-      router.push("/dashboard");
+      router.push("/ashboard");
     } else {
       toast({
         title: "Login Failed",

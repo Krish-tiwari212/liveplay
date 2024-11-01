@@ -1,6 +1,5 @@
 import { NextResponse } from 'next/server';
 import { createClient } from '@/utils/supabase/server'
-import crypto from 'crypto';
 
 interface EventRequest {
   event_name: string;
@@ -46,14 +45,20 @@ interface EventRequest {
 
 export async function POST(request: Request) {
   try {
+    // Create a Supabase client
     const supabase = await createClient();
+    // Parse the incoming request and files
     const formData = await request.formData();
     console.log('Form data:', formData);
 
+    // Extract event details from formData
     const eventData: EventRequest = JSON.parse(formData.get('eventData') as string);
+
+    // Extract mobile and desktop banner files
     const mobileBanner = formData.get('mobileBanner') as File;
     const desktopBanner = formData.get('desktopBanner') as File;
 
+    // Required field check
     if (
       !formData.get('event_name') ||
       !formData.get('organizer_contact_number') ||
@@ -69,51 +74,33 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: 'Missing required fields' }, { status: 400 });
     }
 
-    const hashFile = async (file: File): Promise<string> => {
-      const arrayBuffer = await file.arrayBuffer();
-      const hash = crypto.createHash('sha256');
-      hash.update(new Uint8Array(arrayBuffer));
-      return hash.digest('hex');
-    };
+    // Upload mobile banner to Supabase storage
+    const { data: mobileBannerData, error: mobileBannerError } = await supabase.storage
+      .from('banners')
+      .upload(`mobile/${mobileBanner.name}`, mobileBanner);
 
-    const uploadImage = async (file: File, folder: string) => {
-      const fileHash = await hashFile(file);
-
-      const { data: existingFiles, error: listError } = await supabase.storage
-        .from('banners')
-        .list(folder, { search: fileHash });
-
-      if (listError) {
-        console.error('Error listing files:', listError);
-        return { error: listError.message };
-      }
-
-      if (existingFiles && existingFiles.length > 0) {
-        return { url: supabase.storage.from('banners').getPublicUrl(`${folder}/${fileHash}`).data.publicUrl };
-      }
-
-      const { data, error } = await supabase.storage
-        .from('banners')
-        .upload(`${folder}/${fileHash}`, file);
-
-      if (error) {
-        console.error('Upload error:', error);
-        return { error: error.message };
-      }
-
-      return { url: supabase.storage.from('banners').getPublicUrl(data.path).data.publicUrl };
-    };
-
-    const mobileBannerResult = await uploadImage(mobileBanner, 'mobile');
-    if (mobileBannerResult.error) {
-      return NextResponse.json({ error: `Mobile banner upload failed: ${mobileBannerResult.error}` }, { status: 400 });
+    if (mobileBannerError) {
+      console.error('Mobile banner upload error:', mobileBannerError);
+      return NextResponse.json({ error: `Mobile banner upload failed: ${mobileBannerError.message}` }, { status: 400 });
     }
 
-    const desktopBannerResult = await uploadImage(desktopBanner, 'desktop');
-    if (desktopBannerResult.error) {
-      return NextResponse.json({ error: `Desktop banner upload failed: ${desktopBannerResult.error}` }, { status: 400 });
+    // Get mobile banner URL
+    const mobileBannerUrl = supabase.storage.from('banners').getPublicUrl(mobileBannerData.path);
+
+    // Upload desktop banner to Supabase storage
+    const { data: desktopBannerData, error: desktopBannerError } = await supabase.storage
+      .from('banners')
+      .upload(`desktop/${desktopBanner.name}`, desktopBanner);
+
+    if (desktopBannerError) {
+      console.error('Desktop banner upload error:', desktopBannerError);
+      return NextResponse.json({ error: `Desktop banner upload failed: ${desktopBannerError.message}` }, { status: 400 });
     }
 
+    // Get desktop banner URL
+    const desktopBannerUrl = supabase.storage.from('banners').getPublicUrl(desktopBannerData.path);
+
+    // Insert event data
     const { data: event, error: eventError } = await supabase
       .from('events')
       .insert({
@@ -141,8 +128,8 @@ export async function POST(request: Request) {
         venue_link: formData.get('venue_link'),
         sport: formData.get('sport'),
         selected_plan: formData.get('selected_plan'),
-        desktop_cover_image_url: desktopBannerResult.url,
-        mobile_cover_image_url: mobileBannerResult.url,
+        desktop_cover_image_url: desktopBannerUrl.data.publicUrl,
+        mobile_cover_image_url: mobileBannerUrl.data.publicUrl,
       })
       .select('id')
       .single();
@@ -180,7 +167,7 @@ export async function POST(request: Request) {
 
     return NextResponse.json({ message: 'Event created successfully', event }, { status: 201 });
   } catch (error) {
-    console.error('Unexpected error:', error);
+    console.error('Unexpected error:', error);  // Log unexpected errors
     return NextResponse.json({ error: 'Server error' }, { status: 500 });
   }
 }

@@ -85,7 +85,6 @@ const DrawCreation = ({ handleNext,id }: DrawCreationProps) => {
   const [isLoading,setIsLoading]=useState(false)
 
   useEffect(() => {
-    setDashboardName("Draw Creations");
     if (id) {
       const loadEventDetails = async () => {
         setIsLoading(true);
@@ -250,7 +249,7 @@ const DrawCreation = ({ handleNext,id }: DrawCreationProps) => {
 
   return (
     <div className="container mx-auto m-3 p-6 ">
-      <h1 className="text-3xl font-bold mb-4">Draw Creations</h1>
+      <h1 className="text-3xl font-bold mb-4">Draw Creation</h1>
       {isLoading && (
         <div className="flex justify-center items-center h-full">
           <Lottie
