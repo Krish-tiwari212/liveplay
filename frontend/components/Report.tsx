@@ -402,7 +402,7 @@ const Report = ({ handleNext }: ReportProps) => {
                     </TableRow>
                   ))}
                 </TableBody>
-                <TableFooter>
+                {/* <TableFooter>
                   <TableRow>
                     <TableCell colSpan={noOfParticipants}>
                       Total Participants
@@ -411,7 +411,7 @@ const Report = ({ handleNext }: ReportProps) => {
                       {participants.length}
                     </TableCell>
                   </TableRow>
-                </TableFooter>
+                </TableFooter> */}
               </Table>
             </DialogContent>
           </Dialog>

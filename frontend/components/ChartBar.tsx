@@ -78,9 +78,9 @@ export function ChartBar({
     console.log(processCategory);
   }, []);
   return (
-    <Card className="bg-[#17202a]">
+    <Card className="">
       <CardHeader>
-        <CardTitle className="flex items-center gap-4 text-white">
+        <CardTitle className="flex items-center gap-4 ">
           {title} <TrendingUp />
         </CardTitle>
         <CardDescription className="text-gray-400">{description}</CardDescription>
@@ -114,7 +114,7 @@ export function ChartBar({
                   dataKey={dataKey}
                   position="right"
                   offset={8}
-                  className="fill-[#fff]"
+                  className="fill-[#000]"
                   fontSize={12}
                 />
               </Bar>
@@ -143,7 +143,7 @@ export function ChartBar({
                 <LabelList
                   position="top"
                   offset={12}
-                  className="fill-[#fff]"
+                  className="fill-[#000]"
                   fontSize={12}
                 />
               </Bar>

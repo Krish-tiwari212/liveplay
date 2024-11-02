@@ -108,10 +108,6 @@ const EventDetails = () => {
             <p className="text-sm text-gray-500">Organizer</p>
             <p className="font-bold">Krish</p>
           </div>
-          <div>
-            <p className="text-sm text-gray-500">SEATS</p>
-            <p className="font-bold">DRESS CI - F7</p>
-          </div>
         </div>
       </div>
     </Card>

@@ -159,7 +159,7 @@ const page = () => {
                       </div>
                       <Link href={`/event/${event.id}/share-link`}>
                         <Button className="w-full mt-2 bg-[#17202A] text-[#CDDC29] hover:text-white py-1 px-2 rounded hover:shadow-xl">
-                          Withdrew From Event
+                          Withdraw From Event
                         </Button>
                       </Link>
                       <Link href={`/event/${event.id}/share-link`}>

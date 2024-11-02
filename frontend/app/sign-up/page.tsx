@@ -18,6 +18,7 @@ import {
 import { Input } from "@/components/ui/input";
 import { useToast } from "@/hooks/use-toast";
 import { FaGoogle } from "react-icons/fa";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 
 // Validation schema for form fields
 const formSchema = z
@@ -30,6 +31,9 @@ const formSchema = z
     password: z.string().min(6, { message: "Password must be at least 6 characters" }),
     confirmPassword: z.string().min(6, { message: "Confirm Password must match Password" }),
     role: z.enum(["participant", "organizer"], { errorMap: () => ({ message: "Select a role" }) }),
+    gender: z.enum(["male", "female", "other"], { errorMap: () => ({ message: "Select a gender" }) }),
+    date_of_birth: z.string().min(10, { message: "Date of Birth is required" }),
+    blood_group: z.string().min(2, { message: "Blood Group is required" }),
   })
   .refine((data) => data.password === data.confirmPassword, {
     message: "Passwords do not match",
@@ -53,6 +57,9 @@ const SignUpForm = () => {
       password: "",
       confirmPassword: "",
       role: "participant",
+      gender: "male",
+      date_of_birth: "",
+      blood_group: "",
     },
   });
 
@@ -163,6 +170,38 @@ const SignUpForm = () => {
                     <FormMessage />
                   </FormItem>
                 )} />
+                <FormField control={form.control} name="gender" render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Gender</FormLabel>
+                    <Select onValueChange={field.onChange} defaultValue={field.value}>
+                      <FormControl>
+                        <SelectTrigger>
+                          <SelectValue placeholder="Select a gender" />
+                        </SelectTrigger>
+                      </FormControl>
+                      <SelectContent>
+                        <SelectItem value="male">Male</SelectItem>
+                        <SelectItem value="female">Female</SelectItem>
+                        <SelectItem value="other">Other</SelectItem>
+                      </SelectContent>
+                    </Select>
+                    <FormMessage />
+                  </FormItem>
+                )} />
+                <FormField control={form.control} name="date_of_birth" render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Date of Birth</FormLabel>
+                    <FormControl><Input type="date" {...field} /></FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )} />
+                <FormField control={form.control} name="blood_group" render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Blood Group</FormLabel>
+                    <FormControl><Input placeholder="Enter your blood group" {...field} /></FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )} />
                 <Button type="button" onClick={handleNextStep} className="w-full">Next</Button>
               </>
             )}
@@ -189,11 +228,6 @@ const SignUpForm = () => {
                     <FormMessage />
                   </FormItem>
                 )} />
-                <Button type="button" onClick={handleNextStep} className="w-full">Next</Button>
-              </>
-            )}
-            {step === 3 && (
-              <>
                 <div className="flex items-center space-x-2">
                   <input type="checkbox" {...form.register("terms")} />
                   <span className="text-sm text-gray-600">
