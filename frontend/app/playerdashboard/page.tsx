@@ -360,7 +360,7 @@ export default function Home() {
             <div className="space-y-4">
               {registeredCategories.map((category) => (
                 <div key={category.id} className="flex flex-col p-2 border rounded-md shadow-sm">
-                  <span className="font-medium">{category.category_name} - ${category.price}</span>
+                  <span className="font-medium">{category.category_name} - Rs. {category.price}</span>
                 </div>
               ))}
             </div>
