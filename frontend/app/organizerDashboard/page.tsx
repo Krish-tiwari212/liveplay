@@ -19,6 +19,7 @@ import { useEventContext } from "@/context/EventDataContext";
 const { events } = data;
 import { Skeleton } from "@/components/ui/skeleton";
 import { TbCoinRupeeFilled } from "react-icons/tb";
+import { useUser } from '@/context/UserContext';
 import {
   Tooltip,
   TooltipContent,
@@ -48,7 +49,7 @@ export default function Home() {
   const [events, setEvents] = useState<EventCard[]>([]);
   const router = useRouter();
   const [isLoading, setIsLoading] = useState(true);
-
+  const { user } = useUser();
   useEffect(() => {
     const matchMedia = window.matchMedia("(prefers-color-scheme: dark)");
     const handleThemeChange = (e: MediaQueryListEvent) => {
@@ -109,7 +110,7 @@ export default function Home() {
       <section className="mt-4 bg-[#17202A] h-[9rem] shadow-xl rounded-lg p-4 relative mb-4">
         <div className="p-2 md:w-[60%] lg:w-[50%]">
           <h1 className="text-2xl font-bold text-gray-400 mb-4 md:mb-2">
-            Hello Mohit 👋
+            Hello {user?.user_metadata.name} 👋
           </h1>
         </div>
       </section>
@@ -236,7 +237,7 @@ export default function Home() {
                       <h3 className="font-bold">{event.event_name}</h3>
                       <div className="flex flex-col justify-between">
                         <span>Entries: {event.entries || "N/A"}</span>
-                        <span>Revenue: {event.revenue || "$0"}</span>
+                        <span>Revenue: {event.revenue || "₹0"}</span>
                         <span>Event Views: {event.event_views || "0"}</span>
                         <span>
                           Interested People: {event.interested_people || "0"}

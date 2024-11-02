@@ -64,7 +64,7 @@ const MSidebar = () => {
 
   const handleRoleChange = (value: string) => {
     setUserType(value)
-    value === "organizer" ? router.push("/organizerDashboard") : router.push("playerdashboard");
+    value === "organizer" ? router.push("/organizerDashboard") : router.push("/playerdashboard");
     
   };
 
@@ -194,7 +194,7 @@ const MSidebar = () => {
                 <FaTachometerAlt className="mr-2 text-xl" /> Dashboard
               </button>
             </Link>
-            <div className="flex items-center justify-between w-full py-2 pl-1 rounded transition-colors duration-200">
+            {/* <div className="flex items-center justify-between w-full py-2 pl-1 rounded transition-colors duration-200">
               <h1 className="text-xl">Player</h1>
             </div>
             <ul
@@ -223,7 +223,7 @@ const MSidebar = () => {
                   </button>
                 </Link>
               </li>
-            </ul>
+            </ul> */}
           </li>
         )}
       </ul>
