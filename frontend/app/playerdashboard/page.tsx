@@ -57,6 +57,40 @@ interface Category {
   price: string;
 }
 
+
+const EventDetails = () => {
+  return (
+    <Card className="bg-gray-100 rounded-lg shadow-md p-5 mb-5 flex flex-col md:flex-row">
+      <img 
+        src="/images/img3.jpeg" 
+        alt="Event" 
+        className="w-1/3 md:w-1/4 rounded-lg" 
+      />
+      <div className="flex-1 md:pl-5">
+        <div className="flex justify-between items-start">
+          <div>
+            <p className="text-sm text-gray-500">Basketball</p>
+            <h2 className="text-xl font-bold">Krish Event</h2>
+            <p className="text-gray-800">Maratha Mandir: Mumbai Central</p>
+            <p className="text-sm text-gray-600">Tue, 01 Nov | 11:30 am</p>
+          </div>
+        </div>
+        <hr className="my-3 border-gray-300" />
+        <div className="flex justify-between">
+          <div>
+            <p className="text-sm text-gray-500">Organizer</p>
+            <p className="font-bold">Krish</p>
+          </div>
+          <div>
+            <p className="text-sm text-gray-500">SEATS</p>
+            <p className="font-bold">DRESS CI - F7</p>
+          </div>
+        </div>
+      </div>
+    </Card>
+  );
+};
+
 export default function Home() {
   const { setTheme } = useAppContext();
   const { user } = useUser();
@@ -313,10 +347,11 @@ export default function Home() {
           <DialogTrigger asChild>
             <Button className="hidden">Open</Button>
           </DialogTrigger>
-          <DialogContent className="max-w-md p-4 h-[20rem]">
+          <DialogContent className="max-w-2xl p-4 h-[34rem]">
             <DialogHeader>
-              <DialogTitle className="text-lg font-semibold">Withdraw from Categories</DialogTitle>
+              <DialogTitle className="text-lg font-semibold mb-4">Withdraw from Categories</DialogTitle>
               <DialogDescription className="text-sm text-gray-500">
+                <EventDetails />
                 Select the categories you want to withdraw from.
               </DialogDescription>
             </DialogHeader>
