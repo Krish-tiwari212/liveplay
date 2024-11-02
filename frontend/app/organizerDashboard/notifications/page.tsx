@@ -121,7 +121,9 @@ const page = () => {
   const [selectedCategory, setSelectedCategory] = useState<string>("Inbox");
   const { setDashboardName, setNotification } = useEventContext();
 
-  const [notificationsState, setNotificationsState] = useState(notifications); // Track notifications state
+  const [notificationsState, setNotificationsState] = useState(notifications);
+  const [reply, setReply] = useState<{ [key: number]: string }>({}); 
+  const [replyVisible, setReplyVisible] = useState<{ [key: number]: boolean }>({}); 
 
   const filteredNotifications =
     selectedCategory === "Inbox"
@@ -134,6 +136,24 @@ const page = () => {
     setNotificationsState((prev) =>
       prev.map((notification) =>
         notification.id === id ? { ...notification, unread: false } : notification
+      )
+    );
+  };
+
+  const handleReplySubmit = (id: number) => {
+    markAsRead(id);
+    console.log(`Reply to notification ${id}: ${reply[id]}`);
+    setReplyVisible((prev) => ({ ...prev, [id]: false })); 
+  };
+
+  const handleReplyLater = (id: number) => {
+    setReplyVisible((prev) => ({ ...prev, [id]: false })); 
+  };
+
+  const markAllAsRead = () => {
+    setNotificationsState((prev) =>
+      prev.map((notification) =>
+        notification.category === "Q&A Question" ? notification : { ...notification, unread: false }
       )
     );
   };
@@ -215,16 +235,13 @@ const page = () => {
           </li>
         </ul>
         <div>
-          <Button className="border border-gray-600 mt-4 w-full">
+          <Button className="border border-gray-600 mt-4 w-full" onClick={markAllAsRead}>
             Mark All as Read
-          </Button>
-          <Button className="border border-gray-600 mt-2 w-full">
-            Mark All as Unread
           </Button>
         </div>
       </div>
 
-      <main className="flex-1 p-4 overflow-y-auto  ">
+      <main className="flex-1 p-4 overflow-y-auto">
         <Tabs defaultValue="unread" className="w-full">
           <TabsList className="mb-2">
             <TabsTrigger value="read">Read</TabsTrigger>
@@ -263,8 +280,7 @@ const page = () => {
               .map((notification) => (
                 <Card
                   key={notification.id}
-                  className={`bg-white p-4 rounded shadow hover:shadow-lg cursor-pointer mb-2 relative border-l-4 border-l-[#17202a] `}
-                  onClick={() => markAsRead(notification.id)}
+                  className={`bg-white p-4 rounded shadow hover:shadow-lg cursor-pointer mb-2 relative border-l-4 border-l-[#17202a]`}
                 >
                   <div className="flex justify-between relative">
                     <span
@@ -276,12 +292,58 @@ const page = () => {
                     </span>
                     <div className="flex flex-col justify-center items-center gap-2">
                       <span className="text-gray-500">{notification.time}</span>
-                      {notification.category === "Q&A Question" && (
-                        <Button>Reply</Button>
-                      )}
+                      {notification.category === "Q&A Question" &&
+                        !replyVisible[notification.id] && (
+                          <Button
+                            onClick={() =>
+                              setReplyVisible((prev) => ({
+                                ...prev,
+                                [notification.id]: !prev[notification.id],
+                              }))
+                            }
+                          >
+                            Reply
+                          </Button>
+                        )}
                     </div>
                   </div>
                   <span className="text-gray-500">{notification.message}</span>
+                  {notification.category === "Q&A Question" && (
+                    <>
+                      {replyVisible[notification.id] && (
+                        <>
+                          <div className="my-2 flex gap-2">
+                            <Input
+                              placeholder="Type your reply..."
+                              value={reply[notification.id] || ""}
+                              onChange={(e) =>
+                                setReply({
+                                  ...reply,
+                                  [notification.id]: e.target.value,
+                                })
+                              }
+                            />
+                            <div className="flex flex-col gap-4">
+                              <Button
+                                onClick={() =>
+                                  handleReplySubmit(notification.id)
+                                }
+                              >
+                                Submit Reply
+                              </Button>
+                              <Button
+                                onClick={() =>
+                                  handleReplyLater(notification.id)
+                                }
+                              >
+                                Reply Later
+                              </Button>
+                            </div>
+                          </div>
+                        </>
+                      )}
+                    </>
+                  )}
                 </Card>
               ))}
           </TabsContent>

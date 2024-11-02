@@ -64,7 +64,7 @@ const MSidebar = () => {
 
   const handleRoleChange = (value: string) => {
     setUserType(value)
-    value === "organizer" ? router.push("/organizerDashboard") : router.push("playerdashboard");
+    value === "organizer" ? router.push("/organizerDashboard") : router.push("/playerdashboard");
     
   };
 

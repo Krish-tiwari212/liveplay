@@ -166,7 +166,6 @@ export default function Home() {
                       <Skeleton className="h-4 w-[100px]" />
                       <Skeleton className="h-4 w-[100px]" />
                       <Skeleton className="h-4 w-[100px]" />
-                      <Skeleton className="h-4 w-[100px]" />
                       <Skeleton className="h-[50px] w-[150px]" />
                       <Skeleton className="h-[50px] w-[150px]" />
                     </div>
@@ -197,7 +196,7 @@ export default function Home() {
                         <span>
                           Organizer: {event.organizer_name || "Mohit"}
                         </span>
-                        <span>Venue: {event.revenue || "$0"}</span>
+                        <span>Venue: {event.revenue || "Chennai Stadium"}</span>
                         <span>
                           Event Dates: {event.event_views || "20th Nov 2024"}
                         </span>

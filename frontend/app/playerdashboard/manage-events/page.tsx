@@ -121,7 +121,6 @@ const page = () => {
                     <Skeleton className="h-4 w-[100px]" />
                     <Skeleton className="h-4 w-[100px]" />
                     <Skeleton className="h-4 w-[100px]" />
-                    <Skeleton className="h-4 w-[100px]" />
                     <Skeleton className="h-[50px] w-[150px]" />
                     <Skeleton className="h-[50px] w-[150px]" />
                   </div>
@@ -153,7 +152,7 @@ const page = () => {
                         <span>
                           Organizer: {event.organizer_name || "Mohit"}
                         </span>
-                        <span>Venue: {event.revenue || "$0"}</span>
+                        <span>Venue: {event.revenue || "Chennai stadium"}</span>
                         <span>
                           Event Dates: {event.event_views || "20th Nov 2024"}
                         </span>
