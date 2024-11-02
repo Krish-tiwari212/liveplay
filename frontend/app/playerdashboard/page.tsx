@@ -385,8 +385,9 @@ export default function Home() {
           <DialogTrigger asChild>
             <Button className="hidden">Open</Button>
           </DialogTrigger>
-          <DialogContent className="max-w-md p-4 h-[20rem]">
+          <DialogContent className="max-w-xl p-4 h-[30rem]">
             <DialogHeader>
+              <EventDetails />
               <DialogTitle className="text-lg font-semibold">My Registered Categories</DialogTitle>
               <DialogDescription className="text-sm text-gray-500">
                 Below are the categories you have registered for this event.
