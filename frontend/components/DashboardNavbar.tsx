@@ -1,8 +1,5 @@
 "use client";
 
-import { useAppContext } from "@/lib/context/AppContext";
-
-import { Switch } from "@/components/ui/switch";
 import { usePathname } from "next/navigation";
 import React, { useState } from "react";
 import {
@@ -65,19 +62,11 @@ const Navbar = () => {
                   <div className="flex flex-col items-center w-full">
                     <div
                       onClick={() => {
-                        setUserStatus("organizer");
+                        router.push("/organizerDashboard/profile")
                       }}
                       className="flex items-center w-full text-left hover:bg-gray-200 transition-colors duration-200 p-2 rounded mb-1"
                     >
-                      <FaUserCircle className="mr-2" /> As an Organizer
-                    </div>
-                    <div
-                      onClick={() => {
-                        setUserStatus("player");
-                      }}
-                      className="flex items-center w-full text-left hover:bg-gray-200 transition-colors duration-200 p-2 rounded"
-                    >
-                      <MdSportsFootball className="mr-2" /> As a Player
+                      <FaUserCircle className="mr-2" /> Profile
                     </div>
                   </div>
                 </TooltipContent>

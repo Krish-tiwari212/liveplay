@@ -62,7 +62,7 @@ export default function Home() {
   }, []);
 
   useEffect(() => {
-    setDashboardName("Organizer organizerDashboard");
+    setDashboardName("Organizer Dashboard");
     console.log(UserType)
   }, []);
 
