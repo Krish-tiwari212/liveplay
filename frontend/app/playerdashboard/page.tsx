@@ -223,8 +223,30 @@ export default function Home() {
             Hello {user?.user_metadata.name} 👋
           </h1>
         </div>
+        <div className="absolute left-4 -bottom-8 flex flex-wrap gap-4 w-full">
+          <Card className="w-auto shadow-xl">
+            <CardContent className="flex flex-col gap-1 mt-4">
+              <h1 className="font-semibold text-lg">Events Participated</h1>
+              <div className="flex justify-start items-center text-xl gap-2">
+                <TbCoinRupeeFilled className="" />
+                <h1 className="">0</h1>
+              </div>
+            </CardContent>
+          </Card>
+          <Card className="w-auto shadow-xl">
+            <CardContent className="flex flex-col gap-1 mt-4">
+              <h1 className="font-semibold text-lg">
+                Events I’m interested in
+              </h1>
+              <div className="flex justify-start items-center text-xl gap-2">
+                <FaRegEye className="" />
+                <h1 className="">0</h1>
+              </div>
+            </CardContent>
+          </Card>
+        </div>
       </section>
-      <section className="flex gap-4 px-2 flex-wrap w-full">
+      {/* <section className="flex gap-4 px-2 flex-wrap w-full">
         <TooltipProvider>
           <Tooltip>
             <TooltipTrigger>
@@ -265,25 +287,10 @@ export default function Home() {
             </TooltipContent>
           </Tooltip>
         </TooltipProvider>
-      </section>
+      </section> */}
       <section className="mt-8 bg-white shadow-md rounded-lg px-4 pt-4">
         <h2 className="text-xl font-semibold mb-2">Upcoming Events</h2>
         <div className="flex space-x-4 overflow-x-auto pb-8">
-<<<<<<< HEAD
-          {isLoading ? ( 
-              <div className="flex space-x-4">
-                {Array.from({ length: 3 }).map((_, index) => (
-                  <div className="flex h-[200px] w-[400px] gap-2" key={index}>
-                    <Skeleton className="h-full w-[250px] rounded-xl" />
-                    <div className="space-y-2">
-                      <Skeleton className="h-4 w-[150px]" />
-                      <Skeleton className="h-4 w-[100px]" />
-                      <Skeleton className="h-4 w-[100px]" />
-                      <Skeleton className="h-4 w-[100px]" />
-                      <Skeleton className="h-[50px] w-[150px]" />
-                      <Skeleton className="h-[50px] w-[150px]" />
-                    </div>
-=======
           {isLoading ? (
             <div className="flex space-x-4">
               {Array.from({ length: 3 }).map((_, index) => (
@@ -294,10 +301,8 @@ export default function Home() {
                     <Skeleton className="h-4 w-[100px]" />
                     <Skeleton className="h-4 w-[100px]" />
                     <Skeleton className="h-4 w-[100px]" />
-                    <Skeleton className="h-4 w-[100px]" />
                     <Skeleton className="h-[50px] w-[150px]" />
                     <Skeleton className="h-[50px] w-[150px]" />
->>>>>>> 00261765b1215eeab10128e6249fb8693884e2e5
                   </div>
                 </div>
               ))}
@@ -305,79 +310,51 @@ export default function Home() {
           ) : (
             events.map((event) => (
               <React.Fragment key={event.id}>
-<<<<<<< HEAD
-                <Card
-                  className="shadow-md cursor-pointer hover:shadow-2xl flex-none"
-                  onClick={() =>
-                    router.push(`/organizerDashboard/manage-events/${event.id}`)
-                  }
-                >
+                <Card className="shadow-md cursor-pointer hover:shadow-2xl flex-none">
                   <CardContent className="py-4 flex gap-4 h-full">
-                    <Image
-                      src={
-                        event.desktop_cover_image_url || "/images/default.jpeg"
-                      }
-                      alt="eventBanner"
-                      width={200}
-                      height={200}
-                      className="rounded-lg h-full shadow-xl flex-[1]"
-                    />
+                    <Link href={`/`}>
+                      <Image
+                        src={
+                          event.desktop_cover_image_url ||
+                          "/images/default.jpeg"
+                        }
+                        alt="eventBanner"
+                        width={200}
+                        height={200}
+                        className="rounded-lg h-full shadow-xl flex-[1]"
+                      />
+                    </Link>
                     <div className="flex-[1]">
                       <h3 className="font-bold">{event.event_name}</h3>
                       <div className="flex flex-col justify-between">
                         <span>
                           Organizer: {event.organizer_name || "Mohit"}
                         </span>
-                        <span>Venue: {event.revenue || "Chennai Stadium"}</span>
+                        <span>Venue: {event.venue_name || ""}</span>
                         <span>
-                          Event Dates: {event.event_views || "20th Nov 2024"}
+                          Event Date:{" "}
+                          {event.start_date
+                            ? formatDate(event.start_date)
+                            : "20th Nov 2024"}
                         </span>
-=======
-                
-                  <Card className="shadow-md cursor-pointer hover:shadow-2xl flex-none">
-                    
-                    <CardContent className="py-4 flex gap-4 h-full">
-                      <Link href={`/`}>
-                        <Image
-                          src={
-                            event.desktop_cover_image_url || "/images/default.jpeg"
-                          }
-                          alt="eventBanner"
-                          width={200}
-                          height={200}
-                          className="rounded-lg h-full shadow-xl flex-[1]"
-                        />
-                      </Link>
-                      <div className="flex-[1]">
-                        <h3 className="font-bold">{event.event_name}</h3>
-                        <div className="flex flex-col justify-between">
-                          <span>
-                            Organizer: {event.organizer_name || "Mohit"}
-                          </span>
-                          <span>Venue: {event.venue_name || ""}</span>
-                          <span>
-                            Event Date: {event.start_date ? formatDate(event.start_date) : "20th Nov 2024"}
-                          </span>
-                        </div>
+                      </div>
+                      <div className="flex flex-col">
                         <Button
-                          className="w-full mt-2 bg-[#17202A] text-[#CDDC29] hover:text-white py-1 px-2 rounded hover:shadow-xl"
+                          className="mt-2 bg-[#17202A] text-[#CDDC29] hover:text-white py-1 px-2 rounded hover:shadow-xl"
                           onClick={() => handleWithdrawClick(event.id)}
                         >
                           Withdraw From Event
                         </Button>
-                        {/* <Link href={`/event/${event.id}/share-link`}> */}
-                          <Button 
-                            className="w-full mt-2 bg-[#17202A] text-[#CDDC29] hover:text-white py-1 px-2 rounded hover:shadow-xl"
-                            onClick={() => handleViewRegistrationClick(event.id)}
-                          >
-                            View My Registration
-                          </Button>
-                        {/* </Link> */}
->>>>>>> 00261765b1215eeab10128e6249fb8693884e2e5
+                        <Button
+                          className="mt-2 bg-[#17202A] text-[#CDDC29] hover:text-white py-1 px-2 rounded hover:shadow-xl"
+                          onClick={() => handleViewRegistrationClick(event.id)}
+                        >
+                          View My Registration
+                        </Button>
                       </div>
-                    </CardContent>
-                    
-                  </Card>
+                    </div>
+                  </CardContent>
+                </Card>
               </React.Fragment>
             ))
           )}
@@ -394,7 +371,9 @@ export default function Home() {
           </DialogTrigger>
           <DialogContent className="max-w-2xl p-4 h-[34rem]">
             <DialogHeader>
-              <DialogTitle className="text-lg font-semibold mb-4">Withdraw from Categories</DialogTitle>
+              <DialogTitle className="text-lg font-semibold mb-4">
+                Withdraw from Categories
+              </DialogTitle>
               <DialogDescription className="text-sm text-gray-500">
                 <EventDetails />
                 Select the categories you want to withdraw from.
@@ -402,12 +381,19 @@ export default function Home() {
             </DialogHeader>
             <div className="space-y-4">
               {categories.map((category) => (
-                <div key={category.id} className="flex flex-col p-2 border rounded-md shadow-sm">
+                <div
+                  key={category.id}
+                  className="flex flex-col p-2 border rounded-md shadow-sm"
+                >
                   <div className="flex justify-between items-center mb-2">
-                    <span className="font-medium">{category.category_name} - ${category.price}</span>
+                    <span className="font-medium">
+                      {category.category_name} - ${category.price}
+                    </span>
                     <Button
                       className="bg-red-500 text-white px-2 py-1 text-sm rounded mt-4"
-                      onClick={() => handleWithdrawFromCategory(category.category_name)}
+                      onClick={() =>
+                        handleWithdrawFromCategory(category.category_name)
+                      }
                     >
                       Withdraw
                     </Button>
@@ -416,8 +402,14 @@ export default function Home() {
                     <p>Type: {category.category_type}</p>
                     <p>Description: {category.ticket_description}</p>
                     <p>Discount Code: {category.discount_code}</p>
-                    <p>Valid From: {new Date(category.from_date).toLocaleDateString()}</p>
-                    <p>Valid Till: {new Date(category.till_date).toLocaleDateString()}</p>
+                    <p>
+                      Valid From:{" "}
+                      {new Date(category.from_date).toLocaleDateString()}
+                    </p>
+                    <p>
+                      Valid Till:{" "}
+                      {new Date(category.till_date).toLocaleDateString()}
+                    </p>
                   </div>
                 </div>
               ))}
@@ -426,22 +418,32 @@ export default function Home() {
         </Dialog>
       )}
       {isRegistrationModalOpen && (
-        <Dialog open={isRegistrationModalOpen} onOpenChange={setIsRegistrationModalOpen}>
+        <Dialog
+          open={isRegistrationModalOpen}
+          onOpenChange={setIsRegistrationModalOpen}
+        >
           <DialogTrigger asChild>
             <Button className="hidden">Open</Button>
           </DialogTrigger>
           <DialogContent className="max-w-xl p-4 h-[30rem]">
             <DialogHeader>
               <EventDetails />
-              <DialogTitle className="text-lg font-semibold">My Registered Categories</DialogTitle>
+              <DialogTitle className="text-lg font-semibold">
+                My Registered Categories
+              </DialogTitle>
               <DialogDescription className="text-sm text-gray-500">
                 Below are the categories you have registered for this event.
               </DialogDescription>
             </DialogHeader>
             <div className="space-y-4">
               {registeredCategories.map((category) => (
-                <div key={category.id} className="flex flex-col p-2 border rounded-md shadow-sm">
-                  <span className="font-medium">{category.category_name} - Rs. {category.price}</span>
+                <div
+                  key={category.id}
+                  className="flex flex-col p-2 border rounded-md shadow-sm"
+                >
+                  <span className="font-medium">
+                    {category.category_name} - Rs. {category.price}
+                  </span>
                 </div>
               ))}
             </div>

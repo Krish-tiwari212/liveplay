@@ -113,86 +113,44 @@ export default function Home() {
             Hello {user?.user_metadata.name} 👋
           </h1>
         </div>
-      </section>
-      <section className="flex gap-4 px-2 flex-wrap w-full">
-        <TooltipProvider>
-          <Tooltip>
-            <TooltipTrigger>
-              <Card className="flex-1 w-full shadow-xl">
-                <CardContent className="flex flex-col mt-4">
-                  <div className="flex justify-center items-center gap-4 text-xl">
-                    <h1 className="font-semibold">Event Sales</h1>
-                    <TbCoinRupeeFilled className="" />
-                  </div>
-                  <div className="flex justify-start items-center text-xl gap-1">
-                    <FaIndianRupeeSign className="h-4 w-4" />
-                    <h1 className="">0</h1>
-                  </div>
-                </CardContent>
-              </Card>
-            </TooltipTrigger>
-            <TooltipContent>
-              <p className="text-lg">Event Sales : Rs. 0</p>
-            </TooltipContent>
-          </Tooltip>
-          <Tooltip>
-            <TooltipTrigger>
-              <Card className="flex-1 w-full shadow-xl">
-                <CardContent className="flex flex-col mt-4">
-                  <div className="flex justify-center items-center gap-4 text-xl">
-                    <h1 className="font-semibold">Event Views</h1>
-                    <FaRegEye className="" />
-                  </div>
-                  <div className="flex justify-start items-center text-xl gap-1">
-                    <FaPlus className="h-4 w-4" />
-                    <h1 className="">0</h1>
-                  </div>
-                </CardContent>
-              </Card>
-            </TooltipTrigger>
-            <TooltipContent>
-              <p className="text-lg">Total Number of views : 0</p>
-            </TooltipContent>
-          </Tooltip>
-          <Tooltip>
-            <TooltipTrigger>
-              <Card className="flex-1 w-full shadow-xl">
-                <CardContent className="flex flex-col mt-4">
-                  <div className="flex justify-center items-center gap-4 text-xl">
-                    <h1 className="font-semibold">Events Hosted</h1>
-                    <FaRegThumbsUp className="" />
-                  </div>
-                  <div className="flex justify-start items-center text-xl gap-1">
-                    <FaPlus className="h-4 w-4" />
-                    <h1 className="">{events.length}</h1>
-                  </div>
-                </CardContent>
-              </Card>
-            </TooltipTrigger>
-            <TooltipContent>
-              <p className="text-lg">Total Events Hosted : {events.length}</p>
-            </TooltipContent>
-          </Tooltip>
-          <Tooltip>
-            <TooltipTrigger>
-              <Card className="flex-1 w-full shadow-xl">
-                <CardContent className="flex flex-col mt-4">
-                  <div className="flex justify-center items-center gap-4 text-xl">
-                    <h1 className="font-semibold">Event Entries</h1>
-                    <FaPeopleGroup className="" />
-                  </div>
-                  <div className="flex justify-start items-center text-xl gap-1">
-                    <FaPlus className="h-4 w-4" />
-                    <h1 className="">0</h1>
-                  </div>
-                </CardContent>
-              </Card>
-            </TooltipTrigger>
-            <TooltipContent>
-              <p className="text-lg">Total Entries : 0</p>
-            </TooltipContent>
-          </Tooltip>
-        </TooltipProvider>
+        <div className="absolute left-4 -bottom-8 flex flex-wrap gap-4 w-full">
+          <Card className="w-auto shadow-xl">
+            <CardContent className="flex flex-col gap-1 mt-4">
+              <h1 className="font-semibold text-lg">Event Sales</h1>
+              <div className="flex justify-start items-center text-xl gap-2">
+                <TbCoinRupeeFilled />
+                <h1 className="">0</h1>
+              </div>
+            </CardContent>
+          </Card>
+          <Card className="w-auto shadow-xl">
+            <CardContent className="flex flex-col gap-1 mt-4">
+              <h1 className="font-semibold text-lg">Event Views</h1>
+              <div className="flex justify-start items-center text-xl gap-2">
+                <FaRegEye />
+                <h1 className="">0</h1>
+              </div>
+            </CardContent>
+          </Card>
+          <Card className="w-auto shadow-xl">
+            <CardContent className="flex flex-col gap-1 mt-4">
+              <h1 className="font-semibold text-lg">Events Hosted</h1>
+              <div className="flex justify-start items-center text-xl gap-2">
+                <FaRegThumbsUp />
+                <h1 className="">{events.length}</h1>
+              </div>
+            </CardContent>
+          </Card>
+          <Card className="w-auto shadow-xl">
+            <CardContent className="flex flex-col gap-1 mt-4">
+              <h1 className="font-semibold text-lg">Event Entries</h1>
+              <div className="flex justify-start items-center text-xl gap-2">
+                <FaPeopleGroup />
+                <h1 className="">0</h1>
+              </div>
+            </CardContent>
+          </Card>
+        </div>
       </section>
       <section className="mt-8 bg-white shadow-md rounded-lg px-4 pt-4">
         <h2 className="text-xl font-semibold mb-2">Active Events</h2>
@@ -236,12 +194,55 @@ export default function Home() {
                     <div className="flex-[1]">
                       <h3 className="font-bold">{event.event_name}</h3>
                       <div className="flex flex-col justify-between">
-                        <span>Entries: {event.entries || "N/A"}</span>
-                        <span>Revenue: {event.revenue || "₹0"}</span>
-                        <span>Event Views: {event.event_views || "0"}</span>
-                        <span>
-                          Interested People: {event.interested_people || "0"}
-                        </span>
+                        <TooltipProvider>
+                          <Tooltip>
+                            <TooltipTrigger>
+                              <span className="flex gap-2 items-center">
+                                <FaRegThumbsUp /> {event.entries || "N/A"}
+                              </span>
+                            </TooltipTrigger>
+                            <TooltipContent>
+                              <p>Event Entries : {event.entries || "N/A"}</p>
+                            </TooltipContent>
+                          </Tooltip>
+                        </TooltipProvider>
+                        <TooltipProvider>
+                          <Tooltip>
+                            <TooltipTrigger>
+                              <span className="flex gap-2 items-center">
+                                <TbCoinRupeeFilled /> {event.revenue || "₹0"}
+                              </span>
+                            </TooltipTrigger>
+                            <TooltipContent>
+                              <p>Event sales : ₹0</p>
+                            </TooltipContent>
+                          </Tooltip>
+                        </TooltipProvider>
+                        <TooltipProvider>
+                          <Tooltip>
+                            <TooltipTrigger>
+                              <span className="flex gap-2 items-center">
+                                <FaRegEye /> {event.event_views || "0"}
+                              </span>
+                            </TooltipTrigger>
+                            <TooltipContent>
+                              <p>Event views : 0</p>
+                            </TooltipContent>
+                          </Tooltip>
+                        </TooltipProvider>
+                        <TooltipProvider>
+                          <Tooltip>
+                            <TooltipTrigger>
+                              <span className="flex gap-2 items-center">
+                                <FaPeopleGroup />{" "}
+                                {event.interested_people || "0"}
+                              </span>
+                            </TooltipTrigger>
+                            <TooltipContent>
+                              <p>Interested Peoples : 0</p>
+                            </TooltipContent>
+                          </Tooltip>
+                        </TooltipProvider>
                       </div>
                       <Link href={`/event/${event.id}/share-link`}>
                         <Button className="w-full mt-2 bg-[#17202A] text-[#CDDC29] hover:text-white p-1 rounded hover:shadow-xl">

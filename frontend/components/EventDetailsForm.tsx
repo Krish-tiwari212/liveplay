@@ -15,7 +15,7 @@ import { effect } from "zod";
 import { Button } from "./ui/button";
 import { format } from "date-fns"; 
 import { FaBasketball } from "react-icons/fa6";
-
+import { DatePickerDemo } from "@/components/DatePicker";
 
 interface FormField {
   id: string;
@@ -39,8 +39,6 @@ interface EventDetailsFormProps {
   setFormData: React.Dispatch<React.SetStateAction<any>>;
   setFormType: React.Dispatch<React.SetStateAction<any>>;
 }
-
-
 
 const SportsType = [
   {
@@ -282,8 +280,13 @@ const EventDetailsForm: React.FC<EventDetailsFormProps> = ({
                       setEventData({ ...EventData, sport: value });
                     }
                   }}
+                  disabled={editPage === "manageEvent"}
                 >
-                  <SelectTrigger className="h-16 p-2 bg-white border rounded-md text-sm shadow-2xl text-[#17202A] focus:border-[#17202A] focus:outline-none focus:shadow-lg">
+                  <SelectTrigger
+                    className={`h-16 p-2 bg-white border rounded-md text-sm shadow-2xl text-[#17202A] focus:border-[#17202A] focus:outline-none focus:shadow-lg ${
+                      editPage === "manageEvent" ? "cursor-not-allowed" : ""
+                    }`}
+                  >
                     <SelectValue
                       placeholder={formData.sport || field.placeholder}
                     />
@@ -338,7 +341,7 @@ const EventDetailsForm: React.FC<EventDetailsFormProps> = ({
           </Label>
           <div className="flex flex-col xl:flex-row w-full gap-3">
             {fields[1].registration?.map((field, i) => (
-              <div className=" w-full flex flex-col" key={i}>
+              <div className="w-full flex flex-col" key={i}>
                 <Label className="text-[0.8rem]">
                   {field.label}
                   {requiredFields.includes(field.name) &&
@@ -348,16 +351,25 @@ const EventDetailsForm: React.FC<EventDetailsFormProps> = ({
                     <></>
                   )}
                 </Label>
-                <input
+                <DatePickerDemo
                   id={field.id}
-                  type={field.type}
                   name={field.name}
                   required={field.required}
-                  value={
-                    formData[field.name as keyof EventDetailsFormProps] || ""
+                  selected={
+                    formData[field.name as keyof EventDetailsFormProps] || null
                   }
-                  onChange={handleChange}
-                  className=" w-full h-12 p-2 bg-white border rounded-md text-sm shadow-2xl text-[#17202A] focus:border-[#17202A] focus:outline-none focus:shadow-lg"
+                  onChange={(date: any) => {
+                    setFormData({ ...formData, [field.name]: date });
+                    if (editPage === "manageEvent") {
+                      setEventEditData({
+                        ...EventEditData,
+                        [field.name]: date,
+                      });
+                    } else {
+                      setEventData({ ...EventData, [field.name]: date });
+                    }
+                  }}
+                  className=" h-12 p-2 bg-white border rounded-md text-sm shadow-2xl text-[#17202A] focus:border-[#17202A] focus:outline-none focus:shadow-lg"
                 />
               </div>
             ))}
@@ -379,17 +391,48 @@ const EventDetailsForm: React.FC<EventDetailsFormProps> = ({
                     <></>
                   )}
                 </Label>
-                <input
-                  id={field.id}
-                  type={field.type}
-                  name={field.name}
-                  required={field.required}
-                  value={
-                    formData[field.name as keyof EventDetailsFormProps] || ""
-                  }
-                  onChange={handleChange}
-                  className=" w-full h-12 p-2 bg-white border rounded-md text-sm shadow-2xl text-[#17202A] focus:border-[#17202A] focus:outline-none focus:shadow-lg"
-                />
+                {field.type === "time" ? (
+                  <input
+                    id={field.id}
+                    type={field.type}
+                    name={field.name}
+                    required={field.required}
+                    value={
+                      formData[field.name as keyof EventDetailsFormProps] || ""
+                    }
+                    onChange={handleChange}
+                    className="h-10 p-2 bg-white border rounded-md text-sm shadow-2xl text-[#17202A] focus:border-[#17202A] focus:outline-none focus:shadow-lg"
+                  />
+                ) : (
+                  <DatePickerDemo
+                    id={field.id}
+                    name={field.name}
+                    required={field.required}
+                    selected={
+                      formData[field.name as keyof EventDetailsFormProps] ||
+                      null
+                    }
+                    onChange={(date: any) => {
+                      setFormData({ ...formData, [field.name]: date });
+                      if (editPage === "manageEvent") {
+                        setEventEditData({
+                          ...EventEditData,
+                          [field.name]: date,
+                        });
+                      } else {
+                        setEventData({ ...EventData, [field.name]: date });
+                      }
+                    }}
+                    disabled={
+                      field.type === "time" ? false : editPage === "manageEvent"
+                    }
+                    className={`w-full h-12 p-2 bg-white border rounded-md text-sm shadow-2xl text-[#17202A] focus:border-[#17202A] focus:outline-none focus:shadow-lg ${
+                      editPage === "manageEvent" && field.type !== "time"
+                        ? "cursor-not-allowed opacity-50"
+                        : ""
+                    }`}
+                  />
+                )}
               </div>
             ))}
           </div>
