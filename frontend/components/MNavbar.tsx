@@ -6,32 +6,49 @@ import { IoMdList } from "react-icons/io";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useToast } from "@/hooks/use-toast";
+import { createClient } from "@/utils/supabase/client"; // Assuming you have a Supabase client setup
 
 const MNavbar = () => {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
-  const {toast}=useToast()
-  useEffect(() => {
-    const username = localStorage.getItem("username");
-    const password = localStorage.getItem("password");
+  const { toast } = useToast();
+  const router = useRouter();
+  const supabase = createClient();
 
-    if (username && password) {
-      setIsLoggedIn(true);
-    }
+  useEffect(() => {
+    const checkLoginStatus = async () => {
+      const { data, error } = await supabase.auth.getSession();
+      console.log(data);
+      if (data.session) {
+        setIsLoggedIn(true);
+      } else {
+        setIsLoggedIn(false);
+      }
+    };
+
+    checkLoginStatus();
   }, []);
 
-
-  const handleLogout = async() => {
-    await new Promise((resolve) => setTimeout(resolve, 2000));
-    localStorage.removeItem("username");
-    localStorage.removeItem("password");
-    setIsLoggedIn(false); 
-    toast({
-      title: "Logout Succesful",
-      description: "Succesfully Logged Out!",
-      variant: "default",
+  const handleLogout = async () => {
+    const response = await fetch("/api/auth/logout", {
+      method: "POST",
     });
+
+    if (response.ok) {
+      setIsLoggedIn(false);
+      toast({
+        title: "Logout Successful",
+        description: "Successfully Logged Out!",
+        variant: "default",
+      });
+    } else {
+      const result = await response.json();
+      toast({
+        title: "Logout Failed",
+        description: result.error || "An error occurred. Please try again.",
+        variant: "destructive",
+      });
+    }
   };
-  const router = useRouter();
 
   return (
     <div className="md:hidden flex items-center justify-between p-4 bg-[#17202A] text-white gap-10 shadow-lg">

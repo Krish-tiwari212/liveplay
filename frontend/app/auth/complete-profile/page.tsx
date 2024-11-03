@@ -33,7 +33,7 @@ const CompleteDetailsForm = () => {
   const { toast } = useToast();
   const [loading, setLoading] = useState(false);
   const {user} = useUser();
-  console.log(user);
+  // console.log(user);
 
   const form = useForm({
     resolver: zodResolver(formSchema),
@@ -50,11 +50,11 @@ const CompleteDetailsForm = () => {
   // Form submission for completing user details
   const onSubmit = async (data: any) => {
     setLoading(true);
-  
+    console.log(user)
     // Assuming `user` is available in the scope
     const requestData = {
       ...data,
-      userId: user?.id,
+      user_id: user?.id,
     };
   
     const response = await fetch("/api/auth/details", {
@@ -68,7 +68,7 @@ const CompleteDetailsForm = () => {
   
     if (response.ok) {
       toast({ title: "Details Updated", description: "Your details have been updated successfully!" });
-      router.push("/dashboard");
+      router.push("/playerdashboard");
     } else {
       toast({ title: "Update Failed", description: result.error || "An error occurred. Please try again.", variant: "destructive" });
     }
