@@ -114,10 +114,8 @@ const page = ({params}:any) => {
   const [isPlaying, setIsPlaying] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [fetchedData, setFetchedData] = useState<EventData | null>(null);
-  const { setDashboardName } = useEventContext();
-  useEffect(() => {
-    setEditPage("manageEvent")
-  }, []);
+  const { setDashboardName,setFetchedEventdatafromManagemeEvent } = useEventContext();
+  
   const [currentPage, setCurrentPage] = useState(1);
   const totalPages = 8;
 
@@ -164,6 +162,8 @@ const page = ({params}:any) => {
             {}
         );
 
+        console.log(differences);
+
         try {
             const response = await fetch(`/api/event/update/${ManageEventId}`, {
                 method: "PATCH",
@@ -197,10 +197,12 @@ const page = ({params}:any) => {
 
   useEffect(() => {
     setDashboardName("Event Management");
+    setEditPage("manageEvent");
     if (ManageEventId) {
       const loadEventDetails = async () => {
         const event = await fetchEventDetails(ManageEventId);
         setEventEditData(event);
+        setFetchedEventdatafromManagemeEvent(event)
       };
       loadEventDetails();
     }
@@ -228,11 +230,13 @@ const page = ({params}:any) => {
             </Button>
           </div>
         )}
-        {EventEditData.enable_fixtures===true ? (
+        {EventEditData.enable_fixtures === true ? (
           <div className="mt-20 lg:mt-4 w-full rounded-lg">
             {currentPage === 1 && <EventMatrics handleNext={handleNext} />}
             {currentPage === 2 && <Report handleNext={handleNext} />}
-            {currentPage === 3 && <EventInformation handleNext={handleNext} />}
+            {currentPage === 3 && (
+              <EventInformation handleNext={handleNext} ManageEventId={ManageEventId}/>
+            )}
             {currentPage === 4 && <CategoryPreview handleNext={handleNext} />}
             {currentPage === 5 && <EnableFeatures handleNext={handleNext} />}
             {currentPage === 6 && (
