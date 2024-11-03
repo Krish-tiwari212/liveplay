@@ -351,25 +351,16 @@ const EventDetailsForm: React.FC<EventDetailsFormProps> = ({
                     <></>
                   )}
                 </Label>
-                <DatePickerDemo
+                <input
                   id={field.id}
+                  type={field.type}
                   name={field.name}
                   required={field.required}
-                  selected={
-                    formData[field.name as keyof EventDetailsFormProps] || null
+                  value={
+                    formData[field.name as keyof EventDetailsFormProps] || ""
                   }
-                  onChange={(date: any) => {
-                    setFormData({ ...formData, [field.name]: date });
-                    if (editPage === "manageEvent") {
-                      setEventEditData({
-                        ...EventEditData,
-                        [field.name]: date,
-                      });
-                    } else {
-                      setEventData({ ...EventData, [field.name]: date });
-                    }
-                  }}
-                  className=" h-12 p-2 bg-white border rounded-md text-sm shadow-2xl text-[#17202A] focus:border-[#17202A] focus:outline-none focus:shadow-lg"
+                  onChange={handleChange}
+                  className="h-10 p-2 bg-white border rounded-md text-sm shadow-2xl text-[#17202A] focus:border-[#17202A] focus:outline-none focus:shadow-lg"
                 />
               </div>
             ))}
@@ -391,48 +382,17 @@ const EventDetailsForm: React.FC<EventDetailsFormProps> = ({
                     <></>
                   )}
                 </Label>
-                {field.type === "time" ? (
-                  <input
-                    id={field.id}
-                    type={field.type}
-                    name={field.name}
-                    required={field.required}
-                    value={
-                      formData[field.name as keyof EventDetailsFormProps] || ""
-                    }
-                    onChange={handleChange}
-                    className="h-10 p-2 bg-white border rounded-md text-sm shadow-2xl text-[#17202A] focus:border-[#17202A] focus:outline-none focus:shadow-lg"
-                  />
-                ) : (
-                  <DatePickerDemo
-                    id={field.id}
-                    name={field.name}
-                    required={field.required}
-                    selected={
-                      formData[field.name as keyof EventDetailsFormProps] ||
-                      null
-                    }
-                    onChange={(date: any) => {
-                      setFormData({ ...formData, [field.name]: date });
-                      if (editPage === "manageEvent") {
-                        setEventEditData({
-                          ...EventEditData,
-                          [field.name]: date,
-                        });
-                      } else {
-                        setEventData({ ...EventData, [field.name]: date });
-                      }
-                    }}
-                    disabled={
-                      field.type === "time" ? false : editPage === "manageEvent"
-                    }
-                    className={`w-full h-12 p-2 bg-white border rounded-md text-sm shadow-2xl text-[#17202A] focus:border-[#17202A] focus:outline-none focus:shadow-lg ${
-                      editPage === "manageEvent" && field.type !== "time"
-                        ? "cursor-not-allowed opacity-50"
-                        : ""
-                    }`}
-                  />
-                )}
+                <input
+                  id={field.id}
+                  type={field.type}
+                  name={field.name}
+                  required={field.required}
+                  value={
+                    formData[field.name as keyof EventDetailsFormProps] || ""
+                  }
+                  onChange={handleChange}
+                  className="h-10 p-2 bg-white border rounded-md text-sm shadow-2xl text-[#17202A] focus:border-[#17202A] focus:outline-none focus:shadow-lg"
+                />
               </div>
             ))}
           </div>
