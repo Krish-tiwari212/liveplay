@@ -6,13 +6,6 @@ interface SignupRequest {
   full_name?: string;
   email?: string;
   password?: string;
-  role?: 'participant' | 'organizer';
-  contact_number?: string;
-  city?: string;
-  pincode?: string;
-  gender?: 'male' | 'female' | 'other';
-  date_of_birth?: string;
-  blood_group?: string;
   provider?: string; // add provider for OAuth
 }
 
@@ -20,7 +13,7 @@ export async function POST(request: Request) {
   const supabase = await createClient();
 
   try {
-    const { full_name, email, password, role, contact_number, city, pincode, gender, date_of_birth, blood_group, provider }: SignupRequest = await request.json();
+    const { full_name, email, password, provider }: SignupRequest = await request.json();
 
     // Check if it's an OAuth signup
     if (provider === 'google') {
@@ -39,7 +32,7 @@ export async function POST(request: Request) {
       email,
       password,
       options: {
-        data: { full_name, role, contact_number, city, pincode, gender, date_of_birth, blood_group },
+        data: { full_name },
       },
     });
 
@@ -51,13 +44,6 @@ export async function POST(request: Request) {
     const { error: insertError } = await supabase.from('users').insert({
       full_name,
       email,
-      contact_number,
-      role,
-      city,
-      pincode,
-      gender,
-      date_of_birth,
-      blood_group,
     });
 
     if (insertError) {

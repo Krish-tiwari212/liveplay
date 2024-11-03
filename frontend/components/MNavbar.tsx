@@ -55,7 +55,7 @@ const MNavbar = () => {
                 </button>
               </Link>
             ) : (
-              <Link href={"/login"}>
+              <Link href={"/auth/login"}>
                 <button className="bg-transparent flex text-white py-4">
                   <FaUserCircle className="inline mr-2" size={30} />
                   <h1 className="block md:text-lg">SignIn</h1>

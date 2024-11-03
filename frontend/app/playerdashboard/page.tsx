@@ -220,7 +220,7 @@ export default function Home() {
       <section className="mt-4 bg-[#17202A] h-[9rem] shadow-xl rounded-lg p-4 relative mb-4">
         <div className="p-2 md:w-[60%] lg:w-[50%]">
           <h1 className="text-2xl font-bold text-gray-400 mb-4 md:mb-2">
-            Hello {user?.user_metadata.name} 👋
+            Hello {user?.user_metadata.full_name || user?.user_metadata.name} 👋
           </h1>
         </div>
       </section>
@@ -269,21 +269,6 @@ export default function Home() {
       <section className="mt-8 bg-white shadow-md rounded-lg px-4 pt-4">
         <h2 className="text-xl font-semibold mb-2">Upcoming Events</h2>
         <div className="flex space-x-4 overflow-x-auto pb-8">
-<<<<<<< HEAD
-          {isLoading ? ( 
-              <div className="flex space-x-4">
-                {Array.from({ length: 3 }).map((_, index) => (
-                  <div className="flex h-[200px] w-[400px] gap-2" key={index}>
-                    <Skeleton className="h-full w-[250px] rounded-xl" />
-                    <div className="space-y-2">
-                      <Skeleton className="h-4 w-[150px]" />
-                      <Skeleton className="h-4 w-[100px]" />
-                      <Skeleton className="h-4 w-[100px]" />
-                      <Skeleton className="h-4 w-[100px]" />
-                      <Skeleton className="h-[50px] w-[150px]" />
-                      <Skeleton className="h-[50px] w-[150px]" />
-                    </div>
-=======
           {isLoading ? (
             <div className="flex space-x-4">
               {Array.from({ length: 3 }).map((_, index) => (
@@ -297,7 +282,6 @@ export default function Home() {
                     <Skeleton className="h-4 w-[100px]" />
                     <Skeleton className="h-[50px] w-[150px]" />
                     <Skeleton className="h-[50px] w-[150px]" />
->>>>>>> 00261765b1215eeab10128e6249fb8693884e2e5
                   </div>
                 </div>
               ))}
@@ -305,34 +289,6 @@ export default function Home() {
           ) : (
             events.map((event) => (
               <React.Fragment key={event.id}>
-<<<<<<< HEAD
-                <Card
-                  className="shadow-md cursor-pointer hover:shadow-2xl flex-none"
-                  onClick={() =>
-                    router.push(`/organizerDashboard/manage-events/${event.id}`)
-                  }
-                >
-                  <CardContent className="py-4 flex gap-4 h-full">
-                    <Image
-                      src={
-                        event.desktop_cover_image_url || "/images/default.jpeg"
-                      }
-                      alt="eventBanner"
-                      width={200}
-                      height={200}
-                      className="rounded-lg h-full shadow-xl flex-[1]"
-                    />
-                    <div className="flex-[1]">
-                      <h3 className="font-bold">{event.event_name}</h3>
-                      <div className="flex flex-col justify-between">
-                        <span>
-                          Organizer: {event.organizer_name || "Mohit"}
-                        </span>
-                        <span>Venue: {event.revenue || "Chennai Stadium"}</span>
-                        <span>
-                          Event Dates: {event.event_views || "20th Nov 2024"}
-                        </span>
-=======
                 
                   <Card className="shadow-md cursor-pointer hover:shadow-2xl flex-none">
                     
@@ -373,7 +329,6 @@ export default function Home() {
                             View My Registration
                           </Button>
                         {/* </Link> */}
->>>>>>> 00261765b1215eeab10128e6249fb8693884e2e5
                       </div>
                     </CardContent>
                     
