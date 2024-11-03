@@ -208,19 +208,25 @@ export default function Home() {
 
   return (
     <div className="flex flex-col m-3">
-      <div className={`flex justify-end`}>
+      <div className={`flex justify-between`}>
+        <Button
+          onClick={() => router.push("/auth/complete-profile")}
+          className="text-md shadow-md shadow-gray-500 px-5 bg-red-500 text-white"
+        >
+          Complete your Profile!
+        </Button>
         <Button
           onClick={() => router.push("/")}
           className="text-md shadow-md shadow-gray-500 px-5"
         >
-          Register
+          Register for Events
         </Button>
       </div>
 
       <section className="mt-4 bg-[#17202A] h-[9rem] shadow-xl rounded-lg p-4 relative mb-4">
         <div className="p-2 md:w-[60%] lg:w-[50%]">
           <h1 className="text-2xl font-bold text-gray-400 mb-4 md:mb-2">
-            Hello {user?.user_metadata.name} 👋
+            Hello {user?.user_metadata.full_name || user?.user_metadata.name} 👋
           </h1>
         </div>
         <div className="absolute left-4 -bottom-8 flex flex-wrap gap-4 w-full">
@@ -288,7 +294,7 @@ export default function Home() {
           </Tooltip>
         </TooltipProvider>
       </section> */}
-      <section className="mt-8 bg-white shadow-md rounded-lg px-4 pt-4">
+       <section className="mt-8 bg-white shadow-md rounded-lg px-4 pt-4">
         <h2 className="text-xl font-semibold mb-2">Upcoming Events</h2>
         <div className="flex space-x-4 overflow-x-auto pb-8">
           {isLoading ? (

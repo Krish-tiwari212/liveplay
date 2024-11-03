@@ -110,7 +110,7 @@ export default function Home() {
       <section className="mt-4 bg-[#17202A] h-[9rem] shadow-xl rounded-lg p-4 relative mb-4">
         <div className="p-2 md:w-[60%] lg:w-[50%]">
           <h1 className="text-2xl font-bold text-gray-400 mb-4 md:mb-2">
-            Hello {user?.user_metadata.name} 👋
+            Hello {user?.user_metadata.full_name || user?.user_metadata.name} 👋
           </h1>
         </div>
         <div className="absolute left-4 -bottom-8 flex flex-wrap gap-4 w-full">
