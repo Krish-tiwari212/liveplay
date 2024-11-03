@@ -3,15 +3,17 @@
 import React, { useEffect, useState } from 'react'
 import Image from 'next/image';
 import { Card, CardContent } from "@/components/ui/card";
-import { FaCalendarAlt } from 'react-icons/fa';
+import { FaCalendarAlt, FaRegEye, FaRegThumbsUp } from 'react-icons/fa';
 import { IoTicketOutline } from 'react-icons/io5';
-import { FaHandHoldingDollar } from 'react-icons/fa6';
+import { FaHandHoldingDollar, FaPeopleGroup } from 'react-icons/fa6';
 import { LiaStreetViewSolid } from 'react-icons/lia';
 import { Button } from '@/components/ui/button';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { useEventContext } from '@/context/EventDataContext';
 import { Skeleton } from '@/components/ui/skeleton';
+import { TooltipContent,Tooltip, TooltipProvider, TooltipTrigger } from '@radix-ui/react-tooltip';
+import { TbCoinRupeeFilled } from 'react-icons/tb';
 
 
 interface EventCard {
@@ -87,7 +89,7 @@ const page = () => {
   const { setDashboardName,UserType } = useEventContext();
   const [isLoading, setIsLoading] = useState(true);
   useEffect(() => {
-    setDashboardName("Manage Events");
+    setDashboardName("Event Management");
   }, []);
   useEffect(() => {
     const fetchEvents = async () => {
@@ -152,12 +154,55 @@ const page = () => {
                     <div className="flex-[1]">
                       <h3 className="font-bold">{event.event_name}</h3>
                       <div className="flex flex-col justify-between">
-                        <span>Entries: {event.entries || "N/A"}</span>
-                        <span>Revenue: {event.revenue || "$0"}</span>
-                        <span>Event Views: {event.event_views || "0"}</span>
-                        <span>
-                          Interested People: {event.interested_people || "0"}
-                        </span>
+                        <TooltipProvider>
+                          <Tooltip>
+                            <TooltipTrigger>
+                              <span className="flex gap-2 items-center">
+                                <FaRegThumbsUp /> {event.entries || "N/A"}
+                              </span>
+                            </TooltipTrigger>
+                            <TooltipContent>
+                              <p>Event Entries : {event.entries || "N/A"}</p>
+                            </TooltipContent>
+                          </Tooltip>
+                        </TooltipProvider>
+                        <TooltipProvider>
+                          <Tooltip>
+                            <TooltipTrigger>
+                              <span className="flex gap-2 items-center">
+                                <TbCoinRupeeFilled /> {event.revenue || "₹0"}
+                              </span>
+                            </TooltipTrigger>
+                            <TooltipContent>
+                              <p>Event sales : ₹0</p>
+                            </TooltipContent>
+                          </Tooltip>
+                        </TooltipProvider>
+                        <TooltipProvider>
+                          <Tooltip>
+                            <TooltipTrigger>
+                              <span className="flex gap-2 items-center">
+                                <FaRegEye /> {event.event_views || "0"}
+                              </span>
+                            </TooltipTrigger>
+                            <TooltipContent>
+                              <p>Event views : 0</p>
+                            </TooltipContent>
+                          </Tooltip>
+                        </TooltipProvider>
+                        <TooltipProvider>
+                          <Tooltip>
+                            <TooltipTrigger>
+                              <span className="flex gap-2 items-center">
+                                <FaPeopleGroup />{" "}
+                                {event.interested_people || "0"}
+                              </span>
+                            </TooltipTrigger>
+                            <TooltipContent>
+                              <p>Interested Peoples : 0</p>
+                            </TooltipContent>
+                          </Tooltip>
+                        </TooltipProvider>
                       </div>
                       <Link href={`/event/${event.id}/share-link`}>
                         <Button className="w-full mt-2 bg-[#17202A] text-[#CDDC29] hover:text-white p-1 rounded hover:shadow-xl">
@@ -175,10 +220,10 @@ const page = () => {
 
       <section className="mt-4 bg-white shadow-md rounded-lg px-4 py-4">
         <h2 className="text-xl font-semibold mb-2">Past Events</h2>
-      </section> 
+      </section>
       <section className="mt-6 bg-white shadow-md rounded-l px-4 py-4">
-          <h2 className="text-xl font-semibold mb-2">Drafts</h2>
-        </section>
+        <h2 className="text-xl font-semibold mb-2">Drafts</h2>
+      </section>
     </div>
   );
 }

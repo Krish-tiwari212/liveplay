@@ -198,7 +198,7 @@ const page = ({ params }: any) => {
   };
 
   useEffect(() => {
-    setDashboardName("Manage Events");
+    setDashboardName("Event Management");
     if (ManageEventId) {
       const loadEventDetails = async () => {
         const event = await fetchEventDetails(ManageEventId);

@@ -119,10 +119,10 @@ const EventMatrics = ({ handleNext }: EventMatricsProps) => {
     const [showUpsell, setShowUpsell] = useState(true);
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [amountPaid, setAmountPaid] = useState(500);
-    const cancellationFeePercentage = 0.05;
+    const cancellationFeePercentage = 0.075;
 
     const cancellationFee = amountPaid * cancellationFeePercentage;
-    const totalRefundAmount = amountPaid - cancellationFee;
+    const totalRefundAmount = amountPaid + cancellationFee;
 
     const handleUpgradeClick = () => {
         router.push('/payment');
@@ -183,8 +183,7 @@ const EventMatrics = ({ handleNext }: EventMatricsProps) => {
               <DialogDescription className="text-gray-600">
                 <EventDetails />
                 <div className="bg-blue-100 p-3 rounded-md mb-2">
-                  <strong>Cancellation Policy:</strong> You can cancel this
-                  event up to 12 hours before the registration time.
+                  <strong>Cancellation Policy: </strong> 
                   Cancellation fees apply as per policy.
                 </div>
               </DialogDescription>
@@ -193,14 +192,14 @@ const EventMatrics = ({ handleNext }: EventMatricsProps) => {
               <h3 className="font-semibold text-xl mb-2">Refund Details</h3>
               <div className="flex flex-col bg-white  px-4 py-2">
                 <div className="flex justify-between">
-                  <p>Amount Paid: </p>
+                  <p>Total collection: </p>
                   <p className="flex justify-center items-center">
                     <FaIndianRupeeSign className="w-3 h-3" />
                     {amountPaid.toFixed(2)}
                   </p>
                 </div>
                 <div className="flex justify-between">
-                  <p>Cancellation Fee (5%): </p>
+                  <p>Cancellation Fee (7.5%): </p>
                   <p className="flex justify-center items-center">
                     <FaIndianRupeeSign className="w-3 h-3" />
                     {cancellationFee.toFixed(2)}
@@ -221,10 +220,7 @@ const EventMatrics = ({ handleNext }: EventMatricsProps) => {
               </Button>
               <Button>
                 <div className="flex gap-2">
-                  <p>Get Refund: </p>
-                  <p className="flex justify-center items-center">
-                    {totalRefundAmount.toFixed(2)}
-                  </p>
+                  <p>Cancel Event</p>
                 </div>
               </Button>
             </div>

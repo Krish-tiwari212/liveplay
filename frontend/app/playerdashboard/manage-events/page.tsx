@@ -85,7 +85,7 @@ const page = () => {
   const { setDashboardName, UserType } = useEventContext();
   const [isLoading, setIsLoading] = useState(true);
   useEffect(() => {
-    setDashboardName("Manage Events");
+    setDashboardName("Event Management");
   }, []);
   useEffect(() => {
     const fetchEvents = async () => {
