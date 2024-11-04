@@ -273,7 +273,7 @@ export default function Home() {
                 Events I’m interested in
               </h1>
               <div className="flex justify-start items-center text-xl gap-2">
-                <FaPeopleCarryBox className="" />
+                <FaRegThumbsUp className="" />
                 <h1 className="">0</h1>
               </div>
             </CardContent>

@@ -10,7 +10,7 @@ import React, { useEffect, useState } from 'react';import {
   SelectValue,
 } from "@/components/ui/select";
 
-import { FaBars, FaCalendarAlt, FaCogs, FaSignOutAlt, FaTachometerAlt, FaUserCircle } from 'react-icons/fa';
+import { FaBars, FaCalendarAlt, FaCogs, FaSignOutAlt, FaTachometerAlt, FaUnlockAlt, FaUserCircle } from 'react-icons/fa';
 import { MdKeyboardArrowDown, MdKeyboardArrowUp, MdOutlineFeaturedPlayList, MdOutlineSecurity, MdSchedule, MdSportsFootball } from 'react-icons/md';
 import Image from 'next/image';
 import { IoIosNotificationsOutline } from 'react-icons/io';
@@ -157,8 +157,8 @@ const MSidebar = () => {
                         : "hover:bg-[#CDDC29] hover:text-[#17202A]"
                     }`}
                   >
-                    <MdOutlineSecurity className="mr-2 text-xl" /> Unlock
-                    Earnings - KYC
+                    <FaUnlockAlt className="mr-2 text-xl" /> Unlock Event
+                    Earnings
                   </button>
                 </Link>
               </li>

@@ -1,5 +1,5 @@
 import React, { useEffect } from 'react';
-import { FaDollarSign, FaUser, FaHeart, FaEye, FaTimes, FaRupeeSign } from 'react-icons/fa';
+import { FaDollarSign, FaUser, FaHeart, FaEye, FaTimes, FaRupeeSign, FaRegEye, FaRegThumbsUp } from 'react-icons/fa';
 import { Bar } from 'react-chartjs-2';
 import {
   Card,
@@ -29,6 +29,7 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { Button } from './ui/button';
+import { FaPeopleGroup } from 'react-icons/fa6';
 
 interface ReportProps{
     handleNext:()=>void
@@ -46,32 +47,32 @@ const data = [
 ];
 
 const Report = ({ handleNext }: ReportProps) => {
-  const metrics = [
-    {
-      title: "Event Sales",
-      description: "Total Entry Fees Collected",
-      icon: <FaRupeeSign />,
-      data: 5000,
-    },
-    {
-      title: "Event Views",
-      description: "Total number of users who have viewed this event",
-      icon: <FaUser />,
-      data: 150,
-    },
-    {
-      title: "Number of Registrations",
-      description: "Total number of event registrations",
-      icon: <FaEye />,
-      data: 75,
-    },
-    {
-      title: "Number of Interested People",
-      description: "Total number of users interested in this event",
-      icon: <FaTimes />,
-      data: 10,
-    },
-  ];
+ const metrics = [
+   {
+     title: "Event Sales",
+     description: "Total Entry Fees Collected",
+     icon: <FaRupeeSign />,
+     data: 5000,
+   },
+   {
+     title: "Event Views",
+     description: "Total number of users who have viewed this event",
+     icon: <FaRegEye />,
+     data: 150,
+   },
+   {
+     title: "Number of Registrations",
+     description: "Total number of event registrations",
+     icon: <FaPeopleGroup />,
+     data: 75,
+   },
+   {
+     title: "Number of Interested People",
+     description: "Total number of users interested in this event",
+     icon: <FaRegThumbsUp />,
+     data: 10,
+   },
+ ];
   
   const CdataSales = data[0].value.map((value, index) => {
     const fill =
@@ -467,12 +468,12 @@ const Report = ({ handleNext }: ReportProps) => {
               </TableRow>
             )}
           </TableBody>
-          <TableFooter>
+          {/* <TableFooter>
             <TableRow>
               <TableCell colSpan={7}>Total Participants</TableCell>
               <TableCell>{participants.length}</TableCell>
             </TableRow>
-          </TableFooter>
+          </TableFooter> */}
         </Table>
       </div>
 
@@ -590,14 +591,14 @@ const Report = ({ handleNext }: ReportProps) => {
               </TableRow>
             )}
           </TableBody>
-          <TableFooter>
+          {/* <TableFooter>
             <TableRow>
               <TableCell colSpan={6}>Total Participants</TableCell>
               <TableCell className="text-right">
                 {participants.length}
               </TableCell>
             </TableRow>
-          </TableFooter>
+          </TableFooter> */}
         </Table>
       </div>
 
@@ -699,14 +700,14 @@ const Report = ({ handleNext }: ReportProps) => {
               </TableRow>
             )}
           </TableBody>
-          <TableFooter>
+          {/* <TableFooter>
             <TableRow>
               <TableCell colSpan={6}>Total Participants</TableCell>
               <TableCell className="text-right">
                 {participants.length}
               </TableCell>
             </TableRow>
-          </TableFooter>
+          </TableFooter> */}
         </Table>
       </div>
     </div>

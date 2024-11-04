@@ -29,21 +29,6 @@ const banks = [
   { name: "City Union Bank", image: "/images/citibank.png" },
   { name: "Corporation Bank", image: "/images/corporation.png" },
   { name: "Deutsche Bank", image: "/images/dbs.png" },
-  { name: "Development Credit Bank", image: "/path/to/dcb.png" },
-  { name: "Dhanlaxmi Bank", image: "/path/to/dhanlaxmi-bank.png" },
-  { name: "Federal Bank", image: "/path/to/federal-bank.png" },
-  { name: "ICICI Bank", image: "/path/to/icici-bank.png" },
-  { name: "IDBI Bank", image: "/path/to/idbi-bank.png" },
-  { name: "Indian Bank", image: "/path/to/indian-bank.png" },
-  { name: "Indian Overseas Bank", image: "/path/to/iob.png" },
-  { name: "IndusInd Bank", image: "/path/to/indusind-bank.png" },
-  { name: "ING Vysya Bank", image: "/path/to/ing-vysya.png" },
-  { name: "Jammu and Kashmir Bank", image: "/path/to/jk-bank.png" },
-  { name: "Karnataka Bank Ltd", image: "/path/to/karnataka-bank.png" },
-  { name: "Karur Vysya Bank", image: "/path/to/karur-vysya.png" },
-  { name: "Kotak Bank", image: "/path/to/kotak-bank.png" },
-  { name: "Laxmi Vilas Bank", image: "/path/to/laxmi-vilas.png" },
-  { name: "Oriental Bank of Commerce", image: "/path/to/oriental-bank.png" },
   {
     name: "Punjab National Bank - Corporate Banking",
     image: "/path/to/pnb-corporate.png",
@@ -207,7 +192,7 @@ const Kycforms: React.FC<KycFormsProps> = ({
                         className="flex items-center space-x-2"
                       >
                         <div className="flex items-center space-x-2">
-                          {bank.icon}
+                          {bank.image}
                           <span>{bank.name}</span>
                         </div>
                       </SelectItem>

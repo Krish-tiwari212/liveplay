@@ -11,6 +11,7 @@ import { IoCreate } from 'react-icons/io5';
 import { MdAccountBalance, MdOutlineCategory, MdOutlineFeaturedPlayList, MdPersonalInjury } from 'react-icons/md';
 import ProgressBar from '@/components/ProgressBar';
 import { useEventContext } from '@/context/EventDataContext';
+import { useUser } from '@/context/UserContext';
 
 
 
@@ -158,7 +159,7 @@ const additionalFields = [
 ];
 
 const Page = ({ params: kycID }: { params: { kycID: string } }) => {
-  const { setDashboardName } = useEventContext();
+  const { setDashboardName} = useEventContext();
   const [currentPage, setCurrentPage] = useState(1);
   const totalPages = 4;
 
@@ -176,7 +177,7 @@ const Page = ({ params: kycID }: { params: { kycID: string } }) => {
 
   useEffect(() => {
     setDashboardName("Unlock Event Earnings");
-  }, []);
+  }, [setDashboardName]);
 
   return (
     <div className="m-3 relative">

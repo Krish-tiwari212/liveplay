@@ -37,7 +37,9 @@ const QandA = ({ handleNext, FeatureData }: QandAProps) => {
   return (
     <div className="text-center font-sans p-8 bg-gradient-to-r bg-white shadow-lg rounded-lg relative">
       <div className="flex items-center space-x-2 relative">
-        <Label htmlFor="airplane-mode">Enable Q&A</Label>
+        <Label htmlFor="airplane-mode" className="text-lg">
+          Enable Q&A
+        </Label>
         <Switch
           id="enable-countdown"
           onCheckedChange={handlecountdown}

@@ -5,7 +5,7 @@ import { Button } from './ui/button';
 import { useRouter } from 'next/navigation';
 import { FaBarsProgress, FaIndianRupeeSign, FaPeopleCarryBox, FaPeopleGroup, FaUserGroup } from 'react-icons/fa6';
 import { IoBarChart } from 'react-icons/io5';
-import { FaChartPie, FaEye, FaRegEye, FaRupeeSign, FaStar, FaTimes, FaUser } from 'react-icons/fa';
+import { FaChartPie, FaEye, FaRegEye, FaRegThumbsUp, FaRupeeSign, FaStar, FaTimes, FaUser } from 'react-icons/fa';
 import { SlCalender } from "react-icons/sl";
 import { GiSparklingSabre, GiTrophyCup } from "react-icons/gi";
 import { TiChartBarOutline } from "react-icons/ti";
@@ -53,7 +53,7 @@ const metrics = [
   {
     title: "Number of Interested People",
     description: "Total number of users interested in this event",
-    icon: <FaPeopleCarryBox />,
+    icon: <FaRegThumbsUp />,
     data: 10,
   },
 ];
@@ -118,11 +118,13 @@ const EventMatrics = ({ handleNext }: EventMatricsProps) => {
     const router = useRouter();
     const [showUpsell, setShowUpsell] = useState(true);
     const [isModalOpen, setIsModalOpen] = useState(false);
-    const [amountPaid, setAmountPaid] = useState(500);
+    const [amountPaid, setAmountPaid] = useState(10000);
+    const [ParticipantRefund, setParticipantRefund] = useState(3000);
     const cancellationFeePercentage = 0.075;
 
     const cancellationFee = amountPaid * cancellationFeePercentage;
-    const totalRefundAmount = amountPaid + cancellationFee;
+    const netEventSales = amountPaid - ParticipantRefund;
+    const totalRefundAmount = netEventSales - cancellationFee;
 
     const handleUpgradeClick = () => {
         router.push('/payment');
@@ -183,7 +185,7 @@ const EventMatrics = ({ handleNext }: EventMatricsProps) => {
               <DialogDescription className="text-gray-600">
                 <EventDetails />
                 <div className="bg-blue-100 p-3 rounded-md mb-2">
-                  <strong>Cancellation Policy: </strong> 
+                  <strong>Cancellation Policy: </strong>
                   Cancellation fees apply as per policy.
                 </div>
               </DialogDescription>
@@ -192,10 +194,24 @@ const EventMatrics = ({ handleNext }: EventMatricsProps) => {
               <h3 className="font-semibold text-xl mb-2">Refund Details</h3>
               <div className="flex flex-col bg-white  px-4 py-2">
                 <div className="flex justify-between">
-                  <p>Total collection: </p>
+                  <p>Event Sales : </p>
                   <p className="flex justify-center items-center">
                     <FaIndianRupeeSign className="w-3 h-3" />
                     {amountPaid.toFixed(2)}
+                  </p>
+                </div>
+                <div className="flex justify-between">
+                  <p>Participant Withdrawals (Refunds) : </p>
+                  <p className="flex justify-center items-center">
+                    <FaIndianRupeeSign className="w-3 h-3" />
+                    {ParticipantRefund.toFixed(2)}
+                  </p>
+                </div>
+                <div className="flex justify-between">
+                  <p>Net Event Sales : </p>
+                  <p className="flex justify-center items-center">
+                    <FaIndianRupeeSign className="w-3 h-3" />
+                    {netEventSales.toFixed(2)}
                   </p>
                 </div>
                 <div className="flex justify-between">
@@ -214,6 +230,14 @@ const EventMatrics = ({ handleNext }: EventMatricsProps) => {
                 </div>
               </div>
             </div>
+            <div className='flex justify-center items-center leading-none'>
+              <p>
+                <strong>Note : </strong>
+                Payment of Cancellation Fee is mandatory for initiating
+                participant refunds.
+              </p>
+            </div>
+
             <div className="flex justify-between border-t border-gray-800 py-4">
               <Button onClick={() => setIsModalOpen(false)} variant="outline">
                 Cancel

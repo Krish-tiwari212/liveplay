@@ -5,7 +5,7 @@ import { useAppContext } from "@/lib/context/AppContext";
 import Image from "next/image";
 import Link from "next/link";
 import React, { useEffect, useState } from "react";
-import { FaCalendarAlt, FaPlus, FaRegEye, FaRegThumbsUp } from "react-icons/fa";
+import { FaCalendarAlt, FaCalendarCheck, FaPlus, FaRegEye, FaRegThumbsUp } from "react-icons/fa";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { FaHandHoldingDollar, FaIndianRupeeSign, FaPeopleGroup } from "react-icons/fa6";
 import { LiaStreetViewSolid } from "react-icons/lia";
@@ -136,7 +136,7 @@ export default function Home() {
             <CardContent className="flex flex-col gap-1 mt-4">
               <h1 className="font-semibold text-lg">Events Hosted</h1>
               <div className="flex justify-start items-center text-xl gap-2">
-                <FaRegThumbsUp />
+                <FaCalendarCheck />
                 <h1 className="">{events.length}</h1>
               </div>
             </CardContent>
@@ -198,44 +198,39 @@ export default function Home() {
                           <Tooltip>
                             <TooltipTrigger>
                               <span className="flex gap-2 items-center">
-                                <FaRegThumbsUp /> {event.entries || "N/A"}
-                              </span>
-                            </TooltipTrigger>
-                            <TooltipContent>
-                              <p>Event Entries : {event.entries || "N/A"}</p>
-                            </TooltipContent>
-                          </Tooltip>
-                        </TooltipProvider>
-                        <TooltipProvider>
-                          <Tooltip>
-                            <TooltipTrigger>
-                              <span className="flex gap-2 items-center">
-                                <TbCoinRupeeFilled /> {event.revenue || "₹0"}
+                                <TbCoinRupeeFilled />{" "}
+                                {event.revenue || "₹12000"}
                               </span>
                             </TooltipTrigger>
                             <TooltipContent>
                               <p>Event sales : ₹0</p>
                             </TooltipContent>
                           </Tooltip>
-                        </TooltipProvider>
-                        <TooltipProvider>
                           <Tooltip>
                             <TooltipTrigger>
                               <span className="flex gap-2 items-center">
-                                <FaRegEye /> {event.event_views || "0"}
+                                <FaRegEye /> {event.event_views || "2"}
                               </span>
                             </TooltipTrigger>
                             <TooltipContent>
                               <p>Event views : 0</p>
                             </TooltipContent>
                           </Tooltip>
-                        </TooltipProvider>
-                        <TooltipProvider>
                           <Tooltip>
                             <TooltipTrigger>
                               <span className="flex gap-2 items-center">
-                                <FaPeopleGroup />{" "}
-                                {event.interested_people || "0"}
+                                <FaPeopleGroup /> {event.entries || "12345"}
+                              </span>
+                            </TooltipTrigger>
+                            <TooltipContent>
+                              <p>Event Registrations : {event.entries || "N/A"}</p>
+                            </TooltipContent>
+                          </Tooltip>
+                          <Tooltip>
+                            <TooltipTrigger>
+                              <span className="flex gap-2 items-center">
+                                <FaRegThumbsUp />{" "}
+                                {event.interested_people || "20"}
                               </span>
                             </TooltipTrigger>
                             <TooltipContent>

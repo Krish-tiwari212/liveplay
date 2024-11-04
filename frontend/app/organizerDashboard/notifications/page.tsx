@@ -209,7 +209,7 @@ const page = () => {
             onClick={() => setSelectedCategory("Q&A Question")}
             style={{ cursor: "pointer" }}
           >
-            <HiOutlineQuestionMarkCircle className="mr-2" /> Q&A Questions
+            <HiOutlineQuestionMarkCircle className="mr-2" /> Q&A
           </li>
           <li
             className={` flex items-center transition-colors rounded-md px-4 py-2  duration-200 hover:text-cad927 ${
