@@ -76,9 +76,9 @@ const Report = ({ handleNext }: ReportProps) => {
   const CdataSales = data[0].value.map((value, index) => {
     const fill =
       value === Math.max(...data[0].value)
-        ? "#21bd5c"
+        ? "#17202a"
         : value === Math.min(...data[0].value)
-        ? "#ff0000"
+        ? "#17202a"
         : "#17202a";
     return {
       category: `category${index + 1}`,
@@ -90,9 +90,9 @@ const Report = ({ handleNext }: ReportProps) => {
   const CdataEntries = data[1].value.map((value, index) => {
     const fill =
       value === Math.max(...data[1].value)
-        ? "#21bd5c"
+        ? "#17202a"
         : value === Math.min(...data[1].value)
-        ? "#ff0000"
+        ? "#17202a"
         : "#17202a";
     return {
       category: `Category ${index + 1}`,
@@ -106,7 +106,7 @@ const Report = ({ handleNext }: ReportProps) => {
       Cdata: CdataSales,
       chartConfig: {
         salsepercategory: {
-          label: "Sales Per Category : Rs",
+          label: "Sales : Rs",
         },
         ...CdataSales.reduce((acc: any, curr) => {
           acc[curr.category] = {
@@ -121,6 +121,7 @@ const Report = ({ handleNext }: ReportProps) => {
       },
       type: "horizontal",
       dataKey: "salsepercategory",
+      datakey1: "category",
       title: "Sales per category",
       description: "Shows how much each category contributed to total sales.",
     },
@@ -128,7 +129,7 @@ const Report = ({ handleNext }: ReportProps) => {
       Cdata: CdataEntries,
       chartConfig: {
         entriesPerCategory: {
-          label: "Entries Per Category ",
+          label: "Entries ",
           color: "#17202a",
         },
         ...CdataEntries.reduce((acc: any, curr) => {
@@ -144,6 +145,7 @@ const Report = ({ handleNext }: ReportProps) => {
       },
       type: "vertical",
       dataKey: "entriesPerCategory",
+      datakey1: "category",
       title: "Registrations per category",
       description: "Shows the number of participants per category. ",
     },

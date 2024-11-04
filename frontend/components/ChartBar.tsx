@@ -61,8 +61,8 @@ interface ChartBarProps {
   dataKey: string;
   processCategory: any;
   title: string;
-  description: string
-  type:string
+  description: string;
+  type: string
 }
 
 export function ChartBar({
@@ -83,7 +83,9 @@ export function ChartBar({
         <CardTitle className="flex items-center gap-4 ">
           {title} <TrendingUp />
         </CardTitle>
-        <CardDescription className="text-gray-400">{description}</CardDescription>
+        <CardDescription className="text-gray-400">
+          {description}
+        </CardDescription>
       </CardHeader>
       <CardContent>
         <ChartContainer config={chartConfig}>
@@ -117,6 +119,13 @@ export function ChartBar({
                   className="fill-[#000]"
                   fontSize={12}
                 />
+                {/* <LabelList
+                  dataKey="category"
+                  position="right"
+                  offset={30}
+                  className="fill-[#000]"
+                  fontSize={12}
+                /> */}
               </Bar>
             </BarChart>
           ) : (
