@@ -143,7 +143,7 @@ export default function Home() {
           </Card>
           <Card className="w-auto shadow-xl">
             <CardContent className="flex flex-col gap-1 mt-4">
-              <h1 className="font-semibold text-lg">Event Entries</h1>
+              <h1 className="font-semibold text-lg">Event Registrations</h1>
               <div className="flex justify-start items-center text-xl gap-2">
                 <FaPeopleGroup />
                 <h1 className="">0</h1>
@@ -176,7 +176,7 @@ export default function Home() {
             events.map((event) => (
               <React.Fragment key={event.id}>
                 <Card
-                  className="shadow-md cursor-pointer hover:shadow-2xl flex-none"
+                  className="shadow-md cursor-pointer hover:shadow-2xl flex-none w-[40%]"
                   onClick={() =>
                     router.push(`/organizerDashboard/manage-events/${event.id}`)
                   }

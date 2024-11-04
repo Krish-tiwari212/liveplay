@@ -40,6 +40,9 @@ interface Category {
   discountValue?: string;
   percentage_input?: string;
   amount_input?: string;
+  gender?:string;
+  age_from?: string;
+  age_to?: string;
 }
 
 const inputFields = [
@@ -172,6 +175,9 @@ const AddCategory = ({ setCategoryData ,type,category}: AddCategoryProps) => {
     discountValue: "",
     percentage_input: "",
     amount_input: "",
+    gender:"",
+    age_from: "",
+    age_to: "",
   });
   const {EventData}=useEventContext()
   const [showAmountInput, setShowAmountInput] = useState(false);
@@ -217,7 +223,7 @@ const AddCategory = ({ setCategoryData ,type,category}: AddCategoryProps) => {
     setCategoryData({ ...categoryData, ...discountDetails }); 
     setLocalCategoryData({
       category_name: "",
-      category_type:"",
+      category_type: "",
       ticket_description: "",
       price: "",
       total_quantity: "",
@@ -231,6 +237,9 @@ const AddCategory = ({ setCategoryData ,type,category}: AddCategoryProps) => {
       discountValue: "",
       percentage_input: "",
       amount_input: "",
+      gender:"",
+      age_from: "",
+      age_to: "",
     });
   };
   const fields =
@@ -249,15 +258,17 @@ const AddCategory = ({ setCategoryData ,type,category}: AddCategoryProps) => {
   return (
     <form className="bg-white shadow-2xl p-5 rounded-lg m-3">
       <div className="flex flex-wrap w-full">
-        <div className="lg:w-[46%] w-full m-2 flex flex-col">
+        <div className=" w-full m-2 flex flex-col">
           <label htmlFor="category_type">Category Type</label>
           <Select
             onValueChange={(value) =>
               setLocalCategoryData({ ...categoryData, category_type: value })
             }
           >
-            <SelectTrigger className="w-full h-16 shadow-2xl focus:border-[#17202A] focus:outline-none focus:shadow-lg">
-              <SelectValue placeholder={categoryData.category_type || "Category Type"} />
+            <SelectTrigger className="w-full h-10 shadow-2xl focus:border-[#17202A] focus:outline-none focus:shadow-lg">
+              <SelectValue
+                placeholder={categoryData.category_type || "Category Type"}
+              />
             </SelectTrigger>
             <SelectContent>
               <SelectItem value="Singles">Singles</SelectItem>
@@ -269,6 +280,58 @@ const AddCategory = ({ setCategoryData ,type,category}: AddCategoryProps) => {
             </p>
           </Select>
         </div>
+        <div className=" w-full m-2 flex flex-col">
+          <label htmlFor="category_type">Gender</label>
+          <Select
+            onValueChange={(value) =>
+              setLocalCategoryData({ ...categoryData, gender: value })
+            }
+          >
+            <SelectTrigger className="w-full h-10 shadow-2xl focus:border-[#17202A] focus:outline-none focus:shadow-lg">
+              <SelectValue
+                placeholder={categoryData.gender || "Gender"}
+              />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="male">Male</SelectItem>
+              <SelectItem value="femake">Female</SelectItem>
+              <SelectItem value="others">Others</SelectItem>
+            </SelectContent>
+          </Select>
+        </div>
+        <div className=" w-full m-2 flex flex-col">
+          <label>Age Range</label>
+          <div className="flex gap-2 items-center">
+            <input
+              type="number"
+              name="age_from"
+              placeholder="From Age"
+              value={categoryData.age_from}
+              onChange={(e) => {
+                const value = Math.floor(parseInt(e.target.value) / 10) * 10;
+                setLocalCategoryData({ ...categoryData, age_from: value.toString() });
+              }}
+              min="0"
+              step="10"
+              className="h-10 p-2 bg-white border rounded-md text-sm shadow-2xl text-[#17202A] focus:border-[#17202A] focus:outline-none focus:shadow-lg w-1/2"
+            />
+            <span className="text-lg">to</span>
+            <input
+              type="number"
+              name="age_to"
+              placeholder="To Age"
+              value={categoryData.age_to}
+              onChange={(e) => {
+                const value = Math.floor(parseInt(e.target.value) / 10) * 10;
+                setLocalCategoryData({ ...categoryData, age_to: value.toString() });
+              }}
+              min="0"
+              step="10"
+              className="h-10 p-2 bg-white border rounded-md text-sm shadow-2xl text-[#17202A] focus:border-[#17202A] focus:outline-none focus:shadow-lg w-1/2"
+            />
+          </div>
+        </div>
+
         {fields.map((field) => (
           <div
             key={field.id}

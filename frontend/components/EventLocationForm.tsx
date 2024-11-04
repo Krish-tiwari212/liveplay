@@ -3,6 +3,7 @@ import { useEffect, useState } from "react";
 import { Label } from "./ui/label";
 import { useEventContext } from "@/context/EventDataContext";
 import { Button } from "./ui/button";
+import { toast } from "@/hooks/use-toast";
 
 interface FormField {
   id: string;
@@ -18,6 +19,7 @@ interface EventLocationFormData {
   formData: any;
   setFormData: React.Dispatch<React.SetStateAction<any>>;
   setFormType: React.Dispatch<React.SetStateAction<any>>;
+  ManageEventId:any
 }
 
 const requiredFields = [
@@ -88,19 +90,26 @@ const EventLocationForm: React.FC<EventLocationFormData> = ({
   formData,
   setFormData,
   setFormType,
+  ManageEventId
 }) => {
-  const { EventData, setEventData, isVenueNotDecided, setIsVenueNotDecided,EventEditData,setEventEditData,editPage } =
-    useEventContext();
+  const {
+    EventData,
+    setEventData,
+    isVenueNotDecided,
+    setIsVenueNotDecided,
+    EventEditData,
+    setEventEditData,
+    editPage,fetchedEventdatafromManagemeEvent
+  } = useEventContext();
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
     setFormData((prevData: any) => ({ ...prevData, [name]: value }));
-    if(editPage==="manageEvent"){
+    if (editPage === "manageEvent") {
       setEventEditData((prevData: any) => ({ ...prevData, [name]: value }));
-    }else{
+    } else {
       setEventData((prevData: any) => ({ ...prevData, [name]: value }));
     }
-    
   };
 
   useEffect(() => {
@@ -125,8 +134,56 @@ const EventLocationForm: React.FC<EventLocationFormData> = ({
     }
   }, [EventData, EventEditData]);
 
-  const handleNext = (e: any) => {
-    e.preventDefault(); 
+  const handleNext = async (e: any) => {
+    e.preventDefault();
+    if (editPage === "manageEvent") {
+      const differences = {};
+      const formFields = [
+        "venue_name",
+        "street_address",
+        "city",
+        "pincode",
+        "venue_link",
+      ];
+
+      formFields.forEach((field) => {
+        if (
+          EventEditData?.[field] !== fetchedEventdatafromManagemeEvent?.[field]
+        ) {
+          differences[field] = EventEditData?.[field];
+        }
+      });
+      console.log(differences);
+
+      if (Object.keys(differences).length > 0) {
+        try {
+          const response = await fetch(`/api/event/update/${ManageEventId}`, {
+            method: "PATCH",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify(differences),
+          });
+
+          const result = await response.json();
+          if (response.ok) {
+            toast({
+              title: "Event updated successfully",
+              variant: "default",
+            });
+          } else {
+            throw new Error(result.error || "Failed to update event");
+          }
+        } catch (error) {
+          console.error("An error occurred:", error);
+          toast({
+            title: "Failed to update event. Please try again.",
+            variant: "destructive",
+          });
+          return;
+        }
+      }
+    }
     setFormType("Insights");
   };
   return (
@@ -137,12 +194,7 @@ const EventLocationForm: React.FC<EventLocationFormData> = ({
             <div key={field.id} className="w-full lg:w-[47%] m-2 flex flex-col">
               <Label className="font-bold text-lg">
                 {field.label}
-                {requiredFields.includes(field.name) &&
-                !formData[field.name] ? (
                   <span className="text-red-500">*</span>
-                ) : (
-                  <></>
-                )}
               </Label>
               <input
                 id={field.id}
@@ -166,7 +218,7 @@ const EventLocationForm: React.FC<EventLocationFormData> = ({
             checked={isVenueNotDecided}
             onCheckedChange={() => {
               setIsVenueNotDecided(!isVenueNotDecided);
-              if (!isVenueNotDecided) { 
+              if (!isVenueNotDecided) {
                 setFormData((prevData: any) => ({
                   ...prevData,
                   venueName: "",
@@ -174,7 +226,7 @@ const EventLocationForm: React.FC<EventLocationFormData> = ({
                   venuelink: "",
                   eventPincode: "",
                 }));
-                if(editPage==="manageEvent"){
+                if (editPage === "manageEvent") {
                   setEventEditData((prevData: any) => ({
                     ...prevData,
                     venueName: "",
@@ -182,14 +234,15 @@ const EventLocationForm: React.FC<EventLocationFormData> = ({
                     venuelink: "",
                     eventPincode: "",
                   }));
-                }else{setEventData((prevData: any) => ({
-                  ...prevData,
-                  venueName: "",
-                  eventAddress: "",
-                  venuelink: "",
-                  eventPincode: "",
-                }));}
-                
+                } else {
+                  setEventData((prevData: any) => ({
+                    ...prevData,
+                    venueName: "",
+                    eventAddress: "",
+                    venuelink: "",
+                    eventPincode: "",
+                  }));
+                }
               }
             }}
           />
@@ -207,7 +260,9 @@ const EventLocationForm: React.FC<EventLocationFormData> = ({
           </div>
         </div>
       </div>
-      <Button onClick={(e) => handleNext(e)} className="w-full mt-4">Next</Button>
+      <Button onClick={(e) => handleNext(e)} className="w-full mt-4">
+        {editPage === "manageEvent" ? "Save and Next" : "Next"}
+      </Button>
     </form>
   );
 };

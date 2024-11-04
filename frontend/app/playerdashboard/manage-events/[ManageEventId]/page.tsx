@@ -59,9 +59,14 @@ const ProgressBarCheckpointsManageEventID = [
     placement: 6,
   },
   {
+    icon: <MdLiveTv />,
+    label: "Live Match Tracking",
+    placement: 7,
+  },
+  {
     icon: <MdOutlineRocketLaunch />,
     label: "Event Boosters",
-    placement: 7,
+    placement: 8,
   },
 ];
 
@@ -233,22 +238,35 @@ const page = ({ params }: any) => {
           <div className="mt-20 lg:mt-4 w-full rounded-lg">
             {currentPage === 1 && <EventMatrics handleNext={handleNext} />}
             {currentPage === 2 && <Report handleNext={handleNext} />}
-            {currentPage === 3 && <EventInformation handleNext={handleNext} />}
+            {currentPage === 3 && (
+              <EventInformation
+                handleNext={handleNext}
+                ManageEventId={ManageEventId}
+              />
+            )}
             {currentPage === 4 && <CategoryPreview handleNext={handleNext} />}
             {currentPage === 5 && <EnableFeatures handleNext={handleNext} />}
             {currentPage === 6 && (
               <DrawCreation id={ManageEventId} handleNext={handleNext} />
             )}
-            {currentPage === 7 && <EventBoosters handleNext={handleNext} />}
+
+            {currentPage === 7 && <LiveMatchTracking handleNext={handleNext} />}
+            {currentPage === 8 && <EventBoosters handleNext={handleNext} />}
           </div>
         ) : (
           <div className="mt-20 lg:mt-4 w-full rounded-lg">
             {currentPage === 1 && <EventMatrics handleNext={handleNext} />}
             {currentPage === 2 && <Report handleNext={handleNext} />}
-            {currentPage === 3 && <EventInformation handleNext={handleNext} />}
+            {currentPage === 3 && (
+              <EventInformation
+                handleNext={handleNext}
+                ManageEventId={ManageEventId}
+              />
+            )}
             {currentPage === 4 && <CategoryPreview handleNext={handleNext} />}
             {currentPage === 5 && <EnableFeatures handleNext={handleNext} />}
-            {currentPage === 6 && <EventBoosters handleNext={handleNext} />}
+            {currentPage === 6 && <LiveMatchTracking handleNext={handleNext} />}
+            {currentPage === 7 && <EventBoosters handleNext={handleNext} />}
           </div>
         )}
 

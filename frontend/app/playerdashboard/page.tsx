@@ -10,6 +10,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import {
   FaHandHoldingDollar,
   FaIndianRupeeSign,
+  FaPeopleCarryBox,
   FaPeopleGroup,
 } from "react-icons/fa6";
 import { LiaStreetViewSolid } from "react-icons/lia";
@@ -18,7 +19,7 @@ import EventCard from "@/components/EventCard";
 import data from "@/data";
 import { Button } from "@/components/ui/button";
 import { useRouter } from "next/navigation";
-import { MdOutlineSecurity } from "react-icons/md";
+import { MdEventRepeat, MdOutlineSecurity } from "react-icons/md";
 import { useEventContext } from "@/context/EventDataContext";
 const { events } = data;
 import { Skeleton } from "@/components/ui/skeleton";
@@ -234,7 +235,7 @@ export default function Home() {
             <CardContent className="flex flex-col gap-1 mt-4">
               <h1 className="font-semibold text-lg">Events Participated</h1>
               <div className="flex justify-start items-center text-xl gap-2">
-                <TbCoinRupeeFilled className="" />
+                <MdEventRepeat className="" />
                 <h1 className="">0</h1>
               </div>
             </CardContent>
@@ -245,7 +246,7 @@ export default function Home() {
                 Events I’m interested in
               </h1>
               <div className="flex justify-start items-center text-xl gap-2">
-                <FaRegEye className="" />
+                <FaPeopleCarryBox className="" />
                 <h1 className="">0</h1>
               </div>
             </CardContent>
@@ -294,7 +295,7 @@ export default function Home() {
           </Tooltip>
         </TooltipProvider>
       </section> */}
-       <section className="mt-8 bg-white shadow-md rounded-lg px-4 pt-4">
+      <section className="mt-8 bg-white shadow-md rounded-lg px-4 pt-4">
         <h2 className="text-xl font-semibold mb-2">Upcoming Events</h2>
         <div className="flex space-x-4 overflow-x-auto pb-8">
           {isLoading ? (
@@ -316,7 +317,7 @@ export default function Home() {
           ) : (
             events.map((event) => (
               <React.Fragment key={event.id}>
-                <Card className="shadow-md cursor-pointer hover:shadow-2xl flex-none">
+                <Card className="shadow-md cursor-pointer hover:shadow-2xl flex-none w-[40%]">
                   <CardContent className="py-4 flex gap-4 h-full">
                     <Link href={`/`}>
                       <Image

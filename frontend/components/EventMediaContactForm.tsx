@@ -22,6 +22,7 @@ interface EventMediaProps {
   setFormData: React.Dispatch<React.SetStateAction<any>>;
   setFormType: React.Dispatch<React.SetStateAction<any>>;
   handleNext: () => void;
+  ManageEventId:any
 }
 const requiredFields = [
   "eventAddress",
@@ -73,8 +74,10 @@ const EventMediaContactForm: React.FC<EventMediaProps> = ({
   formData,
   setFormData,
   handleNext,
+  ManageEventId,
 }) => {
-  const { EventData, setEventData,setEventEditData,EventEditData,editPage } = useEventContext();
+  const { EventData, setEventData, setEventEditData, EventEditData, editPage,fetchedEventdatafromManagemeEvent } =
+    useEventContext();
 
   const [isImageLoading, setIsImageLoading] = useState(false);
   const [imagePreviews, setImagePreviews] = useState<string[]>([]);
@@ -95,16 +98,18 @@ const EventMediaContactForm: React.FC<EventMediaProps> = ({
               ...prevData,
               [fieldName]: file,
             }));
-            if (editPage==="manageEvent"){
+            if (editPage === "manageEvent") {
               setEventEditData((prevData: any) => ({
                 ...prevData,
                 [fieldName]: file,
               }));
-            }else{setEventData((prevData: any) => ({
-              ...prevData,
-              [fieldName]: file,
-            }));}
-              
+            } else {
+              setEventData((prevData: any) => ({
+                ...prevData,
+                [fieldName]: file,
+              }));
+            }
+
             return newPreviews;
           });
         };
@@ -113,10 +118,54 @@ const EventMediaContactForm: React.FC<EventMediaProps> = ({
       }
     };
 
-    
-  const handleClick = (event: React.MouseEvent<HTMLButtonElement>) => {
+  const handleClick = async(event: React.MouseEvent<HTMLButtonElement>) => {
     event.preventDefault();
-      handleNext();
+    if (editPage === "manageEvent") {
+      const differences = {};
+      const formFields = [
+        "mobileBanner",
+        "desktopBanner",
+      ];
+
+      formFields.forEach((field) => {
+        if (
+          EventEditData?.[field] !== fetchedEventdatafromManagemeEvent?.[field]
+        ) {
+          differences[field] = EventEditData?.[field];
+        }
+      });
+      console.log(differences);
+
+      if (Object.keys(differences).length > 0) {
+        try {
+          const response = await fetch(`/api/event/update/${ManageEventId}`, {
+            method: "PATCH",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify(differences),
+          });
+
+          const result = await response.json();
+          if (response.ok) {
+            toast({
+              title: "Event updated successfully",
+              variant: "default",
+            });
+          } else {
+            throw new Error(result.error || "Failed to update event");
+          }
+        } catch (error) {
+          console.error("An error occurred:", error);
+          toast({
+            title: "Failed to update event. Please try again.",
+            variant: "destructive",
+          });
+          return;
+        }
+      }
+    }
+    handleNext();
   };
 
   useEffect(() => {
@@ -142,11 +191,7 @@ const EventMediaContactForm: React.FC<EventMediaProps> = ({
           <div className="flex flex-col w-full mt-5" key={field.id}>
             <Label className="font-bold text-lg">
               {field.filecontnet?.label}
-              {requiredFields.includes(field.name) && !formData[field.name] ? (
                 <span className="text-red-500">*</span>
-              ) : (
-                <></>
-              )}
             </Label>
             <div
               className="flex items-center justify-center mt-1 h-[142px] w-full cursor-pointer flex-col gap-3 rounded-xl border-[3.2px] border-dashed border-gray-600  bg-white "
@@ -199,7 +244,7 @@ const EventMediaContactForm: React.FC<EventMediaProps> = ({
           className="w-full p-2 mt-3 rounded-md"
           onClick={(event) => handleClick(event)}
         >
-          Next
+          {editPage === "manageEvent" ? "Save and Next" : "Next"}
         </Button>
       </div>
     </form>

@@ -136,7 +136,7 @@ const page = () => {
             events.map((event) => (
               <React.Fragment key={event.id}>
                 <Card
-                  className="shadow-md cursor-pointer hover:shadow-2xl flex-none"
+                  className="shadow-md cursor-pointer hover:shadow-2xl flex-none w-[40%]"
                   onClick={() =>
                     router.push(`/organizerDashboard/manage-events/${event.id}`)
                   }
