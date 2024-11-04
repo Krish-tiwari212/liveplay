@@ -50,19 +50,25 @@ const GSTCompliance = ({
   useEffect(() => {
     if (editPage === "manageEvent" && EventEditData) {
       setIsRegistered(EventEditData.Gst_Compliance || false);
+      setIsGSTVerified(EventEditData.Gst_Compliance || false);
     } else if (editPage === "createEvent" && EventData) {
       setIsRegistered(EventData.Gst_Compliance || false);
+      setIsGSTVerified(EventData.Gst_Compliance || false);
     }
   }, [EventData, EventEditData]);
+
+  const isDisabled = editPage === "manageEvent";
+
   return (
     <div className="bg-white shadow-2xl p-5 rounded-lg w-full h-full">
-      <div className="flex flex-wrap w-full">
+      <div className={`flex flex-wrap w-full ${isDisabled ? 'opacity-50 cursor-not-allowed' : ''}`}>
         <div className="w-full m-2 flex flex-col">
           <label htmlFor="gstRegistered">
             Are you a registered GST person?
           </label>
           <RadioGroup
             defaultValue={EventData.GstCompliance ? "Yes" : "default"}
+            disabled={isDisabled}
           >
             <div className="flex items-center space-x-2">
               <RadioGroupItem
@@ -94,8 +100,9 @@ const GSTCompliance = ({
                   onChange={(e) => setGstNumber(e.target.value)}
                   placeholder="Enter GST Number"
                   className="h-12 p-2 bg-white w-[85%] border rounded-md text-sm shadow-2xl text-gray-800 focus:border-gray-800 focus:outline-none focus:shadow-lg"
+                  disabled={isDisabled}
                 />
-                <Button onClick={handleVerify} className="w-[20%]">
+                <Button onClick={handleVerify} className="w-[20%]" disabled={isDisabled}>
                   Verify
                 </Button>
               </div>
@@ -109,6 +116,7 @@ const GSTCompliance = ({
                     value={gstRate}
                     onChange={(e) => setGstRate(e.target.value)}
                     className="h-12 p-2 bg-white border rounded-md text-sm shadow-2xl text-gray-800 focus:border-gray-800 focus:outline-none focus:shadow-lg"
+                    disabled={isDisabled}
                   >
                     <option value="">Select Rate</option>
                     <option value="5">5%</option>
@@ -119,7 +127,7 @@ const GSTCompliance = ({
                 </div>
                 <div className="w-full m-2 flex flex-col">
                   <label>Pricing Type</label>
-                  <RadioGroup defaultValue="exclusive">
+                  <RadioGroup defaultValue="exclusive" disabled={isDisabled}>
                     <div className="flex items-center space-x-2">
                       <RadioGroupItem
                         value="default"

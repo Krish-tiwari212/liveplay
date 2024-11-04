@@ -136,79 +136,88 @@ const page = () => {
             events.map((event) => (
               <React.Fragment key={event.id}>
                 <Card
-                  className="shadow-md cursor-pointer hover:shadow-2xl flex-none w-[40%]"
+                  className="shadow-md cursor-pointer hover:shadow-2xl flex-none min-w-[400px] max-w-[400px]"
                   onClick={() =>
                     router.push(`/organizerDashboard/manage-events/${event.id}`)
                   }
                 >
-                  <CardContent className="py-4 flex gap-4">
-                    <Image
-                      src={
-                        event.desktop_cover_image_url || "/images/default.jpeg"
-                      }
-                      alt="eventBanner"
-                      width={200}
-                      height={200}
-                      className="rounded-lg h-44 shadow-xl flex-[1]"
-                    />
-                    <div className="flex-[1]">
-                      <h3 className="font-bold">{event.event_name}</h3>
-                      <div className="flex flex-col justify-between">
-                        <TooltipProvider>
-                          <Tooltip>
-                            <TooltipTrigger>
-                              <span className="flex gap-2 items-center">
-                                <FaRegThumbsUp /> {event.entries || "N/A"}
-                              </span>
-                            </TooltipTrigger>
-                            <TooltipContent>
-                              <p>Event Entries : {event.entries || "N/A"}</p>
-                            </TooltipContent>
-                          </Tooltip>
-                        </TooltipProvider>
-                        <TooltipProvider>
-                          <Tooltip>
-                            <TooltipTrigger>
-                              <span className="flex gap-2 items-center">
-                                <TbCoinRupeeFilled /> {event.revenue || "₹0"}
-                              </span>
-                            </TooltipTrigger>
-                            <TooltipContent>
-                              <p>Event sales : ₹0</p>
-                            </TooltipContent>
-                          </Tooltip>
-                        </TooltipProvider>
-                        <TooltipProvider>
-                          <Tooltip>
-                            <TooltipTrigger>
-                              <span className="flex gap-2 items-center">
-                                <FaRegEye /> {event.event_views || "0"}
-                              </span>
-                            </TooltipTrigger>
-                            <TooltipContent>
-                              <p>Event views : 0</p>
-                            </TooltipContent>
-                          </Tooltip>
-                        </TooltipProvider>
-                        <TooltipProvider>
-                          <Tooltip>
-                            <TooltipTrigger>
-                              <span className="flex gap-2 items-center">
-                                <FaPeopleGroup />{" "}
-                                {event.interested_people || "0"}
-                              </span>
-                            </TooltipTrigger>
-                            <TooltipContent>
-                              <p>Interested Peoples : 0</p>
-                            </TooltipContent>
-                          </Tooltip>
-                        </TooltipProvider>
+                  <CardContent className="py-4">
+                    <div className="flex gap-4">
+                      <div className="w-[180px] h-[180px] relative">
+                        <Image
+                          src={
+                            event.desktop_cover_image_url ||
+                            "/images/default.jpeg"
+                          }
+                          alt="eventBanner"
+                          fill
+                          className="rounded-lg object-cover shadow-xl"
+                        />
                       </div>
-                      <Link href={`/event/${event.id}/share-link`}>
-                        <Button className="w-full mt-2 bg-[#17202A] text-[#CDDC29] hover:text-white p-1 rounded hover:shadow-xl">
-                          Share
-                        </Button>
-                      </Link>
+                      <div className="flex flex-col space-y-2 flex-1">
+                        <h3 className="font-bold">{event.event_name}</h3>
+                        <div className="flex flex-col justify-between">
+                          <TooltipProvider>
+                            <Tooltip>
+                              <TooltipTrigger>
+                                <span className="flex gap-2 items-center">
+                                  <FaRegThumbsUp /> {event.entries || "N/A"}
+                                </span>
+                              </TooltipTrigger>
+                              <TooltipContent>
+                                <p>Event Entries : {event.entries || "N/A"}</p>
+                              </TooltipContent>
+                            </Tooltip>
+                          </TooltipProvider>
+                          <TooltipProvider>
+                            <Tooltip>
+                              <TooltipTrigger>
+                                <span className="flex gap-2 items-center">
+                                  <TbCoinRupeeFilled /> {event.revenue || "₹0"}
+                                </span>
+                              </TooltipTrigger>
+                              <TooltipContent>
+                                <p>Event sales : ₹0</p>
+                              </TooltipContent>
+                            </Tooltip>
+                          </TooltipProvider>
+                          <TooltipProvider>
+                            <Tooltip>
+                              <TooltipTrigger>
+                                <span className="flex gap-2 items-center">
+                                  <FaRegEye /> {event.event_views || "0"}
+                                </span>
+                              </TooltipTrigger>
+                              <TooltipContent>
+                                <p>Event views : 0</p>
+                              </TooltipContent>
+                            </Tooltip>
+                          </TooltipProvider>
+                          <TooltipProvider>
+                            <Tooltip>
+                              <TooltipTrigger>
+                                <span className="flex gap-2 items-center">
+                                  <FaPeopleGroup />{" "}
+                                  {event.interested_people || "0"}
+                                </span>
+                              </TooltipTrigger>
+                              <TooltipContent>
+                                <p>Interested Peoples : 0</p>
+                              </TooltipContent>
+                            </Tooltip>
+                          </TooltipProvider>
+                        </div>
+                        <div className="mt-4">
+                          <Link
+                            href={`/event/${event.id}/share-link`}
+                            className="block"
+                          >
+                            <Button className="w-full bg-[#17202A] text-[#CDDC29] hover:text-white p-1 rounded hover:shadow-xl">
+                              Share
+                            </Button>
+                          </Link>
+                        </div>
+                      </div>
                     </div>
                   </CardContent>
                 </Card>

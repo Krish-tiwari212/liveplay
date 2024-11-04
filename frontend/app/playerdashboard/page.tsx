@@ -317,7 +317,7 @@ export default function Home() {
           ) : (
             events.map((event) => (
               <React.Fragment key={event.id}>
-                <Card className="shadow-md cursor-pointer hover:shadow-2xl flex-none w-[40%]">
+                <Card className="shadow-md cursor-pointer hover:shadow-2xl flex-none min-w-[400px] max-w-[400px]">
                   <CardContent className="py-4 flex gap-4 h-full">
                     <Link href={`/`}>
                       <Image
