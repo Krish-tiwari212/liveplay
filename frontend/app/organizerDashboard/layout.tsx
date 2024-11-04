@@ -61,18 +61,18 @@ function KYCWrapper({ children }: { children: React.ReactNode }) {
     }
 
     if (!kycCompleted && user) {
-      const lastPopupTime = localStorage.getItem('lastKYCPopupTime');
-      const currentTime = Date.now();
-      
-      if (!lastPopupTime || currentTime - parseInt(lastPopupTime) > 1000) {
-        setShowKYCPopup(true);
-        localStorage.setItem('lastKYCPopupTime', currentTime.toString());
-      }
+      setShowKYCPopup(true);
     }
 
-    return () => {
-    };
-  }, [user, kycCompleted]); 
+    const interval = setInterval(() => {
+      const currentIsKYCPage = window.location.pathname.includes('/kyc');
+      if (!kycCompleted && user && !currentIsKYCPage) {
+        setShowKYCPopup(true);
+      }
+    }, 5 * 60 * 1000); 
+
+    return () => clearInterval(interval);
+  }, [user, kycCompleted]);
 
   return (
     <>

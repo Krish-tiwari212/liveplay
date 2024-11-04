@@ -159,51 +159,48 @@ const page = () => {
                           className="rounded-lg object-cover shadow-xl"
                         />
                       </div>
-                      <div className="flex flex-col space-y-2 flex-1">
+                      <div className="flex-[1]">
                         <h3 className="font-bold">{event.event_name}</h3>
                         <div className="flex flex-col justify-between">
                           <TooltipProvider>
                             <Tooltip>
                               <TooltipTrigger>
                                 <span className="flex gap-2 items-center">
-                                  <FaRegThumbsUp /> {event.entries || "N/A"}
-                                </span>
-                              </TooltipTrigger>
-                              <TooltipContent>
-                                <p>Event Entries : {event.entries || "N/A"}</p>
-                              </TooltipContent>
-                            </Tooltip>
-                          </TooltipProvider>
-                          <TooltipProvider>
-                            <Tooltip>
-                              <TooltipTrigger>
-                                <span className="flex gap-2 items-center">
-                                  <TbCoinRupeeFilled /> {event.revenue || "₹0"}
+                                  <TbCoinRupeeFilled />{" "}
+                                  {event.revenue || "₹12000"}
                                 </span>
                               </TooltipTrigger>
                               <TooltipContent>
                                 <p>Event sales : ₹0</p>
                               </TooltipContent>
                             </Tooltip>
-                          </TooltipProvider>
-                          <TooltipProvider>
                             <Tooltip>
                               <TooltipTrigger>
                                 <span className="flex gap-2 items-center">
-                                  <FaRegEye /> {event.event_views || "0"}
+                                  <FaRegEye /> {event.event_views || "2"}
                                 </span>
                               </TooltipTrigger>
                               <TooltipContent>
                                 <p>Event views : 0</p>
                               </TooltipContent>
                             </Tooltip>
-                          </TooltipProvider>
-                          <TooltipProvider>
                             <Tooltip>
                               <TooltipTrigger>
                                 <span className="flex gap-2 items-center">
-                                  <FaPeopleGroup />{" "}
-                                  {event.interested_people || "0"}
+                                  <FaPeopleGroup /> {event.entries || "12345"}
+                                </span>
+                              </TooltipTrigger>
+                              <TooltipContent>
+                                <p>
+                                  Event Registrations : {event.entries || "N/A"}
+                                </p>
+                              </TooltipContent>
+                            </Tooltip>
+                            <Tooltip>
+                              <TooltipTrigger>
+                                <span className="flex gap-2 items-center">
+                                  <FaRegThumbsUp />{" "}
+                                  {event.interested_people || "20"}
                                 </span>
                               </TooltipTrigger>
                               <TooltipContent>

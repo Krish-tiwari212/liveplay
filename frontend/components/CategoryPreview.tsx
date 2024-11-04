@@ -277,6 +277,7 @@ const CategoryPreview = ({
                 alt="Add Category"
                 width={200}
                 height={200}
+                className="grayscale"
               />
               <h1 className="text-3xl text-[#17202A] font-bold">
                 Add Category to Preview
