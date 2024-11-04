@@ -18,7 +18,7 @@ export async function POST(req: Request, { params }: { params: { eventId: string
 
   // Calculate the user's age
   const today = new Date();
-  const age = today.getFullYear() - userDob.getFullYear();
+  let age = today.getFullYear() - userDob.getFullYear();
   const monthDiff = today.getMonth() - userDob.getMonth();
   if (monthDiff < 0 || (monthDiff === 0 && today.getDate() < userDob.getDate())) {
     age--;

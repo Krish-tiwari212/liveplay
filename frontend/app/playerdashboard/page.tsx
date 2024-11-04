@@ -403,7 +403,7 @@ export default function Home() {
           <DialogTrigger asChild>
             <Button className="hidden">Open</Button>
           </DialogTrigger>
-          <DialogContent className="max-w-2xl p-4 h-[34rem]">
+          <DialogContent className="max-w-2xl p-4">
             <DialogHeader>
               <DialogTitle className="text-lg font-semibold mb-4">
                 Withdraw from Categories
@@ -413,7 +413,7 @@ export default function Home() {
                 Select the categories you want to withdraw from.
               </DialogDescription>
             </DialogHeader>
-            <div className="space-y-4">
+            <div className="space-y-4 h-[20rem]">
               {categories.map((category) => (
                 <div
                   key={category.id}
@@ -459,7 +459,7 @@ export default function Home() {
           <DialogTrigger asChild>
             <Button className="hidden">Open</Button>
           </DialogTrigger>
-          <DialogContent className="max-w-xl p-4 h-[30rem]">
+          <DialogContent className="max-w-xl p-4 overflow-scroll">
             <DialogHeader>
               <EventDetails />
               <DialogTitle className="text-lg font-semibold">
