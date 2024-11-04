@@ -126,7 +126,6 @@ const EventCard = ({
                       </p>
                       <Button
                         className="text-sm bg-[#17202A] text-white hover:shadow-md"
-                        onClick={() => router.push("/auth/complete-profile")}
                       >
                         Register
                       </Button>
