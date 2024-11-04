@@ -1,7 +1,7 @@
 "use client";
 
 import { usePathname } from "next/navigation";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   MdSportsFootball,
 } from "react-icons/md";
@@ -17,6 +17,7 @@ import { FaUserCircle } from "react-icons/fa";
 import { IoIosNotificationsOutline } from "react-icons/io";
 import { useEventContext } from "@/context/EventDataContext";
 import { useRouter } from "next/navigation";
+import Image from "next/image";
 
 
 const Navbar = () => {
@@ -28,6 +29,10 @@ const Navbar = () => {
   const path = usePathname();
   const isplayerdashboard = path.includes("playerdashboard");
   const defaultname=isplayerdashboard?"Player Dashboard":"Organizer Dashboard";
+
+  useEffect(() => {
+    console.log(user)
+  } , [user])  
 
   return (
     <div className="flex justify-between items-center p-4 m-3 bg-[#17202A] text-white rounded-lg ">
@@ -52,10 +57,11 @@ const Navbar = () => {
               <Tooltip>
                 <TooltipTrigger asChild>
                   <div className="flex items-center w-full px-2 hover:bg-gray-700 hover:rounded transition-colors relative">
-                    <Avatar>
-                      <AvatarImage src={user?.user_metadata.avatar_url} />
-                      <AvatarFallback>CN</AvatarFallback>
-                    </Avatar>
+                    {user?.user_metadata.picture ? (
+                      <Image src={user?.user_metadata.picture} alt="profile" width={40} height={40} className="rounded-full" />
+                    ) : (
+                      <FaUserCircle className="text-3xl" />
+                    )}
                   </div>
                 </TooltipTrigger>
                 <TooltipContent className="relative">
@@ -66,7 +72,10 @@ const Navbar = () => {
                       }}
                       className="flex items-center w-full text-left hover:bg-gray-200 transition-colors duration-200 p-2 rounded mb-1"
                     >
-                      <FaUserCircle className="mr-2" /> Profile
+                      <Avatar>
+                        <AvatarImage src={user?.user_metadata.picture} />
+                        <AvatarFallback>CN</AvatarFallback>
+                      </Avatar> Profile
                     </div>
                   </div>
                 </TooltipContent>
