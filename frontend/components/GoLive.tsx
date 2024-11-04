@@ -132,7 +132,7 @@ const GoLive = () => {
   };
 
   const handleAnimationComplete = () => {
-    router.push("/dashboard");
+    router.push("organizerDashboard");
     setEventData({})
   }
 

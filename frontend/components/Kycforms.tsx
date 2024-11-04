@@ -15,54 +15,64 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 
+// ... existing code ...
 const banks = [
-  "Allahabad Bank",
-  "Andhra Bank",
-  "Axis Bank",
-  "Bank of Bahrain and Kuwait",
-  "Bank of Baroda - Corporate Banking",
-  "Bank of Baroda - Retail Banking",
-  "Bank of India",
-  "Bank of Maharashtra",
-  "Canara Bank",
-  "Central Bank of India",
-  "City Union Bank",
-  "Corporation Bank",
-  "Deutsche Bank",
-  "Development Credit Bank",
-  "Dhanlaxmi Bank",
-  "Federal Bank",
-  "ICICI Bank",
-  "IDBI Bank",
-  "Indian Bank",
-  "Indian Overseas Bank",
-  "IndusInd Bank",
-  "ING Vysya Bank",
-  "Jammu and Kashmir Bank",
-  "Karnataka Bank Ltd",
-  "Karur Vysya Bank",
-  "Kotak Bank",
-  "Laxmi Vilas Bank",
-  "Oriental Bank of Commerce",
-  "Punjab National Bank - Corporate Banking",
-  "Punjab National Bank - Retail Banking",
-  "Punjab & Sind Bank",
-  "Shamrao Vitthal Co-operative Bank",
-  "South Indian Bank",
-  "State Bank of Bikaner & Jaipur",
-  "State Bank of Hyderabad",
-  "State Bank of India",
-  "State Bank of Mysore",
-  "State Bank of Patiala",
-  "State Bank of Travancore",
-  "Syndicate Bank",
-  "Tamilnad Mercantile Bank Ltd.",
-  "UCO Bank",
-  "Union Bank of India",
-  "United Bank of India",
-  "Vijaya Bank",
-  "Yes Bank Ltd",
+  { name: "Allahabad Bank", image: "/images/allahabad.png" },
+  { name: "Andhra Bank", image: "/images/andra.png" },
+  { name: "Axis Bank", image: "/images/axis.png" },
+  { name: "Bank of Bahrain and Kuwait", image: "/path/to/bbk.png" },
+  { name: "Bandhan Bank", image: "/images/bandhanbank.png" },
+  { name: "Bank of Baroda - Retail Banking", image: "/images/bob.png" },
+  { name: "Canara Bank", image: "/images/canara.png" },
+  { name: "Central Bank", image: "/images/centralbank.png" },
+  { name: "Canara Bank", image: "/path/to/canara-bank.png" },
+  { name: "City Union Bank", image: "/images/citibank.png" },
+  { name: "Corporation Bank", image: "/images/corporation.png" },
+  { name: "Deutsche Bank", image: "/images/dbs.png" },
+  { name: "Development Credit Bank", image: "/path/to/dcb.png" },
+  { name: "Dhanlaxmi Bank", image: "/path/to/dhanlaxmi-bank.png" },
+  { name: "Federal Bank", image: "/path/to/federal-bank.png" },
+  { name: "ICICI Bank", image: "/path/to/icici-bank.png" },
+  { name: "IDBI Bank", image: "/path/to/idbi-bank.png" },
+  { name: "Indian Bank", image: "/path/to/indian-bank.png" },
+  { name: "Indian Overseas Bank", image: "/path/to/iob.png" },
+  { name: "IndusInd Bank", image: "/path/to/indusind-bank.png" },
+  { name: "ING Vysya Bank", image: "/path/to/ing-vysya.png" },
+  { name: "Jammu and Kashmir Bank", image: "/path/to/jk-bank.png" },
+  { name: "Karnataka Bank Ltd", image: "/path/to/karnataka-bank.png" },
+  { name: "Karur Vysya Bank", image: "/path/to/karur-vysya.png" },
+  { name: "Kotak Bank", image: "/path/to/kotak-bank.png" },
+  { name: "Laxmi Vilas Bank", image: "/path/to/laxmi-vilas.png" },
+  { name: "Oriental Bank of Commerce", image: "/path/to/oriental-bank.png" },
+  {
+    name: "Punjab National Bank - Corporate Banking",
+    image: "/path/to/pnb-corporate.png",
+  },
+  {
+    name: "Punjab National Bank - Retail Banking",
+    image: "/path/to/pnb-retail.png",
+  },
+  { name: "Punjab & Sind Bank", image: "/path/to/punjab-sind.png" },
+  {
+    name: "Shamrao Vitthal Co-operative Bank",
+    image: "/path/to/sv-coop-bank.png",
+  },
+  { name: "South Indian Bank", image: "/path/to/south-indian-bank.png" },
+  { name: "State Bank of Bikaner & Jaipur", image: "/path/to/sbbj.png" },
+  { name: "State Bank of Hyderabad", image: "/path/to/sbh.png" },
+  { name: "State Bank of India", image: "/path/to/sbi.png" },
+  { name: "State Bank of Mysore", image: "/path/to/sbm.png" },
+  { name: "State Bank of Patiala", image: "/path/to/sbp.png" },
+  { name: "State Bank of Travancore", image: "/path/to/sbt.png" },
+  { name: "Syndicate Bank", image: "/path/to/syndicate-bank.png" },
+  { name: "Tamilnad Mercantile Bank Ltd.", image: "/path/to/tmb.png" },
+  { name: "UCO Bank", image: "/path/to/uco-bank.png" },
+  { name: "Union Bank of India", image: "/path/to/union-bank.png" },
+  { name: "United Bank of India", image: "/path/to/united-bank.png" },
+  { name: "Vijaya Bank", image: "/path/to/vijaya-bank.png" },
+  { name: "Yes Bank Ltd", image: "/path/to/yes-bank.png" },
 ];
+// ... existing code ...
 
 
 interface FormField {
@@ -110,7 +120,7 @@ const Kycforms: React.FC<KycFormsProps> = ({
   const [isImageLoading, setIsImageLoading] = useState(false);
 
   return (
-    <form className="bg-white shadow-2xl p-5 rounded-lg w-full relative">
+    <form className="bg-white shadow-2xl p-5 rounded-lg w-full relative mt-10">
       <button
         onClick={(e) => {
           e.preventDefault();
@@ -191,8 +201,15 @@ const Kycforms: React.FC<KycFormsProps> = ({
                   </SelectTrigger>
                   <SelectContent>
                     {banks.map((bank, i) => (
-                      <SelectItem value={bank} key={i}>
-                        {bank}
+                      <SelectItem
+                        key={bank.name}
+                        value={bank.name}
+                        className="flex items-center space-x-2"
+                      >
+                        <div className="flex items-center space-x-2">
+                          {bank.icon}
+                          <span>{bank.name}</span>
+                        </div>
                       </SelectItem>
                     ))}
                   </SelectContent>

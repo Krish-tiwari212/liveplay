@@ -5,29 +5,45 @@ import { MdNotifications, MdOutlineChat, MdPublic, MdSearch, MdMenu, MdOutlineEv
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { toast } from '@/hooks/use-toast';
+import { createClient } from '@/utils/supabase/client'; // Assuming you have a Supabase client setup
 
 const Navbar = () => {
+  const supabase = createClient();
   const [isLoggedIn, setIsLoggedIn] = useState(false);
 
   useEffect(() => {
-    const username = localStorage.getItem("username");
-    const password = localStorage.getItem("password");
+    const checkLoginStatus = async () => {
+      const { data, error } = await supabase.auth.getSession();
+      if (data.session) {
+        setIsLoggedIn(true);
+      } else {
+        setIsLoggedIn(false);
+      }
+    };
 
-    if (username && password) {
-      setIsLoggedIn(true);
-    }
+    checkLoginStatus();
   }, []);
 
   const handleLogout = async () => {
-    await new Promise((resolve) => setTimeout(resolve, 2000));
-    localStorage.removeItem("username");
-    localStorage.removeItem("password");
-    setIsLoggedIn(false);
-    toast({
-      title: "Logout Successful",
-      description: "Successfully Logged Out!",
-      variant: "default"
+    const response = await fetch("/api/auth/logout", {
+      method: "POST",
     });
+
+    if (response.ok) {
+      setIsLoggedIn(false);
+      toast({
+        title: "Logout Successful",
+        description: "Successfully Logged Out!",
+        variant: "default",
+      });
+    } else {
+      const result = await response.json();
+      toast({
+        title: "Logout Failed",
+        description: result.error || "An error occurred. Please try again.",
+        variant: "destructive",
+      });
+    }
   };
 
   const router = useRouter();
@@ -46,7 +62,7 @@ const Navbar = () => {
         </button>
         {isLoggedIn && (
           <button
-            onClick={() => router.push("/dashboard")}
+            onClick={() => router.push("playerdashboard")}
             className="flex items-center bg-white text-[#17202A] rounded-full px-6 md:px-10 py-2 hover:bg-slate-400 transition transform hover:-translate-y-1 hover:shadow-lg hover:shadow-gray-500 border border-transparent"
           >
             <MdOutlineEvent className="inline mr-2" size={20} />
@@ -64,7 +80,7 @@ const Navbar = () => {
             </button>
           </Link>
         ) : (
-          <Link href={"/login"}>
+          <Link href={"/auth/login"}>
             <button className="bg-transparent flex items-center text-white md:px-4 py-2 ml-4 hover:text-gray-400 transition">
               <FaUserCircle className="inline md:mr-2" size={30} />
               <h1 className="hidden md:block md:text-lg">Sign In</h1>

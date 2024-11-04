@@ -24,22 +24,25 @@ const OverviewSidebarContent = [
 
 interface EventInformation {
   handleNext: () => void;
+  ManageEventId:any
 }
 
-const EventInformation: React.FC<EventInformation> = ({ handleNext }) => {
-  const {EventEditData,EventData}=useEventContext()
+const EventInformation: React.FC<EventInformation> = ({
+  handleNext,ManageEventId
+}) => {
+  const { EventEditData, EventData } = useEventContext();
   const [formType, setFormType] = useState<string>("default");
   const [formData, setFormData] = useState<any>({});
-  useEffect(()=>{
-    console.log(EventEditData)
-    console.log(EventData);
-  },[])
+  useEffect(() => {
+    console.log(EventEditData);
+  }, []);
   const renderForm = () => {
     switch (formType) {
       case "Essential":
         return (
           <EventDetailsForm
             formData={formData}
+            ManageEventId={ManageEventId}
             setFormData={setFormData}
             setFormType={setFormType}
           />
@@ -73,6 +76,7 @@ const EventInformation: React.FC<EventInformation> = ({ handleNext }) => {
         return (
           <EventDetailsForm
             formData={formData}
+            ManageEventId={ManageEventId}
             setFormData={setFormData}
             setFormType={setFormType}
           />
@@ -88,7 +92,9 @@ const EventInformation: React.FC<EventInformation> = ({ handleNext }) => {
           setFormType={setFormType}
           content={OverviewSidebarContent}
         />
-        <div className="flex-[4] my-3 lg:my-0 lg:mx-3 mb-20">{renderForm()}</div>
+        <div className="flex-[4] my-3 md:my-0 md:mx-3 pb-10">
+          {renderForm()}
+        </div>
       </div>
     </div>
   );

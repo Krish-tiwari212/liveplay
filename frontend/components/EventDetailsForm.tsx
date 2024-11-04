@@ -14,7 +14,9 @@ import { useEventContext } from "@/context/EventDataContext";
 import { effect } from "zod";
 import { Button } from "./ui/button";
 import { format } from "date-fns"; 
-
+import { FaBasketball } from "react-icons/fa6";
+import { DatePickerDemo } from "@/components/DatePicker";
+import { toast } from "@/hooks/use-toast";
 
 interface FormField {
   id: string;
@@ -37,63 +39,60 @@ interface EventDetailsFormProps {
   formData: any;
   setFormData: React.Dispatch<React.SetStateAction<any>>;
   setFormType: React.Dispatch<React.SetStateAction<any>>;
+  ManageEventId:any
 }
 
 const SportsType = [
-  "Soccer",
-  "Basketball",
-  "Tennis",
-  "Baseball",
-  "Golf",
-  "Cricket",
-  "Rugby",
-  "Volleyball",
-  "Hockey",
-  "Boxing",
-  "Marathon",
-  "Table Tennis",
-  "Badminton",
-  "Cycling",
-  "Swimming",
-  "Gymnastics",
-  "Skating",
-  "Skiing",
-  "Snowboarding",
-  "Surfing",
-  "Athletics",
-  "Wrestling",
-  "Weightlifting",
-  "Fencing",
-  "Handball",
-  "Rowing",
-  "Sailing",
-  "Archery",
-  "Equestrian",
-  "Karate",
-  "Judo",
-  "Taekwondo",
-  "Motorsport",
-  "Billiards",
-  "Bowling",
-  "Lacrosse",
-  "Polo",
-  "Racquetball",
-  "Softball",
-  "Triathlon",
-  "Water Polo",
-  "Darts",
-  "Kickboxing",
-  "Snooker",
-  "Canoeing",
-  "Kayaking",
-  "Mountain Biking",
-  "Rock Climbing",
-  "Paragliding",
-  "Fishing",
-  "Horse Racing",
-  "American Football",
-  "Field Hockey",
-  "Ice Hockey",
+  {
+    name: "Tennis",
+    icon: <img src="/images/tennis.png" alt="Tennis" className="h-4 w-4" />,
+  },
+  {
+    name: "Table Tennis",
+    icon: (
+      <img
+        src="/images/table-tennis.png"
+        alt="Table Tennis"
+        className="h-4 w-4"
+      />
+    ),
+  },
+  {
+    name: "Squash",
+    icon: <img src="/images/squash.png" alt="Squash" className="h-4 w-4" />,
+  },
+  {
+    name: "Badminton",
+    icon: (
+      <img src="/images/shuttlecock.png" alt="Badminton" className="h-4 w-4" />
+    ),
+  },
+  {
+    name: "Pickleball",
+    icon: (
+      <img src="/images/pickleball.png" alt="Pickleball" className="h-4 w-4" />
+    ),
+  },
+  {
+    name: "Padel",
+    icon: <img src="/images/padel.png" alt="Padel" className="h-4 w-4" />,
+  },
+  {
+    name: "Cricket",
+    icon: <img src="/images/cricket.png" alt="Cricket" className="h-4 w-4" />,
+  },
+  {
+    name: "Football",
+    icon: <img src="/images/football.png" alt="Football" className="h-4 w-4" />,
+  },
+  {
+    name: "Running",
+    icon: <img src="/images/running.png" alt="Running" className="h-4 w-4" />,
+  },
+  {
+    name: "Marathon",
+    icon: <img src="/images/marathon.png" alt="Marathon" className="h-4 w-4" />,
+  },
 ];
 
 const requiredFields = [
@@ -215,8 +214,9 @@ const EventDetailsForm: React.FC<EventDetailsFormProps> = ({
   formData,
   setFormData,
   setFormType,
+  ManageEventId
 }) => {
-  const { EventData,EventEditData, setEventData,editPage,setEventEditData } = useEventContext();
+  const { EventData,EventEditData, setEventData,editPage,setEventEditData,fetchedEventdatafromManagemeEvent } = useEventContext();
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
     setFormData({ ...formData, [name]: value });
@@ -230,46 +230,84 @@ const EventDetailsForm: React.FC<EventDetailsFormProps> = ({
   useEffect(() => {
     const formatDate = (dateString: string | undefined) => {
       if (!dateString) return "";
-      return format(new Date(dateString), "yyyy-MM-dd"); // format to 'YYYY-MM-DD'
+      return format(new Date(dateString), "yyyy-MM-dd");
     };
 
-    if (editPage === "manageEvent" && EventEditData) {
-      setFormData({
-        sport: EventEditData.sport || "",
-        event_name: EventEditData.event_name || "",
-        last_registration_date: formatDate(
-          EventEditData.last_registration_date
-        ),
-        last_withdrawal_date: formatDate(EventEditData.last_withdrawal_date),
-        start_date: formatDate(EventEditData.start_date),
-        end_date: formatDate(EventEditData.end_date),
-        start_time: EventEditData.start_time || "",
-        organizer_name: EventEditData.organizer_name || "",
-        organizer_contact_number: EventEditData.organizer_contact_number || "",
-        organizer_email: EventEditData.organizer_email || "",
-      });
-    } else if (EventData) {
-      setFormData({
-        sport: EventData.sport || "",
-        event_name: EventData.event_name || "",
-        last_registration_date: formatDate(EventData.last_registration_date),
-        last_withdrawal_date: formatDate(EventData.last_withdrawal_date),
-        start_date: formatDate(EventData.start_date),
-        end_date: formatDate(EventData.end_date),
-        start_time: EventData.start_time || "",
-        organizer_name: EventData.organizer_name || "",
-        organizer_contact_number: EventData.organizer_contact_number || "",
-        organizer_email: EventData.organizer_email || "",
-      });
-    }
+    const prefillData = editPage === "manageEvent" ? EventEditData : EventData;
+
+    setFormData({
+      ...formData,
+      sport: prefillData?.sport || "",
+      event_name: prefillData?.event_name || "",
+      last_registration_date: formatDate(prefillData?.last_registration_date),
+      last_withdrawal_date: formatDate(prefillData?.last_withdrawal_date),
+      start_date: formatDate(prefillData?.start_date),
+      end_date: formatDate(prefillData?.end_date),
+      start_time: prefillData?.start_time || "",
+      organizer_name: prefillData?.organizer_name || "",
+      organizer_contact_number: prefillData?.organizer_contact_number || "",
+      organizer_email: prefillData?.organizer_email || "",
+    });
   }, [EventData, EventEditData, editPage]);
 
   
 
-   const handleNext = (e: any) => {
-    e.preventDefault(); 
-     setFormType("Location");
+   const handleNext = async (e: any) => {
+    e.preventDefault();
+    if (editPage === "manageEvent") {
+      const differences = {};
+      const formFields = [
+        'sport',
+        'event_name',
+        'last_registration_date',
+        'last_withdrawal_date',
+        'start_date',
+        'end_date',
+        'start_time',
+        'organizer_name',
+        'organizer_contact_number',
+        'organizer_email'
+      ];
+
+      formFields.forEach(field => {
+        if (EventEditData?.[field] !== fetchedEventdatafromManagemeEvent?.[field]) {
+          differences[field] = EventEditData?.[field];
+        }
+      });
+      console.log(differences);
+
+      if (Object.keys(differences).length > 0) {
+        try {
+          const response = await fetch(`/api/event/update/${ManageEventId}`, {
+            method: "PATCH",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify(differences),
+          });
+
+          const result = await response.json();
+          if (response.ok) {
+            toast({
+              title: "Event updated successfully",
+              variant: "default",
+            });
+          } else {
+            throw new Error(result.error || 'Failed to update event');
+          }
+        } catch (error) {
+          console.error("An error occurred:", error);
+          toast({
+            title: "Failed to update event. Please try again.",
+            variant: "destructive",
+          });
+          return;
+        }
+      }
+    }
+    setFormType("Location");
    };
+
 
   return (
     <form className="bg-white shadow-2xl p-5 rounded-lg">
@@ -297,14 +335,28 @@ const EventDetailsForm: React.FC<EventDetailsFormProps> = ({
                       setEventData({ ...EventData, sport: value });
                     }
                   }}
+                  disabled={editPage === "manageEvent"}
                 >
-                  <SelectTrigger className="h-16 p-2 bg-white border rounded-md text-sm shadow-2xl text-[#17202A] focus:border-[#17202A] focus:outline-none focus:shadow-lg">
-                    <SelectValue placeholder={field.placeholder} />
+                  <SelectTrigger
+                    className={`h-16 p-2 bg-white border rounded-md text-sm shadow-2xl text-[#17202A] focus:border-[#17202A] focus:outline-none focus:shadow-lg ${
+                      editPage === "manageEvent" ? "cursor-not-allowed" : ""
+                    }`}
+                  >
+                    <SelectValue
+                      placeholder={formData.sport || field.placeholder}
+                    />
                   </SelectTrigger>
                   <SelectContent>
                     {SportsType.map((sport, i) => (
-                      <SelectItem value={sport} key={i}>
-                        {sport}
+                      <SelectItem
+                        key={sport.name}
+                        value={sport.name}
+                        className="flex items-center space-x-2"
+                      >
+                        <div className="flex items-center space-x-2">
+                          {sport.icon}
+                          <span>{sport.name}</span>
+                        </div>
                       </SelectItem>
                     ))}
                   </SelectContent>
@@ -315,12 +367,7 @@ const EventDetailsForm: React.FC<EventDetailsFormProps> = ({
               <div key={field.id} className={` w-full m-2 flex flex-col`}>
                 <Label className="font-bold text-lg">
                   {field.label}
-                  {requiredFields.includes(field.name) &&
-                  !formData[field.name] ? (
                     <span className="text-red-500">*</span>
-                  ) : (
-                    <></>
-                  )}
                 </Label>
                 <input
                   id={field.id}
@@ -344,15 +391,10 @@ const EventDetailsForm: React.FC<EventDetailsFormProps> = ({
           </Label>
           <div className="flex flex-col xl:flex-row w-full gap-3">
             {fields[1].registration?.map((field, i) => (
-              <div className=" w-full flex flex-col" key={i}>
+              <div className="w-full flex flex-col" key={i}>
                 <Label className="text-[0.8rem]">
                   {field.label}
-                  {requiredFields.includes(field.name) &&
-                  !formData[field.name] ? (
                     <span className="text-red-500">*</span>
-                  ) : (
-                    <></>
-                  )}
                 </Label>
                 <input
                   id={field.id}
@@ -363,7 +405,7 @@ const EventDetailsForm: React.FC<EventDetailsFormProps> = ({
                     formData[field.name as keyof EventDetailsFormProps] || ""
                   }
                   onChange={handleChange}
-                  className=" w-full h-12 p-2 bg-white border rounded-md text-sm shadow-2xl text-[#17202A] focus:border-[#17202A] focus:outline-none focus:shadow-lg"
+                  className="h-10 p-2 bg-white border rounded-md text-sm shadow-2xl text-[#17202A] focus:border-[#17202A] focus:outline-none focus:shadow-lg"
                 />
               </div>
             ))}
@@ -378,12 +420,7 @@ const EventDetailsForm: React.FC<EventDetailsFormProps> = ({
               <div className=" w-full flex flex-col" key={i}>
                 <Label className="text-[0.8rem]">
                   {field.label}
-                  {requiredFields.includes(field.name) &&
-                  !formData[field.name] ? (
-                    <span className="text-red-500">*</span>
-                  ) : (
-                    <></>
-                  )}
+                  <span className="text-red-500">*</span>
                 </Label>
                 <input
                   id={field.id}
@@ -394,7 +431,12 @@ const EventDetailsForm: React.FC<EventDetailsFormProps> = ({
                     formData[field.name as keyof EventDetailsFormProps] || ""
                   }
                   onChange={handleChange}
-                  className=" w-full h-12 p-2 bg-white border rounded-md text-sm shadow-2xl text-[#17202A] focus:border-[#17202A] focus:outline-none focus:shadow-lg"
+                  disabled={editPage === "manageEvent" && field.type === "date"}
+                  className={`h-10 p-2 bg-white border rounded-md text-sm shadow-2xl text-[#17202A] focus:border-[#17202A] focus:outline-none focus:shadow-lg ${
+                    editPage === "manageEvent" && field.type === "date" 
+                      ? "cursor-not-allowed opacity-60" 
+                      : ""
+                  }`}
                 />
               </div>
             ))}
@@ -409,12 +451,7 @@ const EventDetailsForm: React.FC<EventDetailsFormProps> = ({
               <div className=" w-full flex flex-col" key={i}>
                 <Label className="text-[0.8rem]">
                   {field.label}
-                  {requiredFields.includes(field.name) &&
-                  !formData[field.name] ? (
                     <span className="text-red-500">*</span>
-                  ) : (
-                    <></>
-                  )}
                 </Label>
                 <input
                   id={field.id}
@@ -450,7 +487,7 @@ const EventDetailsForm: React.FC<EventDetailsFormProps> = ({
         </div>
       </div>
       <Button onClick={(e) => handleNext(e)} className="w-full mt-4">
-        Next
+        {editPage==="manageEvent"?"Save and Next":"Next"}
       </Button>
     </form>
   );

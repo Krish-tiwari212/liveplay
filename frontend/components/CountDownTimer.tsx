@@ -36,17 +36,17 @@ const MyTimer = ({ expiryTimestamp, setFeatureData }: MyTimerProps) => {
     } else if (editPage === "createEvent" && EventData) {
       setShowCountdown(EventData.countdown || false);
     }
-  }, [EventEditData]);
+  }, [EventEditData, EventData, editPage]);
 
   return (
     <div className="text-center font-sans p-8 bg-gradient-to-r bg-white shadow-lg rounded-lg relative">
       <div className="flex items-center space-x-2 relative">
+        <Label htmlFor="airplane-mode">Enable Countdown</Label>
         <Switch
           id="enable-countdown"
           onCheckedChange={handlecountdown}
           checked={showCountdown}
         />
-        <Label htmlFor="airplane-mode">Enable Countdown</Label>
       </div>
       {showCountdown && (
         <>

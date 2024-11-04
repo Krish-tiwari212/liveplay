@@ -10,6 +10,7 @@ import MyTimer from "@/components/CountDownTimer";
 import Drawfixtures from "@/components/Drawfixtures";
 import { Button } from "./ui/button";
 import { useEventContext } from "@/context/EventDataContext";
+import QandA from "./QandA";
 
 const OvervieSidebarContentFeatures = [
   {
@@ -32,7 +33,7 @@ interface EnableFeaturesProps {
 
 
 const EnableFeatures = ({ handleNext }: EnableFeaturesProps) => {
-  const { EventData, setEventData } = useEventContext();
+  const { EventData, setEventData,editPage } = useEventContext();
   const time = new Date();
   time.setSeconds(time.getSeconds() + 1000000);
   const [FeatureData, setFeatureData] = useState({
@@ -40,18 +41,22 @@ const EnableFeatures = ({ handleNext }: EnableFeaturesProps) => {
     drawFixtures: false,
   });
   return (
-    <div className="mt-20 mx-6 flex flex-col bg-slate-200 overflow-hidden gap-5">
-      <h1 className="text-3xl font-bold">Enable Features</h1>
-      <MyTimer expiryTimestamp={time} setFeatureData={setFeatureData} />
-      <TshirtForParticipant setFeatureData={setFeatureData} />
-      <Drawfixtures setFeatureData={setFeatureData} />
-      <GSTCompliance handleNext={handleNext} FeatureData={FeatureData} />
-      <Button
-        className="flex justify-center items-center gap-3 my-4 w-full"
-        onClick={handleNext}
-      >
-        Next
-      </Button>
+    <div className="m-6">
+      <h1 className="text-3xl font-bold mb-8">Event Setup</h1>
+      <div className="flex flex-col bg-slate-200 overflow-hidden gap-5">
+        <MyTimer expiryTimestamp={time} setFeatureData={setFeatureData} />
+        <TshirtForParticipant setFeatureData={setFeatureData} />
+        <Drawfixtures setFeatureData={setFeatureData} />
+        <QandA handleNext={handleNext} FeatureData={FeatureData} />
+        <GSTCompliance handleNext={handleNext} FeatureData={FeatureData} />
+
+        <Button
+          className="flex justify-center items-center gap-3 my-4 w-full"
+          onClick={handleNext}
+        >
+          Next
+        </Button>
+      </div>
     </div>
   );
 };

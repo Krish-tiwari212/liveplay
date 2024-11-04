@@ -5,6 +5,7 @@ import { useState } from "react";
 import { HiOutlineCalendar, HiOutlineClock, HiOutlineCurrencyDollar, HiOutlineMapPin } from "react-icons/hi2";
 import { Button } from "./ui/button";
 import { IoTicketSharp } from "react-icons/io5";
+import { useRouter } from "next/navigation";
 import {
   Dialog,
   DialogContent,
@@ -37,6 +38,7 @@ const EventCard = ({
   price,
 }: EventCardProps) => {
   const [openDialog, setOpenDialog] = useState(false);
+  const router = useRouter();
 
   return (
     <>
@@ -85,7 +87,7 @@ const EventCard = ({
 
       {openDialog && (
         <Dialog open={openDialog} onOpenChange={setOpenDialog}>
-          <DialogContent className="bg-white rounded-lg shadow-2xl transition-transform transform w-[55%] p-10">
+          <DialogContent className="bg-white rounded-lg shadow-2xl transition-transform transform p-10">
             <DialogHeader>
               <DialogTitle className="text-2xl font-bold text-[#17202A]">{eventname}</DialogTitle>
             </DialogHeader>
@@ -124,6 +126,7 @@ const EventCard = ({
                       </p>
                       <Button
                         className="text-sm bg-[#17202A] text-white hover:shadow-md"
+                        onClick={() => router.push("/auth/complete-profile")}
                       >
                         Register
                       </Button>

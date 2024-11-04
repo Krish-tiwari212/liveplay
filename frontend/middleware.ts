@@ -5,10 +5,9 @@ export async function middleware(request: NextRequest) {
   const { supabaseResponse, user } = await updateSession(request);
   const { pathname } = request.nextUrl;
 
-  // Redirect authenticated users away from login and sign-up pages
   if (user && (pathname === '/login' || pathname === '/sign-up')) {
     const url = request.nextUrl.clone();
-    url.pathname = '/dashboard';  // Adjust this path to your app's post-login page
+    url.pathname = '/organizerDashboard';  
     return NextResponse.redirect(url);
   }
 

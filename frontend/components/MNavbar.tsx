@@ -6,32 +6,49 @@ import { IoMdList } from "react-icons/io";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useToast } from "@/hooks/use-toast";
+import { createClient } from "@/utils/supabase/client"; // Assuming you have a Supabase client setup
 
 const MNavbar = () => {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
-  const {toast}=useToast()
-  useEffect(() => {
-    const username = localStorage.getItem("username");
-    const password = localStorage.getItem("password");
+  const { toast } = useToast();
+  const router = useRouter();
+  const supabase = createClient();
 
-    if (username && password) {
-      setIsLoggedIn(true);
-    }
+  useEffect(() => {
+    const checkLoginStatus = async () => {
+      const { data, error } = await supabase.auth.getSession();
+      console.log(data);
+      if (data.session) {
+        setIsLoggedIn(true);
+      } else {
+        setIsLoggedIn(false);
+      }
+    };
+
+    checkLoginStatus();
   }, []);
 
-
-  const handleLogout = async() => {
-    await new Promise((resolve) => setTimeout(resolve, 2000));
-    localStorage.removeItem("username");
-    localStorage.removeItem("password");
-    setIsLoggedIn(false); 
-    toast({
-      title: "Logout Succesful",
-      description: "Succesfully Logged Out!",
-      variant: "default",
+  const handleLogout = async () => {
+    const response = await fetch("/api/auth/logout", {
+      method: "POST",
     });
+
+    if (response.ok) {
+      setIsLoggedIn(false);
+      toast({
+        title: "Logout Successful",
+        description: "Successfully Logged Out!",
+        variant: "default",
+      });
+    } else {
+      const result = await response.json();
+      toast({
+        title: "Logout Failed",
+        description: result.error || "An error occurred. Please try again.",
+        variant: "destructive",
+      });
+    }
   };
-  const router = useRouter();
 
   return (
     <div className="md:hidden flex items-center justify-between p-4 bg-[#17202A] text-white gap-10 shadow-lg">
@@ -55,7 +72,7 @@ const MNavbar = () => {
                 </button>
               </Link>
             ) : (
-              <Link href={"/login"}>
+              <Link href={"/auth/login"}>
                 <button className="bg-transparent flex text-white py-4">
                   <FaUserCircle className="inline mr-2" size={30} />
                   <h1 className="block md:text-lg">SignIn</h1>
@@ -64,7 +81,7 @@ const MNavbar = () => {
             )}
             {isLoggedIn && (
               <button
-                onClick={() => router.push("/dashboard")}
+                onClick={() => router.push("organizerDashboard")}
                 className="flex items-center bg-white  text-[#17202A] rounded-full px-6 md:px-10 py-1 hover:bg-slate-400  transition transform hover:-translate-y-1 hover:shadow-lg hover:shadow-gray-500 border border-transparent"
               >
                 <MdOutlineEvent className="inline mr-2" size={20} />

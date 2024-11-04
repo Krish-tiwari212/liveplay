@@ -52,12 +52,12 @@ const TshirtForParticipant = ({
   return (
     <div className="bg-white shadow-2xl p-6 rounded-lg">
       <div className="flex items-center m-2 space-x-2 relative">
+        <Label htmlFor="airplane-mode">Order T-Shirts</Label>
         <Switch
           id="enable-countdown"
           onCheckedChange={handleTshirts}
           checked={showTShirt}
         />
-        <Label htmlFor="airplane-mode">Order T-Shirts</Label>
       </div>
       {showTShirt && (
         <>
@@ -86,7 +86,7 @@ const TshirtForParticipant = ({
             <div className="mt-4 ml-4 text-green-600">
               <p>Our team will get in touch within 24 hours.</p>
             </div>
-          ) }
+          )}
         </>
       )}
     </div>
