@@ -48,9 +48,7 @@ const EnableFeatures = ({ handleNext }: EnableFeaturesProps) => {
         <TshirtForParticipant setFeatureData={setFeatureData} />
         <Drawfixtures setFeatureData={setFeatureData} />
         <QandA handleNext={handleNext} FeatureData={FeatureData} />
-        {editPage !== "manageEvent" && (
-          <GSTCompliance handleNext={handleNext} FeatureData={FeatureData} />
-        )}
+        <GSTCompliance handleNext={handleNext} FeatureData={FeatureData} />
 
         <Button
           className="flex justify-center items-center gap-3 my-4 w-full"
