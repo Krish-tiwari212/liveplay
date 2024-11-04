@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react'
 import { Label } from './ui/label';
 import { useEventContext } from '@/context/EventDataContext';
 import { Button } from './ui/button';
+import { toast } from '@/hooks/use-toast';
 
 interface FormField {
   id: string;
@@ -17,6 +18,7 @@ interface EventInsights {
   formData: any;
   setFormData: React.Dispatch<React.SetStateAction<any>>;
   setFormType: React.Dispatch<React.SetStateAction<any>>;
+  ManageEventId:any
 }
 
 const requiredFields = [
@@ -71,18 +73,24 @@ const EventInsights: React.FC<EventInsights> = ({
   formData,
   setFormData,
   setFormType,
+  ManageEventId,
 }) => {
-  
-  const { EventData, setEventData,setEventEditData,EventEditData,editPage } = useEventContext();
+  const {
+    EventData,
+    setEventData,
+    setEventEditData,
+    EventEditData,
+    editPage,
+    fetchedEventdatafromManagemeEvent,
+  } = useEventContext();
   const handleChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
     const { name, value } = e.target;
-      setFormData((prevData: any) => ({ ...prevData, [name]: value })); 
-      if(editPage==="manageEvent"){
-        setEventEditData((prevData: any) => ({ ...prevData, [name]: value })); 
-      }else{
-        setEventData((prevData: any) => ({ ...prevData, [name]: value })); 
-      }
-      
+    setFormData((prevData: any) => ({ ...prevData, [name]: value }));
+    if (editPage === "manageEvent") {
+      setEventEditData((prevData: any) => ({ ...prevData, [name]: value }));
+    } else {
+      setEventData((prevData: any) => ({ ...prevData, [name]: value }));
+    }
   };
   useEffect(() => {
     if (editPage === "manageEvent" && EventEditData) {
@@ -102,12 +110,59 @@ const EventInsights: React.FC<EventInsights> = ({
         playing_rules: EventData.playing_rules || "",
       }));
     }
-  }, [EventData, EventEditData]); 
+  }, [EventData, EventEditData]);
 
-  const handleNext=(e:any)=>{
-    e.preventDefault(); 
+  const handleNext = async (e: any) => {
+    e.preventDefault();
+    if (editPage === "manageEvent") {
+      const differences = {};
+      const formFields = [
+        "event_description",
+        "event_usp",
+        "rewards_for_participants",
+        "playing_rules",
+      ];
+
+      formFields.forEach((field) => {
+        if (
+          EventEditData?.[field] !== fetchedEventdatafromManagemeEvent?.[field]
+        ) {
+          differences[field] = EventEditData?.[field];
+        }
+      });
+      console.log(differences);
+
+      if (Object.keys(differences).length > 0) {
+        try {
+          const response = await fetch(`/api/event/update/${ManageEventId}`, {
+            method: "PATCH",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify(differences),
+          });
+
+          const result = await response.json();
+          if (response.ok) {
+            toast({
+              title: "Event updated successfully",
+              variant: "default",
+            });
+          } else {
+            throw new Error(result.error || "Failed to update event");
+          }
+        } catch (error) {
+          console.error("An error occurred:", error);
+          toast({
+            title: "Failed to update event. Please try again.",
+            variant: "destructive",
+          });
+          return;
+        }
+      }
+    }
     setFormType("Branding");
-  }
+  };
 
   return (
     <form className="bg-white p-5 rounded-lg shadow-2xl">
@@ -116,11 +171,7 @@ const EventInsights: React.FC<EventInsights> = ({
           <div key={field.name} className="w-full m-2 flex flex-col mb-4">
             <Label className="font-bold text-lg">
               {field.label}
-              {requiredFields.includes(field.name) && !formData[field.name] ? (
                 <span className="text-red-500">*</span>
-              ) : (
-                <></>
-              )}
             </Label>
             <textarea
               id={field.name}
@@ -136,7 +187,7 @@ const EventInsights: React.FC<EventInsights> = ({
         ))}
       </div>
       <Button onClick={(e) => handleNext(e)} className="w-full mt-4">
-        Next
+        {editPage === "manageEvent" ? "Save and Next" : "Next"}
       </Button>
     </form>
   );

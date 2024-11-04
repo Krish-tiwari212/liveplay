@@ -3,9 +3,9 @@
 import React, { useEffect } from 'react'
 import { Button } from './ui/button';
 import { useRouter } from 'next/navigation';
-import { FaBarsProgress, FaIndianRupeeSign, FaUserGroup } from 'react-icons/fa6';
+import { FaBarsProgress, FaIndianRupeeSign, FaPeopleCarryBox, FaPeopleGroup, FaUserGroup } from 'react-icons/fa6';
 import { IoBarChart } from 'react-icons/io5';
-import { FaChartPie, FaEye, FaRupeeSign, FaStar, FaTimes, FaUser } from 'react-icons/fa';
+import { FaChartPie, FaEye, FaRegEye, FaRupeeSign, FaStar, FaTimes, FaUser } from 'react-icons/fa';
 import { SlCalender } from "react-icons/sl";
 import { GiSparklingSabre, GiTrophyCup } from "react-icons/gi";
 import { TiChartBarOutline } from "react-icons/ti";
@@ -41,19 +41,19 @@ const metrics = [
   {
     title: "Event Views",
     description: "Total number of users who have viewed this event",
-    icon: <FaUser />,
+    icon: <FaRegEye />,
     data: 150,
   },
   {
     title: "Number of Registrations",
     description: "Total number of event registrations",
-    icon: <FaEye />,
+    icon: <FaPeopleGroup />,
     data: 75,
   },
   {
     title: "Number of Interested People",
     description: "Total number of users interested in this event",
-    icon: <FaTimes />,
+    icon: <FaPeopleCarryBox />,
     data: 10,
   },
 ];

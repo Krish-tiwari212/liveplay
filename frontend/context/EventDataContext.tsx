@@ -25,6 +25,8 @@ interface EventContextType {
   setUserType: React.Dispatch<React.SetStateAction<string>>;
   notification: NotificationData[];
   setNotification: React.Dispatch<React.SetStateAction<NotificationData[]>>;
+  fetchedEventdatafromManagemeEvent:EventData;
+  setFetchedEventdatafromManagemeEvent: React.Dispatch<React.SetStateAction<EventData>>;
 }
 
 const EventContext = createContext<EventContextType | undefined>(undefined);
@@ -40,6 +42,10 @@ export const EventProvider: React.FC<{ children: ReactNode }> = ({
   const [nextId, setNextId] = useState(0); 
   const [UserType,setUserType]=useState("organizer")
   const [notification, setNotification] = useState<NotificationData[]>([]);
+  const [
+    fetchedEventdatafromManagemeEvent,
+    setFetchedEventdatafromManagemeEvent,
+  ]=useState({})
 
   return (
     <EventContext.Provider
@@ -59,7 +65,9 @@ export const EventProvider: React.FC<{ children: ReactNode }> = ({
         UserType,
         setUserType,
         notification,
-        setNotification
+        setNotification,
+        fetchedEventdatafromManagemeEvent,
+        setFetchedEventdatafromManagemeEvent
       }}
     >
       {children}

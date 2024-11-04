@@ -54,9 +54,14 @@ const ProgressBarCheckpointsManageEventID = [
     placement: 6,
   },
   {
+    icon: <MdLiveTv />,
+    label: "Live Match Tracking",
+    placement: 7,
+  },
+  {
     icon: <MdOutlineRocketLaunch />,
     label: "Event Boosters",
-    placement: 7,
+    placement: 8,
   },
 ];
 
@@ -114,10 +119,8 @@ const page = ({params}:any) => {
   const [isPlaying, setIsPlaying] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [fetchedData, setFetchedData] = useState<EventData | null>(null);
-  const { setDashboardName } = useEventContext();
-  useEffect(() => {
-    setEditPage("manageEvent")
-  }, []);
+  const { setDashboardName,setFetchedEventdatafromManagemeEvent } = useEventContext();
+  
   const [currentPage, setCurrentPage] = useState(1);
   const totalPages = 8;
 
@@ -164,6 +167,8 @@ const page = ({params}:any) => {
             {}
         );
 
+        console.log(differences);
+
         try {
             const response = await fetch(`/api/event/update/${ManageEventId}`, {
                 method: "PATCH",
@@ -197,10 +202,12 @@ const page = ({params}:any) => {
 
   useEffect(() => {
     setDashboardName("Event Management");
+    setEditPage("manageEvent");
     if (ManageEventId) {
       const loadEventDetails = async () => {
         const event = await fetchEventDetails(ManageEventId);
         setEventEditData(event);
+        setFetchedEventdatafromManagemeEvent(event)
       };
       loadEventDetails();
     }
@@ -217,37 +224,38 @@ const page = ({params}:any) => {
         checkpoints={ProgressBarCheckpointsManageEventID}
       />
       <div className="relative">
-        {(currentPage === 3 || currentPage === 4 || currentPage === 5) && (
-          <div
-            className={`absolute ${
-              currentPage === 4 ? "right-40" : "right-6"
-            } top-0 lg:top-30`}
-          >
-            <Button onClick={handleeditButton} className="w-20">
-              Save Changes
-            </Button>
-          </div>
-        )}
-        {EventEditData.enable_fixtures===true ? (
+        {EventEditData.enable_fixtures === true ? (
           <div className="mt-20 lg:mt-4 w-full rounded-lg">
             {currentPage === 1 && <EventMatrics handleNext={handleNext} />}
             {currentPage === 2 && <Report handleNext={handleNext} />}
-            {currentPage === 3 && <EventInformation handleNext={handleNext} />}
+            {currentPage === 3 && (
+              <EventInformation
+                handleNext={handleNext}
+                ManageEventId={ManageEventId}
+              />
+            )}
             {currentPage === 4 && <CategoryPreview handleNext={handleNext} />}
             {currentPage === 5 && <EnableFeatures handleNext={handleNext} />}
             {currentPage === 6 && (
               <DrawCreation id={ManageEventId} handleNext={handleNext} />
             )}
-            {currentPage === 7 && <EventBoosters handleNext={handleNext} />}
+            {currentPage === 7 && <LiveMatchTracking handleNext={handleNext} />}
+            {currentPage === 8 && <EventBoosters handleNext={handleNext} />}
           </div>
         ) : (
           <div className="mt-20 lg:mt-4 w-full rounded-lg">
             {currentPage === 1 && <EventMatrics handleNext={handleNext} />}
             {currentPage === 2 && <Report handleNext={handleNext} />}
-            {currentPage === 3 && <EventInformation handleNext={handleNext} />}
+            {currentPage === 3 && (
+              <EventInformation
+                handleNext={handleNext}
+                ManageEventId={ManageEventId}
+              />
+            )}
             {currentPage === 4 && <CategoryPreview handleNext={handleNext} />}
             {currentPage === 5 && <EnableFeatures handleNext={handleNext} />}
-            {currentPage === 6 && <EventBoosters handleNext={handleNext} />}
+            {currentPage === 6 && <LiveMatchTracking handleNext={handleNext} />}
+            {currentPage === 7 && <EventBoosters handleNext={handleNext} />}
           </div>
         )}
 

@@ -158,7 +158,7 @@ const MSidebar = () => {
                     }`}
                   >
                     <MdOutlineSecurity className="mr-2 text-xl" /> Unlock
-                    Earnings KYC
+                    Earnings - KYC
                   </button>
                 </Link>
               </li>
@@ -231,7 +231,7 @@ const MSidebar = () => {
       <div className="mt-auto">
         <ul>
           <li>
-            <Link href="/organizerDashboard/setting">
+            <Link href="/organizerDashboard/settings">
               <button className="flex lg:text-md items-center w-full py-2 pl-2 hover:bg-[#CDDC29] hover:text-[#17202A] rounded transition-colors duration-200 relative">
                 <FaCogs className="mr-2 text-xl" /> Settings
               </button>

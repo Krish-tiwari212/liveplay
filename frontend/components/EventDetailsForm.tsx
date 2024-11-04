@@ -16,6 +16,7 @@ import { Button } from "./ui/button";
 import { format } from "date-fns"; 
 import { FaBasketball } from "react-icons/fa6";
 import { DatePickerDemo } from "@/components/DatePicker";
+import { toast } from "@/hooks/use-toast";
 
 interface FormField {
   id: string;
@@ -38,6 +39,7 @@ interface EventDetailsFormProps {
   formData: any;
   setFormData: React.Dispatch<React.SetStateAction<any>>;
   setFormType: React.Dispatch<React.SetStateAction<any>>;
+  ManageEventId:any
 }
 
 const SportsType = [
@@ -212,8 +214,9 @@ const EventDetailsForm: React.FC<EventDetailsFormProps> = ({
   formData,
   setFormData,
   setFormType,
+  ManageEventId
 }) => {
-  const { EventData,EventEditData, setEventData,editPage,setEventEditData } = useEventContext();
+  const { EventData,EventEditData, setEventData,editPage,setEventEditData,fetchedEventdatafromManagemeEvent } = useEventContext();
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
     setFormData({ ...formData, [name]: value });
@@ -249,10 +252,62 @@ const EventDetailsForm: React.FC<EventDetailsFormProps> = ({
 
   
 
-   const handleNext = (e: any) => {
-    e.preventDefault(); 
-     setFormType("Location");
+   const handleNext = async (e: any) => {
+    e.preventDefault();
+    if (editPage === "manageEvent") {
+      const differences = {};
+      const formFields = [
+        'sport',
+        'event_name',
+        'last_registration_date',
+        'last_withdrawal_date',
+        'start_date',
+        'end_date',
+        'start_time',
+        'organizer_name',
+        'organizer_contact_number',
+        'organizer_email'
+      ];
+
+      formFields.forEach(field => {
+        if (EventEditData?.[field] !== fetchedEventdatafromManagemeEvent?.[field]) {
+          differences[field] = EventEditData?.[field];
+        }
+      });
+      console.log(differences);
+
+      if (Object.keys(differences).length > 0) {
+        try {
+          const response = await fetch(`/api/event/update/${ManageEventId}`, {
+            method: "PATCH",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify(differences),
+          });
+
+          const result = await response.json();
+          if (response.ok) {
+            toast({
+              title: "Event updated successfully",
+              variant: "default",
+            });
+          } else {
+            throw new Error(result.error || 'Failed to update event');
+          }
+        } catch (error) {
+          console.error("An error occurred:", error);
+          toast({
+            title: "Failed to update event. Please try again.",
+            variant: "destructive",
+          });
+          return;
+        }
+      }
+    }
+    setFormType("Location");
    };
+
 
   return (
     <form className="bg-white shadow-2xl p-5 rounded-lg">
@@ -312,12 +367,7 @@ const EventDetailsForm: React.FC<EventDetailsFormProps> = ({
               <div key={field.id} className={` w-full m-2 flex flex-col`}>
                 <Label className="font-bold text-lg">
                   {field.label}
-                  {requiredFields.includes(field.name) &&
-                  !formData[field.name] ? (
                     <span className="text-red-500">*</span>
-                  ) : (
-                    <></>
-                  )}
                 </Label>
                 <input
                   id={field.id}
@@ -344,12 +394,7 @@ const EventDetailsForm: React.FC<EventDetailsFormProps> = ({
               <div className="w-full flex flex-col" key={i}>
                 <Label className="text-[0.8rem]">
                   {field.label}
-                  {requiredFields.includes(field.name) &&
-                  !formData[field.name] ? (
                     <span className="text-red-500">*</span>
-                  ) : (
-                    <></>
-                  )}
                 </Label>
                 <input
                   id={field.id}
@@ -375,12 +420,7 @@ const EventDetailsForm: React.FC<EventDetailsFormProps> = ({
               <div className=" w-full flex flex-col" key={i}>
                 <Label className="text-[0.8rem]">
                   {field.label}
-                  {requiredFields.includes(field.name) &&
-                  !formData[field.name] ? (
-                    <span className="text-red-500">*</span>
-                  ) : (
-                    <></>
-                  )}
+                  <span className="text-red-500">*</span>
                 </Label>
                 <input
                   id={field.id}
@@ -391,7 +431,12 @@ const EventDetailsForm: React.FC<EventDetailsFormProps> = ({
                     formData[field.name as keyof EventDetailsFormProps] || ""
                   }
                   onChange={handleChange}
-                  className="h-10 p-2 bg-white border rounded-md text-sm shadow-2xl text-[#17202A] focus:border-[#17202A] focus:outline-none focus:shadow-lg"
+                  disabled={editPage === "manageEvent" && field.type === "date"}
+                  className={`h-10 p-2 bg-white border rounded-md text-sm shadow-2xl text-[#17202A] focus:border-[#17202A] focus:outline-none focus:shadow-lg ${
+                    editPage === "manageEvent" && field.type === "date" 
+                      ? "cursor-not-allowed opacity-60" 
+                      : ""
+                  }`}
                 />
               </div>
             ))}
@@ -406,12 +451,7 @@ const EventDetailsForm: React.FC<EventDetailsFormProps> = ({
               <div className=" w-full flex flex-col" key={i}>
                 <Label className="text-[0.8rem]">
                   {field.label}
-                  {requiredFields.includes(field.name) &&
-                  !formData[field.name] ? (
                     <span className="text-red-500">*</span>
-                  ) : (
-                    <></>
-                  )}
                 </Label>
                 <input
                   id={field.id}
@@ -447,7 +487,7 @@ const EventDetailsForm: React.FC<EventDetailsFormProps> = ({
         </div>
       </div>
       <Button onClick={(e) => handleNext(e)} className="w-full mt-4">
-        Next
+        {editPage==="manageEvent"?"Save and Next":"Next"}
       </Button>
     </form>
   );
