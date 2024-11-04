@@ -12,8 +12,13 @@ import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { useEventContext } from '@/context/EventDataContext';
 import { Skeleton } from '@/components/ui/skeleton';
-import { TooltipContent,Tooltip, TooltipProvider, TooltipTrigger } from '@radix-ui/react-tooltip';
 import { TbCoinRupeeFilled } from 'react-icons/tb';
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
 
 
 interface EventCard {
