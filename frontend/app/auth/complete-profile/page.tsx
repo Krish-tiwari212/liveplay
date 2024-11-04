@@ -68,7 +68,7 @@ const CompleteDetailsForm = () => {
   
     if (response.ok) {
       toast({ title: "Details Updated", description: "Your details have been updated successfully!" });
-      router.push("/playerdashboard");
+      router.push("/");
     } else {
       toast({ title: "Update Failed", description: result.error || "An error occurred. Please try again.", variant: "destructive" });
     }

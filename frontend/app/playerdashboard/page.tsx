@@ -7,6 +7,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { FaCalendarAlt, FaPlus, FaRegEye, FaRegThumbsUp } from "react-icons/fa";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { createClient } from "@/utils/supabase/client";
 import {
   FaHandHoldingDollar,
   FaIndianRupeeSign,
@@ -82,8 +83,8 @@ const EventDetails = () => {
             <p className="font-bold">Krish</p>
           </div>
           <div>
-            <p className="text-sm text-gray-500">SEATS</p>
-            <p className="font-bold">DRESS CI - F7</p>
+            <p className="text-sm text-gray-500">Event Likes</p>
+            <p className="font-bold">100</p>
           </div>
         </div>
       </div>
@@ -103,7 +104,9 @@ export default function Home() {
   const [isRegistrationModalOpen, setIsRegistrationModalOpen] = useState(false);
   const [registeredCategories, setRegisteredCategories] = useState<Category[]>([]);
   const router = useRouter();
-
+  const supabase = createClient();
+  const [userDetails, setUserDetails] = useState(null); 
+  
   useEffect(() => {
     const matchMedia = window.matchMedia("(prefers-color-scheme: dark)");
     const handleThemeChange = (e: MediaQueryListEvent) => {
@@ -117,8 +120,30 @@ export default function Home() {
   }, []);
 
   useEffect(() => {
+    console.log(user);
     setDashboardName("Player Dashboard");
   }, []);
+
+  useEffect(() => {
+    const fetchUserDetails = async () => {
+      if (user?.id) {
+        const { data, error } = await supabase
+          .from('users')
+          .select('*')
+          .eq('id', user.id)
+          .single();
+
+        if (error) {
+          console.error('Error fetching user details:', error);
+        } else {
+          setUserDetails(data);
+        }
+      }
+    };
+    console.log(userDetails);
+
+    fetchUserDetails();
+  }, [user?.id]);
 
   useEffect(() => {
     const fetchEvents = async () => {
@@ -209,12 +234,14 @@ export default function Home() {
   return (
     <div className="flex flex-col m-3">
       <div className={`flex justify-between`}>
-        <Button
-          onClick={() => router.push("/auth/complete-profile")}
-          className="text-md shadow-md shadow-gray-500 px-5 bg-red-500 text-white"
-        >
-          Complete your Profile!
-        </Button>
+        {!userDetails?.gender && (
+          <Button
+            onClick={() => router.push("/auth/complete-profile")}
+            className="text-md shadow-md shadow-gray-500 px-5 bg-red-500 text-white"
+          >
+            Complete your Profile!
+          </Button>
+        )}
         <Button
           onClick={() => router.push("/")}
           className="text-md shadow-md shadow-gray-500 px-5"

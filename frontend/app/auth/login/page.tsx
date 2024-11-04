@@ -56,7 +56,7 @@ const LoginForm = () => {
         title: "Login Successful",
         description: "You are now logged in!",
       });
-      router.push("/playerdashboard");
+      router.push("/");
     } else {
       toast({
         title: "Login Failed",
@@ -98,6 +98,14 @@ const LoginForm = () => {
             <FaGoogle className="text-xl" />
             <span>{loading ? "Logging in..." : "Login with Google"}</span>
           </Button>
+        </div>
+        <div className="relative my-4">
+          <div className="absolute inset-0 flex items-center">
+            <div className="w-full border-t border-gray-300"></div>
+          </div>
+          <div className="relative flex justify-center text-sm">
+            <span className="px-2 bg-white text-gray-500">or</span>
+          </div>
         </div>
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">

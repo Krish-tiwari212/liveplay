@@ -62,7 +62,7 @@ const Navbar = () => {
         </button>
         {isLoggedIn && (
           <button
-            onClick={() => router.push("organizerDashboard")}
+            onClick={() => router.push("playerdashboard")}
             className="flex items-center bg-white text-[#17202A] rounded-full px-6 md:px-10 py-2 hover:bg-slate-400 transition transform hover:-translate-y-1 hover:shadow-lg hover:shadow-gray-500 border border-transparent"
           >
             <MdOutlineEvent className="inline mr-2" size={20} />

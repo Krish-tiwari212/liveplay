@@ -24,6 +24,7 @@ export async function POST(request: Request) {
       if (error) {
         return NextResponse.json({ error: error.message }, { status: 400 });
       }
+      
       return NextResponse.json({ url: data.url });
     }
 
@@ -42,6 +43,7 @@ export async function POST(request: Request) {
 
     // Insert user into the 'users' table
     const { error: insertError } = await supabase.from('users').insert({
+      id: authData.user.id,
       full_name,
       email,
     });
