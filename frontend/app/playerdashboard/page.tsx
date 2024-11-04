@@ -41,6 +41,7 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
+import CompleteDetailsForm from "@/components/CompleteDetailsForm";
 
 interface EventCard {
   id: number;
@@ -107,7 +108,17 @@ export default function Home() {
   const router = useRouter();
   const supabase = createClient();
   const [userDetails, setUserDetails] = useState(null); 
+  const [isDialogOpen, setIsDialogOpen] = useState(false);
   
+  const handleButtonClick = () => {
+    setIsDialogOpen(true);
+  };
+  
+  // Function to handle dialog close
+  const handleCloseDialog = () => {
+    setIsDialogOpen(false);
+  };
+
   useEffect(() => {
     const matchMedia = window.matchMedia("(prefers-color-scheme: dark)");
     const handleThemeChange = (e: MediaQueryListEvent) => {
@@ -237,7 +248,7 @@ export default function Home() {
       <div className={`flex justify-between`}>
         {!userDetails?.gender && (
           <Button
-            onClick={() => router.push("/auth/complete-profile")}
+            onClick={handleButtonClick}
             className="text-md shadow-md shadow-gray-500 px-5 bg-red-500 text-white"
           >
             Complete your Profile!
@@ -487,6 +498,14 @@ export default function Home() {
             >
               Register for More Categories
             </Button>
+          </DialogContent>
+        </Dialog>
+      )}
+      {isDialogOpen && (
+        <Dialog onOpenChange={handleCloseDialog} open={isDialogOpen}>
+          <DialogTitle>Complete Your Profile</DialogTitle>
+          <DialogContent>
+            <CompleteDetailsForm />
           </DialogContent>
         </Dialog>
       )}
