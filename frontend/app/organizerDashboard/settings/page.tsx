@@ -1,7 +1,7 @@
 "use client"
 
 import { Button } from "@/components/ui/button"
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
+import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Separator } from "@/components/ui/separator"
@@ -20,8 +20,12 @@ const SettingsPage = () => {
         <Card>
           <CardHeader className="flex flex-row items-center justify-between">
             <div>
-              <CardTitle className="text-gray-800">Profile Information</CardTitle>
-              <CardDescription>Update your personal information.</CardDescription>
+              <CardTitle className="text-gray-800">
+                Profile Information
+              </CardTitle>
+              <CardDescription>
+                Update your personal information.
+              </CardDescription>
             </div>
             <Button variant="outline" size="sm">
               <User className="mr-2 h-4 w-4" />
@@ -64,23 +68,18 @@ const SettingsPage = () => {
               <Label htmlFor="email">Email Address</Label>
               <div className="relative">
                 <Mail className="absolute left-2 top-2.5 h-4 w-4 text-gray-500" />
-                <Input id="email" type="email" placeholder="john.doe@example.com" className="pl-8" />
+                <Input
+                  id="email"
+                  type="email"
+                  placeholder="john.doe@example.com"
+                  className="pl-8"
+                />
               </div>
             </div>
           </CardContent>
         </Card>
 
         <Card>
-          <CardHeader className="flex flex-row items-center justify-between">
-            <div>
-              <CardTitle className="text-gray-800">Change Password</CardTitle>
-              <CardDescription>Ensure your account is using a secure password.</CardDescription>
-            </div>
-            <Button variant="outline" size="sm">
-              <Lock className="mr-2 h-4 w-4" />
-              Change Password
-            </Button>
-          </CardHeader>
           <CardContent className="space-y-4">
             <div className="space-y-2">
               <Label htmlFor="currentPassword">Current Password</Label>
@@ -104,6 +103,19 @@ const SettingsPage = () => {
               </div>
             </div>
           </CardContent>
+
+          <CardFooter className="flex flex-row items-center justify-between">
+            <div>
+              <CardTitle className="text-gray-800">Change Password</CardTitle>
+              <CardDescription>
+                Ensure your account is using a secure password.
+              </CardDescription>
+            </div>
+            <Button variant="outline" size="sm">
+              <Lock className="mr-2 h-4 w-4" />
+              Change Password
+            </Button>
+          </CardFooter>
         </Card>
 
         <div className="flex justify-end gap-4">
@@ -115,7 +127,7 @@ const SettingsPage = () => {
         </div>
       </div>
     </div>
-  )
+  );
 }
 
 export default SettingsPage

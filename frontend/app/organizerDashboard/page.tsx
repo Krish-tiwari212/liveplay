@@ -5,7 +5,7 @@ import { useAppContext } from "@/lib/context/AppContext";
 import Image from "next/image";
 import Link from "next/link";
 import React, { useEffect, useState } from "react";
-import { FaCalendarAlt, FaCalendarCheck, FaPlus, FaRegEye, FaRegThumbsUp } from "react-icons/fa";
+import { FaCalendarAlt, FaCalendarCheck, FaPlus, FaRegEye, FaRegThumbsUp, FaUnlockAlt } from "react-icons/fa";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { FaHandHoldingDollar, FaIndianRupeeSign, FaPeopleGroup } from "react-icons/fa6";
 import { LiaStreetViewSolid } from "react-icons/lia";
@@ -92,12 +92,13 @@ export default function Home() {
   }, []);
   return (
     <div className="flex flex-col m-3">
-      <div className={`flex justify-between `}>
+      <div className={`flex gap-4`}>
         <Button
-          onClick={() => router.push("/organizerorganizerDashboard/kyc/1234")}
-          className="text-md shadow-md shadow-gray-500 w-auto px-20"
+          onClick={() => router.push(`/organizerDashboard/kyc/${user?.id}`)}
+          className="text-md shadow-md shadow-gray-500 w-auto px-10"
         >
-          Unlock Event Earnings KYC
+          <FaUnlockAlt className="mr-2 text-xl" />
+          Unlock Event Earnings
         </Button>
         <Button
           onClick={() => router.push("/organizerDashboard/create_event")}
@@ -223,7 +224,9 @@ export default function Home() {
                               </span>
                             </TooltipTrigger>
                             <TooltipContent>
-                              <p>Event Registrations : {event.entries || "N/A"}</p>
+                              <p>
+                                Event Registrations : {event.entries || "N/A"}
+                              </p>
                             </TooltipContent>
                           </Tooltip>
                           <Tooltip>

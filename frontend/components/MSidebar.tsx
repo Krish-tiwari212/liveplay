@@ -73,7 +73,9 @@ const MSidebar = () => {
       className={`hidden bg-[#17202A] text-white p-4 shadow-lg transition-width duration-300 ease-in-out md:flex flex-col h-full z-50 sticky flex-[1]`}
     >
       <div className="flex items-center mb-6 border-b border-gray-700 pb-6 pt-6">
-        <Link href={"/"}>
+        <Link
+          href={isplayerdashboard ? "/playerdashboard" : "/organizerDashboard"}
+        >
           <div className="text-3xl font-bold text-gray-500 ml-2">
             <Image
               src="/images/Logo.png"

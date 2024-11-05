@@ -31,6 +31,10 @@ interface EventContextType {
   >;
   kycCompleted: boolean;
   setKycCompleted: React.Dispatch<React.SetStateAction<boolean>>;
+  profileCompleted: boolean;
+  setProfileCompleted: React.Dispatch<React.SetStateAction<boolean>>;
+  completeprofileDialog:boolean
+  setCompleteprofileDialog: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
 const EventContext = createContext<EventContextType | undefined>(undefined);
@@ -51,6 +55,8 @@ export const EventProvider: React.FC<{ children: ReactNode }> = ({
     setFetchedEventdatafromManagemeEvent,
   ]=useState({})
   const [kycCompleted,setKycCompleted]=useState(false)
+  const [profileCompleted, setProfileCompleted] = useState(false);
+  const [completeprofileDialog, setCompleteprofileDialog]=useState(false)
 
   return (
     <EventContext.Provider
@@ -75,6 +81,10 @@ export const EventProvider: React.FC<{ children: ReactNode }> = ({
         setFetchedEventdatafromManagemeEvent,
         kycCompleted,
         setKycCompleted,
+        profileCompleted,
+        setProfileCompleted,
+        completeprofileDialog,
+        setCompleteprofileDialog
       }}
     >
       {children}

@@ -314,7 +314,7 @@ const AddCategory = ({ setCategoryData ,type,category}: AddCategoryProps) => {
               onChange={(e) => {
                 setLocalCategoryData({
                   ...categoryData,
-                  age_from: e.toString(),
+                  age_from: e.target.value.toString(),
                 });
               }}
               min="0"
@@ -328,10 +328,9 @@ const AddCategory = ({ setCategoryData ,type,category}: AddCategoryProps) => {
               placeholder="To Age"
               value={categoryData.age_to}
               onChange={(e) => {
-                const value = Math.floor(parseInt(e.target.value) / 10) * 10;
                 setLocalCategoryData({
                   ...categoryData,
-                  age_to: value.toString(),
+                  age_to: e.target.value.toString(),
                 });
               }}
               min="0"

@@ -122,9 +122,8 @@ const EventMatrics = ({ handleNext }: EventMatricsProps) => {
     const [ParticipantRefund, setParticipantRefund] = useState(3000);
     const cancellationFeePercentage = 0.075;
 
-    const cancellationFee = amountPaid * cancellationFeePercentage;
     const netEventSales = amountPaid - ParticipantRefund;
-    const totalRefundAmount = netEventSales - cancellationFee;
+    const cancellationFee = netEventSales * cancellationFeePercentage;
 
     const handleUpgradeClick = () => {
         router.push('/payment');
@@ -201,36 +200,36 @@ const EventMatrics = ({ handleNext }: EventMatricsProps) => {
                   </p>
                 </div>
                 <div className="flex justify-between">
-                  <p>Participant Withdrawals (Refunds) : </p>
+                  <p>Participant Withdrawals (Refunds) </p>
                   <p className="flex justify-center items-center">
                     <FaIndianRupeeSign className="w-3 h-3" />
                     {ParticipantRefund.toFixed(2)}
                   </p>
                 </div>
                 <div className="flex justify-between">
-                  <p>Net Event Sales : </p>
+                  <p>Net Event Sales </p>
                   <p className="flex justify-center items-center">
                     <FaIndianRupeeSign className="w-3 h-3" />
                     {netEventSales.toFixed(2)}
                   </p>
                 </div>
-                <div className="flex justify-between">
-                  <p>Cancellation Fee (7.5%): </p>
+                <div className="flex justify-between font-semibold">
+                  <p className="">Cancellation Fee (7.5%) </p>
                   <p className="flex justify-center items-center">
                     <FaIndianRupeeSign className="w-3 h-3" />
                     {cancellationFee.toFixed(2)}
                   </p>
                 </div>
-                <div className="flex justify-between">
+                {/* <div className="flex justify-between">
                   <p>Total Refund Amount: </p>
                   <p className="flex justify-center items-center">
                     <FaIndianRupeeSign className="w-3 h-3" />
                     {totalRefundAmount.toFixed(2)}
                   </p>
-                </div>
+                </div> */}
               </div>
             </div>
-            <div className='flex justify-center items-center leading-none'>
+            <div className="flex justify-center items-center leading-none">
               <p>
                 <strong>Note : </strong>
                 Payment of Cancellation Fee is mandatory for initiating

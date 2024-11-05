@@ -211,7 +211,7 @@ const page = () => {
           >
             <HiOutlineQuestionMarkCircle className="mr-2" /> Q&A
           </li>
-          <li
+          {/* <li
             className={` flex items-center transition-colors rounded-md px-4 py-2  duration-200 hover:text-cad927 ${
               selectedCategory === "Live Event"
                 ? "bg-[#cad927] text-gray-800"
@@ -221,8 +221,8 @@ const page = () => {
             style={{ cursor: "pointer" }}
           >
             <HiOutlinePlay className="mr-2" /> Live Events
-          </li>
-          <li
+          </li> */}
+          {/* <li
             className={` flex items-center transition-colors rounded-md px-4 py-2 duration-200 hover:text-cad927 ${
               selectedCategory === "Canceled Event"
                 ? "bg-[#cad927] text-gray-800"
@@ -232,7 +232,7 @@ const page = () => {
             style={{ cursor: "pointer" }}
           >
             <FaTimes className="mr-2" /> Canceled Events
-          </li>
+          </li> */}
         </ul>
         <div>
           <Button className="border border-gray-600 mt-4 w-full" onClick={markAllAsRead}>

@@ -41,6 +41,16 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from "@/components/ui/alert-dialog";
 import CompleteDetailsForm from "@/components/CompleteDetailsForm";
 
 interface EventCard {
@@ -84,10 +94,7 @@ const EventDetails = () => {
             <p className="text-sm text-gray-500">Organizer</p>
             <p className="font-bold">Krish</p>
           </div>
-          <div>
-            <p className="text-sm text-gray-500">Event Likes</p>
-            <p className="font-bold">100</p>
-          </div>
+          
         </div>
       </div>
     </Card>
@@ -97,7 +104,7 @@ const EventDetails = () => {
 export default function Home() {
   const { setTheme } = useAppContext();
   const { user } = useUser();
-  const { setDashboardName, UserType, setNotification } = useEventContext();
+  const { setDashboardName, UserType, setNotification,completeprofileDialog,setCompleteprofileDialog } = useEventContext();
   const [events, setEvents] = useState<EventCard[]>([]);
   const [categories, setCategories] = useState<Category[]>([]);
   const [selectedEvent, setSelectedEvent] = useState<number | null>(null);
@@ -108,15 +115,18 @@ export default function Home() {
   const router = useRouter();
   const supabase = createClient();
   const [userDetails, setUserDetails] = useState(null); 
-  const [isDialogOpen, setIsDialogOpen] = useState(false);
+  const [isAlertOpen, setIsAlertOpen] = useState(false);
+  const [selectedEventForWithdraw, setSelectedEventForWithdraw] = useState<
+    number | null
+  >(null);
+
   
   const handleButtonClick = () => {
-    setIsDialogOpen(true);
+    setCompleteprofileDialog(true);
   };
   
-  // Function to handle dialog close
   const handleCloseDialog = () => {
-    setIsDialogOpen(false);
+    setCompleteprofileDialog(false);
   };
 
   useEffect(() => {
@@ -180,22 +190,32 @@ export default function Home() {
     fetchEvents();
   }, []);
 
-  const handleWithdrawClick = async (eventId: number) => {
-    setSelectedEvent(eventId);
-    setIsModalOpen(true);
-    try {
-      const response = await fetch(`/api/event/categories/${eventId}`);
-      if (!response.ok) {
-        throw new Error("Network response was not ok");
+  const handleWithdrawClick = (eventId: number) => {
+    setSelectedEventForWithdraw(eventId);
+    setIsAlertOpen(true);
+  };
+
+  const handleConfirmWithdraw = async () => {
+    if (selectedEventForWithdraw) {
+      setIsAlertOpen(false);
+      setIsModalOpen(true);
+      try {
+        const response = await fetch(
+          `/api/event/categories/${selectedEventForWithdraw}`
+        );
+        if (!response.ok) {
+          throw new Error("Network response was not ok");
+        }
+        const data = await response.json();
+        setCategories(data.categories);
+      } catch (error) {
+        console.error("Error fetching categories:", error);
+        toast({
+          title:
+            "Failed to fetch categories. Please check your network connection.",
+          variant: "destructive",
+        });
       }
-      const data = await response.json();
-      setCategories(data.categories);
-    } catch (error) {
-      console.error("Error fetching categories:", error);
-      toast({
-        title: "Failed to fetch categories. Please check your network connection.",
-        variant: "destructive",
-      });
     }
   };
 
@@ -245,7 +265,7 @@ export default function Home() {
 
   return (
     <div className="flex flex-col m-3">
-      <div className={`flex justify-between`}>
+      <div className={`flex gap-4`}>
         {!userDetails?.gender && (
           <Button
             onClick={handleButtonClick}
@@ -424,18 +444,18 @@ export default function Home() {
                 Select the categories you want to withdraw from.
               </DialogDescription>
             </DialogHeader>
-            <div className="space-y-4 h-[20rem]">
+            <div className="space-y-4 h-[20rem] overflow-y-auto">
               {categories.map((category) => (
                 <div
                   key={category.id}
-                  className="flex flex-col p-2 border rounded-md shadow-sm"
+                  className="flex flex-col p-4 border border-gray-200 rounded-lg shadow-lg bg-white hover:shadow-2xl transition-shadow duration-300"
                 >
-                  <div className="flex justify-between items-center mb-2">
-                    <span className="font-medium">
-                      {category.category_name} - ${category.price}
+                  <div className="flex justify-between items-center mb-3">
+                    <span className="font-semibold text-lg text-gray-800">
+                      {category.category_name} - ₹{category.price}
                     </span>
                     <Button
-                      className="bg-red-500 text-white px-2 py-1 text-sm rounded mt-4"
+                      className="px-3 py-1 text-sm"
                       onClick={() =>
                         handleWithdrawFromCategory(category.category_name)
                       }
@@ -443,17 +463,13 @@ export default function Home() {
                       Withdraw
                     </Button>
                   </div>
-                  <div className="text-xs text-gray-600">
-                    <p>Type: {category.category_type}</p>
-                    <p>Description: {category.ticket_description}</p>
-                    <p>Discount Code: {category.discount_code}</p>
+                  <div className="text-sm text-gray-600 space-y-1">
                     <p>
-                      Valid From:{" "}
-                      {new Date(category.from_date).toLocaleDateString()}
+                      <strong>Type:</strong> {category.category_type}
                     </p>
                     <p>
-                      Valid Till:{" "}
-                      {new Date(category.till_date).toLocaleDateString()}
+                      <strong>Description:</strong>{" "}
+                      {category.ticket_description}
                     </p>
                   </div>
                 </div>
@@ -470,7 +486,7 @@ export default function Home() {
           <DialogTrigger asChild>
             <Button className="hidden">Open</Button>
           </DialogTrigger>
-          <DialogContent className="max-w-xl p-4 overflow-scroll">
+          <DialogContent>
             <DialogHeader>
               <EventDetails />
               <DialogTitle className="text-lg font-semibold">
@@ -479,21 +495,21 @@ export default function Home() {
               <DialogDescription className="text-sm text-gray-500">
                 Below are the categories you have registered for this event.
               </DialogDescription>
+              <div className="space-y-4">
+                {registeredCategories.map((category) => (
+                  <div
+                    key={category.id}
+                    className="flex flex-col p-2 border rounded-md shadow-sm"
+                  >
+                    <span className="font-medium">
+                      {category.category_name} - Rs. {category.price}
+                    </span>
+                  </div>
+                ))}
+              </div>
             </DialogHeader>
-            <div className="space-y-4">
-              {registeredCategories.map((category) => (
-                <div
-                  key={category.id}
-                  className="flex flex-col p-2 border rounded-md shadow-sm"
-                >
-                  <span className="font-medium">
-                    {category.category_name} - Rs. {category.price}
-                  </span>
-                </div>
-              ))}
-            </div>
             <Button
-              className="mt-4 px-4 py-2 rounded"
+              className="px-4 py-2 rounded"
               onClick={() => router.push("/cart")}
             >
               Register for More Categories
@@ -501,13 +517,32 @@ export default function Home() {
           </DialogContent>
         </Dialog>
       )}
-      {isDialogOpen && (
-        <Dialog onOpenChange={handleCloseDialog} open={isDialogOpen}>
+      {completeprofileDialog && (
+        <Dialog onOpenChange={handleCloseDialog} open={completeprofileDialog}>
           <DialogTitle>Complete Your Profile</DialogTitle>
-          <DialogContent>
+          <DialogContent type="CompleteProfile">
             <CompleteDetailsForm />
           </DialogContent>
         </Dialog>
+      )}
+      {isAlertOpen && (
+        <AlertDialog open={isAlertOpen} onOpenChange={setIsAlertOpen}>
+          <AlertDialogContent>
+            <AlertDialogHeader>
+              <AlertDialogTitle>Are you sure?</AlertDialogTitle>
+              <AlertDialogDescription>
+                Are you sure you want to withdraw from this event? This action
+                cannot be undone.
+              </AlertDialogDescription>
+            </AlertDialogHeader>
+            <AlertDialogFooter>
+              <AlertDialogCancel>Cancel</AlertDialogCancel>
+              <AlertDialogAction onClick={handleConfirmWithdraw}>
+                Continue
+              </AlertDialogAction>
+            </AlertDialogFooter>
+          </AlertDialogContent>
+        </AlertDialog>
       )}
     </div>
   );
