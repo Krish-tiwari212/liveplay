@@ -87,7 +87,7 @@ const Sidebar = ({ setnavexpanded }: { setnavexpanded :Dispatch<SetStateAction<b
     <div
       className={`lg:hidden ${
         isCollapsed ? "w-16" : "w-64"
-      } bg-[#17202A] text-white p-4 shadow-lg transition-width duration-300 ease-in-out flex flex-col h-full z-50 fixed`}
+      } bg-[#17202A] text-white p-4 shadow-lg transition-width duration-300 ease-in-out flex flex-col h-full z-40 fixed`}
     >
       <div className="flex items-center mt-8 border-b border-gray-700 pb-8">
         <button
