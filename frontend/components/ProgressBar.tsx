@@ -101,10 +101,10 @@ const ProgressBar: React.FC<ProgressBarProps> = ({
 
   return (
     <div
-      className={`relative ${checkpoints.length === 7 && "w-[85%]"} ${
+      className={`relative  ${checkpoints.length >= 7 && "w-full"} ${
         checkpoints.length === 5 && "w-[95%] lg:w-[80%]"
-      } ${checkpoints.length === 3 && "w-[95%] xl:w-[50%]"} mx-auto mt-6 ${
-        forpage !== "manageEvent" ? "mb-12" : "mb-5"
+      } ${checkpoints.length === 3 && "w-[95%] xl:w-[50%]"} mx-auto mt-10 ${
+        forpage !== "manageEvent" ? "" : ""
       } `}
     >
       {forpage !== "manageEvent" && (
@@ -115,9 +115,10 @@ const ProgressBar: React.FC<ProgressBarProps> = ({
       )}
       <div
         className={`flex justify-between  ${
-          forpage !== "manageEvent" ? "absolute -top-3" : "relative"
+          forpage !== "manageEvent" ? "absolute -top-3 " : "relative top-4 lg:top-0"
         } ${
-          checkpoints.length === 7 && "w-[90%] left-[5%]"
+          checkpoints.length >= 7 &&
+          "w-[90%] left-[5%]"
         } w-[80%] left-[10%] items-center `}
       >
         {updatedProgress.map((checkpoint, index) => (
@@ -128,7 +129,9 @@ const ProgressBar: React.FC<ProgressBarProps> = ({
             <div
               onClick={() => handlecircel(checkpoint)}
               className={` ${
-                forpage !== "manageEvent" ? "w-8 h-8" : "w-11 h-11"
+                forpage !== "manageEvent"
+                  ? "w-8 h-8"
+                  : "w-8 h-8 sm:w-11 sm:h-11"
               } rounded-full bg-gray-800 text-white flex items-center justify-center  ${
                 currentpage === checkpoint.placement
                   ? "shadow-lg shadow-gray-800"
@@ -138,9 +141,7 @@ const ProgressBar: React.FC<ProgressBarProps> = ({
               <span>{checkpoint.icon}</span>
             </div>
             <h1
-              className={`font-semibold text-gray-800 mt-2 hidden ${
-                checkpoints.length === 7 ? "xl:block" : " lg:block"
-              }`}
+              className={`font-semibold hidden sm:block text-center text-gray-800 mt-2 `}
             >
               {checkpoint.label}
             </h1>

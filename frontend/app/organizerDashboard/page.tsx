@@ -95,14 +95,14 @@ export default function Home() {
       <div className={`flex gap-4`}>
         <Button
           onClick={() => router.push(`/organizerDashboard/kyc/${user?.id}`)}
-          className="text-md shadow-md shadow-gray-500 w-auto px-10"
+          className="text-sm sm:text-md shadow-md shadow-gray-500 w-auto sm:px-10"
         >
           <FaUnlockAlt className="mr-2 text-xl" />
           Unlock Event Earnings
         </Button>
         <Button
           onClick={() => router.push("/organizerDashboard/create_event")}
-          className="text-md shadow-md shadow-gray-500 px-5"
+          className="text-sm sm:text-md shadow-md shadow-gray-500 px-5"
         >
           Create Event
         </Button>
@@ -114,7 +114,7 @@ export default function Home() {
             Hello {user?.user_metadata.full_name || user?.user_metadata.name} 👋
           </h1>
         </div>
-        <div className="absolute left-4 -bottom-8 flex flex-wrap gap-4 w-full">
+        <div className="hidden absolute left-4 -bottom-8 md:flex flex-wrap gap-4 w-full">
           <Card className="w-auto shadow-xl">
             <CardContent className="flex flex-col gap-1 mt-4">
               <h1 className="font-semibold text-lg">Event Sales</h1>
@@ -152,6 +152,44 @@ export default function Home() {
             </CardContent>
           </Card>
         </div>
+      </section>
+      <section className="flex gap-3 flex-wrap md:hidden">
+        <Card className="w-full sm:w-[48%] shadow-xl">
+          <CardContent className="flex flex-col gap-1 mt-4">
+            <h1 className="font-semibold text-lg">Event Sales</h1>
+            <div className="flex justify-start items-center text-xl gap-2">
+              <TbCoinRupeeFilled />
+              <h1 className="">0</h1>
+            </div>
+          </CardContent>
+        </Card>
+        <Card className="w-full sm:w-[48%] shadow-xl">
+          <CardContent className="flex flex-col gap-1 mt-4">
+            <h1 className="font-semibold text-lg">Event Views</h1>
+            <div className="flex justify-start items-center text-xl gap-2">
+              <FaRegEye />
+              <h1 className="">0</h1>
+            </div>
+          </CardContent>
+        </Card>
+        <Card className="w-full sm:w-[48%] shadow-xl">
+          <CardContent className="flex flex-col gap-1 mt-4">
+            <h1 className="font-semibold text-lg">Events Hosted</h1>
+            <div className="flex justify-start items-center text-xl gap-2">
+              <FaCalendarCheck />
+              <h1 className="">{events.length}</h1>
+            </div>
+          </CardContent>
+        </Card>
+        <Card className="w-full sm:w-[48%] shadow-xl">
+          <CardContent className="flex flex-col gap-1 mt-4">
+            <h1 className="font-semibold text-lg">Event Registrations</h1>
+            <div className="flex justify-start items-center text-xl gap-2">
+              <FaPeopleGroup />
+              <h1 className="">0</h1>
+            </div>
+          </CardContent>
+        </Card>
       </section>
       <section className="mt-8 bg-white shadow-md rounded-lg px-4 pt-4">
         <h2 className="text-xl font-semibold mb-2">Active Events</h2>

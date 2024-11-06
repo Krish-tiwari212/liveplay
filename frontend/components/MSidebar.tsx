@@ -70,7 +70,7 @@ const MSidebar = () => {
 
   return (
     <div
-      className={`hidden bg-[#17202A] text-white p-4 shadow-lg transition-width duration-300 ease-in-out md:flex flex-col h-full z-50 sticky flex-[1]`}
+      className={`hidden bg-[#17202A] text-white p-4 shadow-lg transition-width duration-300 ease-in-out lg:flex flex-col h-full z-50 sticky flex-[1]`}
     >
       <div className="flex items-center mb-6 border-b border-gray-700 pb-6 pt-6">
         <Link

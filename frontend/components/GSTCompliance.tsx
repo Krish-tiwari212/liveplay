@@ -67,7 +67,7 @@ const GSTCompliance = ({
         }`}
       >
         <div className="w-full m-2 flex flex-col">
-          <Label htmlFor="gstRegistered" className="text-lg">
+          <Label htmlFor="gstRegistered" className="text-lg mb-2">
             Are you a registered GST person?
           </Label>
           <RadioGroup

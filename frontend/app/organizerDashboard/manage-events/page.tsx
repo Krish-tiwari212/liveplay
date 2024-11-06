@@ -119,7 +119,7 @@ const page = () => {
       <h1 className="text-[#17202A] text-3xl font-bold">Manage Events</h1>
       <section className="mt-8 bg-white shadow-md rounded-lg px-4 pt-4">
         <h2 className="text-xl font-semibold mb-2">Active Events</h2>
-        <div className="flex flex-col md:flex-row space-x-4 overflow-x-auto pb-8">
+        <div className="flex flex-row space-x-4 overflow-x-auto pb-8">
           {isLoading ? (
             <div className="flex space-x-4">
               {Array.from({ length: 3 }).map((_, index) => (

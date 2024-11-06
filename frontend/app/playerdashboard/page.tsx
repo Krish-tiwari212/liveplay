@@ -73,15 +73,15 @@ interface Category {
 
 const EventDetails = () => {
   return (
-    <Card className="bg-gray-100 rounded-lg shadow-md p-5 mb-5 flex flex-col md:flex-row">
-      <img 
-        src="/images/img3.jpeg" 
-        alt="Event" 
-        className="w-1/3 md:w-1/4 rounded-lg" 
+    <Card className="bg-gray-100 rounded-lg shadow-md p-5 mb-5 flex flex-col sm:flex-row">
+      <img
+        src="/images/img3.jpeg"
+        alt="Event"
+        className="w-full sm:w-1/3 md:w-1/4 rounded-lg"
       />
-      <div className="flex-1 md:pl-5">
+      <div className="flex-1 sm:pl-5">
         <div className="flex justify-between items-start">
-          <div>
+          <div className="text-start">
             <p className="text-sm text-gray-500">Basketball</p>
             <h2 className="text-xl font-bold">Krish Event</h2>
             <p className="text-gray-800">Maratha Mandir: Mumbai Central</p>
@@ -90,11 +90,10 @@ const EventDetails = () => {
         </div>
         <hr className="my-3 border-gray-300" />
         <div className="flex justify-between">
-          <div>
+          <div className="text-start">
             <p className="text-sm text-gray-500">Organizer</p>
             <p className="font-bold">Krish</p>
           </div>
-          
         </div>
       </div>
     </Card>
@@ -269,14 +268,14 @@ export default function Home() {
         {!userDetails?.gender && (
           <Button
             onClick={handleButtonClick}
-            className="text-md shadow-md shadow-gray-500 px-5 bg-red-500 text-white"
+            className="text-sm sm:text-md shadow-md shadow-gray-500 sm:px-5 bg-red-500 text-white"
           >
             Complete your Profile!
           </Button>
         )}
         <Button
           onClick={() => router.push("/")}
-          className="text-md shadow-md shadow-gray-500 px-5"
+          className="text-sm sm:text-md shadow-md shadow-gray-500 px-5"
         >
           Register for Events
         </Button>
@@ -288,7 +287,7 @@ export default function Home() {
             Hello {user?.user_metadata.full_name || user?.user_metadata.name} 👋
           </h1>
         </div>
-        <div className="absolute left-4 -bottom-8 flex flex-wrap gap-4 w-full">
+        <div className="absolute hidden left-4 -bottom-8 md:flex flex-wrap gap-4 w-full">
           <Card className="w-auto shadow-xl">
             <CardContent className="flex flex-col gap-1 mt-4">
               <h1 className="font-semibold text-lg">Events Participated</h1>
@@ -310,6 +309,26 @@ export default function Home() {
             </CardContent>
           </Card>
         </div>
+      </section>
+      <section className="flex gap-3 flex-wrap md:hidden">
+        <Card className="w-full sm:w-[48%] shadow-xl">
+          <CardContent className="flex flex-col gap-1 mt-4">
+            <h1 className="font-semibold text-lg">Events Participated</h1>
+            <div className="flex justify-start items-center text-xl gap-2">
+              <MdEventRepeat className="" />
+              <h1 className="">0</h1>
+            </div>
+          </CardContent>
+        </Card>
+        <Card className="w-full sm:w-[48%] shadow-xl">
+          <CardContent className="flex flex-col gap-1 mt-4">
+            <h1 className="font-semibold text-lg">Events I’m interested in</h1>
+            <div className="flex justify-start items-center text-xl gap-2">
+              <FaRegThumbsUp className="" />
+              <h1 className="">0</h1>
+            </div>
+          </CardContent>
+        </Card>
       </section>
       {/* <section className="flex gap-4 px-2 flex-wrap w-full">
         <TooltipProvider>
@@ -434,7 +453,7 @@ export default function Home() {
           <DialogTrigger asChild>
             <Button className="hidden">Open</Button>
           </DialogTrigger>
-          <DialogContent className="max-w-2xl p-4">
+          <DialogContent className="w-[90%] sm:max-w-2xl p-4">
             <DialogHeader>
               <DialogTitle className="text-lg font-semibold mb-4">
                 Withdraw from Categories
@@ -527,7 +546,7 @@ export default function Home() {
       )}
       {isAlertOpen && (
         <AlertDialog open={isAlertOpen} onOpenChange={setIsAlertOpen}>
-          <AlertDialogContent>
+          <AlertDialogContent className="w-[90%] rounded">
             <AlertDialogHeader>
               <AlertDialogTitle>Are you sure?</AlertDialogTitle>
               <AlertDialogDescription>

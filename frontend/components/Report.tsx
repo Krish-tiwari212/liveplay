@@ -352,8 +352,8 @@ const Report = ({ handleNext }: ReportProps) => {
       </div>
 
       <div className="mt-4 bg-white p-5 rounded-lg">
-        <div className="flex justify-between">
-          <h2 className="text-3xl text-gray-800 mb-4 font-semibold ">
+        <div className="flex flex-col sm:flex-row justify-between">
+          <h2 className="text-2xl sm:text-3xl text-gray-800 mb-4 font-semibold ">
             List of Participants
           </h2>
           <Dialog>
@@ -405,16 +405,6 @@ const Report = ({ handleNext }: ReportProps) => {
                     </TableRow>
                   ))}
                 </TableBody>
-                {/* <TableFooter>
-                  <TableRow>
-                    <TableCell colSpan={noOfParticipants}>
-                      Total Participants
-                    </TableCell>
-                    <TableCell className="text-right">
-                      {participants.length}
-                    </TableCell>
-                  </TableRow>
-                </TableFooter> */}
               </Table>
             </DialogContent>
           </Dialog>
@@ -468,18 +458,12 @@ const Report = ({ handleNext }: ReportProps) => {
               </TableRow>
             )}
           </TableBody>
-          {/* <TableFooter>
-            <TableRow>
-              <TableCell colSpan={7}>Total Participants</TableCell>
-              <TableCell>{participants.length}</TableCell>
-            </TableRow>
-          </TableFooter> */}
         </Table>
       </div>
 
       <div className="mt-4 bg-white p-5 rounded-lg">
-        <div className="flex justify-between">
-          <h2 className="text-3xl text-gray-800 mb-4 font-semibold ">
+        <div className="flex flex-col sm:flex-row justify-between">
+          <h2 className="text-2xl sm:text-3xl text-gray-800 mb-4 font-semibold ">
             Participants Who Withdrew
           </h2>
           <Dialog>
@@ -591,20 +575,12 @@ const Report = ({ handleNext }: ReportProps) => {
               </TableRow>
             )}
           </TableBody>
-          {/* <TableFooter>
-            <TableRow>
-              <TableCell colSpan={6}>Total Participants</TableCell>
-              <TableCell className="text-right">
-                {participants.length}
-              </TableCell>
-            </TableRow>
-          </TableFooter> */}
         </Table>
       </div>
 
       <div className="mt-4 bg-white p-5 rounded-lg">
-        <div className="flex justify-between">
-          <h2 className="text-3xl text-gray-800 mb-4 font-semibold ">
+        <div className="flex flex-col sm:flex-row justify-between">
+          <h2 className="text-2xl sm:text-3xl text-gray-800 mb-4 font-semibold ">
             Interested Participants
           </h2>
           <Dialog>
@@ -700,14 +676,6 @@ const Report = ({ handleNext }: ReportProps) => {
               </TableRow>
             )}
           </TableBody>
-          {/* <TableFooter>
-            <TableRow>
-              <TableCell colSpan={6}>Total Participants</TableCell>
-              <TableCell className="text-right">
-                {participants.length}
-              </TableCell>
-            </TableRow>
-          </TableFooter> */}
         </Table>
       </div>
     </div>

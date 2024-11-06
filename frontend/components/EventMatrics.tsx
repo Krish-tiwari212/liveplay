@@ -87,15 +87,15 @@ interface EventMatricsProps{
 
 const EventDetails = () => {
   return (
-    <Card className="bg-gray-100 rounded-lg shadow-md p-5 mb-5 flex flex-col md:flex-row">
+    <Card className="bg-gray-100 rounded-lg shadow-md p-5 mb-5 flex flex-col sm:flex-row">
       <img 
         src="/images/img3.jpeg" 
         alt="Event" 
-        className="w-1/3 md:w-1/4 rounded-lg" 
+        className="w-full sm:w-1/3 md:w-1/4 rounded-lg" 
       />
-      <div className="flex-1 md:pl-5">
-        <div className="flex justify-between items-start">
-          <div>
+      <div className="flex-1 sm:pl-5">
+        <div className="flex justify-between items-start pt-2 sm:pt-0">
+          <div className='text-start'>
             <p className="text-sm text-gray-500">Basketball</p>
             <h2 className="text-xl font-bold">Krish Event</h2>
             <p className="text-gray-800">Maratha Mandir: Mumbai Central</p>
@@ -104,7 +104,7 @@ const EventDetails = () => {
         </div>
         <hr className="my-3 border-gray-300" />
         <div className="flex justify-between">
-          <div>
+          <div className='text-start'>
             <p className="text-sm text-gray-500">Organizer</p>
             <p className="font-bold">Krish</p>
           </div>
@@ -137,9 +137,9 @@ const EventMatrics = ({ handleNext }: EventMatricsProps) => {
     };
 
     return (
-      <div className="text-gray-800 px-5 ">
+      <div className="text-gray-800 px-2 sm:px-5 ">
         <div className="flex justify-between items-center mb-8">
-          <h1 className="text-3xl text-gray-800 font-bold">Event Overview</h1>
+          <h1 className="text-xl sm:text-3xl text-gray-800 font-bold">Event Overview</h1>
           <Button onClick={handleCancelClick}>Cancel Event</Button>
         </div>
         <main className="rounded-lg">
@@ -176,7 +176,7 @@ const EventMatrics = ({ handleNext }: EventMatricsProps) => {
           )}
         </main>
         <Dialog open={isModalOpen} onOpenChange={setIsModalOpen}>
-          <DialogContent className="bg-gray-100 rounded-lg">
+          <DialogContent className="bg-gray-100 rounded-lg w-[90%] overflow-y-auto">
             <DialogHeader>
               <DialogTitle className="text-xl font-bold">
                 Cancellation Details
@@ -191,7 +191,7 @@ const EventMatrics = ({ handleNext }: EventMatricsProps) => {
             </DialogHeader>
             <div className="mb-4 w-full">
               <h3 className="font-semibold text-xl mb-2">Refund Details</h3>
-              <div className="flex flex-col bg-white  px-4 py-2">
+              <div className="text-sm sm:text-md flex flex-col bg-white  px-4 py-2">
                 <div className="flex justify-between">
                   <p>Event Sales : </p>
                   <p className="flex justify-center items-center">

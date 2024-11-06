@@ -164,8 +164,8 @@ const page = () => {
   }, []);
 
   return (
-    <div className="flex m-3 bg-white rounded-md h-[36rem]">
-      <div className="hidden md:flex w-1/4 bg-[#17202a] p-4 rounded-l-md flex-col justify-between h-full">
+    <div className="flex m-3 bg-white rounded-md md:h-[36rem]">
+      <div className="hidden md:flex w-1/3 xl:w-1/4 bg-[#17202a] p-4 rounded-l-md flex-col justify-between h-full">
         <ul className="space-y-2">
           <li
             className={` flex items-center transition-colors rounded-md px-4 py-2 duration-200 hover:text-cad927 ${
@@ -190,7 +190,7 @@ const page = () => {
             <HiOutlineUserAdd className="mr-2" /> New Registrations
           </li>
           <li
-            className={` flex items-center transition-colors rounded-md px-4 py-2  duration-200 hover:text-cad927 ${
+            className={` flex items-center transition-colors rounded-md px-4 py-2 duration-200 hover:text-cad927 ${
               selectedCategory === "Participant Withdrawal"
                 ? "bg-[#cad927] text-gray-800"
                 : "text-white"
@@ -211,28 +211,6 @@ const page = () => {
           >
             <HiOutlineQuestionMarkCircle className="mr-2" /> Q&A
           </li>
-          {/* <li
-            className={` flex items-center transition-colors rounded-md px-4 py-2  duration-200 hover:text-cad927 ${
-              selectedCategory === "Live Event"
-                ? "bg-[#cad927] text-gray-800"
-                : "text-white"
-            }`}
-            onClick={() => setSelectedCategory("Live Event")}
-            style={{ cursor: "pointer" }}
-          >
-            <HiOutlinePlay className="mr-2" /> Live Events
-          </li> */}
-          {/* <li
-            className={` flex items-center transition-colors rounded-md px-4 py-2 duration-200 hover:text-cad927 ${
-              selectedCategory === "Canceled Event"
-                ? "bg-[#cad927] text-gray-800"
-                : "text-white"
-            }`}
-            onClick={() => setSelectedCategory("Canceled Event")}
-            style={{ cursor: "pointer" }}
-          >
-            <FaTimes className="mr-2" /> Canceled Events
-          </li> */}
         </ul>
         <div>
           <Button className="border border-gray-600 mt-4 w-full" onClick={markAllAsRead}>

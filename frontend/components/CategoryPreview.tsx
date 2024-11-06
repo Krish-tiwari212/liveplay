@@ -178,8 +178,8 @@ const CategoryPreview = ({
                 key={index}
                 className={`relative border shadow-lg rounded-lg p-4 mb-4  ${
                   editPage === "manageEvent"
-                    ? "w-[30%] xl:w-[30%]"
-                    : "w-[46%] xl:w-[48%]"
+                    ? "w-full sm:w-1/2 lg:w-[30%] xl:w-[30%]"
+                    : "w-full sm:w-1/2 lg:w-[46%] xl:w-[48%]"
                 } cursor-pointer bg-[#17202A]`}
               >
                 <div className="flex justify-between items-start bg-gray-100 p-4 rounded-lg shadow-sm w-full h-full">
@@ -279,7 +279,7 @@ const CategoryPreview = ({
                 height={200}
                 className="grayscale"
               />
-              <h1 className="text-3xl text-[#17202A] font-bold">
+              <h1 className="text-lg sm:text-3xl text-[#17202A] font-bold">
                 Add Category to Preview
               </h1>
             </div>

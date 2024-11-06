@@ -218,7 +218,7 @@ const FirstPage = ({
   prevDisabled,
   nextDisabled,
 }: Pages) => (
-  <form className="mx-auto w-[60%]">
+  <form className="mx-auto w-full sm:w-[60%]">
     <Kycforms
       fields={fields}
       buttonLabel="Next"

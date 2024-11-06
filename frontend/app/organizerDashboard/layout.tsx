@@ -34,7 +34,7 @@ export default function RootLayout({
                 <MSidebar />
               </div>
               <div
-                className={`bg-slate-200 overflow-x-hidden w-full h-full ml-16 md:ml-0 md:flex-[5] `}
+                className={`bg-slate-200 overflow-x-hidden w-full h-full ml-16 lg:ml-0 lg:flex-[3] xl:flex-[4] 2xl:flex-[5] `}
               >
                 <Navbar />
                 {children}
