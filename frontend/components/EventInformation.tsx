@@ -51,6 +51,7 @@ const EventInformation: React.FC<EventInformation> = ({
         return (
           <EventLocationForm
             formData={formData}
+            ManageEventId={ManageEventId}
             setFormData={setFormData}
             setFormType={setFormType}
           />
@@ -59,6 +60,7 @@ const EventInformation: React.FC<EventInformation> = ({
         return (
           <EventInsights
             formData={formData}
+            ManageEventId={ManageEventId}
             setFormData={setFormData}
             setFormType={setFormType}
           />
@@ -67,6 +69,7 @@ const EventInformation: React.FC<EventInformation> = ({
         return (
           <EventMediaContactForm
             formData={formData}
+            ManageEventId={ManageEventId}
             setFormData={setFormData}
             setFormType={setFormType}
             handleNext={handleNext}

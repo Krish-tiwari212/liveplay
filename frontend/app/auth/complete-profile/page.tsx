@@ -47,11 +47,9 @@ const CompleteDetailsForm = () => {
     },
   });
 
-  // Form submission for completing user details
   const onSubmit = async (data: any) => {
     setLoading(true);
     console.log(user)
-    // Assuming `user` is available in the scope
     const requestData = {
       ...data,
       user_id: user?.id,
