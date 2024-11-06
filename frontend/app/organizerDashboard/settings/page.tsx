@@ -15,7 +15,7 @@ const SettingsPage = () => {
         setDashboardName("Settings")
     },[])
   return (
-    <div className="min-h-screen bg-white p-8 m-3 rounded-md">
+    <div className="min-h-screen bg-white p-4 sm:p-8 m-3 rounded-md">
       <div className="w-full space-y-6">
         <Card>
           <CardHeader className="flex flex-row items-center justify-between">
@@ -27,13 +27,9 @@ const SettingsPage = () => {
                 Update your personal information.
               </CardDescription>
             </div>
-            <Button variant="outline" size="sm">
-              <User className="mr-2 h-4 w-4" />
-              Edit Profile
-            </Button>
           </CardHeader>
           <CardContent className="space-y-4">
-            <div className="grid grid-cols-2 gap-4">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <div className="space-y-2">
                 <Label htmlFor="firstName">First Name</Label>
                 <div className="relative">
@@ -50,6 +46,12 @@ const SettingsPage = () => {
               </div>
             </div>
           </CardContent>
+          <CardFooter className="ml-auto">
+            <Button variant="default" size="sm">
+              <User className="mr-2 h-4 w-4" />
+              Edit Profile
+            </Button>
+          </CardFooter>
         </Card>
 
         <Card>
@@ -58,10 +60,6 @@ const SettingsPage = () => {
               <CardTitle className="text-gray-800">Email Settings</CardTitle>
               <CardDescription>Update your email address.</CardDescription>
             </div>
-            <Button variant="outline" size="sm">
-              <Mail className="mr-2 h-4 w-4" />
-              Change Email
-            </Button>
           </CardHeader>
           <CardContent className="space-y-4">
             <div className="space-y-2">
@@ -77,9 +75,23 @@ const SettingsPage = () => {
               </div>
             </div>
           </CardContent>
+          <CardFooter>
+            <Button variant="default" size="sm">
+              <Mail className="mr-2 h-4 w-4" />
+              Change Email
+            </Button>
+          </CardFooter>
         </Card>
 
         <Card>
+          <CardHeader>
+            <div>
+              <CardTitle className="text-gray-800">Change Password</CardTitle>
+              <CardDescription>
+                Ensure your account is using a secure password.
+              </CardDescription>
+            </div>
+          </CardHeader>
           <CardContent className="space-y-4">
             <div className="space-y-2">
               <Label htmlFor="currentPassword">Current Password</Label>
@@ -105,13 +117,7 @@ const SettingsPage = () => {
           </CardContent>
 
           <CardFooter className="flex flex-row items-center justify-between">
-            <div>
-              <CardTitle className="text-gray-800">Change Password</CardTitle>
-              <CardDescription>
-                Ensure your account is using a secure password.
-              </CardDescription>
-            </div>
-            <Button variant="outline" size="sm">
+            <Button variant="default" size="sm">
               <Lock className="mr-2 h-4 w-4" />
               Change Password
             </Button>
@@ -120,10 +126,10 @@ const SettingsPage = () => {
 
         <div className="flex justify-end gap-4">
           <Button variant="outline">Cancel</Button>
-          <Button className="bg-gray-800 hover:bg-gray-700">
+          {/* <Button className="bg-gray-800 hover:bg-gray-700">
             <Save className="mr-2 h-4 w-4" />
             Save Changes
-          </Button>
+          </Button> */}
         </div>
       </div>
     </div>

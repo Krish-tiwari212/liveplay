@@ -317,8 +317,7 @@ const AddCategory = ({ setCategoryData ,type,category}: AddCategoryProps) => {
                   age_from: e.target.value.toString(),
                 });
               }}
-              min="0"
-              step="10"
+              max="100"
               className="h-10 p-2 bg-white border rounded-md text-sm shadow-2xl text-[#17202A] focus:border-[#17202A] focus:outline-none focus:shadow-lg w-1/2"
             />
             <span className="text-lg">to</span>
@@ -333,8 +332,7 @@ const AddCategory = ({ setCategoryData ,type,category}: AddCategoryProps) => {
                   age_to: e.target.value.toString(),
                 });
               }}
-              min="0"
-              step="10"
+              max="100"
               className="h-10 p-2 bg-white border rounded-md text-sm shadow-2xl text-[#17202A] focus:border-[#17202A] focus:outline-none focus:shadow-lg w-1/2"
             />
           </div>

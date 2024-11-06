@@ -19,6 +19,17 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
+
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from "@/components/ui/alert-dialog";
 import { useState } from 'react';
 import EventBoosters from './EventBoosters';
 import {
@@ -29,6 +40,7 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
+import { useEventContext } from '@/context/EventDataContext';
 
 
 const metrics = [
@@ -116,12 +128,16 @@ const EventDetails = () => {
 
 const EventMatrics = ({ handleNext }: EventMatricsProps) => {
     const router = useRouter();
+    const {editPage}=useEventContext()
     const [showUpsell, setShowUpsell] = useState(true);
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [amountPaid, setAmountPaid] = useState(10000);
     const [ParticipantRefund, setParticipantRefund] = useState(3000);
     const cancellationFeePercentage = 0.075;
-
+    const [isAlertOpen, setIsAlertOpen] = useState(false);
+    const [selectedEventForWithdraw, setSelectedEventForWithdraw] = useState<
+      string | null
+    >(null);
     const netEventSales = amountPaid - ParticipantRefund;
     const cancellationFee = netEventSales * cancellationFeePercentage;
 
@@ -129,18 +145,26 @@ const EventMatrics = ({ handleNext }: EventMatricsProps) => {
         router.push('/payment');
     };
 
-    const handleCancelClick = () => {
-        const confirmed = window.confirm("Are you sure you want to cancel the event?");
-        if (confirmed) {
-            setIsModalOpen(true);
-        }
+    const handleCancelClick = (cofirmation:string) => {
+      setSelectedEventForWithdraw(cofirmation);
+      setIsAlertOpen(true)
     };
 
+    const handleConfirmWithdraw = () => {
+      if (selectedEventForWithdraw) {
+        setIsModalOpen(true)
+      }
+    };
     return (
-      <div className="text-gray-800 px-2 sm:px-5 ">
-        <div className="flex justify-between items-center mb-8">
-          <h1 className="text-xl sm:text-3xl text-gray-800 font-bold">Event Overview</h1>
-          <Button onClick={handleCancelClick}>Cancel Event</Button>
+      <div className={`text-gray-800 px-2 sm:px-5`}>
+        <div className="flex flex-col sm:flex-row gap-2 sm:gap-0 justify-between items-start sm:items-center mb-4 sm:mb-8">
+          <h1 className="text-3xl text-gray-800 font-bold">Event Overview</h1>
+          <Button
+            onClick={() => handleCancelClick("Cancel Event")}
+            className="w-full sm:w-[20%]"
+          >
+            Cancel Event
+          </Button>
         </div>
         <main className="rounded-lg">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-5 mb-5">
@@ -176,7 +200,7 @@ const EventMatrics = ({ handleNext }: EventMatricsProps) => {
           )}
         </main>
         <Dialog open={isModalOpen} onOpenChange={setIsModalOpen}>
-          <DialogContent className="bg-gray-100 rounded-lg w-[90%] overflow-y-auto">
+          <DialogContent className="bg-gray-100 rounded-lg w-[90%] h-auto sm:max-w-2xl overflow-y-auto">
             <DialogHeader>
               <DialogTitle className="text-xl font-bold">
                 Cancellation Details
@@ -249,6 +273,25 @@ const EventMatrics = ({ handleNext }: EventMatricsProps) => {
             </div>
           </DialogContent>
         </Dialog>
+        {isAlertOpen && (
+          <AlertDialog open={isAlertOpen} onOpenChange={setIsAlertOpen}>
+            <AlertDialogContent className="w-[90%] rounded">
+              <AlertDialogHeader>
+                <AlertDialogTitle>Are you sure?</AlertDialogTitle>
+                <AlertDialogDescription>
+                  Are you sure you want to Cancel this event? This action cannot
+                  be undone.
+                </AlertDialogDescription>
+              </AlertDialogHeader>
+              <AlertDialogFooter>
+                <AlertDialogCancel>Cancel</AlertDialogCancel>
+                <AlertDialogAction onClick={handleConfirmWithdraw}>
+                  Continue
+                </AlertDialogAction>
+              </AlertDialogFooter>
+            </AlertDialogContent>
+          </AlertDialog>
+        )}
       </div>
     );
 };

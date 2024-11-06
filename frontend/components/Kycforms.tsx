@@ -105,7 +105,7 @@ const Kycforms: React.FC<KycFormsProps> = ({
   const [isImageLoading, setIsImageLoading] = useState(false);
 
   return (
-    <form className="bg-white shadow-2xl p-5 rounded-lg w-full relative mt-10">
+    <form className="bg-white shadow-2xl p-5 rounded-lg w-full relative mt-20">
       <button
         onClick={(e) => {
           e.preventDefault();
@@ -170,7 +170,7 @@ const Kycforms: React.FC<KycFormsProps> = ({
                     <h2 className="text-12 font-bold text-gray-400 ">
                       Click to upload
                     </h2>
-                    <p className="text-12 font-bold text-gray-500 ">
+                    <p className="text-12 font-bold text-gray-500 text-center">
                       {field.filecontnet?.size}
                     </p>
                   </div>

@@ -134,7 +134,9 @@ const Sidebar = ({ setnavexpanded }: { setnavexpanded :Dispatch<SetStateAction<b
             <li>
               <Link href="/organizerDashboard">
                 <button
-                  onClick={() => handlePageChange("Dashboard")}
+                  onClick={() => {
+                    handlePageChange("Dashboard");
+                  }}
                   className={`flex items-center w-full p-2 rounded relative ${
                     activePage === "Dashboard"
                       ? "bg-[#CDDC29] text-[#17202A]"
@@ -156,6 +158,7 @@ const Sidebar = ({ setnavexpanded }: { setnavexpanded :Dispatch<SetStateAction<b
                     </TooltipProvider>
                   ) : (
                     <div
+                      onClick={() => handleCollapse()}
                       className={`flex items-center w-full text-left rounded`}
                     >
                       <FaTachometerAlt className="mr-2" /> Dashboard
@@ -167,7 +170,9 @@ const Sidebar = ({ setnavexpanded }: { setnavexpanded :Dispatch<SetStateAction<b
             <li>
               <Link href="/organizerDashboard/create_event">
                 <button
-                  onClick={() => handlePageChange("Create Events")}
+                  onClick={() => {
+                    handlePageChange("Create Events");
+                  }}
                   className={`flex items-center w-full p-2 rounded relative ${
                     activePage === "Create Events"
                       ? "bg-[#CDDC29] text-[#17202A]"
@@ -189,6 +194,7 @@ const Sidebar = ({ setnavexpanded }: { setnavexpanded :Dispatch<SetStateAction<b
                     </TooltipProvider>
                   ) : (
                     <div
+                      onClick={() => handleCollapse()}
                       className={`flex items-center w-full text-left rounded`}
                     >
                       <FaCalendarAlt className="mr-2" /> Create New Event
@@ -200,7 +206,9 @@ const Sidebar = ({ setnavexpanded }: { setnavexpanded :Dispatch<SetStateAction<b
             <li>
               <Link href="/organizerDashboard/manage-events">
                 <button
-                  onClick={() => handlePageChange("Manage Events")}
+                  onClick={() => {
+                    handlePageChange("Manage Events");
+                  }}
                   className={`flex items-center w-full p-2 rounded relative ${
                     activePage === "Manage Events"
                       ? "bg-[#CDDC29] text-[#17202A]"
@@ -223,6 +231,7 @@ const Sidebar = ({ setnavexpanded }: { setnavexpanded :Dispatch<SetStateAction<b
                     </TooltipProvider>
                   ) : (
                     <div
+                      onClick={() => handleCollapse()}
                       className={`flex items-center w-full text-left rounded`}
                     >
                       <MdOutlineFeaturedPlayList className="mr-2" />
@@ -235,7 +244,9 @@ const Sidebar = ({ setnavexpanded }: { setnavexpanded :Dispatch<SetStateAction<b
             <li>
               <Link href={`/organizerDashboard/kyc/${user?.id}`}>
                 <button
-                  onClick={() => handlePageChange("Unlock Earnings")}
+                  onClick={() => {
+                    handlePageChange("Unlock Earnings");
+                  }}
                   className={`flex items-center w-full p-2 rounded relative ${
                     activePage === "Unlock Earnings"
                       ? "bg-[#CDDC29] text-[#17202A]"
@@ -258,6 +269,7 @@ const Sidebar = ({ setnavexpanded }: { setnavexpanded :Dispatch<SetStateAction<b
                     </TooltipProvider>
                   ) : (
                     <div
+                      onClick={() => handleCollapse()}
                       className={`flex items-center w-full text-left rounded`}
                     >
                       <FaUnlockAlt className="mr-2 " /> Unlock Event Earnings
@@ -269,7 +281,9 @@ const Sidebar = ({ setnavexpanded }: { setnavexpanded :Dispatch<SetStateAction<b
             <li>
               <Link href="/organizerDashboard/notifications">
                 <button
-                  onClick={() => handlePageChange("Notifications")}
+                  onClick={() => {
+                    handlePageChange("Notifications");
+                  }}
                   className={`flex items-center w-full p-2 rounded relative ${
                     activePage === "Notifications"
                       ? "bg-[#CDDC29] text-[#17202A]"
@@ -292,6 +306,7 @@ const Sidebar = ({ setnavexpanded }: { setnavexpanded :Dispatch<SetStateAction<b
                     </TooltipProvider>
                   ) : (
                     <div
+                      onClick={() => handleCollapse()}
                       className={`flex items-center w-full text-left rounded`}
                     >
                       <IoIosNotificationsOutline className="mr-2" />
@@ -308,7 +323,9 @@ const Sidebar = ({ setnavexpanded }: { setnavexpanded :Dispatch<SetStateAction<b
             <li>
               <Link href="/playerdashboard">
                 <button
-                  onClick={() => handlePageChange("Dashboard")}
+                  onClick={() => {
+                    handlePageChange("Dashboard");
+                  }}
                   className={`flex items-center w-full p-2 rounded relative ${
                     activePage === "Dashboard"
                       ? "bg-[#CDDC29] text-[#17202A]"
@@ -330,6 +347,7 @@ const Sidebar = ({ setnavexpanded }: { setnavexpanded :Dispatch<SetStateAction<b
                     </TooltipProvider>
                   ) : (
                     <div
+                      onClick={() => handleCollapse()}
                       className={`flex items-center w-full text-left rounded`}
                     >
                       <FaTachometerAlt className="mr-2" /> Dashboard
@@ -345,7 +363,78 @@ const Sidebar = ({ setnavexpanded }: { setnavexpanded :Dispatch<SetStateAction<b
       <div className="mt-auto">
         <ul>
           <li>
-            <Link href="organizerDashboard/setting">
+            <Link href="/organizerDashboard/settings">
+              <button
+                onClick={() => {
+                  handlePageChange("Setings");
+                }}
+                className={`flex items-center w-full p-2 rounded relative ${
+                  activePage === "Setings"
+                    ? "bg-[#CDDC29] text-[#17202A]"
+                    : "hover:bg-[#CDDC29] hover:text-[#17202A]"
+                }`}
+              >
+                {isCollapsed ? (
+                  <TooltipProvider>
+                    <Tooltip>
+                      <TooltipTrigger>
+                        <FaCogs />
+                      </TooltipTrigger>
+                      <TooltipContent
+                        className={`flex items-center w-full text-left p-2 rounded py-1 `}
+                      >
+                        <FaCogs className="mr-2" /> Settings
+                      </TooltipContent>
+                    </Tooltip>
+                  </TooltipProvider>
+                ) : (
+                  <div
+                    onClick={() => handleCollapse()}
+                    className={`flex items-center w-full text-left rounded`}
+                  >
+                    <FaCogs className="mr-2" /> Settings
+                  </div>
+                )}
+              </button>
+            </Link>
+          </li>
+          <li>
+            <button
+              onClick={() => {
+                handlePageChange("Log Out");
+                handleLogout;
+              }}
+              className={`flex items-center w-full p-2 rounded relative ${
+                activePage === "Log Out"
+                  ? "bg-[#CDDC29] text-[#17202A]"
+                  : "hover:bg-[#CDDC29] hover:text-[#17202A]"
+              }`}
+            >
+              {isCollapsed ? (
+                <TooltipProvider>
+                  <Tooltip>
+                    <TooltipTrigger>
+                      <FaSignOutAlt />
+                    </TooltipTrigger>
+                    <TooltipContent
+                      className={`flex items-center w-full text-left p-2 rounded py-1 `}
+                    >
+                      <FaSignOutAlt className="mr-2" /> Logout
+                    </TooltipContent>
+                  </Tooltip>
+                </TooltipProvider>
+              ) : (
+                <div
+                  onClick={() => handleCollapse()}
+                  className={`flex items-center w-full text-left rounded`}
+                >
+                  <FaSignOutAlt className="mr-2" /> Logout
+                </div>
+              )}
+            </button>
+          </li>
+          {/* <li>
+            <Link href="/organizerDashboard/settings">
               <button
                 className={`flex items-center w-full py-2 pl-2  rounded transition-colors duration-200 relative ${
                   activePage === "Setings"
@@ -383,7 +472,7 @@ const Sidebar = ({ setnavexpanded }: { setnavexpanded :Dispatch<SetStateAction<b
                 </div>
               )}
             </button>
-          </li>
+          </li> */}
         </ul>
       </div>
     </div>

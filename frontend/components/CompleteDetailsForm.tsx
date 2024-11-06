@@ -15,6 +15,13 @@ import {
   FormControl,
   FormMessage,
 } from "@/components/ui/form";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import { Input } from "@/components/ui/input";
 import { useToast } from "@/hooks/use-toast";
 
@@ -77,52 +84,107 @@ const CompleteDetailsForm = () => {
   return (
     <div className="flex items-center justify-center">
       <div className="w-full max-w-lg p-8 bg-white rounded">
-        <h2 className="text-2xl font-bold text-center mb-6">Complete Your Details</h2>
+        <h2 className="text-2xl font-bold text-center mb-6">
+          Complete Your Details
+        </h2>
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
-            <FormField control={form.control} name="contact_number" render={({ field }) => (
-              <FormItem>
-                <FormLabel>Contact Number</FormLabel>
-                <FormControl><Input placeholder="Enter your contact number" {...field} /></FormControl>
-                <FormMessage />
-              </FormItem>
-            )} />
-            <FormField control={form.control} name="gender" render={({ field }) => (
-              <FormItem>
-                <FormLabel>Gender</FormLabel>
-                <FormControl><Input placeholder="Enter your gender" {...field} /></FormControl>
-                <FormMessage />
-              </FormItem>
-            )} />
-            <FormField control={form.control} name="date_of_birth" render={({ field }) => (
-              <FormItem>
-                <FormLabel>Date of Birth</FormLabel>
-                <FormControl><Input type="date" placeholder="Enter your date of birth" {...field} /></FormControl>
-                <FormMessage />
-              </FormItem>
-            )} />
-            <FormField control={form.control} name="city" render={({ field }) => (
-              <FormItem>
-                <FormLabel>City</FormLabel>
-                <FormControl><Input placeholder="Enter your city" {...field} /></FormControl>
-                <FormMessage />
-              </FormItem>
-            )} />
-            <FormField control={form.control} name="pincode" render={({ field }) => (
-              <FormItem>
-                <FormLabel>Pincode</FormLabel>
-                <FormControl><Input placeholder="Enter your pincode" {...field} /></FormControl>
-                <FormMessage />
-              </FormItem>
-            )} />
-            <FormField control={form.control} name="blood_group" render={({ field }) => (
-              <FormItem>
-                <FormLabel>Blood Group</FormLabel>
-                <FormControl><Input placeholder="Enter your blood group" {...field} /></FormControl>
-                <FormMessage />
-              </FormItem>
-            )} />
-            <Button type="submit" disabled={loading} className="w-full">{loading ? "Updating..." : "Update Details"}</Button>
+            <FormField
+              control={form.control}
+              name="contact_number"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Contact Number</FormLabel>
+                  <FormControl>
+                    <Input placeholder="Enter your contact number" {...field} />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
+              name="gender"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Gender</FormLabel>
+                  <FormControl>
+                    <Select
+                      onValueChange={field.onChange}
+                      defaultValue={field.value}
+                    >
+                      <SelectTrigger className="w-full">
+                        <SelectValue placeholder="Select Gender" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="male">Male</SelectItem>
+                        <SelectItem value="female">Female</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
+              name="date_of_birth"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Date of Birth</FormLabel>
+                  <FormControl>
+                    <Input
+                      type="date"
+                      placeholder="Enter your date of birth"
+                      {...field}
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
+              name="city"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>City</FormLabel>
+                  <FormControl>
+                    <Input placeholder="Enter your city" {...field} />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
+              name="pincode"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Pincode</FormLabel>
+                  <FormControl>
+                    <Input placeholder="Enter your pincode" {...field} />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
+              name="blood_group"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Blood Group</FormLabel>
+                  <FormControl>
+                    <Input placeholder="Enter your blood group" {...field} />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <Button type="submit" disabled={loading} className="w-full">
+              {loading ? "Updating..." : "Update Details"}
+            </Button>
           </form>
         </Form>
       </div>

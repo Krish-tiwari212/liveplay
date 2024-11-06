@@ -94,7 +94,7 @@ export default function Home() {
   }, [user?.id]); 
   return (
     <div className="flex flex-col m-3">
-      <div className={`flex gap-4`}>
+      <div className={`flex flex-col sm:flex-row gap-4`}>
         <Button
           onClick={() => router.push(`/organizerDashboard/kyc/${user?.id}`)}
           className="text-sm sm:text-md shadow-md shadow-gray-500 w-auto sm:px-10"

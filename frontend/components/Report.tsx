@@ -307,8 +307,10 @@ const Report = ({ handleNext }: ReportProps) => {
 
   const noOfParticipants = Object.keys(participants[0]).length-1;
   return (
-    <div className=" text-gray-800 px-5 pb-10">
-      <h1 className="text-3xl text-gray-800 font-bold mb-8">Event Report</h1>
+    <div className=" text-gray-800 px-2 sm:px-5  pb-10">
+      <h1 className="text-3xl text-gray-800 font-bold mb-4 sm:mb-8">
+        Event Report
+      </h1>
       <div className="grid grid-cols-1 md:grid-cols-2 gap-5 mb-5">
         {metrics.map((metric, i) => (
           <Card
@@ -362,7 +364,7 @@ const Report = ({ handleNext }: ReportProps) => {
                 View Full Data
               </div>
             </DialogTrigger>
-            <DialogContent type="table">
+            <DialogContent className="h-auto w-[90%]">
               <DialogTitle>List of Participants</DialogTitle>
               <Table>
                 <TableHeader>
@@ -472,7 +474,7 @@ const Report = ({ handleNext }: ReportProps) => {
                 View Full Data
               </div>
             </DialogTrigger>
-            <DialogContent type="table">
+            <DialogContent className="h-auto w-[90%]">
               <DialogTitle>Participants Who Withdrew</DialogTitle>
               <Table>
                 <TableHeader>
@@ -589,7 +591,7 @@ const Report = ({ handleNext }: ReportProps) => {
                 View Full Data
               </div>
             </DialogTrigger>
-            <DialogContent type="table">
+            <DialogContent className="h-auto w-[90%]">
               <DialogTitle>Interested Participants</DialogTitle>
               <Table>
                 <TableHeader>

@@ -218,7 +218,7 @@ const FirstPage = ({
   prevDisabled,
   nextDisabled,
 }: Pages) => (
-  <form className="mx-auto w-full sm:w-[60%]">
+  <form className="mx-auto w-full lg:w-[60%]">
     <Kycforms
       fields={fields}
       buttonLabel="Next"
@@ -229,10 +229,13 @@ const FirstPage = ({
   </form>
 );
 
-const SecondPage = ({ handleNext, handlePrev ,
+const SecondPage = ({
+  handleNext,
+  handlePrev,
   prevDisabled,
-  nextDisabled,}: Pages) => (
-  <form className="mx-auto w-[60%]">
+  nextDisabled,
+}: Pages) => (
+  <form className="mx-auto w-full lg:w-[60%]">
     <Kycforms
       fields={additionalFields}
       buttonLabel="Next"
@@ -248,7 +251,7 @@ const ThirdPage = ({
   prevDisabled,
   nextDisabled,
 }: Pages) => (
-  <form className="mx-auto w-[60%]">
+  <form className="mx-auto w-full lg:w-[60%]">
     <Kycforms
       fields={thirdfields}
       buttonLabel="Unlock Event Earnings"

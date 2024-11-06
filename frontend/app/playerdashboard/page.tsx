@@ -80,7 +80,7 @@ const EventDetails = () => {
         className="w-full sm:w-1/3 md:w-1/4 rounded-lg"
       />
       <div className="flex-1 sm:pl-5">
-        <div className="flex justify-between items-start">
+        <div className="flex justify-between items-start pt-2 sm:pt-0">
           <div className="text-start">
             <p className="text-sm text-gray-500">Basketball</p>
             <h2 className="text-xl font-bold">Krish Event</h2>
@@ -116,7 +116,7 @@ export default function Home() {
   const [userDetails, setUserDetails] = useState(null); 
   const [isAlertOpen, setIsAlertOpen] = useState(false);
   const [selectedEventForWithdraw, setSelectedEventForWithdraw] = useState<
-    number | null
+    string | null
   >(null);
 
   
@@ -189,40 +189,38 @@ export default function Home() {
     fetchEvents();
   }, []);
 
-  const handleWithdrawClick = (eventId: number) => {
-    setSelectedEventForWithdraw(eventId);
-    setIsAlertOpen(true);
+  const handleWithdrawClick = async(eventId: number) => {
+    setIsModalOpen(true);
+    try {
+      const response = await fetch(`/api/event/categories/${eventId}`);
+      if (!response.ok) {
+        throw new Error("Network response was not ok");
+      }
+      const data = await response.json();
+      setCategories(data.categories);
+    } catch (error) {
+      console.error("Error fetching categories:", error);
+      toast({
+        title:
+          "Failed to fetch categories. Please check your network connection.",
+        variant: "destructive",
+      });
+    }
   };
 
   const handleConfirmWithdraw = async () => {
     if (selectedEventForWithdraw) {
       setIsAlertOpen(false);
-      setIsModalOpen(true);
-      try {
-        const response = await fetch(
-          `/api/event/categories/${selectedEventForWithdraw}`
-        );
-        if (!response.ok) {
-          throw new Error("Network response was not ok");
-        }
-        const data = await response.json();
-        setCategories(data.categories);
-      } catch (error) {
-        console.error("Error fetching categories:", error);
-        toast({
-          title:
-            "Failed to fetch categories. Please check your network connection.",
-          variant: "destructive",
-        });
-      }
+      toast({
+        title: `You have successfully withdrawn from '${selectedEventForWithdraw}' & our team shall initiate your refund.`,
+        variant: "default",
+      });
     }
   };
 
   const handleWithdrawFromCategory = (categoryName: string) => {
-    toast({
-      title: `You have successfully withdrawn from '${categoryName}' & our team shall initiate your refund.`,
-      variant: "default",
-    });
+    setSelectedEventForWithdraw(categoryName);
+    setIsAlertOpen(true);
   };
 
   const handleViewRegistrationClick = async (eventId: number) => {
@@ -264,7 +262,7 @@ export default function Home() {
 
   return (
     <div className="flex flex-col m-3">
-      <div className={`flex gap-4`}>
+      <div className={`flex flex-col sm:flex-row gap-2 sm:gap-4`}>
         {!userDetails?.gender && (
           <Button
             onClick={handleButtonClick}
@@ -330,48 +328,6 @@ export default function Home() {
           </CardContent>
         </Card>
       </section>
-      {/* <section className="flex gap-4 px-2 flex-wrap w-full">
-        <TooltipProvider>
-          <Tooltip>
-            <TooltipTrigger>
-              <Card className="flex-1 w-full shadow-xl">
-                <CardContent className="flex flex-col mt-4">
-                  <div className="flex justify-center items-center gap-4 text-xl">
-                    <h1 className="font-semibold">Events Participated</h1>
-                    <TbCoinRupeeFilled className="" />
-                  </div>
-                  <div className="flex justify-start items-center text-xl gap-1">
-                    <FaPlus className="h-4 w-4" />
-                    <h1 className="">0</h1>
-                  </div>
-                </CardContent>
-              </Card>
-            </TooltipTrigger>
-            <TooltipContent>
-              <p className="text-lg">Total Events Participated : 0</p>
-            </TooltipContent>
-          </Tooltip>
-          <Tooltip>
-            <TooltipTrigger>
-              <Card className="flex-1 w-full shadow-xl">
-                <CardContent className="flex flex-col mt-4">
-                  <div className="flex justify-center items-center gap-4 text-xl">
-                    <h1 className="font-semibold">Events I’m interested in</h1>
-                    <FaRegEye className="" />
-                  </div>
-                  <div className="flex justify-start items-center text-xl gap-1">
-                    <FaPlus className="h-4 w-4" />
-                    <h1 className="">0</h1>
-                  </div>
-                </CardContent>
-              </Card>
-            </TooltipTrigger>
-            <TooltipContent>
-              <p className="text-lg"> Events I’m interested in : 0</p>
-            </TooltipContent>
-          </Tooltip>
-        </TooltipProvider>
-      </section> */}
       <section className="mt-8 bg-white shadow-md rounded-lg px-4 pt-4">
         <h2 className="text-xl font-semibold mb-2">Upcoming Events</h2>
         <div className="flex space-x-4 overflow-x-auto pb-8">
@@ -453,7 +409,7 @@ export default function Home() {
           <DialogTrigger asChild>
             <Button className="hidden">Open</Button>
           </DialogTrigger>
-          <DialogContent className="w-[90%] sm:max-w-2xl p-4">
+          <DialogContent className="w-[90%] sm:max-w-2xl p-4 flex flex-col h-auto">
             <DialogHeader>
               <DialogTitle className="text-lg font-semibold mb-4">
                 Withdraw from Categories
@@ -505,7 +461,7 @@ export default function Home() {
           <DialogTrigger asChild>
             <Button className="hidden">Open</Button>
           </DialogTrigger>
-          <DialogContent>
+          <DialogContent className="w-[90%] sm:max-w-2xl p-4 flex flex-col justify-between h-auto">
             <DialogHeader>
               <EventDetails />
               <DialogTitle className="text-lg font-semibold">
@@ -539,7 +495,9 @@ export default function Home() {
       {completeprofileDialog && (
         <Dialog onOpenChange={handleCloseDialog} open={completeprofileDialog}>
           <DialogTitle>Complete Your Profile</DialogTitle>
-          <DialogContent type="CompleteProfile">
+          <DialogContent
+            className="h-[90%] w-[90%] sm:max-w-2xl overflow-y-auto rounded"
+          >
             <CompleteDetailsForm />
           </DialogContent>
         </Dialog>

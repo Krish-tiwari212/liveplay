@@ -41,8 +41,8 @@ const EnableFeatures = ({ handleNext }: EnableFeaturesProps) => {
     drawFixtures: false,
   });
   return (
-    <div className="m-6">
-      <h1 className="text-3xl font-bold mb-8">Event Setup</h1>
+    <div className="m-2 sm:m-6">
+      <h1 className="text-3xl font-bold mb-4 sm:mb-8">Event Setup</h1>
       <div className="flex flex-col bg-slate-200 overflow-hidden gap-5">
         <MyTimer expiryTimestamp={time} setFeatureData={setFeatureData} />
         <TshirtForParticipant setFeatureData={setFeatureData} />

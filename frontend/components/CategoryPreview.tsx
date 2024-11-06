@@ -154,8 +154,8 @@ const CategoryPreview = ({
   }, [EventData, EventEditData]);
 
   return (
-    <div className="flex flex-col mx-6">
-      <div className="flex justify-between">
+    <div className="flex flex-col mx-2 sm:mx-6">
+      <div className="flex flex-col sm:flex-row justify-between">
         <h1 className="text-3xl font-bold mb-4">Category Setup</h1>
         <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
           <DialogTrigger asChild>
@@ -163,7 +163,7 @@ const CategoryPreview = ({
               <span>Add Category</span>
             </Button>
           </DialogTrigger>
-          <DialogContent>
+          <DialogContent className="w-[90%] sm:max-w-2xl h-auto">
             <DialogTitle>Add category</DialogTitle>
             <AddCategory type="add" setCategoryData={addCategory} />
           </DialogContent>
@@ -291,7 +291,10 @@ const CategoryPreview = ({
         Next
       </Button>
       <Dialog open={isEditDialogOpen} onOpenChange={setIsEditDialogOpen}>
-        <DialogContent aria-describedby={undefined}>
+        <DialogContent
+          aria-describedby={undefined}
+          className="w-[90%] sm:max-w-2xl h-auto"
+        >
           <DialogTitle>Edit Category</DialogTitle>
           <DialogDescription>
             This is where you can edit your category details.
