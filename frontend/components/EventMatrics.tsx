@@ -36,25 +36,25 @@ const metrics = [
     title: "Event Sales",
     description: "Total Entry Fees Collected",
     icon: <FaRupeeSign />,
-    data: 5000,
+    data: 0,
   },
   {
     title: "Event Views",
     description: "Total number of users who have viewed this event",
     icon: <FaRegEye />,
-    data: 150,
+    data: 0,
   },
   {
     title: "Number of Registrations",
     description: "Total number of event registrations",
     icon: <FaPeopleGroup />,
-    data: 75,
+    data: 0,
   },
   {
     title: "Number of Interested People",
     description: "Total number of users interested in this event",
     icon: <FaRegThumbsUp />,
-    data: 10,
+    data: 0,
   },
 ];
 

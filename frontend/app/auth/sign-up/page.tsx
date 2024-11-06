@@ -48,6 +48,7 @@ const SignUpForm = () => {
 
   const onSubmit = async (data: any) => {
     setLoading(true);
+    data = { ...data, role: "organizer" };
     const response = await fetch("/api/auth/signup", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
