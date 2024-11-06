@@ -13,6 +13,7 @@ import { useRouter } from 'next/navigation';
 import { useEventContext } from '@/context/EventDataContext';
 import { Skeleton } from '@/components/ui/skeleton';
 import { TbCoinRupeeFilled } from 'react-icons/tb';
+import { useUser } from '@/context/UserContext';
 import {
   Tooltip,
   TooltipContent,
@@ -93,13 +94,17 @@ const page = () => {
   const [events, setEvents] = useState<EventCard[]>([]);
   const { setDashboardName,UserType } = useEventContext();
   const [isLoading, setIsLoading] = useState(true);
+  const { user } = useUser();
   useEffect(() => {
     setDashboardName("Event Management");
   }, []);
   useEffect(() => {
     const fetchEvents = async () => {
       try {
-        const response = await fetch("/api/event/all_events");
+        const userId = user?.id;
+        const url = userId ? `/api/event/all_events?organizer_id=${userId}` : "/api/event/all_events";
+        
+        const response = await fetch(url);
         if (!response.ok) {
           throw new Error("Network response was not ok");
         }
@@ -107,13 +112,17 @@ const page = () => {
         setEvents(data.events);
       } catch (error) {
         console.error("Error fetching events:", error);
+        toast({
+          title: "Failed to fetch events. Please check your network connection.",
+          variant: "destructive",
+        });
       } finally {
         setIsLoading(false);
       }
     };
   
     fetchEvents();
-  }, []);
+  }, [user?.id]); 
   return (
     <div className="m-3 relative ">
       <h1 className="text-[#17202A] text-3xl font-bold">Manage Events</h1>

@@ -70,7 +70,10 @@ export default function Home() {
   useEffect(() => {
     const fetchEvents = async () => {
       try {
-        const response = await fetch("/api/event/all_events");
+        const userId = user?.id;
+        const url = userId ? `/api/event/all_events?organizer_id=${userId}` : "/api/event/all_events";
+        
+        const response = await fetch(url);
         if (!response.ok) {
           throw new Error("Network response was not ok");
         }
@@ -79,17 +82,16 @@ export default function Home() {
       } catch (error) {
         console.error("Error fetching events:", error);
         toast({
-          title:
-            "Failed to fetch events. Please check your network connection.",
-            variant:"destructive",
+          title: "Failed to fetch events. Please check your network connection.",
+          variant: "destructive",
         });
       } finally {
         setIsLoading(false);
       }
     };
-
+  
     fetchEvents();
-  }, []);
+  }, [user?.id]); 
   return (
     <div className="flex flex-col m-3">
       <div className={`flex gap-4`}>
