@@ -106,8 +106,10 @@ const ProgressBar: React.FC<ProgressBarProps> = ({
         className={`flex justify-between   ${
           forpage !== "manageEvent" ? "absolute -top-3" : "relative"
         } ${
-          checkpoints.length >= 7 && "w-full left-[0%] md:w-[90%] md:left-[5%] xl:w-[80%] xl:left-[10%]"
-        } w-[80%] left-[10%] items-center `}
+          checkpoints.length >= 7
+            ? "w-full left-[0%] md:w-[90%] md:left-[5%] xl:w-[80%] xl:left-[10%]"
+            : " w-[80%] left-[10%]"
+        } items-center `}
       >
         {checkpoints.map((checkpoint, index) => (
           <div
