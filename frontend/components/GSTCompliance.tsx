@@ -61,11 +61,15 @@ const GSTCompliance = ({
 
   return (
     <div className="bg-white shadow-2xl p-5 rounded-lg w-full h-full">
-      <div className={`flex flex-wrap w-full ${isDisabled ? 'opacity-50 cursor-not-allowed' : ''}`}>
+      <div
+        className={`flex flex-wrap w-full ${
+          isDisabled ? "opacity-50 cursor-not-allowed" : ""
+        }`}
+      >
         <div className="w-full m-2 flex flex-col">
-          <label htmlFor="gstRegistered">
+          <Label htmlFor="gstRegistered" className="text-lg mb-2">
             Are you a registered GST person?
-          </label>
+          </Label>
           <RadioGroup
             defaultValue={EventData.GstCompliance ? "Yes" : "default"}
             disabled={isDisabled}
@@ -102,7 +106,11 @@ const GSTCompliance = ({
                   className="h-12 p-2 bg-white w-[85%] border rounded-md text-sm shadow-2xl text-gray-800 focus:border-gray-800 focus:outline-none focus:shadow-lg"
                   disabled={isDisabled}
                 />
-                <Button onClick={handleVerify} className="w-[20%]" disabled={isDisabled}>
+                <Button
+                  onClick={handleVerify}
+                  className="w-[20%]"
+                  disabled={isDisabled}
+                >
                   Verify
                 </Button>
               </div>

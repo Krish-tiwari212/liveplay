@@ -256,10 +256,12 @@ const AddCategory = ({ setCategoryData ,type,category}: AddCategoryProps) => {
   }, [type, category]);
 
   return (
-    <form className="bg-white shadow-2xl p-5 rounded-lg m-3">
+    <form className="bg-white shadow-2xl p-5 rounded-lg m-3  overflow-y-auto">
       <div className="flex flex-wrap w-full">
         <div className=" w-full m-2 flex flex-col">
-          <label htmlFor="category_type">Category Type</label>
+          <label htmlFor="category_type">
+            Category Type<span className="text-red-500">*</span>
+          </label>
           <Select
             onValueChange={(value) =>
               setLocalCategoryData({ ...categoryData, category_type: value })
@@ -281,26 +283,28 @@ const AddCategory = ({ setCategoryData ,type,category}: AddCategoryProps) => {
           </Select>
         </div>
         <div className=" w-full m-2 flex flex-col">
-          <label htmlFor="category_type">Gender</label>
+          <label htmlFor="category_type">
+            Category Gender<span className="text-red-500">*</span>
+          </label>
           <Select
             onValueChange={(value) =>
               setLocalCategoryData({ ...categoryData, gender: value })
             }
           >
             <SelectTrigger className="w-full h-10 shadow-2xl focus:border-[#17202A] focus:outline-none focus:shadow-lg">
-              <SelectValue
-                placeholder={categoryData.gender || "Gender"}
-              />
+              <SelectValue placeholder={categoryData.gender || "Gender"} />
             </SelectTrigger>
             <SelectContent>
               <SelectItem value="male">Male</SelectItem>
               <SelectItem value="femake">Female</SelectItem>
-              <SelectItem value="others">Others</SelectItem>
+              <SelectItem value="others">Not Applicable</SelectItem>
             </SelectContent>
           </Select>
         </div>
         <div className=" w-full m-2 flex flex-col">
-          <label>Age Range</label>
+          <label>
+            Age Range<span className="text-red-500">*</span>
+          </label>
           <div className="flex gap-2 items-center">
             <input
               type="number"
@@ -308,11 +312,12 @@ const AddCategory = ({ setCategoryData ,type,category}: AddCategoryProps) => {
               placeholder="From Age"
               value={categoryData.age_from}
               onChange={(e) => {
-                const value = Math.floor(parseInt(e.target.value) / 10) * 10;
-                setLocalCategoryData({ ...categoryData, age_from: value.toString() });
+                setLocalCategoryData({
+                  ...categoryData,
+                  age_from: e.target.value.toString(),
+                });
               }}
-              min="0"
-              step="10"
+              max="100"
               className="h-10 p-2 bg-white border rounded-md text-sm shadow-2xl text-[#17202A] focus:border-[#17202A] focus:outline-none focus:shadow-lg w-1/2"
             />
             <span className="text-lg">to</span>
@@ -322,11 +327,12 @@ const AddCategory = ({ setCategoryData ,type,category}: AddCategoryProps) => {
               placeholder="To Age"
               value={categoryData.age_to}
               onChange={(e) => {
-                const value = Math.floor(parseInt(e.target.value) / 10) * 10;
-                setLocalCategoryData({ ...categoryData, age_to: value.toString() });
+                setLocalCategoryData({
+                  ...categoryData,
+                  age_to: e.target.value.toString(),
+                });
               }}
-              min="0"
-              step="10"
+              max="100"
               className="h-10 p-2 bg-white border rounded-md text-sm shadow-2xl text-[#17202A] focus:border-[#17202A] focus:outline-none focus:shadow-lg w-1/2"
             />
           </div>
@@ -339,7 +345,10 @@ const AddCategory = ({ setCategoryData ,type,category}: AddCategoryProps) => {
               field.type === "textarea" ? "" : "lg:w-[46%]"
             } w-full m-2 flex flex-col`}
           >
-            <label htmlFor={field.id}>{field.label}</label>
+            <label htmlFor={field.id}>
+              {field.label}
+              <span className="text-red-500">*</span>
+            </label>
             {field.type === "textarea" ? (
               <textarea
                 id={field.id}

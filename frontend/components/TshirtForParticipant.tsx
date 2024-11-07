@@ -52,7 +52,9 @@ const TshirtForParticipant = ({
   return (
     <div className="bg-white shadow-2xl p-6 rounded-lg">
       <div className="flex items-center m-2 space-x-2 relative">
-        <Label htmlFor="airplane-mode">Order T-Shirts</Label>
+        <Label htmlFor="airplane-mode" className="text-lg">
+          Order T-Shirts
+        </Label>
         <Switch
           id="enable-countdown"
           onCheckedChange={handleTshirts}

@@ -1,12 +1,19 @@
 import { NextResponse } from 'next/server';
-import { createClient } from '@/utils/supabase/server'
+import { createClient } from '@/utils/supabase/server';
 
-export async function GET() {
+export async function GET(request: Request) {
+  const url = new URL(request.url);
+  const organizerId = url.searchParams.get('organizer_id');
+
   try {
     const supabase = await createClient();
-    const { data: events, error: eventsError } = await supabase
-      .from('events')
-      .select('*');
+    let query = supabase.from('events').select('*');
+
+    if (organizerId) {
+      query = query.eq('organizer_id', organizerId);
+    }
+
+    const { data: events, error: eventsError } = await query;
 
     if (eventsError) {
       console.error('Error fetching events:', eventsError);

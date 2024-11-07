@@ -154,8 +154,8 @@ const CategoryPreview = ({
   }, [EventData, EventEditData]);
 
   return (
-    <div className="flex flex-col mx-6">
-      <div className="flex justify-between">
+    <div className="flex flex-col mx-2 sm:mx-6">
+      <div className="flex flex-col sm:flex-row justify-between">
         <h1 className="text-3xl font-bold mb-4">Category Setup</h1>
         <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
           <DialogTrigger asChild>
@@ -163,7 +163,7 @@ const CategoryPreview = ({
               <span>Add Category</span>
             </Button>
           </DialogTrigger>
-          <DialogContent>
+          <DialogContent className="w-[90%] sm:max-w-2xl h-auto">
             <DialogTitle>Add category</DialogTitle>
             <AddCategory type="add" setCategoryData={addCategory} />
           </DialogContent>
@@ -176,10 +176,18 @@ const CategoryPreview = ({
             categories.map((category, index) => (
               <div
                 key={index}
-                className={`relative border shadow-lg rounded-lg p-4 mb-4 w-[46%] xl:w-[48%] cursor-pointer bg-[#17202A]`}
+                className={`relative border shadow-lg rounded-lg p-4 mb-4  ${
+                  editPage === "manageEvent"
+                    ? "w-full sm:w-1/2 lg:w-[30%] xl:w-[30%]"
+                    : "w-full sm:w-1/2 lg:w-[46%] xl:w-[48%]"
+                } cursor-pointer bg-[#17202A]`}
               >
                 <div className="flex justify-between items-start bg-gray-100 p-4 rounded-lg shadow-sm w-full h-full">
-                  <div className="flex justify-between items-start bg-gradient-to-r from-gray-200 to-gray-300 rounded-lg shadow-lg p-4 mr-4 w-[90%] h-full">
+                  <div
+                    className={`flex justify-between items-start bg-gradient-to-r from-gray-200 to-gray-300 rounded-lg shadow-lg p-4  ${
+                      editPage === "manageEvent" ? "w-full" : "mr-4 w-[90%]"
+                    } h-full`}
+                  >
                     <div className="flex flex-col w-full">
                       <h2 className="font-bold text-xl text-[#17202A] flex items-center">
                         {category.category_name}
@@ -202,27 +210,25 @@ const CategoryPreview = ({
                       </p>
                     </div>
                   </div>
-                  <div className="flex flex-col gap-4 justify-center ">
-                    <TooltipProvider>
-                      <Tooltip>
-                        <TooltipTrigger>
-                          <div
-                            className={`bg-gray-300 hover:bg-gray-200 rounded-lg text-5xl shadow-xl`}
-                            onClick={(e) => {
-                              e.stopPropagation();
-                              openEditDialog(category);
-                            }}
-                          >
-                            <CiEdit />
-                          </div>
-                        </TooltipTrigger>
-                        <TooltipContent>
-                          <p>Edit</p>
-                        </TooltipContent>
-                      </Tooltip>
-                    </TooltipProvider>
-                    {editPage !== "manageEvent" && (
+                  {editPage !== "manageEvent" && (
+                    <div className="flex flex-col gap-4 justify-center ">
                       <TooltipProvider>
+                        <Tooltip>
+                          <TooltipTrigger>
+                            <div
+                              className={`bg-gray-300 hover:bg-gray-200 rounded-lg text-5xl shadow-xl`}
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                openEditDialog(category);
+                              }}
+                            >
+                              <CiEdit />
+                            </div>
+                          </TooltipTrigger>
+                          <TooltipContent>
+                            <p>Edit</p>
+                          </TooltipContent>
+                        </Tooltip>
                         <Tooltip>
                           <TooltipTrigger>
                             <div
@@ -239,28 +245,25 @@ const CategoryPreview = ({
                             <p>Delete</p>
                           </TooltipContent>
                         </Tooltip>
+                        <Tooltip>
+                          <TooltipTrigger>
+                            <div
+                              className={`bg-gray-300 hover:bg-gray-200 rounded-lg text-5xl shadow-xl`}
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                duplicateCategory(category);
+                              }}
+                            >
+                              <HiDocumentDuplicate />
+                            </div>
+                          </TooltipTrigger>
+                          <TooltipContent>
+                            <p>Duplicate</p>
+                          </TooltipContent>
+                        </Tooltip>
                       </TooltipProvider>
-                    )}
-
-                    <TooltipProvider>
-                      <Tooltip>
-                        <TooltipTrigger>
-                          <div
-                            className={`bg-gray-300 hover:bg-gray-200 rounded-lg text-5xl shadow-xl`}
-                            onClick={(e) => {
-                              e.stopPropagation();
-                              duplicateCategory(category);
-                            }}
-                          >
-                            <HiDocumentDuplicate />
-                          </div>
-                        </TooltipTrigger>
-                        <TooltipContent>
-                          <p>Duplicate</p>
-                        </TooltipContent>
-                      </Tooltip>
-                    </TooltipProvider>
-                  </div>
+                    </div>
+                  )}
                 </div>
               </div>
             ))
@@ -274,8 +277,9 @@ const CategoryPreview = ({
                 alt="Add Category"
                 width={200}
                 height={200}
+                className="grayscale"
               />
-              <h1 className="text-3xl text-[#17202A] font-bold">
+              <h1 className="text-lg sm:text-3xl text-[#17202A] font-bold">
                 Add Category to Preview
               </h1>
             </div>
@@ -287,7 +291,10 @@ const CategoryPreview = ({
         Next
       </Button>
       <Dialog open={isEditDialogOpen} onOpenChange={setIsEditDialogOpen}>
-        <DialogContent aria-describedby={undefined}>
+        <DialogContent
+          aria-describedby={undefined}
+          className="w-[90%] sm:max-w-2xl h-auto"
+        >
           <DialogTitle>Edit Category</DialogTitle>
           <DialogDescription>
             This is where you can edit your category details.

@@ -248,7 +248,7 @@ const DrawCreation = ({ handleNext,id }: DrawCreationProps) => {
   };
 
   return (
-    <div className="container mx-auto m-3 p-6 ">
+    <div className="container mx-auto m-5 sm:p-6 ">
       <h1 className="text-3xl font-bold mb-4">Draw Creation</h1>
       {isLoading && (
         <div className="flex justify-center items-center h-full">

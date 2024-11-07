@@ -19,7 +19,6 @@ import { Input } from "@/components/ui/input";
 import { useToast } from "@/hooks/use-toast";
 import { FaGoogle } from "react-icons/fa";
 
-// Validation schema for form fields
 const formSchema = z
   .object({
     full_name: z.string().min(2, { message: "Full Name is required" }),
@@ -47,9 +46,9 @@ const SignUpForm = () => {
     },
   });
 
-  // Form submission for email-based sign-up
   const onSubmit = async (data: any) => {
     setLoading(true);
+    data = { ...data, role: "organizer" };
     const response = await fetch("/api/auth/signup", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
@@ -59,7 +58,11 @@ const SignUpForm = () => {
     setLoading(false);
 
     if (response.ok) {
-      toast({ title: "Signup Successful", description: "Your account has been created!" });
+      toast({
+        title: "Signup Successful",
+        description:
+          "Your account has been created! Please verify your email to activate your account.",
+      });
       router.push("/auth/login");
     } else {
       toast({ title: "Signup Failed", description: result.error || "An error occurred. Please try again.", variant: "destructive" });

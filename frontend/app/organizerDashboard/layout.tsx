@@ -6,8 +6,10 @@ import Sidebar from "@/components/Sidebar";
 import { AppContextProvider, useAppContext } from "@/lib/context/AppContext";
 import { useEffect, useState } from "react";
 import MSidebar from "@/components/MSidebar";
-import { EventProvider } from "@/context/EventDataContext";
-import { UserProvider } from '@/context/UserContext';
+import { EventProvider, useEventContext } from "@/context/EventDataContext";
+import { UserProvider, useUser } from '@/context/UserContext';
+import { useRouter } from "next/navigation";
+import { Button } from "@/components/ui/button";
 
 
 export default function RootLayout({
@@ -15,30 +17,91 @@ export default function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  const [navexpanded,setnavexpanded]=useState(false)
+  const [navexpanded, setnavexpanded] = useState(false)
+
   return (
     <UserProvider>
       <AppContextProvider>
         <EventProvider>
-          <Sidebar setnavexpanded={setnavexpanded} />
-          <div
-            className={`flex h-screen ${
-              navexpanded ? "opacity-40 bg-black" : ""
-            }`}
-          >
-            <div className="flex-[1] w-full">
-              <MSidebar />
-            </div>
+          <KYCWrapper>
+            <Sidebar setnavexpanded={setnavexpanded} />
             <div
-              className={`bg-slate-200 overflow-x-hidden w-full h-full ml-16 md:ml-0 md:flex-[5] `}
+              className={`flex h-screen ${
+                navexpanded ? "opacity-40 bg-black" : ""
+              }`}
             >
-              <Navbar />
-              {children}
+              <div className="flex-[1] w-full">
+                <MSidebar />
+              </div>
+              <div
+                className={`bg-slate-200 overflow-x-hidden w-full h-full ml-16 lg:ml-0 lg:flex-[3] xl:flex-[4] 2xl:flex-[5] `}
+              >
+                <Navbar />
+                {children}
+              </div>
             </div>
-          </div>
+          </KYCWrapper>
         </EventProvider>
       </AppContextProvider>
     </UserProvider>
   );
- 
+}
+
+function KYCWrapper({ children }: { children: React.ReactNode }) {
+  const { kycCompleted } = useEventContext();
+  const [showKYCPopup, setShowKYCPopup] = useState(false);
+  const { user } = useUser();
+  const router = useRouter();
+
+  useEffect(() => {
+    const isKYCPage = window.location.pathname.includes('/kyc');
+    if (isKYCPage) {
+      setShowKYCPopup(false);
+      return;
+    }
+
+    if (!kycCompleted && user) {
+      setShowKYCPopup(true);
+    }
+
+    const interval = setInterval(() => {
+      const currentIsKYCPage = window.location.pathname.includes('/kyc');
+      if (!kycCompleted && user && !currentIsKYCPage) {
+        setShowKYCPopup(true);
+      }
+    }, 5 * 60 * 1000); 
+
+    return () => clearInterval(interval);
+  }, [user, kycCompleted]);
+
+  return (
+    <>
+      {showKYCPopup && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+          <div className="bg-white p-6 rounded-lg shadow-lg w-[90%]">
+            <h2 className="text-xl font-bold mb-4">KYC Required</h2>
+            <p className="mb-4">
+              Please complete your KYC verification to continue using all
+              features.
+            </p>
+            <div className="flex gap-4">
+              <Button
+                onClick={() => {router.push(`organizerDashboard/kyc/${user?.id}`);setShowKYCPopup(false);}}
+                className=""
+              >
+                Complete KYC
+              </Button>
+              <Button
+                onClick={() => setShowKYCPopup(false)}
+                className=""
+              >
+                Remind Me Later
+              </Button>
+            </div>
+          </div>
+        </div>
+      )}
+      {children}
+    </>
+  );
 }

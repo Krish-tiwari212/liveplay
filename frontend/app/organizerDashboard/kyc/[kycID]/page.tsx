@@ -11,6 +11,7 @@ import { IoCreate } from 'react-icons/io5';
 import { MdAccountBalance, MdOutlineCategory, MdOutlineFeaturedPlayList, MdPersonalInjury } from 'react-icons/md';
 import ProgressBar from '@/components/ProgressBar';
 import { useEventContext } from '@/context/EventDataContext';
+import { useUser } from '@/context/UserContext';
 
 
 
@@ -158,7 +159,7 @@ const additionalFields = [
 ];
 
 const Page = ({ params: kycID }: { params: { kycID: string } }) => {
-  const { setDashboardName } = useEventContext();
+  const { setDashboardName} = useEventContext();
   const [currentPage, setCurrentPage] = useState(1);
   const totalPages = 4;
 
@@ -176,7 +177,7 @@ const Page = ({ params: kycID }: { params: { kycID: string } }) => {
 
   useEffect(() => {
     setDashboardName("Unlock Event Earnings");
-  }, []);
+  }, [setDashboardName]);
 
   return (
     <div className="m-3 relative">
@@ -217,7 +218,7 @@ const FirstPage = ({
   prevDisabled,
   nextDisabled,
 }: Pages) => (
-  <form className="mx-auto w-[60%]">
+  <form className="mx-auto w-full lg:w-[60%]">
     <Kycforms
       fields={fields}
       buttonLabel="Next"
@@ -228,10 +229,13 @@ const FirstPage = ({
   </form>
 );
 
-const SecondPage = ({ handleNext, handlePrev ,
+const SecondPage = ({
+  handleNext,
+  handlePrev,
   prevDisabled,
-  nextDisabled,}: Pages) => (
-  <form className="mx-auto w-[60%]">
+  nextDisabled,
+}: Pages) => (
+  <form className="mx-auto w-full lg:w-[60%]">
     <Kycforms
       fields={additionalFields}
       buttonLabel="Next"
@@ -247,7 +251,7 @@ const ThirdPage = ({
   prevDisabled,
   nextDisabled,
 }: Pages) => (
-  <form className="mx-auto w-[60%]">
+  <form className="mx-auto w-full lg:w-[60%]">
     <Kycforms
       fields={thirdfields}
       buttonLabel="Unlock Event Earnings"

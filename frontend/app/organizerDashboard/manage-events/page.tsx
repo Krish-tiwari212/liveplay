@@ -13,6 +13,7 @@ import { useRouter } from 'next/navigation';
 import { useEventContext } from '@/context/EventDataContext';
 import { Skeleton } from '@/components/ui/skeleton';
 import { TbCoinRupeeFilled } from 'react-icons/tb';
+import { useUser } from '@/context/UserContext';
 import {
   Tooltip,
   TooltipContent,
@@ -93,13 +94,17 @@ const page = () => {
   const [events, setEvents] = useState<EventCard[]>([]);
   const { setDashboardName,UserType } = useEventContext();
   const [isLoading, setIsLoading] = useState(true);
+  const { user } = useUser();
   useEffect(() => {
     setDashboardName("Event Management");
   }, []);
   useEffect(() => {
     const fetchEvents = async () => {
       try {
-        const response = await fetch("/api/event/all_events");
+        const userId = user?.id;
+        const url = userId ? `/api/event/all_events?organizer_id=${userId}` : "/api/event/all_events";
+        
+        const response = await fetch(url);
         if (!response.ok) {
           throw new Error("Network response was not ok");
         }
@@ -107,19 +112,23 @@ const page = () => {
         setEvents(data.events);
       } catch (error) {
         console.error("Error fetching events:", error);
+        toast({
+          title: "Failed to fetch events. Please check your network connection.",
+          variant: "destructive",
+        });
       } finally {
         setIsLoading(false);
       }
     };
   
     fetchEvents();
-  }, []);
+  }, [user?.id]); 
   return (
     <div className="m-3 relative ">
       <h1 className="text-[#17202A] text-3xl font-bold">Manage Events</h1>
       <section className="mt-8 bg-white shadow-md rounded-lg px-4 pt-4">
         <h2 className="text-xl font-semibold mb-2">Active Events</h2>
-        <div className="flex flex-col md:flex-row space-x-4 overflow-x-auto pb-8">
+        <div className="flex flex-row space-x-4 overflow-x-auto pb-8">
           {isLoading ? (
             <div className="flex space-x-4">
               {Array.from({ length: 3 }).map((_, index) => (
@@ -159,51 +168,48 @@ const page = () => {
                           className="rounded-lg object-cover shadow-xl"
                         />
                       </div>
-                      <div className="flex flex-col space-y-2 flex-1">
+                      <div className="flex-[1]">
                         <h3 className="font-bold">{event.event_name}</h3>
                         <div className="flex flex-col justify-between">
                           <TooltipProvider>
                             <Tooltip>
                               <TooltipTrigger>
                                 <span className="flex gap-2 items-center">
-                                  <FaRegThumbsUp /> {event.entries || "N/A"}
-                                </span>
-                              </TooltipTrigger>
-                              <TooltipContent>
-                                <p>Event Entries : {event.entries || "N/A"}</p>
-                              </TooltipContent>
-                            </Tooltip>
-                          </TooltipProvider>
-                          <TooltipProvider>
-                            <Tooltip>
-                              <TooltipTrigger>
-                                <span className="flex gap-2 items-center">
-                                  <TbCoinRupeeFilled /> {event.revenue || "₹0"}
+                                  <TbCoinRupeeFilled />{" "}
+                                  {event.revenue || "₹12000"}
                                 </span>
                               </TooltipTrigger>
                               <TooltipContent>
                                 <p>Event sales : ₹0</p>
                               </TooltipContent>
                             </Tooltip>
-                          </TooltipProvider>
-                          <TooltipProvider>
                             <Tooltip>
                               <TooltipTrigger>
                                 <span className="flex gap-2 items-center">
-                                  <FaRegEye /> {event.event_views || "0"}
+                                  <FaRegEye /> {event.event_views || "2"}
                                 </span>
                               </TooltipTrigger>
                               <TooltipContent>
                                 <p>Event views : 0</p>
                               </TooltipContent>
                             </Tooltip>
-                          </TooltipProvider>
-                          <TooltipProvider>
                             <Tooltip>
                               <TooltipTrigger>
                                 <span className="flex gap-2 items-center">
-                                  <FaPeopleGroup />{" "}
-                                  {event.interested_people || "0"}
+                                  <FaPeopleGroup /> {event.entries || "12345"}
+                                </span>
+                              </TooltipTrigger>
+                              <TooltipContent>
+                                <p>
+                                  Event Registrations : {event.entries || "N/A"}
+                                </p>
+                              </TooltipContent>
+                            </Tooltip>
+                            <Tooltip>
+                              <TooltipTrigger>
+                                <span className="flex gap-2 items-center">
+                                  <FaRegThumbsUp />{" "}
+                                  {event.interested_people || "20"}
                                 </span>
                               </TooltipTrigger>
                               <TooltipContent>

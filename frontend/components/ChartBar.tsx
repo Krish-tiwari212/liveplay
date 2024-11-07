@@ -136,7 +136,7 @@ export function ChartBar({
                 tickLine={false}
                 tickMargin={10}
                 axisLine={false}
-                tickFormatter={processCategory}
+                // tickFormatter={processCategory}
               />
               <ChartTooltip
                 cursor={false}

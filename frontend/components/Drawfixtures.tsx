@@ -56,7 +56,9 @@ const Drawfixtures = ({ setFeatureData }: DrawfixturesProps) => {
   return (
     <div className="flex flex-col bg-white shadow-lg rounded-lg w-full p-8">
       <div className="flex items-center space-x-2 relative">
-        <Label htmlFor="airplane-mode">Enable Draw Creation</Label>
+        <Label htmlFor="airplane-mode" className="text-lg">
+          Enable Draw Creation
+        </Label>
         <Switch
           id="enable-countdown"
           onCheckedChange={handleFixtures}

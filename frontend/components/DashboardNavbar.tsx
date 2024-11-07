@@ -36,7 +36,7 @@ const Navbar = () => {
 
   return (
     <div className="flex justify-between items-center p-4 m-3 bg-[#17202A] text-white rounded-lg ">
-      <div className="text-2xl text-[#CDDC29] font-bold">
+      <div className="text-sm sm:text-2xl text-[#CDDC29] font-bold">
         {DashboardName || defaultname}
       </div>
       <div className="flex items-center">

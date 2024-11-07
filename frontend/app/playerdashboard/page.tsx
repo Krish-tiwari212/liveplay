@@ -41,6 +41,17 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from "@/components/ui/alert-dialog";
+import CompleteDetailsForm from "@/components/CompleteDetailsForm";
 
 interface EventCard {
   id: number;
@@ -62,15 +73,15 @@ interface Category {
 
 const EventDetails = () => {
   return (
-    <Card className="bg-gray-100 rounded-lg shadow-md p-5 mb-5 flex flex-col md:flex-row">
-      <img 
-        src="/images/img3.jpeg" 
-        alt="Event" 
-        className="w-1/3 md:w-1/4 rounded-lg" 
+    <Card className="bg-gray-100 rounded-lg shadow-md p-5 mb-5 flex flex-col sm:flex-row">
+      <img
+        src="/images/img3.jpeg"
+        alt="Event"
+        className="w-full sm:w-1/3 md:w-1/4 rounded-lg"
       />
-      <div className="flex-1 md:pl-5">
-        <div className="flex justify-between items-start">
-          <div>
+      <div className="flex-1 sm:pl-5">
+        <div className="flex justify-between items-start pt-2 sm:pt-0">
+          <div className="text-start">
             <p className="text-sm text-gray-500">Basketball</p>
             <h2 className="text-xl font-bold">Krish Event</h2>
             <p className="text-gray-800">Maratha Mandir: Mumbai Central</p>
@@ -79,13 +90,9 @@ const EventDetails = () => {
         </div>
         <hr className="my-3 border-gray-300" />
         <div className="flex justify-between">
-          <div>
+          <div className="text-start">
             <p className="text-sm text-gray-500">Organizer</p>
             <p className="font-bold">Krish</p>
-          </div>
-          <div>
-            <p className="text-sm text-gray-500">Event Likes</p>
-            <p className="font-bold">100</p>
           </div>
         </div>
       </div>
@@ -96,7 +103,7 @@ const EventDetails = () => {
 export default function Home() {
   const { setTheme } = useAppContext();
   const { user } = useUser();
-  const { setDashboardName, UserType, setNotification } = useEventContext();
+  const { setDashboardName, UserType, setNotification,completeprofileDialog,setCompleteprofileDialog } = useEventContext();
   const [events, setEvents] = useState<EventCard[]>([]);
   const [categories, setCategories] = useState<Category[]>([]);
   const [selectedEvent, setSelectedEvent] = useState<number | null>(null);
@@ -107,7 +114,20 @@ export default function Home() {
   const router = useRouter();
   const supabase = createClient();
   const [userDetails, setUserDetails] = useState(null); 
+  const [isAlertOpen, setIsAlertOpen] = useState(false);
+  const [selectedEventForWithdraw, setSelectedEventForWithdraw] = useState<
+    string | null
+  >(null);
+
   
+  const handleButtonClick = () => {
+    setCompleteprofileDialog(true);
+  };
+  
+  const handleCloseDialog = () => {
+    setCompleteprofileDialog(false);
+  };
+
   useEffect(() => {
     const matchMedia = window.matchMedia("(prefers-color-scheme: dark)");
     const handleThemeChange = (e: MediaQueryListEvent) => {
@@ -169,8 +189,7 @@ export default function Home() {
     fetchEvents();
   }, []);
 
-  const handleWithdrawClick = async (eventId: number) => {
-    setSelectedEvent(eventId);
+  const handleWithdrawClick = async(eventId: number) => {
     setIsModalOpen(true);
     try {
       const response = await fetch(`/api/event/categories/${eventId}`);
@@ -182,17 +201,26 @@ export default function Home() {
     } catch (error) {
       console.error("Error fetching categories:", error);
       toast({
-        title: "Failed to fetch categories. Please check your network connection.",
+        title:
+          "Failed to fetch categories. Please check your network connection.",
         variant: "destructive",
       });
     }
   };
 
+  const handleConfirmWithdraw = async () => {
+    if (selectedEventForWithdraw) {
+      setIsAlertOpen(false);
+      toast({
+        title: `You have successfully withdrawn from '${selectedEventForWithdraw}' & our team shall initiate your refund.`,
+        variant: "default",
+      });
+    }
+  };
+
   const handleWithdrawFromCategory = (categoryName: string) => {
-    toast({
-      title: `You have successfully withdrawn from '${categoryName}' & our team shall initiate your refund.`,
-      variant: "default",
-    });
+    setSelectedEventForWithdraw(categoryName);
+    setIsAlertOpen(true);
   };
 
   const handleViewRegistrationClick = async (eventId: number) => {
@@ -234,18 +262,18 @@ export default function Home() {
 
   return (
     <div className="flex flex-col m-3">
-      <div className={`flex justify-between`}>
+      <div className={`flex flex-col sm:flex-row gap-2 sm:gap-4`}>
         {!userDetails?.gender && (
           <Button
-            onClick={() => router.push("/auth/complete-profile")}
-            className="text-md shadow-md shadow-gray-500 px-5 bg-red-500 text-white"
+            onClick={handleButtonClick}
+            className="text-sm sm:text-md shadow-md shadow-gray-500 sm:px-5 bg-red-500 text-white"
           >
             Complete your Profile!
           </Button>
         )}
         <Button
           onClick={() => router.push("/")}
-          className="text-md shadow-md shadow-gray-500 px-5"
+          className="text-sm sm:text-md shadow-md shadow-gray-500 px-5"
         >
           Register for Events
         </Button>
@@ -257,7 +285,7 @@ export default function Home() {
             Hello {user?.user_metadata.full_name || user?.user_metadata.name} 👋
           </h1>
         </div>
-        <div className="absolute left-4 -bottom-8 flex flex-wrap gap-4 w-full">
+        <div className="absolute hidden left-4 -bottom-8 md:flex flex-wrap gap-4 w-full">
           <Card className="w-auto shadow-xl">
             <CardContent className="flex flex-col gap-1 mt-4">
               <h1 className="font-semibold text-lg">Events Participated</h1>
@@ -273,55 +301,33 @@ export default function Home() {
                 Events I’m interested in
               </h1>
               <div className="flex justify-start items-center text-xl gap-2">
-                <FaPeopleCarryBox className="" />
+                <FaRegThumbsUp className="" />
                 <h1 className="">0</h1>
               </div>
             </CardContent>
           </Card>
         </div>
       </section>
-      {/* <section className="flex gap-4 px-2 flex-wrap w-full">
-        <TooltipProvider>
-          <Tooltip>
-            <TooltipTrigger>
-              <Card className="flex-1 w-full shadow-xl">
-                <CardContent className="flex flex-col mt-4">
-                  <div className="flex justify-center items-center gap-4 text-xl">
-                    <h1 className="font-semibold">Events Participated</h1>
-                    <TbCoinRupeeFilled className="" />
-                  </div>
-                  <div className="flex justify-start items-center text-xl gap-1">
-                    <FaPlus className="h-4 w-4" />
-                    <h1 className="">0</h1>
-                  </div>
-                </CardContent>
-              </Card>
-            </TooltipTrigger>
-            <TooltipContent>
-              <p className="text-lg">Total Events Participated : 0</p>
-            </TooltipContent>
-          </Tooltip>
-          <Tooltip>
-            <TooltipTrigger>
-              <Card className="flex-1 w-full shadow-xl">
-                <CardContent className="flex flex-col mt-4">
-                  <div className="flex justify-center items-center gap-4 text-xl">
-                    <h1 className="font-semibold">Events I’m interested in</h1>
-                    <FaRegEye className="" />
-                  </div>
-                  <div className="flex justify-start items-center text-xl gap-1">
-                    <FaPlus className="h-4 w-4" />
-                    <h1 className="">0</h1>
-                  </div>
-                </CardContent>
-              </Card>
-            </TooltipTrigger>
-            <TooltipContent>
-              <p className="text-lg"> Events I’m interested in : 0</p>
-            </TooltipContent>
-          </Tooltip>
-        </TooltipProvider>
-      </section> */}
+      <section className="flex gap-3 flex-wrap md:hidden">
+        <Card className="w-full sm:w-[48%] shadow-xl">
+          <CardContent className="flex flex-col gap-1 mt-4">
+            <h1 className="font-semibold text-lg">Events Participated</h1>
+            <div className="flex justify-start items-center text-xl gap-2">
+              <MdEventRepeat className="" />
+              <h1 className="">0</h1>
+            </div>
+          </CardContent>
+        </Card>
+        <Card className="w-full sm:w-[48%] shadow-xl">
+          <CardContent className="flex flex-col gap-1 mt-4">
+            <h1 className="font-semibold text-lg">Events I’m interested in</h1>
+            <div className="flex justify-start items-center text-xl gap-2">
+              <FaRegThumbsUp className="" />
+              <h1 className="">0</h1>
+            </div>
+          </CardContent>
+        </Card>
+      </section>
       <section className="mt-8 bg-white shadow-md rounded-lg px-4 pt-4">
         <h2 className="text-xl font-semibold mb-2">Upcoming Events</h2>
         <div className="flex space-x-4 overflow-x-auto pb-8">
@@ -403,7 +409,7 @@ export default function Home() {
           <DialogTrigger asChild>
             <Button className="hidden">Open</Button>
           </DialogTrigger>
-          <DialogContent className="max-w-2xl p-4">
+          <DialogContent className="w-[90%] sm:max-w-2xl p-4 flex flex-col h-auto">
             <DialogHeader>
               <DialogTitle className="text-lg font-semibold mb-4">
                 Withdraw from Categories
@@ -413,18 +419,18 @@ export default function Home() {
                 Select the categories you want to withdraw from.
               </DialogDescription>
             </DialogHeader>
-            <div className="space-y-4 h-[20rem]">
+            <div className="space-y-4 h-[20rem] overflow-y-auto">
               {categories.map((category) => (
                 <div
                   key={category.id}
-                  className="flex flex-col p-2 border rounded-md shadow-sm"
+                  className="flex flex-col p-4 border border-gray-200 rounded-lg shadow-lg bg-white hover:shadow-2xl transition-shadow duration-300"
                 >
-                  <div className="flex justify-between items-center mb-2">
-                    <span className="font-medium">
-                      {category.category_name} - ${category.price}
+                  <div className="flex justify-between items-center mb-3">
+                    <span className="font-semibold text-lg text-gray-800">
+                      {category.category_name} - ₹{category.price}
                     </span>
                     <Button
-                      className="bg-red-500 text-white px-2 py-1 text-sm rounded mt-4"
+                      className="px-3 py-1 text-sm"
                       onClick={() =>
                         handleWithdrawFromCategory(category.category_name)
                       }
@@ -432,17 +438,13 @@ export default function Home() {
                       Withdraw
                     </Button>
                   </div>
-                  <div className="text-xs text-gray-600">
-                    <p>Type: {category.category_type}</p>
-                    <p>Description: {category.ticket_description}</p>
-                    <p>Discount Code: {category.discount_code}</p>
+                  <div className="text-sm text-gray-600 space-y-1">
                     <p>
-                      Valid From:{" "}
-                      {new Date(category.from_date).toLocaleDateString()}
+                      <strong>Type:</strong> {category.category_type}
                     </p>
                     <p>
-                      Valid Till:{" "}
-                      {new Date(category.till_date).toLocaleDateString()}
+                      <strong>Description:</strong>{" "}
+                      {category.ticket_description}
                     </p>
                   </div>
                 </div>
@@ -459,7 +461,7 @@ export default function Home() {
           <DialogTrigger asChild>
             <Button className="hidden">Open</Button>
           </DialogTrigger>
-          <DialogContent className="max-w-xl p-4 overflow-scroll">
+          <DialogContent className="w-[90%] sm:max-w-2xl p-4 flex flex-col justify-between h-auto">
             <DialogHeader>
               <EventDetails />
               <DialogTitle className="text-lg font-semibold">
@@ -468,27 +470,56 @@ export default function Home() {
               <DialogDescription className="text-sm text-gray-500">
                 Below are the categories you have registered for this event.
               </DialogDescription>
+              <div className="space-y-4">
+                {registeredCategories.map((category) => (
+                  <div
+                    key={category.id}
+                    className="flex flex-col p-2 border rounded-md shadow-sm"
+                  >
+                    <span className="font-medium">
+                      {category.category_name} - Rs. {category.price}
+                    </span>
+                  </div>
+                ))}
+              </div>
             </DialogHeader>
-            <div className="space-y-4">
-              {registeredCategories.map((category) => (
-                <div
-                  key={category.id}
-                  className="flex flex-col p-2 border rounded-md shadow-sm"
-                >
-                  <span className="font-medium">
-                    {category.category_name} - Rs. {category.price}
-                  </span>
-                </div>
-              ))}
-            </div>
             <Button
-              className="mt-4 px-4 py-2 rounded"
+              className="px-4 py-2 rounded"
               onClick={() => router.push("/cart")}
             >
               Register for More Categories
             </Button>
           </DialogContent>
         </Dialog>
+      )}
+      {completeprofileDialog && (
+        <Dialog onOpenChange={handleCloseDialog} open={completeprofileDialog}>
+          <DialogTitle>Complete Your Profile</DialogTitle>
+          <DialogContent
+            className="h-[90%] w-[90%] sm:max-w-2xl overflow-y-auto rounded"
+          >
+            <CompleteDetailsForm />
+          </DialogContent>
+        </Dialog>
+      )}
+      {isAlertOpen && (
+        <AlertDialog open={isAlertOpen} onOpenChange={setIsAlertOpen}>
+          <AlertDialogContent className="w-[90%] rounded">
+            <AlertDialogHeader>
+              <AlertDialogTitle>Are you sure?</AlertDialogTitle>
+              <AlertDialogDescription>
+                Are you sure you want to withdraw from this event? This action
+                cannot be undone.
+              </AlertDialogDescription>
+            </AlertDialogHeader>
+            <AlertDialogFooter>
+              <AlertDialogCancel>Cancel</AlertDialogCancel>
+              <AlertDialogAction onClick={handleConfirmWithdraw}>
+                Continue
+              </AlertDialogAction>
+            </AlertDialogFooter>
+          </AlertDialogContent>
+        </AlertDialog>
       )}
     </div>
   );

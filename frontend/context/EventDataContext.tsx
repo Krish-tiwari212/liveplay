@@ -25,8 +25,16 @@ interface EventContextType {
   setUserType: React.Dispatch<React.SetStateAction<string>>;
   notification: NotificationData[];
   setNotification: React.Dispatch<React.SetStateAction<NotificationData[]>>;
-  fetchedEventdatafromManagemeEvent:EventData;
-  setFetchedEventdatafromManagemeEvent: React.Dispatch<React.SetStateAction<EventData>>;
+  fetchedEventdatafromManagemeEvent: EventData;
+  setFetchedEventdatafromManagemeEvent: React.Dispatch<
+    React.SetStateAction<EventData>
+  >;
+  kycCompleted: boolean;
+  setKycCompleted: React.Dispatch<React.SetStateAction<boolean>>;
+  profileCompleted: boolean;
+  setProfileCompleted: React.Dispatch<React.SetStateAction<boolean>>;
+  completeprofileDialog:boolean
+  setCompleteprofileDialog: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
 const EventContext = createContext<EventContextType | undefined>(undefined);
@@ -46,6 +54,9 @@ export const EventProvider: React.FC<{ children: ReactNode }> = ({
     fetchedEventdatafromManagemeEvent,
     setFetchedEventdatafromManagemeEvent,
   ]=useState({})
+  const [kycCompleted,setKycCompleted]=useState(false)
+  const [profileCompleted, setProfileCompleted] = useState(false);
+  const [completeprofileDialog, setCompleteprofileDialog]=useState(false)
 
   return (
     <EventContext.Provider
@@ -59,7 +70,7 @@ export const EventProvider: React.FC<{ children: ReactNode }> = ({
         DashboardName,
         setDashboardName,
         EventEditData,
-        editPage, 
+        editPage,
         setEditPage,
         setEventEditData,
         UserType,
@@ -67,7 +78,13 @@ export const EventProvider: React.FC<{ children: ReactNode }> = ({
         notification,
         setNotification,
         fetchedEventdatafromManagemeEvent,
-        setFetchedEventdatafromManagemeEvent
+        setFetchedEventdatafromManagemeEvent,
+        kycCompleted,
+        setKycCompleted,
+        profileCompleted,
+        setProfileCompleted,
+        completeprofileDialog,
+        setCompleteprofileDialog
       }}
     >
       {children}

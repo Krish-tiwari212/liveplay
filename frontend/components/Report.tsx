@@ -1,5 +1,5 @@
 import React, { useEffect } from 'react';
-import { FaDollarSign, FaUser, FaHeart, FaEye, FaTimes, FaRupeeSign } from 'react-icons/fa';
+import { FaDollarSign, FaUser, FaHeart, FaEye, FaTimes, FaRupeeSign, FaRegEye, FaRegThumbsUp } from 'react-icons/fa';
 import { Bar } from 'react-chartjs-2';
 import {
   Card,
@@ -29,6 +29,7 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { Button } from './ui/button';
+import { FaPeopleGroup } from 'react-icons/fa6';
 
 interface ReportProps{
     handleNext:()=>void
@@ -46,32 +47,32 @@ const data = [
 ];
 
 const Report = ({ handleNext }: ReportProps) => {
-  const metrics = [
-    {
-      title: "Event Sales",
-      description: "Total Entry Fees Collected",
-      icon: <FaRupeeSign />,
-      data: 5000,
-    },
-    {
-      title: "Event Views",
-      description: "Total number of users who have viewed this event",
-      icon: <FaUser />,
-      data: 150,
-    },
-    {
-      title: "Number of Registrations",
-      description: "Total number of event registrations",
-      icon: <FaEye />,
-      data: 75,
-    },
-    {
-      title: "Number of Interested People",
-      description: "Total number of users interested in this event",
-      icon: <FaTimes />,
-      data: 10,
-    },
-  ];
+ const metrics = [
+   {
+     title: "Event Sales",
+     description: "Total Entry Fees Collected",
+     icon: <FaRupeeSign />,
+     data: 0,
+   },
+   {
+     title: "Event Views",
+     description: "Total number of users who have viewed this event",
+     icon: <FaRegEye />,
+     data: 0,
+   },
+   {
+     title: "Number of Registrations",
+     description: "Total number of event registrations",
+     icon: <FaPeopleGroup />,
+     data: 0,
+   },
+   {
+     title: "Number of Interested People",
+     description: "Total number of users interested in this event",
+     icon: <FaRegThumbsUp />,
+     data: 0,
+   },
+ ];
   
   const CdataSales = data[0].value.map((value, index) => {
     const fill =
@@ -306,8 +307,10 @@ const Report = ({ handleNext }: ReportProps) => {
 
   const noOfParticipants = Object.keys(participants[0]).length-1;
   return (
-    <div className=" text-gray-800 px-5 pb-10">
-      <h1 className="text-3xl text-gray-800 font-bold mb-8">Event Report</h1>
+    <div className=" text-gray-800 px-2 sm:px-5  pb-10">
+      <h1 className="text-3xl text-gray-800 font-bold mb-4 sm:mb-8">
+        Event Report
+      </h1>
       <div className="grid grid-cols-1 md:grid-cols-2 gap-5 mb-5">
         {metrics.map((metric, i) => (
           <Card
@@ -351,8 +354,8 @@ const Report = ({ handleNext }: ReportProps) => {
       </div>
 
       <div className="mt-4 bg-white p-5 rounded-lg">
-        <div className="flex justify-between">
-          <h2 className="text-3xl text-gray-800 mb-4 font-semibold ">
+        <div className="flex flex-col sm:flex-row justify-between">
+          <h2 className="text-2xl sm:text-3xl text-gray-800 mb-4 font-semibold ">
             List of Participants
           </h2>
           <Dialog>
@@ -361,7 +364,7 @@ const Report = ({ handleNext }: ReportProps) => {
                 View Full Data
               </div>
             </DialogTrigger>
-            <DialogContent type="table">
+            <DialogContent className="h-auto w-[90%]">
               <DialogTitle>List of Participants</DialogTitle>
               <Table>
                 <TableHeader>
@@ -404,16 +407,6 @@ const Report = ({ handleNext }: ReportProps) => {
                     </TableRow>
                   ))}
                 </TableBody>
-                {/* <TableFooter>
-                  <TableRow>
-                    <TableCell colSpan={noOfParticipants}>
-                      Total Participants
-                    </TableCell>
-                    <TableCell className="text-right">
-                      {participants.length}
-                    </TableCell>
-                  </TableRow>
-                </TableFooter> */}
               </Table>
             </DialogContent>
           </Dialog>
@@ -467,18 +460,12 @@ const Report = ({ handleNext }: ReportProps) => {
               </TableRow>
             )}
           </TableBody>
-          <TableFooter>
-            <TableRow>
-              <TableCell colSpan={7}>Total Participants</TableCell>
-              <TableCell>{participants.length}</TableCell>
-            </TableRow>
-          </TableFooter>
         </Table>
       </div>
 
       <div className="mt-4 bg-white p-5 rounded-lg">
-        <div className="flex justify-between">
-          <h2 className="text-3xl text-gray-800 mb-4 font-semibold ">
+        <div className="flex flex-col sm:flex-row justify-between">
+          <h2 className="text-2xl sm:text-3xl text-gray-800 mb-4 font-semibold ">
             Participants Who Withdrew
           </h2>
           <Dialog>
@@ -487,7 +474,7 @@ const Report = ({ handleNext }: ReportProps) => {
                 View Full Data
               </div>
             </DialogTrigger>
-            <DialogContent type="table">
+            <DialogContent className="h-auto w-[90%]">
               <DialogTitle>Participants Who Withdrew</DialogTitle>
               <Table>
                 <TableHeader>
@@ -590,20 +577,12 @@ const Report = ({ handleNext }: ReportProps) => {
               </TableRow>
             )}
           </TableBody>
-          <TableFooter>
-            <TableRow>
-              <TableCell colSpan={6}>Total Participants</TableCell>
-              <TableCell className="text-right">
-                {participants.length}
-              </TableCell>
-            </TableRow>
-          </TableFooter>
         </Table>
       </div>
 
       <div className="mt-4 bg-white p-5 rounded-lg">
-        <div className="flex justify-between">
-          <h2 className="text-3xl text-gray-800 mb-4 font-semibold ">
+        <div className="flex flex-col sm:flex-row justify-between">
+          <h2 className="text-2xl sm:text-3xl text-gray-800 mb-4 font-semibold ">
             Interested Participants
           </h2>
           <Dialog>
@@ -612,7 +591,7 @@ const Report = ({ handleNext }: ReportProps) => {
                 View Full Data
               </div>
             </DialogTrigger>
-            <DialogContent type="table">
+            <DialogContent className="h-auto w-[90%]">
               <DialogTitle>Interested Participants</DialogTitle>
               <Table>
                 <TableHeader>
@@ -699,14 +678,6 @@ const Report = ({ handleNext }: ReportProps) => {
               </TableRow>
             )}
           </TableBody>
-          <TableFooter>
-            <TableRow>
-              <TableCell colSpan={6}>Total Participants</TableCell>
-              <TableCell className="text-right">
-                {participants.length}
-              </TableCell>
-            </TableRow>
-          </TableFooter>
         </Table>
       </div>
     </div>

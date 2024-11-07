@@ -41,7 +41,7 @@ const MyTimer = ({ expiryTimestamp, setFeatureData }: MyTimerProps) => {
   return (
     <div className="text-center font-sans p-8 bg-gradient-to-r bg-white shadow-lg rounded-lg relative">
       <div className="flex items-center space-x-2 relative">
-        <Label htmlFor="airplane-mode">Enable Countdown</Label>
+        <Label htmlFor="airplane-mode" className="text-lg">Enable Countdown</Label>
         <Switch
           id="enable-countdown"
           onCheckedChange={handlecountdown}

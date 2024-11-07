@@ -10,7 +10,7 @@ import React, { useEffect, useState } from 'react';import {
   SelectValue,
 } from "@/components/ui/select";
 
-import { FaBars, FaCalendarAlt, FaCogs, FaSignOutAlt, FaTachometerAlt, FaUserCircle } from 'react-icons/fa';
+import { FaBars, FaCalendarAlt, FaCogs, FaSignOutAlt, FaTachometerAlt, FaUnlockAlt, FaUserCircle } from 'react-icons/fa';
 import { MdKeyboardArrowDown, MdKeyboardArrowUp, MdOutlineFeaturedPlayList, MdOutlineSecurity, MdSchedule, MdSportsFootball } from 'react-icons/md';
 import Image from 'next/image';
 import { IoIosNotificationsOutline } from 'react-icons/io';
@@ -70,10 +70,12 @@ const MSidebar = () => {
 
   return (
     <div
-      className={`hidden bg-[#17202A] text-white p-4 shadow-lg transition-width duration-300 ease-in-out md:flex flex-col h-full z-50 sticky flex-[1]`}
+      className={`hidden bg-[#17202A] text-white p-4 shadow-lg transition-width duration-300 ease-in-out lg:flex flex-col h-full z-40 sticky flex-[1]`}
     >
       <div className="flex items-center mb-6 border-b border-gray-700 pb-6 pt-6">
-        <Link href={"/"}>
+        <Link
+          href={isplayerdashboard ? "/playerdashboard" : "/organizerDashboard"}
+        >
           <div className="text-3xl font-bold text-gray-500 ml-2">
             <Image
               src="/images/Logo.png"
@@ -157,8 +159,8 @@ const MSidebar = () => {
                         : "hover:bg-[#CDDC29] hover:text-[#17202A]"
                     }`}
                   >
-                    <MdOutlineSecurity className="mr-2 text-xl" /> Unlock
-                    Earnings - KYC
+                    <FaUnlockAlt className="mr-2 text-xl" /> Unlock Event
+                    Earnings
                   </button>
                 </Link>
               </li>
