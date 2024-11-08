@@ -118,6 +118,17 @@ export default function Home() {
   const [selectedEventForWithdraw, setSelectedEventForWithdraw] = useState<
     string | null
   >(null);
+  const [isRed, setIsRed] = useState(false);
+  const [isYellow, setIsYellow] = useState(false);
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setIsRed((prev) => !prev);
+      setIsYellow((prev) => !prev);
+    }, 800);
+
+    return () => clearInterval(interval);
+  }, []);
 
   
   const handleButtonClick = () => {
@@ -262,7 +273,7 @@ export default function Home() {
 
   return (
     <div className="flex flex-col m-3">
-      <div className={`flex flex-col sm:flex-row gap-2 sm:gap-4`}>
+      {/* <div className={`flex flex-col sm:flex-row gap-2 sm:gap-4`}>
         {!userDetails?.gender && (
           <Button
             onClick={handleButtonClick}
@@ -277,13 +288,38 @@ export default function Home() {
         >
           Register for Events
         </Button>
-      </div>
-
-      <section className="mt-4 bg-[#17202A] h-[9rem] shadow-xl rounded-lg p-4 relative mb-4">
-        <div className="p-2 md:w-[60%] lg:w-[50%]">
-          <h1 className="text-2xl font-bold text-gray-400 mb-4 md:mb-2">
-            Hello {user?.user_metadata.full_name || user?.user_metadata.name} 👋
+      </div> */}
+      <section className="mt-4 bg-[#17202A] sm:h-[9rem] shadow-xl rounded-lg p-4 relative mb-4 flex sm:gap-8 flex-col sm:flex-row">
+        <div className="py-2">
+          <h1 className="text-2xl font-semibold text-gray-400 mb-4 md:mb-2 flex gap-2 font-open-sauce">
+            Hello
+            <span className="text-[#CCDB28]">
+              {user?.user_metadata.full_name || user?.user_metadata.name}
+              👋
+            </span>
           </h1>
+        </div>
+        <div className={`flex flex-col sm:flex-row gap-2 sm:gap-4 justify-center sm:py-2`}>
+          {!userDetails?.gender && (
+            <Button
+              onClick={handleButtonClick}
+              variant="tertiary"
+              size="xs"
+              className={`text-sm sm:text-md shadow-md shadow-gray-500 ${
+                isRed ? "text-red-500" : ""
+              }`}
+            >
+              Complete your Profile!
+            </Button>
+          )}
+          <Button
+            onClick={() => router.push("/")}
+            variant="tertiary"
+            size="xs"
+            className="text-sm sm:text-md"
+          >
+            Register for Events
+          </Button>
         </div>
         <div className="absolute hidden left-4 -bottom-8 md:flex flex-wrap gap-4 w-full">
           <Card className="w-auto shadow-xl">
@@ -350,7 +386,7 @@ export default function Home() {
           ) : (
             events.map((event) => (
               <React.Fragment key={event.id}>
-                <Card className="shadow-md cursor-pointer hover:shadow-2xl flex-none min-w-[400px] max-w-[500px]">
+                <Card className="shadow-md cursor-pointer hover:shadow-2xl flex-none min-w-[400px] max-w-[500px] border-2 border-gray-800">
                   <CardContent className="py-4 flex gap-4 h-full">
                     <Link href={`/`}>
                       <Image
@@ -361,36 +397,55 @@ export default function Home() {
                         alt="eventBanner"
                         width={200}
                         height={200}
-                        className="rounded-lg h-full shadow-xl flex-[1]"
+                        className="rounded-lg h-full shadow-xl flex-[1] "
                       />
                     </Link>
-                    <div className="flex-[1]">
-                      <h3 className="font-bold">{event.event_name}</h3>
-                      <div className="flex flex-col justify-between">
-                        <span>
-                          Organizer: {event.organizer_name || "Mohit"}
-                        </span>
-                        <span>Venue: {event.venue_name || ""}</span>
-                        <span>
-                          Event Date:{" "}
-                          {event.start_date
-                            ? formatDate(event.start_date)
-                            : "20th Nov 2024"}
-                        </span>
+                    <div className="flex flex-col flex-[1] justify-between">
+                      <div>
+                        <div className="flex flex-col items-start mb-2">
+                          <h3 className="font-bold text-md">
+                            {event.event_name}
+                          </h3>
+                          <span className="text-[0.8rem] flex gap-1">
+                            <h1 className="font-bold">By</h1>{" "}
+                            {event.organizer_name || "Mohit"}
+                          </span>
+                        </div>
+                        <div className="flex flex-col justify-between ">
+                          <span className="flex gap-1">
+                            <h1 className="font-bold">Venue:</h1>
+                            {event.venue_name || ""}
+                          </span>
+                          <span className="flex gap-1">
+                            <h1 className="font-bold">Event Date:</h1>
+                            {event.start_date
+                              ? formatDate(event.start_date)
+                              : "20th Nov 2024"}
+                          </span>
+                        </div>
                       </div>
-                      <div className="flex flex-col">
-                        <Button
-                          className="mt-2 bg-[#17202A] text-[#CDDC29] hover:text-white py-1 px-2 rounded hover:shadow-xl"
-                          onClick={() => handleWithdrawClick(event.id)}
-                        >
-                          Withdraw From Event
-                        </Button>
-                        <Button
-                          className="mt-2 bg-[#17202A] text-[#CDDC29] hover:text-white py-1 px-2 rounded hover:shadow-xl"
+                      <div className="flex flex-col justify-center items-center gap-2 mt-2">
+                        <button
+                          className="text-sm bg-[#17202A] text-[#CDDC29] hover:text-white py-1 w-full rounded-lg hover:shadow-xl"
                           onClick={() => handleViewRegistrationClick(event.id)}
                         >
                           View My Registration
-                        </Button>
+                        </button>
+                        <button
+                          className="text-sm bg-[#E53935] text-white  py-1 w-full rounded-lg hover:shadow-xl"
+                          onClick={() => handleWithdrawClick(event.id)}
+                        >
+                          Withdraw From Event
+                        </button>
+                        <span className="flex gap-1 text-sm text-gray-800">
+                          <h1
+                            className={`underline ${
+                              isYellow ? "text-[#CDDC29]" : ""
+                            }`}
+                          >
+                            Event Draws are Live
+                          </h1>
+                        </span>
                       </div>
                     </div>
                   </CardContent>
@@ -495,9 +550,7 @@ export default function Home() {
       {completeprofileDialog && (
         <Dialog onOpenChange={handleCloseDialog} open={completeprofileDialog}>
           <DialogTitle>Complete Your Profile</DialogTitle>
-          <DialogContent
-            className="h-[90%] w-[90%] sm:max-w-2xl overflow-y-auto rounded"
-          >
+          <DialogContent className="h-[90%] w-[90%] sm:max-w-2xl overflow-y-auto rounded">
             <CompleteDetailsForm />
           </DialogContent>
         </Dialog>

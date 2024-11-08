@@ -114,9 +114,7 @@ const ProgressBar: React.FC<ProgressBarProps> = ({
         {checkpoints.map((checkpoint, index) => (
           <div
             key={index}
-            className={`flex flex-col relative items-center justify-center cursor-pointer ${
-              currentpage === checkpoints.length && "shadow-md shadow-slate-500"
-            }`}
+            className={`flex flex-col relative items-center justify-center cursor-pointer`}
           >
             <div
               onClick={() => handlecircel(checkpoint)}

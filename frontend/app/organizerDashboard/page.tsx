@@ -50,6 +50,15 @@ export default function Home() {
   const router = useRouter();
   const [isLoading, setIsLoading] = useState(true);
   const { user } = useUser();
+  const [isRed, setIsRed] = useState(false);
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setIsRed((prev) => !prev);
+    }, 800);
+
+    return () => clearInterval(interval);
+  }, []);
   useEffect(() => {
     const matchMedia = window.matchMedia("(prefers-color-scheme: dark)");
     const handleThemeChange = (e: MediaQueryListEvent) => {
@@ -94,27 +103,36 @@ export default function Home() {
   }, [user?.id]); 
   return (
     <div className="flex flex-col m-3">
-      <div className={`flex flex-col sm:flex-row gap-4`}>
-        <Button
-          onClick={() => router.push(`/organizerDashboard/kyc/${user?.id}`)}
-          className="text-sm sm:text-md shadow-md shadow-gray-500 w-auto sm:px-10"
-        >
-          <FaUnlockAlt className="mr-2 text-xl" />
-          Unlock Event Earnings
-        </Button>
-        <Button
-          onClick={() => router.push("/organizerDashboard/create_event")}
-          className="text-sm sm:text-md shadow-md shadow-gray-500 px-5"
-        >
-          Create Event
-        </Button>
-      </div>
-
-      <section className="mt-4 bg-[#17202A] h-[9rem] shadow-xl rounded-lg p-4 relative mb-4">
-        <div className="p-2 md:w-[60%] lg:w-[50%]">
-          <h1 className="text-2xl font-bold text-gray-400 mb-4 md:mb-2">
-            Hello {user?.user_metadata.full_name || user?.user_metadata.name} 👋
+      <section className="mt-4 bg-[#17202A] h-[9rem] shadow-xl rounded-lg p-4 relative mb-4 flex sm:gap-8 flex-col sm:flex-row ">
+        <div className="py-2">
+          <h1 className="text-2xl font-semibold text-white mb-4 md:mb-2 flex gap-2 font-open-sauce">
+            Hello
+            <span className="text-[#CCDB28] font-semibold">
+              {user?.user_metadata.full_name || user?.user_metadata.name}
+              👋
+            </span>
           </h1>
+        </div>
+        <div className={`flex flex-row gap-4 py-2`}>
+          <Button
+            onClick={() => router.push(`/organizerDashboard/kyc/${user?.id}`)}
+            variant="tertiary"
+            size="xs"
+            className={`text-sm sm:text-md shadow-md shadow-gray-500 ${
+              isRed ? "text-red-500" : ""
+            }`}
+          >
+            <FaUnlockAlt className="mr-2 text-xl" />
+            Unlock Event Earnings
+          </Button>
+          <Button
+            onClick={() => router.push("/organizerDashboard/create_event")}
+            variant="tertiary"
+            size="xs"
+            className="text-sm sm:text-md shadow-md shadow-gray-500"
+          >
+            Create Event
+          </Button>
         </div>
         <div className="hidden absolute left-4 -bottom-8 md:flex flex-wrap gap-4 w-full">
           <Card className="w-auto shadow-xl">
@@ -157,7 +175,7 @@ export default function Home() {
       </section>
       <section className="flex gap-3 flex-wrap md:hidden">
         <Card className="w-full sm:w-[48%] shadow-xl">
-          <CardContent className="flex flex-col gap-1 mt-4">
+          <CardContent className="flex flex-col gap-1">
             <h1 className="font-semibold text-lg">Event Sales</h1>
             <div className="flex justify-start items-center text-xl gap-2">
               <TbCoinRupeeFilled />
@@ -166,7 +184,7 @@ export default function Home() {
           </CardContent>
         </Card>
         <Card className="w-full sm:w-[48%] shadow-xl">
-          <CardContent className="flex flex-col gap-1 mt-4">
+          <CardContent className="flex flex-col gap-1">
             <h1 className="font-semibold text-lg">Event Views</h1>
             <div className="flex justify-start items-center text-xl gap-2">
               <FaRegEye />
@@ -175,7 +193,7 @@ export default function Home() {
           </CardContent>
         </Card>
         <Card className="w-full sm:w-[48%] shadow-xl">
-          <CardContent className="flex flex-col gap-1 mt-4">
+          <CardContent className="flex flex-col gap-1">
             <h1 className="font-semibold text-lg">Events Hosted</h1>
             <div className="flex justify-start items-center text-xl gap-2">
               <FaCalendarCheck />
@@ -184,7 +202,7 @@ export default function Home() {
           </CardContent>
         </Card>
         <Card className="w-full sm:w-[48%] shadow-xl">
-          <CardContent className="flex flex-col gap-1 mt-4">
+          <CardContent className="flex flex-col gap-1">
             <h1 className="font-semibold text-lg">Event Registrations</h1>
             <div className="flex justify-start items-center text-xl gap-2">
               <FaPeopleGroup />
@@ -217,12 +235,12 @@ export default function Home() {
             events.map((event) => (
               <React.Fragment key={event.id}>
                 <Card
-                  className="shadow-md cursor-pointer hover:shadow-2xl flex-none min-w-[400px] max-w-[400px]"
+                  className="shadow-md cursor-pointer hover:shadow-2xl flex-none min-w-[400px] max-w-[450px]"
                   onClick={() =>
                     router.push(`/organizerDashboard/manage-events/${event.id}`)
                   }
                 >
-                  <CardContent className="py-4 flex gap-4 h-full">
+                  <CardContent className="py-4 flex gap-4 h-full border-2 border-gray-800 rounded-md">
                     <Image
                       src={
                         event.desktop_cover_image_url || "/images/default.jpeg"
@@ -230,12 +248,31 @@ export default function Home() {
                       alt="eventBanner"
                       width={200}
                       height={200}
-                      className="rounded-lg h-full shadow-xl flex-[1]"
+                      className="rounded-lg h-full shadow-xl flex-[1] border-2 border-gray-800"
                     />
-                    <div className="flex-[1]">
-                      <h3 className="font-bold">{event.event_name}</h3>
-                      <div className="flex flex-col justify-between">
-                        <TooltipProvider>
+                    <div className="flex-[1] flex flex-col justify-between">
+                      <div className="flex flex-col">
+                        <h3 className="font-bold line-clamp-2 overflow-hidden text-ellipsis">
+                          {event.event_name} Badminton Pro Sports 2024
+                        </h3>
+                        <div className="flex flex-col justify-between">
+                          <span className="flex gap-2 items-center">
+                            <p className="font-semibold ">Sales:</p>{" "}
+                            {event.revenue || "7800"}
+                          </span>
+                          <span className="flex gap-2 items-center">
+                            <p className="font-semibold ">Views:</p>{" "}
+                            {event.event_views || "20000"}
+                          </span>
+                          <span className="flex gap-2 items-center">
+                            <p className="font-semibold ">Registrations:</p>{" "}
+                            {event.entries || "200"}
+                          </span>
+                          <span className="flex gap-2 items-center">
+                            <p className="font-semibold ">Interested:</p>{" "}
+                            {event.interested_people || "891"}
+                          </span>
+                          {/* <TooltipProvider>
                           <Tooltip>
                             <TooltipTrigger>
                               <span className="flex gap-2 items-center">
@@ -280,12 +317,19 @@ export default function Home() {
                               <p>Interested Peoples : 0</p>
                             </TooltipContent>
                           </Tooltip>
-                        </TooltipProvider>
+                        </TooltipProvider> */}
+                        </div>
                       </div>
                       <Link href={`/event/${event.id}/share-link`}>
-                        <Button className="w-full mt-2 bg-[#17202A] text-[#CDDC29] hover:text-white p-1 rounded hover:shadow-xl">
-                          Share
-                        </Button>
+                        <button className="w-full bg-[#17202a] text-[#cddc29] hover:text-white flex gap-2 mt-2 py-1 rounded-lg hover:shadow-xl justify-center items-center">
+                          <h1>Share</h1>
+                          <Image
+                            src="/icons/share.svg"
+                            alt="/icons/share.svg"
+                            width={12}
+                            height={12}
+                          />
+                        </button>
                       </Link>
                     </div>
                   </CardContent>

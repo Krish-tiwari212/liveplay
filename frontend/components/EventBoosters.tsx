@@ -194,8 +194,15 @@ const EventBoosters = ({
           </div>
         </div>
       </div>
-      <div className="w-[50%] mx-auto mt-10">
-        <Button className="w-full" onClick={handleProceed}>Proceed</Button>
+      <div className="flex justify-center items-center">
+        <Button
+          variant="tertiary"
+          size="none"
+          className="mt-10 text-lg px-16 py-1"
+          onClick={handleProceed}
+        >
+          Proceed
+        </Button>
       </div>
     </div>
   );

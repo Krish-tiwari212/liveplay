@@ -50,12 +50,16 @@ const EnableFeatures = ({ handleNext }: EnableFeaturesProps) => {
         <QandA handleNext={handleNext} FeatureData={FeatureData} />
         <GSTCompliance handleNext={handleNext} FeatureData={FeatureData} />
 
+      <div className="flex justify-center items-center">
         <Button
-          className="flex justify-center items-center gap-3 my-4 w-full"
+          variant="tertiary"
+          size="none"
+          className="mt-4 text-lg px-16 py-1"
           onClick={handleNext}
         >
           Next
         </Button>
+      </div>
       </div>
     </div>
   );
