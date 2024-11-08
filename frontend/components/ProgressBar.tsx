@@ -91,9 +91,9 @@ const ProgressBar: React.FC<ProgressBarProps> = ({
   return (
     <div
       className={`relative ${checkpoints.length >= 7 && "w-full"} ${
-        checkpoints.length === 5 && "w-[95%] lg:w-[80%]"
+        checkpoints.length === 5 && "w-full lg:w-[80%]"
       } ${checkpoints.length === 3 && "w-[95%] lg:w-[50%]"} mx-auto mt-6 ${
-        forpage !== "manageEvent" ? "mb-12" : "h-1 sm:h-12 lg:h-20 mb-5"
+        forpage !== "manageEvent" ? "mb-20 sm:mb-12" : "h-1 sm:h-12 lg:h-20 mb-5 "
       } `}
     >
       {forpage !== "manageEvent" && (
@@ -107,7 +107,9 @@ const ProgressBar: React.FC<ProgressBarProps> = ({
           forpage !== "manageEvent" ? "absolute -top-3" : "relative"
         } ${
           checkpoints.length >= 7
-            ? "w-full left-[0%] md:w-[90%] md:left-[5%] xl:w-[80%] xl:left-[10%]"
+            ? "w-full left-[0%] md:w-[95%] md:left-[2.5%] xl:w-[80%] xl:left-[10%]"
+            : checkpoints.length === 5
+            ? " w-[90%] left-[2.5%]"
             : " w-[80%] left-[10%]"
         } items-center `}
       >

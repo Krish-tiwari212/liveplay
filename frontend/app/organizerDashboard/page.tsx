@@ -9,7 +9,7 @@ import { FaCalendarAlt, FaCalendarCheck, FaPlus, FaRegEye, FaRegThumbsUp, FaUnlo
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { FaHandHoldingDollar, FaIndianRupeeSign, FaPeopleGroup } from "react-icons/fa6";
 import { LiaStreetViewSolid } from "react-icons/lia";
-import { IoTicketOutline } from "react-icons/io5";
+import { IoShareSocialSharp, IoTicketOutline } from "react-icons/io5";
 import EventCard from "@/components/EventCard";
 import data from "@/data";
 import { Button } from "@/components/ui/button";
@@ -26,6 +26,19 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
+import { Copy } from "lucide-react";
+import {
+  Dialog,
+  DialogClose,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
 import { toast } from "@/hooks/use-toast";
 
 
@@ -103,7 +116,7 @@ export default function Home() {
   }, [user?.id]); 
   return (
     <div className="flex flex-col m-3">
-      <section className="mt-4 bg-[#17202A] h-[9rem] shadow-xl rounded-lg p-4 relative mb-4 flex sm:gap-8 flex-col sm:flex-row ">
+      <section className="mt-4 bg-[#17202A] sm:h-[9rem] shadow-xl rounded-lg p-4 relative mb-4 flex sm:gap-8 flex-col sm:flex-row ">
         <div className="py-2">
           <h1 className="text-2xl font-semibold text-white mb-4 md:mb-2 flex gap-2 font-open-sauce">
             Hello
@@ -113,7 +126,7 @@ export default function Home() {
             </span>
           </h1>
         </div>
-        <div className={`flex flex-row gap-4 py-2`}>
+        <div className={`flex flex-col sm:flex-row gap-4 sm:py-2`}>
           <Button
             onClick={() => router.push(`/organizerDashboard/kyc/${user?.id}`)}
             variant="tertiary"
@@ -175,7 +188,7 @@ export default function Home() {
       </section>
       <section className="flex gap-3 flex-wrap md:hidden">
         <Card className="w-full sm:w-[48%] shadow-xl">
-          <CardContent className="flex flex-col gap-1">
+          <CardContent className="flex flex-col gap-1 mt-4">
             <h1 className="font-semibold text-lg">Event Sales</h1>
             <div className="flex justify-start items-center text-xl gap-2">
               <TbCoinRupeeFilled />
@@ -184,7 +197,7 @@ export default function Home() {
           </CardContent>
         </Card>
         <Card className="w-full sm:w-[48%] shadow-xl">
-          <CardContent className="flex flex-col gap-1">
+          <CardContent className="flex flex-col gap-1 mt-4">
             <h1 className="font-semibold text-lg">Event Views</h1>
             <div className="flex justify-start items-center text-xl gap-2">
               <FaRegEye />
@@ -193,7 +206,7 @@ export default function Home() {
           </CardContent>
         </Card>
         <Card className="w-full sm:w-[48%] shadow-xl">
-          <CardContent className="flex flex-col gap-1">
+          <CardContent className="flex flex-col gap-1 mt-4">
             <h1 className="font-semibold text-lg">Events Hosted</h1>
             <div className="flex justify-start items-center text-xl gap-2">
               <FaCalendarCheck />
@@ -202,7 +215,7 @@ export default function Home() {
           </CardContent>
         </Card>
         <Card className="w-full sm:w-[48%] shadow-xl">
-          <CardContent className="flex flex-col gap-1">
+          <CardContent className="flex flex-col gap-1 mt-4">
             <h1 className="font-semibold text-lg">Event Registrations</h1>
             <div className="flex justify-start items-center text-xl gap-2">
               <FaPeopleGroup />
@@ -217,8 +230,8 @@ export default function Home() {
           {isLoading ? (
             <div className="flex space-x-4">
               {Array.from({ length: 3 }).map((_, index) => (
-                <div className="flex h-[200px] w-[400px] gap-2" key={index}>
-                  <Skeleton className="h-full w-[250px] rounded-xl" />
+                <div className="flex flex-col sm:flex-row h-[400px] w-[250px] sm:h-[200px] sm:w-[400px] gap-2" key={index}>
+                  <Skeleton className="h-[250px] w-full sm:h-full sm:w-[250px] rounded-xl" />
                   <div className="space-y-2">
                     <Skeleton className="h-4 w-[150px]" />
                     <Skeleton className="h-4 w-[100px]" />
@@ -235,21 +248,29 @@ export default function Home() {
             events.map((event) => (
               <React.Fragment key={event.id}>
                 <Card
-                  className="shadow-md cursor-pointer hover:shadow-2xl flex-none min-w-[400px] max-w-[450px]"
-                  onClick={() =>
-                    router.push(`/organizerDashboard/manage-events/${event.id}`)
-                  }
+                  className="shadow-md cursor-pointer hover:shadow-2xl flex-none min-w-[200px] max-w-[270px] sm:min-w-[400px] sm:max-w-[450px]"
+                  onClick={(e) => {
+                    if (!e.defaultPrevented) {
+                      router.push(
+                        `/organizerDashboard/manage-events/${event.id}`
+                      );
+                    }
+                  }}
                 >
-                  <CardContent className="py-4 flex gap-4 h-full border-2 border-gray-800 rounded-md">
-                    <Image
-                      src={
-                        event.desktop_cover_image_url || "/images/default.jpeg"
-                      }
-                      alt="eventBanner"
-                      width={200}
-                      height={200}
-                      className="rounded-lg h-full shadow-xl flex-[1] border-2 border-gray-800"
-                    />
+                  <CardContent className="py-4 flex flex-col sm:flex-row gap-4 h-full border-2 border-gray-800 rounded-md">
+                    <div className="flex-[1]">
+                      <Image
+                        src={
+                          event.desktop_cover_image_url ||
+                          "/images/default.jpeg"
+                        }
+                        alt="eventBanner"
+                        width={200}
+                        height={200}
+                        className="rounded-lg h-full w-full shadow-xl  border-2 border-gray-800"
+                      />
+                    </div>
+
                     <div className="flex-[1] flex flex-col justify-between">
                       <div className="flex flex-col">
                         <h3 className="font-bold line-clamp-2 overflow-hidden text-ellipsis">
@@ -320,17 +341,57 @@ export default function Home() {
                         </TooltipProvider> */}
                         </div>
                       </div>
-                      <Link href={`/event/${event.id}/share-link`}>
+                      {/* <Link href={`/event/${event.id}/share-link`}>
                         <button className="w-full bg-[#17202a] text-[#cddc29] hover:text-white flex gap-2 mt-2 py-1 rounded-lg hover:shadow-xl justify-center items-center">
                           <h1>Share</h1>
-                          <Image
-                            src="/icons/share.svg"
-                            alt="/icons/share.svg"
-                            width={12}
-                            height={12}
-                          />
+                          <IoShareSocialSharp />
                         </button>
-                      </Link>
+                      </Link> */}
+                      <Dialog>
+                        <DialogTrigger asChild>
+                          <button
+                            onClick={(e) => {
+                              e.stopPropagation();
+                            }}
+                            className="z-50 w-full bg-[#17202a] text-[#cddc29] hover:text-white flex gap-2 mt-2 py-1 rounded-lg hover:shadow-xl justify-center items-center"
+                          >
+                            <h1>Share</h1>
+                            <IoShareSocialSharp />
+                          </button>
+                        </DialogTrigger>
+                        <DialogContent className="sm:max-w-md h-auto">
+                          <DialogHeader>
+                            <DialogTitle>Share link</DialogTitle>
+                            <DialogDescription>
+                              Anyone who has this link will be able to view
+                              this.
+                            </DialogDescription>
+                          </DialogHeader>
+                          <div className="flex items-center space-x-2">
+                            <div className="grid flex-1 gap-2">
+                              <Label htmlFor="link" className="sr-only">
+                                Link
+                              </Label>
+                              <Input
+                                id="link"
+                                defaultValue={`/event/${event.id}/share-link`}
+                                readOnly
+                              />
+                            </div>
+                            <Button type="submit" size="sm" className="px-3">
+                              <span className="sr-only">Copy</span>
+                              <Copy />
+                            </Button>
+                          </div>
+                          <DialogFooter className="sm:justify-start">
+                            <DialogClose asChild>
+                              <Button type="button" variant="secondary">
+                                Close
+                              </Button>
+                            </DialogClose>
+                          </DialogFooter>
+                        </DialogContent>
+                      </Dialog>
                     </div>
                   </CardContent>
                 </Card>

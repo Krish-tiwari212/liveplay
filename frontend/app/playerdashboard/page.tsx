@@ -299,7 +299,9 @@ export default function Home() {
             </span>
           </h1>
         </div>
-        <div className={`flex flex-col sm:flex-row gap-2 sm:gap-4 justify-center sm:py-2`}>
+        <div
+          className={`flex flex-col sm:flex-row gap-2 sm:gap-4 justify-center sm:py-2`}
+        >
           {!userDetails?.gender && (
             <Button
               onClick={handleButtonClick}
@@ -370,14 +372,18 @@ export default function Home() {
           {isLoading ? (
             <div className="flex space-x-4">
               {Array.from({ length: 3 }).map((_, index) => (
-                <div className="flex h-[200px] w-[400px] gap-2" key={index}>
-                  <Skeleton className="h-full w-[250px] rounded-xl" />
+                <div
+                  className="flex flex-col sm:flex-row h-[400px] w-[250px] sm:h-[200px] sm:w-[400px] gap-2"
+                  key={index}
+                >
+                  <Skeleton className="h-[250px] w-full sm:h-full sm:w-[250px] rounded-xl" />
                   <div className="space-y-2">
                     <Skeleton className="h-4 w-[150px]" />
                     <Skeleton className="h-4 w-[100px]" />
                     <Skeleton className="h-4 w-[100px]" />
                     <Skeleton className="h-4 w-[100px]" />
-                    <Skeleton className="h-[50px] w-[150px]" />
+                    <Skeleton className="h-4 w-[100px]" />
+                    <Skeleton className="h-4 w-[100px]" />
                     <Skeleton className="h-[50px] w-[150px]" />
                   </div>
                 </div>
@@ -386,9 +392,9 @@ export default function Home() {
           ) : (
             events.map((event) => (
               <React.Fragment key={event.id}>
-                <Card className="shadow-md cursor-pointer hover:shadow-2xl flex-none min-w-[400px] max-w-[500px] border-2 border-gray-800">
-                  <CardContent className="py-4 flex gap-4 h-full">
-                    <Link href={`/`}>
+                <Card className="shadow-md cursor-pointer hover:shadow-2xl flex-none min-w-[240px] max-w-[280px] sm:min-w-[400px] sm:max-w-[500px] border-2 border-gray-800">
+                  <CardContent className="py-4 flex flex-col sm:flex-row gap-4 h-full">
+                    <div className="flex-[1]">
                       <Image
                         src={
                           event.desktop_cover_image_url ||
@@ -397,13 +403,13 @@ export default function Home() {
                         alt="eventBanner"
                         width={200}
                         height={200}
-                        className="rounded-lg h-full shadow-xl flex-[1] "
+                        className="rounded-lg h-full shadow-xl w-full "
                       />
-                    </Link>
+                    </div>
                     <div className="flex flex-col flex-[1] justify-between">
                       <div>
                         <div className="flex flex-col items-start mb-2">
-                          <h3 className="font-bold text-md">
+                          <h3 className="font-bold text-md line-clamp-2">
                             {event.event_name}
                           </h3>
                           <span className="text-[0.8rem] flex gap-1">

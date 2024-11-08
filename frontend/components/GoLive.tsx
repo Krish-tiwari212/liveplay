@@ -137,10 +137,10 @@ const GoLive = () => {
   }
 
   return (
-    <div className="w-full flex justify-center items-center h-80 mt-20">
+    <div className="w-full flex justify-center items-center h-80 mt-24">
       <div className="w-full mx-20 flex flex-col justify-center items-center">
-        <h1 className="text-2xl text-gray-800 font-bold text-center">
-          One Step Away from creating your Event!
+        <h1 className="text-5xl text-gray-800 font-bold text-center">
+          Awesome, Now lets get this Event Live🎉
         </h1>
         <h1 className="mt-4 text-gray-800 text-center flex justify-center items-center gap-2">
           <Image
@@ -149,7 +149,8 @@ const GoLive = () => {
             width={15}
             height={15}
           />
-          Agree with the <span className="underline cursor-pointer">Terms & Conditions</span>
+          Agree with the{" "}
+          <span className="underline cursor-pointer">Terms & Conditions</span>
           for hosting events on liveplay.in
         </h1>
         <Button
