@@ -137,28 +137,33 @@ const GoLive = () => {
   }
 
   return (
-    <div className="w-full flex justify-center items-center h-80 mt-32">
+    <div className="w-full flex justify-center items-center h-80 mt-24">
       <div className="w-full mx-20 flex flex-col justify-center items-center">
+        <h1 className="text-5xl text-gray-800 font-bold text-center">
+          Awesome, Now lets get this Event Live🎉
+        </h1>
+        <h1 className="mt-4 text-gray-800 text-center flex justify-center items-center gap-2">
+          <Image
+            src="/icons/tickMark.svg"
+            alt="public/icons/tickMark.svg"
+            width={15}
+            height={15}
+          />
+          Agree with the{" "}
+          <span className="underline cursor-pointer">Terms & Conditions</span>
+          for hosting events on liveplay.in
+        </h1>
         <Button
+          variant="tertiary"
+          size="none"
+          className="mt-4 text-lg px-16 py-1"
           onClick={handleButtonClick}
           disabled={isLoading}
-          className="w-[30%] mx-auto"
         >
           <div className="relative w-full">
-            <h1>Go Live</h1>
-            <div className="absolute -bottom-10 -right-5">
-              <Image
-                src="/images/press.png"
-                alt="public/images/press.png"
-                width={50}
-                height={50}
-              />
-            </div>
+            <h1>Go Live 🚀</h1>
           </div>
         </Button>
-        <h1 className="mt-10 text-2xl text-gray-800 font-bold text-center">
-          One Step Away from creating your Event!
-        </h1>
       </div>
       <div className="absolute ">
         {isLoading && (
@@ -177,7 +182,9 @@ const GoLive = () => {
             width={400}
             isStopped={!isPlaying}
             isPaused={!isPlaying}
-            eventListeners={[{ eventName: 'complete', callback: handleAnimationComplete }]}
+            eventListeners={[
+              { eventName: "complete", callback: handleAnimationComplete },
+            ]}
           />
         )}
       </div>

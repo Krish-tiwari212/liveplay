@@ -309,7 +309,7 @@ const EventDetailsForm: React.FC<EventDetailsFormProps> = ({
 
 
   return (
-    <form className="bg-white shadow-2xl p-5 rounded-lg">
+    <form className="bg-white shadow-2xl p-5 rounded-lg ">
       <div className="flex flex-wrap w-full">
         {fields[0].Eventname?.map((field, i) => (
           <React.Fragment key={i}>
@@ -366,7 +366,7 @@ const EventDetailsForm: React.FC<EventDetailsFormProps> = ({
               <div key={field.id} className={` w-full m-2 flex flex-col`}>
                 <Label className="font-bold text-lg">
                   {field.label}
-                    <span className="text-red-500">*</span>
+                  <span className="text-red-500">*</span>
                 </Label>
                 <input
                   id={field.id}
@@ -393,7 +393,7 @@ const EventDetailsForm: React.FC<EventDetailsFormProps> = ({
               <div className="w-full flex flex-col" key={i}>
                 <Label className="text-[0.8rem]">
                   {field.label}
-                    <span className="text-red-500">*</span>
+                  <span className="text-red-500">*</span>
                 </Label>
                 <input
                   id={field.id}
@@ -432,8 +432,8 @@ const EventDetailsForm: React.FC<EventDetailsFormProps> = ({
                   onChange={handleChange}
                   disabled={editPage === "manageEvent" && field.type === "date"}
                   className={`h-10 p-2 bg-white border rounded-md text-sm shadow-2xl text-[#17202A] focus:border-[#17202A] focus:outline-none focus:shadow-lg ${
-                    editPage === "manageEvent" && field.type === "date" 
-                      ? "cursor-not-allowed opacity-60" 
+                    editPage === "manageEvent" && field.type === "date"
+                      ? "cursor-not-allowed opacity-60"
                       : ""
                   }`}
                 />
@@ -450,7 +450,7 @@ const EventDetailsForm: React.FC<EventDetailsFormProps> = ({
               <div className=" w-full flex flex-col" key={i}>
                 <Label className="text-[0.8rem]">
                   {field.label}
-                    <span className="text-red-500">*</span>
+                  <span className="text-red-500">*</span>
                 </Label>
                 <input
                   id={field.id}
@@ -485,9 +485,16 @@ const EventDetailsForm: React.FC<EventDetailsFormProps> = ({
           </div>
         </div>
       </div>
-      <Button onClick={(e) => handleNext(e)} className="w-full mt-4">
-        {editPage==="manageEvent"?"Save and Next":"Next"}
-      </Button>
+      <div className="flex justify-center items-center">
+        <Button
+          size="none"
+          variant="tertiary"
+          onClick={(e) => handleNext(e)}
+          className="mt-4 text-lg px-10 sm:px-16 py-1"
+        >
+          {editPage === "manageEvent" ? "Save and Next" : "Next"}
+        </Button>
+      </div>
     </form>
   );
 };

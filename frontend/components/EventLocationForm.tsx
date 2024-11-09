@@ -194,7 +194,7 @@ const EventLocationForm: React.FC<EventLocationFormData> = ({
             <div key={field.id} className="w-full lg:w-[47%] m-2 flex flex-col">
               <Label className="font-bold text-lg">
                 {field.label}
-                  <span className="text-red-500">*</span>
+                <span className="text-red-500">*</span>
               </Label>
               <input
                 id={field.id}
@@ -260,9 +260,16 @@ const EventLocationForm: React.FC<EventLocationFormData> = ({
           </div>
         </div>
       </div>
-      <Button onClick={(e) => handleNext(e)} className="w-full mt-4">
-        {editPage === "manageEvent" ? "Save and Next" : "Next"}
-      </Button>
+      <div className="flex justify-center items-center">
+        <Button
+          variant="tertiary"
+          size="none"
+          onClick={(e) => handleNext(e)}
+          className="mt-4 text-lg px-8 sm:px-16 py-1"
+        >
+          {editPage === "manageEvent" ? "Save and Next" : "Next"}
+        </Button>
+      </div>
     </form>
   );
 };

@@ -191,7 +191,7 @@ const EventMediaContactForm: React.FC<EventMediaProps> = ({
           <div className="flex flex-col w-full mt-5" key={field.id}>
             <Label className="font-bold text-lg">
               {field.filecontnet?.label}
-                <span className="text-red-500">*</span>
+              <span className="text-red-500">*</span>
             </Label>
             <div
               className="flex items-center justify-center mt-1 h-[142px] w-full cursor-pointer flex-col gap-3 rounded-xl border-[3.2px] border-dashed border-gray-600  bg-white "
@@ -223,7 +223,7 @@ const EventMediaContactForm: React.FC<EventMediaProps> = ({
                 <h2 className="text-12 font-bold text-gray-400 ">
                   Click to upload
                 </h2>
-                <p className="text-12 font-bold text-gray-500 ">
+                <p className="text-12 text-center font-bold text-gray-500 ">
                   {field.filecontnet?.size}
                 </p>
               </div>
@@ -240,8 +240,12 @@ const EventMediaContactForm: React.FC<EventMediaProps> = ({
             )}
           </div>
         ))}
+      </div>
+      <div className="flex justify-center items-center">
         <Button
-          className="w-full p-2 mt-3 rounded-md"
+          variant="tertiary"
+          size="none"
+          className="mt-4 text-lg px-10 sm:px-16 py-1"
           onClick={(event) => handleClick(event)}
         >
           {editPage === "manageEvent" ? "Save and Next" : "Next"}

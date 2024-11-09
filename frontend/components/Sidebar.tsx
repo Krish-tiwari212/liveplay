@@ -51,6 +51,8 @@ const Sidebar = ({ setnavexpanded }: { setnavexpanded :Dispatch<SetStateAction<b
     value === "organizer"
       ? router.push("/organizerDashboard")
       : router.push("/playerdashboard");
+
+    handleCollapse();
   };
 
   const toggleMatches = () => {

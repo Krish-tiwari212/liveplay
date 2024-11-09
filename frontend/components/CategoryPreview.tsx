@@ -17,6 +17,8 @@ import { toast } from "@/hooks/use-toast";import {
 } from "@/components/ui/tooltip";
 import { DialogDescription } from "@radix-ui/react-dialog";
 import { useEventContext } from "@/context/EventDataContext";
+import { HiCurrencyRupee } from "react-icons/hi2";
+import { RiTicket2Fill } from "react-icons/ri";
 
 
 interface Category {
@@ -163,7 +165,7 @@ const CategoryPreview = ({
               <span>Add Category</span>
             </Button>
           </DialogTrigger>
-          <DialogContent className="w-[90%] sm:max-w-2xl h-auto">
+          <DialogContent className="w-[90%] sm:max-w-2xl h-[90%]">
             <DialogTitle>Add category</DialogTitle>
             <AddCategory type="add" setCategoryData={addCategory} />
           </DialogContent>
@@ -176,95 +178,93 @@ const CategoryPreview = ({
             categories.map((category, index) => (
               <div
                 key={index}
-                className={`relative border shadow-lg rounded-lg p-4 mb-4  ${
+                className={`relative border shadow-lg rounded-lg p-4 bg-[#17202A] flex ${
                   editPage === "manageEvent"
-                    ? "w-full sm:w-1/2 lg:w-[30%] xl:w-[30%]"
-                    : "w-full sm:w-1/2 lg:w-[46%] xl:w-[48%]"
-                } cursor-pointer bg-[#17202A]`}
+                    ? "w-full sm:w-1/2 lg:w-[30%]"
+                    : "w-full sm:w-1/2 lg:w-[46%] xl:w-[48%] 2xl:w-[30%]"
+                } cursor-pointer`}
               >
-                <div className="flex justify-between items-start bg-gray-100 p-4 rounded-lg shadow-sm w-full h-full">
-                  <div
-                    className={`flex justify-between items-start bg-gradient-to-r from-gray-200 to-gray-300 rounded-lg shadow-lg p-4  ${
-                      editPage === "manageEvent" ? "w-full" : "mr-4 w-[90%]"
-                    } h-full`}
-                  >
-                    <div className="flex flex-col w-full">
-                      <h2 className="font-bold text-xl text-[#17202A] flex items-center">
-                        {category.category_name}
-                      </h2>
-                      <p className="text-gray-600 font-medium mb-2 overflow-hidden max-h-12 line-clamp-2">
-                        {category.ticket_description}
-                      </p>
-                      <div className="border-t border-gray-300 my-2"></div>
-                      <p className="text-gray-700 flex items-center">
-                        <MdOutlineCurrencyRupee className="mr-2 text-gray-800" />
-                        Price:
-                        <span className="text-[#17202A]">{category.price}</span>
-                      </p>
-                      <p className="text-gray-600 flex items-center">
-                        <FaTicketAlt className="mr-2 text-gray-800" />
-                        Type:
-                        <span className="text-[#17202A]">
-                          {category.category_type}
-                        </span>
-                      </p>
-                    </div>
+                <div
+                  className={`flex justify-between items-start  rounded-lg shadow-lg   ${
+                    editPage === "manageEvent" ? "w-full" : "mr-4 w-[90%]"
+                  } h-full`}
+                >
+                  <div className="flex flex-col w-full">
+                    <h2 className="font-bold text-xl text-[#cddc29] flex items-center">
+                      {category.category_name}
+                    </h2>
+                    <p className="text-white font-medium mb-2 overflow-hidden max-h-12 line-clamp-2">
+                      {category.ticket_description}
+                    </p>
+                    {/* <div className="border-t border-gray-300 my-2"></div> */}
+                    <p className="text-gray-600 flex items-center mt-5">
+                      <RiTicket2Fill className="mr-1 text-[#cddc29]" />
+                      <h1 className="text-white mr-2">Type:</h1>
+                      <span className="text-[#cddc29]">
+                        {category.category_type}
+                      </span>
+                    </p>
+                    <p className="text-gray-700 flex items-center">
+                      <HiCurrencyRupee className="mr-1 text-[#cddc29]" />
+                      <h1 className="text-white mr-2">Price:</h1>
+                      <span className="text-[#cddc29]">{category.price}</span>
+                    </p>
                   </div>
-                  {editPage !== "manageEvent" && (
-                    <div className="flex flex-col gap-4 justify-center ">
-                      <TooltipProvider>
-                        <Tooltip>
-                          <TooltipTrigger>
-                            <div
-                              className={`bg-gray-300 hover:bg-gray-200 rounded-lg text-5xl shadow-xl`}
-                              onClick={(e) => {
-                                e.stopPropagation();
-                                openEditDialog(category);
-                              }}
-                            >
-                              <CiEdit />
-                            </div>
-                          </TooltipTrigger>
-                          <TooltipContent>
-                            <p>Edit</p>
-                          </TooltipContent>
-                        </Tooltip>
-                        <Tooltip>
-                          <TooltipTrigger>
-                            <div
-                              className={`bg-gray-300 hover:bg-gray-200 rounded-lg text-5xl shadow-xl`}
-                              onClick={(e) => {
-                                e.stopPropagation();
-                                deleteCategory(category);
-                              }}
-                            >
-                              <MdDelete />
-                            </div>
-                          </TooltipTrigger>
-                          <TooltipContent>
-                            <p>Delete</p>
-                          </TooltipContent>
-                        </Tooltip>
-                        <Tooltip>
-                          <TooltipTrigger>
-                            <div
-                              className={`bg-gray-300 hover:bg-gray-200 rounded-lg text-5xl shadow-xl`}
-                              onClick={(e) => {
-                                e.stopPropagation();
-                                duplicateCategory(category);
-                              }}
-                            >
-                              <HiDocumentDuplicate />
-                            </div>
-                          </TooltipTrigger>
-                          <TooltipContent>
-                            <p>Duplicate</p>
-                          </TooltipContent>
-                        </Tooltip>
-                      </TooltipProvider>
-                    </div>
-                  )}
                 </div>
+                {editPage !== "manageEvent" && (
+                  <div className="flex flex-col gap-4 p">
+                    <TooltipProvider>
+                      <Tooltip>
+                        <TooltipTrigger>
+                          <div
+                            className={`bg-[#cddc29] text-[#17202a] rounded-md text-3xl shadow-xl`}
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              openEditDialog(category);
+                            }}
+                          >
+                            <CiEdit />
+                          </div>
+                        </TooltipTrigger>
+                        <TooltipContent>
+                          <p>Edit</p>
+                        </TooltipContent>
+                      </Tooltip>
+                      <Tooltip>
+                        <TooltipTrigger>
+                          <div
+                            className={`bg-[#cddc29] text-[#17202a] rounded-md text-3xl shadow-xl`}
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              deleteCategory(category);
+                            }}
+                          >
+                            <MdDelete />
+                          </div>
+                        </TooltipTrigger>
+                        <TooltipContent>
+                          <p>Delete</p>
+                        </TooltipContent>
+                      </Tooltip>
+                      <Tooltip>
+                        <TooltipTrigger>
+                          <div
+                            className={`bg-[#cddc29] text-[#17202a] rounded-md text-3xl shadow-xl`}
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              duplicateCategory(category);
+                            }}
+                          >
+                            <HiDocumentDuplicate />
+                          </div>
+                        </TooltipTrigger>
+                        <TooltipContent>
+                          <p>Duplicate</p>
+                        </TooltipContent>
+                      </Tooltip>
+                    </TooltipProvider>
+                  </div>
+                )}
               </div>
             ))
           ) : (
@@ -287,13 +287,20 @@ const CategoryPreview = ({
         </div>
       </section>
 
-      <Button className="mt-4" onClick={handleClick}>
-        Next
-      </Button>
+      <div className="flex justify-center items-center">
+        <Button
+          variant="tertiary"
+          size="none"
+          className="mt-4 text-lg px-16 py-1"
+          onClick={handleClick}
+        >
+          {editPage === "manageEvent" ? "Save and Next" : "Next"}
+        </Button>
+      </div>
       <Dialog open={isEditDialogOpen} onOpenChange={setIsEditDialogOpen}>
         <DialogContent
           aria-describedby={undefined}
-          className="w-[90%] sm:max-w-2xl h-auto"
+          className="w-[90%] sm:max-w-2xl h-[90%] "
         >
           <DialogTitle>Edit Category</DialogTitle>
           <DialogDescription>

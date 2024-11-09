@@ -200,7 +200,7 @@ const EventMatrics = ({ handleNext }: EventMatricsProps) => {
           )}
         </main>
         <Dialog open={isModalOpen} onOpenChange={setIsModalOpen}>
-          <DialogContent className="bg-gray-100 rounded-lg w-[90%] h-auto sm:max-w-2xl overflow-y-auto">
+          <DialogContent className="bg-gray-100 rounded-lg w-[90%] h-[90%] sm:h-auto sm:max-w-2xl overflow-y-auto">
             <DialogHeader>
               <DialogTitle className="text-xl font-bold">
                 Cancellation Details

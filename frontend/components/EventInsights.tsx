@@ -171,7 +171,7 @@ const EventInsights: React.FC<EventInsights> = ({
           <div key={field.name} className="w-full m-2 flex flex-col mb-4">
             <Label className="font-bold text-lg">
               {field.label}
-                <span className="text-red-500">*</span>
+              <span className="text-red-500">*</span>
             </Label>
             <textarea
               id={field.name}
@@ -186,9 +186,16 @@ const EventInsights: React.FC<EventInsights> = ({
           </div>
         ))}
       </div>
-      <Button onClick={(e) => handleNext(e)} className="w-full mt-4">
-        {editPage === "manageEvent" ? "Save and Next" : "Next"}
-      </Button>
+      <div className="flex justify-center items-center">
+        <Button
+          variant="tertiary"
+          size="none"
+          onClick={(e) => handleNext(e)}
+          className="mt-4 text-lg px-10 sm:px-16 py-1"
+        >
+          {editPage === "manageEvent" ? "Save and Next" : "Next"}
+        </Button>
+      </div>
     </form>
   );
 };

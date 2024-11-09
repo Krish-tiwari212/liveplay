@@ -256,7 +256,7 @@ const AddCategory = ({ setCategoryData ,type,category}: AddCategoryProps) => {
   }, [type, category]);
 
   return (
-    <form className="bg-white shadow-2xl p-5 rounded-lg m-3  overflow-y-auto">
+    <form className="bg-white shadow-2xl p-2 sm:p-5 rounded-lg m-3  overflow-y-auto">
       <div className="flex flex-wrap w-full">
         <div className=" w-full m-2 flex flex-col">
           <label htmlFor="category_type">

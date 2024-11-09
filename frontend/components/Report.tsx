@@ -10,6 +10,7 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { ChartBar } from './ChartBar';
+import { LineChartDemo } from "./LineChart";
 import {
   Dialog,
   DialogContent,
@@ -30,6 +31,7 @@ import {
 } from "@/components/ui/table";
 import { Button } from './ui/button';
 import { FaPeopleGroup } from 'react-icons/fa6';
+import { PieChartDemo } from './PieChart';
 
 interface ReportProps{
     handleNext:()=>void
@@ -38,71 +40,88 @@ interface ReportProps{
 const data = [
   {
     title: "salespercategory",
-    value: [1500, 1200, 1100, 1110, 1220, 1000, 900],
+    categories: ["Men's Singles", "Women's Singles", "Men's Doubles", "Women's Doubles", "Mixed Doubles", "Junior Singles", "Junior Doubles", "Senior Singles", "Senior Doubles", "Team Events", "Exhibition Matches", "Qualifiers"],
+    value: [1500, 1200, 1100, 1110, 1220, 1000, 900, 234, 215, 1300, 4500, 430],
   },
   {
     title: "entriesPerCategory",
-    value: [50,70,30,40,70,10,4,40,3,9,2,10,70,20,90],
+    categories: ["Men's Singles", "Women's Singles", "Men's Doubles", "Women's Doubles", "Mixed Doubles", "Junior Singles", "Junior Doubles", "Senior Singles", "Senior Doubles", "Team Events", "By Matches", "Qualify", "Open Category", "Veterans Matches", "Amateurs Matches"],
+    value: [50, 70, 30, 40, 70, 10, 4, 40, 3, 9, 2, 10, 70, 20, 90],
   },
 ];
 
 const Report = ({ handleNext }: ReportProps) => {
- const metrics = [
-   {
-     title: "Event Sales",
-     description: "Total Entry Fees Collected",
-     icon: <FaRupeeSign />,
-     data: 0,
-   },
-   {
-     title: "Event Views",
-     description: "Total number of users who have viewed this event",
-     icon: <FaRegEye />,
-     data: 0,
-   },
-   {
-     title: "Number of Registrations",
-     description: "Total number of event registrations",
-     icon: <FaPeopleGroup />,
-     data: 0,
-   },
-   {
-     title: "Number of Interested People",
-     description: "Total number of users interested in this event",
-     icon: <FaRegThumbsUp />,
-     data: 0,
-   },
- ];
-  
-  const CdataSales = data[0].value.map((value, index) => {
-    const fill =
-      value === Math.max(...data[0].value)
-        ? "#17202a"
-        : value === Math.min(...data[0].value)
-        ? "#17202a"
-        : "#17202a";
-    return {
-      category: `category${index + 1}`,
-      salsepercategory: value,
-      fill: fill,
-    };
-  });
+  const metrics = [
+    {
+      title: "Event Sales",
+      description: "Total Entry Fees Collected",
+      icon: <FaRupeeSign />,
+      data: 0,
+    },
+    {
+      title: "Event Views",
+      description: "Total number of users who have viewed this event",
+      icon: <FaRegEye />,
+      data: 0,
+    },
+    {
+      title: "Number of Registrations",
+      description: "Total number of event registrations",
+      icon: <FaPeopleGroup />,
+      data: 0,
+    },
+    {
+      title: "Number of Interested People",
+      description: "Total number of users interested in this event",
+      icon: <FaRegThumbsUp />,
+      data: 0,
+    },
+  ];
+
+  const colors = [
+    "#4186f5",
+    "#fbd04e",
+    "#f17b72",
+    "#7ba9f8",
+    "#45bcc6",
+    "#ff6d00",
+    "#32a754",
+    "#fdbd00",
+    "#ed4037",
+    "#4ec9a3",
+  ];
+
+  const CdataSales = data[0].value
+    .map((value, index) => {
+      const fill = colors[index % colors.length];
+      return {
+        category: `${data[0].categories[index]}`,
+        salsepercategory: value,
+        fill: fill,
+      };
+    })
+    .slice(0, 9);
+
+  if (data[0].value.length > 9) {
+    const othersValue = data[0].value
+      .slice(9)
+      .reduce((acc, curr) => acc + curr, 0);
+    CdataSales.push({
+      category: "others",
+      salsepercategory: othersValue,
+      fill: colors[9 % colors.length],
+    });
+  }
 
   const CdataEntries = data[1].value.map((value, index) => {
-    const fill =
-      value === Math.max(...data[1].value)
-        ? "#17202a"
-        : value === Math.min(...data[1].value)
-        ? "#17202a"
-        : "#17202a";
     return {
-      category: `Category ${index + 1}`,
+      category: `${data[1].categories[index]}`,
       entriesPerCategory: value,
-      fill: fill,
+      fill: "#4186f5",
     };
   });
 
-  const chartData = [
+  const SalesData =
     {
       Cdata: CdataSales,
       chartConfig: {
@@ -125,32 +144,32 @@ const Report = ({ handleNext }: ReportProps) => {
       datakey1: "category",
       title: "Sales per category",
       description: "Shows how much each category contributed to total sales.",
-    },
-    {
-      Cdata: CdataEntries,
-      chartConfig: {
-        entriesPerCategory: {
-          label: "Entries ",
-          color: "#17202a",
-        },
-        ...CdataEntries.reduce((acc: any, curr) => {
-          acc[curr.category] = {
-            label: curr.category,
-            color:
-              "hsl(var(--chart-" +
-              parseInt(curr.category.replace("category", "")) +
-              "))",
-          };
-          return acc;
-        }, {}),
+    }
+
+  const EntriesData = {
+    Cdata: CdataEntries,
+    chartConfig: {
+      entriesPerCategory: {
+        label: "Entries ",
+        color: "#17202a",
       },
-      type: "vertical",
-      dataKey: "entriesPerCategory",
-      datakey1: "category",
-      title: "Registrations per category",
-      description: "Shows the number of participants per category. ",
+      ...CdataEntries.reduce((acc: any, curr) => {
+        acc[curr.category] = {
+          label: curr.category,
+          color:
+            "hsl(var(--chart-" +
+            parseInt(curr.category.replace("category", "")) +
+            "))",
+        };
+        return acc;
+      }, {}),
     },
-  ];
+    type: "vertical",
+    dataKey: "entriesPerCategory",
+    datakey1: "category",
+    title: "Registrations per category",
+    description: "Shows the number of participants per category. ",
+  };
 
   const participants = [
     {
@@ -305,7 +324,7 @@ const Report = ({ handleNext }: ReportProps) => {
     },
   ];
 
-  const noOfParticipants = Object.keys(participants[0]).length-1;
+  const noOfParticipants = Object.keys(participants[0]).length - 1;
   return (
     <div className=" text-gray-800 px-2 sm:px-5  pb-10">
       <h1 className="text-3xl text-gray-800 font-bold mb-4 sm:mb-8">
@@ -330,27 +349,29 @@ const Report = ({ handleNext }: ReportProps) => {
           </Card>
         ))}
       </div>
-
-      <div className="charts flex flex-col md:flex-row gap-5 text-white">
-        {chartData.map((data, i) => {
-          const processCategory =
-            data.Cdata.length > 8
-              ? (value: any) => value.charAt(0) + value.slice(-2)
-              : (value: any) => value;
-          return (
-            <div className="w-full md:w-[50%]" key={i}>
-              <ChartBar
-                chartData={data.Cdata}
-                processCategory={processCategory}
-                dataKey={data.dataKey}
-                chartConfig={data.chartConfig}
-                title={data.title}
-                description={data.description}
-                type={data.type}
-              />
-            </div>
-          );
-        })}
+      <div className="charts flex flex-col xl:flex-row gap-5 text-white h-auto">
+        <div className="w-full xl:w-[50%] h-full">
+          <PieChartDemo
+            chartData={SalesData.Cdata}
+            processCategory={(value: any) => value}
+            dataKey={SalesData.dataKey}
+            chartConfig={SalesData.chartConfig}
+            title={SalesData.title}
+            description={SalesData.description}
+            type={SalesData.type}
+          />
+        </div>
+        <div className="w-full xl:w-[50%] h-full">
+          <LineChartDemo
+            chartData={EntriesData.Cdata}
+            processCategory={(value: any) => value}
+            dataKey={EntriesData.dataKey}
+            chartConfig={EntriesData.chartConfig}
+            title={EntriesData.title}
+            description={EntriesData.description}
+            type={EntriesData.type}
+          />
+        </div>
       </div>
 
       <div className="mt-4 bg-white p-5 rounded-lg">
