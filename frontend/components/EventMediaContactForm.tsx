@@ -223,7 +223,7 @@ const EventMediaContactForm: React.FC<EventMediaProps> = ({
                 <h2 className="text-12 font-bold text-gray-400 ">
                   Click to upload
                 </h2>
-                <p className="text-12 font-bold text-gray-500 ">
+                <p className="text-12 text-center font-bold text-gray-500 ">
                   {field.filecontnet?.size}
                 </p>
               </div>
@@ -245,7 +245,7 @@ const EventMediaContactForm: React.FC<EventMediaProps> = ({
         <Button
           variant="tertiary"
           size="none"
-          className="mt-4 text-lg px-16 py-1"
+          className="mt-4 text-lg px-10 sm:px-16 py-1"
           onClick={(event) => handleClick(event)}
         >
           {editPage === "manageEvent" ? "Save and Next" : "Next"}

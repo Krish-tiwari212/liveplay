@@ -234,15 +234,29 @@ const MSidebar = () => {
         <ul>
           <li>
             <Link href="/organizerDashboard/settings">
-              <button className="flex lg:text-md items-center w-full py-2 pl-2 hover:bg-[#CDDC29] hover:text-[#17202A] rounded transition-colors duration-200 relative">
+              <button
+                onClick={() => handleButtonClick("Settings")}
+                className={`flex items-center w-full py-2 pl-2 rounded transition-colors duration-200 relative ${
+                  activePage === "Settings"
+                    ? "bg-[#CDDC29] text-[#17202A]"
+                    : "hover:bg-[#CDDC29] hover:text-[#17202A]"
+                }`}
+              >
                 <FaCogs className="mr-2 text-xl" /> Settings
               </button>
             </Link>
           </li>
           <li>
             <button
-              onClick={handleLogout}
-              className="flex items-center w-full py-2 pl-2 hover:bg-[#CDDC29] hover:text-[#17202A] rounded transition-colors duration-200 relative"
+              onClick={() => {
+                handleButtonClick("Logout");
+                handleLogout;
+              }}
+              className={`flex items-center w-full py-2 pl-2 rounded transition-colors duration-200 relative ${
+                activePage === "Logout"
+                  ? "bg-[#CDDC29] text-[#17202A]"
+                  : "hover:bg-[#CDDC29] hover:text-[#17202A]"
+              }`}
             >
               <FaSignOutAlt className="mr-2 text-xl" /> Logout
             </button>

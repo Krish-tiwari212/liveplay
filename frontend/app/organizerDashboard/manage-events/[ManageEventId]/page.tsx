@@ -49,18 +49,18 @@ const ProgressBarCheckpointsManageEventID = [
     placement: 5,
   },
   {
+    icon: <MdOutlineRocketLaunch />,
+    label: "Event Boosters",
+    placement: 6,
+  },
+  {
     icon: <TbTournament />,
     label: "Draw Creation",
-    placement: 6,
+    placement: 7,
   },
   {
     icon: <MdLiveTv />,
     label: "Live Match Tracking",
-    placement: 7,
-  },
-  {
-    icon: <MdOutlineRocketLaunch />,
-    label: "Event Boosters",
     placement: 8,
   },
 ];
@@ -236,11 +236,11 @@ const page = ({params}:any) => {
             )}
             {currentPage === 4 && <CategoryPreview handleNext={handleNext} />}
             {currentPage === 5 && <EnableFeatures handleNext={handleNext} />}
-            {currentPage === 6 && (
+            {currentPage === 6 && <EventBoosters handleNext={handleNext} />}
+            {currentPage === 7 && (
               <DrawCreation id={ManageEventId} handleNext={handleNext} />
             )}
-            {currentPage === 7 && <LiveMatchTracking handleNext={handleNext} />}
-            {currentPage === 8 && <EventBoosters handleNext={handleNext} />}
+            {currentPage === 8 && <LiveMatchTracking handleNext={handleNext} />}
           </div>
         ) : (
           <div className="mt-20 lg:mt-4 w-full rounded-lg">
@@ -254,8 +254,8 @@ const page = ({params}:any) => {
             )}
             {currentPage === 4 && <CategoryPreview handleNext={handleNext} />}
             {currentPage === 5 && <EnableFeatures handleNext={handleNext} />}
-            {currentPage === 6 && <LiveMatchTracking handleNext={handleNext} />}
-            {currentPage === 7 && <EventBoosters handleNext={handleNext} />}
+            {currentPage === 6 && <EventBoosters handleNext={handleNext} />}
+            {currentPage === 7 && <LiveMatchTracking handleNext={handleNext} />}
           </div>
         )}
 

@@ -390,9 +390,9 @@ export default function Home() {
               ))}
             </div>
           ) : (
-            events.map((event) => (
+            events.map((event, i) => (
               <React.Fragment key={event.id}>
-                <Card className="shadow-md cursor-pointer hover:shadow-2xl flex-none min-w-[240px] max-w-[280px] sm:min-w-[400px] sm:max-w-[500px] border-2 border-gray-800">
+                <Card className="shadow-md cursor-pointer hover:shadow-2xl flex-none min-w-[240px] max-w-[270px] sm:min-w-[450px] sm:max-w-[550px] border-2 border-gray-800">
                   <CardContent className="py-4 flex flex-col sm:flex-row gap-4 h-full">
                     <div className="flex-[1]">
                       <Image
@@ -443,15 +443,17 @@ export default function Home() {
                         >
                           Withdraw From Event
                         </button>
-                        <span className="flex gap-1 text-sm text-gray-800">
-                          <h1
-                            className={`underline ${
-                              isYellow ? "text-[#CDDC29]" : ""
-                            }`}
-                          >
-                            Event Draws are Live
-                          </h1>
-                        </span>
+                        {i % 2 == 0 && (
+                          <span className="flex gap-1 text-sm text-gray-800">
+                            <h1
+                              className={`underline ${
+                                isYellow ? "text-[#CDDC29]" : ""
+                              }`}
+                            >
+                              Event Draws are Live
+                            </h1>
+                          </span>
+                        )}
                       </div>
                     </div>
                   </CardContent>

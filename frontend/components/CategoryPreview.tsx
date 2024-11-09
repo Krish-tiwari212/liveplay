@@ -294,7 +294,7 @@ const CategoryPreview = ({
           className="mt-4 text-lg px-16 py-1"
           onClick={handleClick}
         >
-          Next
+          {editPage === "manageEvent" ? "Save and Next" : "Next"}
         </Button>
       </div>
       <Dialog open={isEditDialogOpen} onOpenChange={setIsEditDialogOpen}>

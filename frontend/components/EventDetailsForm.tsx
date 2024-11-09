@@ -490,7 +490,7 @@ const EventDetailsForm: React.FC<EventDetailsFormProps> = ({
           size="none"
           variant="tertiary"
           onClick={(e) => handleNext(e)}
-          className="mt-4 text-lg px-20 py-1"
+          className="mt-4 text-lg px-10 sm:px-16 py-1"
         >
           {editPage === "manageEvent" ? "Save and Next" : "Next"}
         </Button>

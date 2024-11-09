@@ -191,7 +191,7 @@ const EventInsights: React.FC<EventInsights> = ({
           variant="tertiary"
           size="none"
           onClick={(e) => handleNext(e)}
-          className="mt-4 text-lg px-20 py-1"
+          className="mt-4 text-lg px-10 sm:px-16 py-1"
         >
           {editPage === "manageEvent" ? "Save and Next" : "Next"}
         </Button>
