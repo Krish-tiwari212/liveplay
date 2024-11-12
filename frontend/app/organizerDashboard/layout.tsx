@@ -23,7 +23,7 @@ export default function RootLayout({
     <UserProvider>
       <AppContextProvider>
         <EventProvider>
-          {/* <KYCWrapper> */}
+          <KYCWrapper>
             <Sidebar setnavexpanded={setnavexpanded} />
             <div
               className={`flex h-screen ${
@@ -40,7 +40,7 @@ export default function RootLayout({
                 {children}
               </div>
             </div>
-          {/* </KYCWrapper> */}
+          </KYCWrapper>
         </EventProvider>
       </AppContextProvider>
     </UserProvider>
@@ -69,7 +69,7 @@ function KYCWrapper({ children }: { children: React.ReactNode }) {
       if (!kycCompleted && user && !currentIsKYCPage) {
         setShowKYCPopup(true);
       }
-    }, 5 * 60 * 1000); 
+    }, 3 * 60 * 1000); 
 
     return () => clearInterval(interval);
   }, [user, kycCompleted]);

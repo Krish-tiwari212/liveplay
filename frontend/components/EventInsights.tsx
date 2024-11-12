@@ -53,7 +53,7 @@ const Insightfields = [
     label: "Event USP",
     name: "event_usp",
     placeholder:
-      "Please describe what makes your event truly unique.",
+      "Please describe what makes your event truly unique. (50 Charectors Only)",
   },
   {
     label: "Rewards And Prizes",
@@ -182,6 +182,7 @@ const EventInsights: React.FC<EventInsights> = ({
               value={formData[field.name as keyof typeof formData] || ""}
               onChange={handleChange}
               className="w-full p-2 bg-white border rounded-md text-sm shadow-2xl text-[#17202A] focus:border-[#17202A] focus:outline-none focus:shadow-lg"
+              maxLength={field.name === "event_usp" ? 50 : undefined}
             />
           </div>
         ))}

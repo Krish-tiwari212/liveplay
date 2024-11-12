@@ -61,7 +61,7 @@ const page = () => {
    };
    
    useEffect(()=>{
-    setDashboardName("Create Event")
+    setDashboardName("Create New Event");
     setEditPage("createEvent")
    },[])
 
@@ -75,14 +75,12 @@ const page = () => {
         checkpoints={ProgressBarCheckpoints}
       />
       {currentPage === 1 && (
-        <EventInformation handleNext={handleNext}/>
+        <EventInformation
+          handleNext={handleNext}
+        />
       )}
-      {currentPage === 2 && (
-        <CategoryPreview handleNext={handleNext}/>
-      )}
-      {currentPage === 3 && (
-        <EnableFeatures handleNext={handleNext}/>
-      )}
+      {currentPage === 2 && <CategoryPreview handleNext={handleNext} />}
+      {currentPage === 3 && <EnableFeatures handleNext={handleNext} />}
       {currentPage === 4 && <EventBoosters handleNext={handleNext} />}
       {currentPage === 5 && <GoLive />}
     </div>

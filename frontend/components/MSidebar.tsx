@@ -18,11 +18,11 @@ import { useUser } from '@/context/UserContext';
 import { useEventContext } from '@/context/EventDataContext';
 
 const MSidebar = () => {
-  const [activePage, setActivePage] = useState("Dashboard");
+  const { setUserType, UserType,DashboardName } = useEventContext();
+  const [activePage, setActivePage] = useState(DashboardName);
   const { toast } = useToast();
   const router = useRouter();
   const { user, setUser } = useUser();
-  const { setUserType, UserType } = useEventContext();
   const path = usePathname();
   const isplayerdashboard = path.includes("playerdashboard");
 
@@ -68,6 +68,9 @@ const MSidebar = () => {
     
   };
 
+  useEffect(()=>{
+    console.log("name:"+DashboardName)
+  },[])
   return (
     <div
       className={`hidden bg-[#17202A] text-white p-4 shadow-lg transition-width duration-300 ease-in-out lg:flex flex-col h-full z-40 sticky flex-[1]`}
@@ -104,9 +107,9 @@ const MSidebar = () => {
           <li>
             <Link href="/organizerDashboard">
               <button
-                onClick={() => handleButtonClick("Dashboard")}
+                onClick={() => handleButtonClick("Organizer Dashboard")}
                 className={`flex items-center w-full py-2 pl-2 rounded transition-colors duration-200 relative ${
-                  activePage === "Dashboard"
+                  activePage === "Organizer Dashboard"
                     ? "bg-[#CDDC29] text-[#17202A]"
                     : "hover:bg-[#CDDC29] hover:text-[#17202A]"
                 }`}
@@ -123,23 +126,23 @@ const MSidebar = () => {
               <li>
                 <Link href="/organizerDashboard/create_event">
                   <button
-                    onClick={() => handleButtonClick("Create Events")}
+                    onClick={() => handleButtonClick("Create New Event")}
                     className={`flex items-center w-full p-2 rounded transition-colors duration-200 ${
-                      activePage === "Create Events"
+                      activePage === "Create New Event"
                         ? "bg-[#CDDC29] text-[#17202A]"
                         : "hover:bg-[#CDDC29] hover:text-[#17202A]"
                     }`}
                   >
-                    <MdSchedule className="mr-2 text-xl" /> Create New Events
+                    <MdSchedule className="mr-2 text-xl" /> Create New Event
                   </button>
                 </Link>
               </li>
               <li>
                 <Link href="/organizerDashboard/manage-events">
                   <button
-                    onClick={() => handleButtonClick("Manage Events")}
+                    onClick={() => handleButtonClick("Event Management")}
                     className={`flex items-center w-full p-2 rounded transition-colors duration-200 ${
-                      activePage === "Manage Events"
+                      activePage === "Event Management"
                         ? "bg-[#CDDC29] text-[#17202A]"
                         : "hover:bg-[#CDDC29] hover:text-[#17202A]"
                     }`}
@@ -152,9 +155,9 @@ const MSidebar = () => {
               <li>
                 <Link href="/organizerDashboard/kyc/1234">
                   <button
-                    onClick={() => handleButtonClick("Unlock Earnings")}
+                    onClick={() => handleButtonClick("Unlock Event Earnings")}
                     className={`flex items-center w-full p-2 rounded transition-colors duration-200 ${
-                      activePage === "Unlock Earnings"
+                      activePage === "Unlock Event Earnings"
                         ? "bg-[#CDDC29] text-[#17202A]"
                         : "hover:bg-[#CDDC29] hover:text-[#17202A]"
                     }`}
@@ -186,9 +189,9 @@ const MSidebar = () => {
           <li>
             <Link href="/playerdashboard">
               <button
-                onClick={() => handleButtonClick("Dashboard")}
+                onClick={() => handleButtonClick("Player Dashboard")}
                 className={`flex items-center w-full py-2 pl-2 rounded transition-colors duration-200 relative ${
-                  activePage === "Dashboard"
+                  activePage === "Player Dashboard"
                     ? "bg-[#CDDC29] text-[#17202A]"
                     : "hover:bg-[#CDDC29] hover:text-[#17202A]"
                 }`}
@@ -250,7 +253,7 @@ const MSidebar = () => {
             <button
               onClick={() => {
                 handleButtonClick("Logout");
-                handleLogout;
+                handleLogout();
               }}
               className={`flex items-center w-full py-2 pl-2 rounded transition-colors duration-200 relative ${
                 activePage === "Logout"

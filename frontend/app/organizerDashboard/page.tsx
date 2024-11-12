@@ -65,6 +65,24 @@ export default function Home() {
   const { user } = useUser();
   const [isRed, setIsRed] = useState(false);
 
+  const handleCopy = (text: string) => {
+    navigator.clipboard
+      .writeText(text)
+      .then(() => {
+        toast({
+          title: "Link copied to clipboard!",
+          variant: "default",
+        });
+      })
+      .catch((error) => {
+        console.error("Error copying text: ", error);
+        toast({
+          title: "Failed to copy link. Please try again.",
+          variant: "destructive",
+        });
+      });
+  };
+
   useEffect(() => {
     const interval = setInterval(() => {
       setIsRed((prev) => !prev);
@@ -230,7 +248,10 @@ export default function Home() {
           {isLoading ? (
             <div className="flex space-x-4">
               {Array.from({ length: 3 }).map((_, index) => (
-                <div className="flex flex-col sm:flex-row h-[400px] w-[250px] sm:h-[200px] sm:w-[400px] gap-2" key={index}>
+                <div
+                  className="flex flex-col sm:flex-row h-[400px] w-[250px] sm:h-[200px] sm:w-[400px] gap-2"
+                  key={index}
+                >
                   <Skeleton className="h-[250px] w-full sm:h-full sm:w-[250px] rounded-xl" />
                   <div className="space-y-2">
                     <Skeleton className="h-4 w-[150px]" />
@@ -247,18 +268,16 @@ export default function Home() {
           ) : (
             events.map((event) => (
               <React.Fragment key={event.id}>
-                <Card
-                  className="shadow-md cursor-pointer hover:shadow-2xl flex-none min-w-[200px] max-w-[270px] sm:min-w-[400px] sm:max-w-[450px]"
-                  onClick={(e) => {
-                    if (!e.defaultPrevented) {
-                      router.push(
-                        `/organizerDashboard/manage-events/${event.id}`
-                      );
-                    }
-                  }}
-                >
+                <Card className="shadow-md cursor-pointer flex-none min-w-[200px] max-w-[270px] sm:min-w-[400px] sm:max-w-[450px]">
                   <CardContent className="py-4 flex flex-col sm:flex-row gap-4 h-full border-2 border-gray-800 rounded-md">
-                    <div className="flex-[1]">
+                    <div
+                      className="flex-[1] relative group rounded-lg"
+                      onClick={() =>
+                        router.push(
+                          `/organizerDashboard/manage-events/${event.id}`
+                        )
+                      }
+                    >
                       <Image
                         src={
                           event.desktop_cover_image_url ||
@@ -267,8 +286,13 @@ export default function Home() {
                         alt="eventBanner"
                         width={200}
                         height={200}
-                        className="rounded-lg h-full w-full shadow-xl  border-2 border-gray-800"
+                        className="rounded-lg h-full w-full shadow-xl border-2 border-gray-800"
                       />
+                      <div className="absolute inset-0 bg-gray-800 bg-opacity-0 group-hover:bg-opacity-80 flex items-center justify-center rounded-lg transition-opacity duration-300">
+                        <span className="text-white opacity-0 group-hover:opacity-100 transition-opacity duration-300 font-open-sauce ">
+                          Event Details
+                        </span>
+                      </div>
                     </div>
 
                     <div className="flex-[1] flex flex-col justify-between">
@@ -378,7 +402,14 @@ export default function Home() {
                                 readOnly
                               />
                             </div>
-                            <Button type="submit" size="sm" className="px-3">
+                            <Button
+                              type="button"
+                              size="sm"
+                              className="px-3"
+                              onClick={() =>
+                                handleCopy(`/event/${event.id}/share-link`)
+                              }
+                            >
                               <span className="sr-only">Copy</span>
                               <Copy />
                             </Button>

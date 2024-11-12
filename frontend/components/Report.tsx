@@ -126,7 +126,7 @@ const Report = ({ handleNext }: ReportProps) => {
       Cdata: CdataSales,
       chartConfig: {
         salsepercategory: {
-          label: "Sales : Rs",
+          label: "Sales : Rs ",
         },
         ...CdataSales.reduce((acc: any, curr) => {
           acc[curr.category] = {
@@ -150,7 +150,7 @@ const Report = ({ handleNext }: ReportProps) => {
     Cdata: CdataEntries,
     chartConfig: {
       entriesPerCategory: {
-        label: "Entries ",
+        label: "Registrations ",
         color: "#17202a",
       },
       ...CdataEntries.reduce((acc: any, curr) => {

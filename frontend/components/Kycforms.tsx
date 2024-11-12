@@ -17,47 +17,286 @@ import {
 
 // ... existing code ...
 const banks = [
-  { name: "Allahabad Bank", image: "/images/allahabad.png" },
-  { name: "Andhra Bank", image: "/images/andra.png" },
-  { name: "Axis Bank", image: "/images/axis.png" },
-  { name: "Bank of Bahrain and Kuwait", image: "/path/to/bbk.png" },
-  { name: "Bandhan Bank", image: "/images/bandhanbank.png" },
-  { name: "Bank of Baroda - Retail Banking", image: "/images/bob.png" },
-  { name: "Canara Bank", image: "/images/canara.png" },
-  { name: "Central Bank", image: "/images/centralbank.png" },
-  { name: "Canara Bank", image: "/path/to/canara-bank.png" },
-  { name: "City Union Bank", image: "/images/citibank.png" },
-  { name: "Corporation Bank", image: "/images/corporation.png" },
-  { name: "Deutsche Bank", image: "/images/dbs.png" },
+  { name: "ABN AMRO", image: "/Indian Banks SVG Logos/Bank Name=ABN AMRO.svg" },
   {
-    name: "Punjab National Bank - Corporate Banking",
-    image: "/path/to/pnb-corporate.png",
+    name: "Au Small Finance Bank",
+    image: "/Indian Banks SVG Logos/Bank Name=Au Small Finance Bank.svg",
   },
   {
-    name: "Punjab National Bank - Retail Banking",
-    image: "/path/to/pnb-retail.png",
+    name: "Abu Dhabi Commercial Bank",
+    image: "/Indian Banks SVG Logos/Bank Name=Abu Dhabi Commercial Bank.svg",
   },
-  { name: "Punjab & Sind Bank", image: "/path/to/punjab-sind.png" },
   {
-    name: "Shamrao Vitthal Co-operative Bank",
-    image: "/path/to/sv-coop-bank.png",
+    name: "Airtel Payments Bank",
+    image: "/Indian Banks SVG Logos/Bank Name=Airtel Payments Bank.svg",
   },
-  { name: "South Indian Bank", image: "/path/to/south-indian-bank.png" },
-  { name: "State Bank of Bikaner & Jaipur", image: "/path/to/sbbj.png" },
-  { name: "State Bank of Hyderabad", image: "/path/to/sbh.png" },
-  { name: "State Bank of India", image: "/path/to/sbi.png" },
-  { name: "State Bank of Mysore", image: "/path/to/sbm.png" },
-  { name: "State Bank of Patiala", image: "/path/to/sbp.png" },
-  { name: "State Bank of Travancore", image: "/path/to/sbt.png" },
-  { name: "Syndicate Bank", image: "/path/to/syndicate-bank.png" },
-  { name: "Tamilnad Mercantile Bank Ltd.", image: "/path/to/tmb.png" },
-  { name: "UCO Bank", image: "/path/to/uco-bank.png" },
-  { name: "Union Bank of India", image: "/path/to/union-bank.png" },
-  { name: "United Bank of India", image: "/path/to/united-bank.png" },
-  { name: "Vijaya Bank", image: "/path/to/vijaya-bank.png" },
-  { name: "Yes Bank Ltd", image: "/path/to/yes-bank.png" },
+  {
+    name: "American Express",
+    image: "/Indian Banks SVG Logos/Bank Name=American Express.svg",
+  },
+  {
+    name: "Axis Bank",
+    image: "/Indian Banks SVG Logos/Bank Name=Axis Bank.svg",
+  },
+  {
+    name: "BNP Paribas",
+    image: "/Indian Banks SVG Logos/Bank Name=BNP Paribas.svg",
+  },
+  {
+    name: "Bandhan Bank",
+    image: "/Indian Banks SVG Logos/Bank Name=Bandhan Bank.svg",
+  },
+  {
+    name: "Bank Maybank Indonesia",
+    image: "/Indian Banks SVG Logos/Bank Name=Bank Maybank Indonesia.svg",
+  },
+  {
+    name: "Bank of America",
+    image: "/Indian Banks SVG Logos/Bank Name=Bank of America.svg",
+  },
+  {
+    name: "Bank of Bahrain and Kuwait",
+    image: "/Indian Banks SVG Logos/Bank Name=Bank of Bahrain and Kuwait.svg",
+  },
+  {
+    name: "Bank of Baroda",
+    image: "/Indian Banks SVG Logos/Bank Name=Bank of Baroda.svg",
+  },
+  {
+    name: "Bank of Ceylon",
+    image: "/Indian Banks SVG Logos/Bank Name=Bank of Ceylon.svg",
+  },
+  {
+    name: "Bank of China",
+    image: "/Indian Banks SVG Logos/Bank Name=Bank of China.svg",
+  },
+  {
+    name: "Bank of India",
+    image: "/Indian Banks SVG Logos/Bank Name=Bank of India.svg",
+  },
+  {
+    name: "Barclays Bank",
+    image: "/Indian Banks SVG Logos/Bank Name=Barclays Bank.svg",
+  },
+  { name: "CSB Bank", image: "/Indian Banks SVG Logos/Bank Name=CSB Bank.svg" },
+  {
+    name: "Canara Bank",
+    image: "/Indian Banks SVG Logos/Bank Name=Canara Bank.svg",
+  },
+  {
+    name: "Central Bank of India",
+    image: "/Indian Banks SVG Logos/Bank Name=Central Bank of India.svg",
+  },
+  {
+    name: "Citi Bank",
+    image: "/Indian Banks SVG Logos/Bank Name=Citi Bank.svg",
+  },
+  {
+    name: "City Union Bank",
+    image: "/Indian Banks SVG Logos/Bank Name=City Union Bank.svg",
+  },
+  {
+    name: "Credit Suisse",
+    image: "/Indian Banks SVG Logos/Bank Name=Credit Suisse.svg",
+  },
+  {
+    name: "Crédit Agricole Corporate and Investment Bank",
+    image:
+      "/Indian Banks SVG Logos/Bank Name=Crédit Agricole Corporate and Investment Bank.svg",
+  },
+  { name: "DBS Bank", image: "/Indian Banks SVG Logos/Bank Name=DBS Bank.svg" },
+  { name: "DCB Bank", image: "/Indian Banks SVG Logos/Bank Name=DCB Bank.svg" },
+  {
+    name: "Deutsche Bank",
+    image: "/Indian Banks SVG Logos/Bank Name=Deutsche Bank.svg",
+  },
+  {
+    name: "Dhanlaxmi Bank",
+    image: "/Indian Banks SVG Logos/Bank Name=Dhanlaxmi Bank.svg",
+  },
+  {
+    name: "Doha Bank",
+    image: "/Indian Banks SVG Logos/Bank Name=Doha Bank.svg",
+  },
+  {
+    name: "ESAF Small Finance Bank",
+    image:
+      "/Indian Banks SVG Logos/Bank Name=ESAF Small Finance Bank Ltd.svg",
+  },
+  {
+    name: "Emirates NBD",
+    image: "/Indian Banks SVG Logos/Bank Name=Emirates NBD.svg",
+  },
+  {
+    name: "FINO Payments Bank",
+    image: "/Indian Banks SVG Logos/Bank Name=FINO Payments Bank.svg",
+  },
+  {
+    name: "Federal Bank",
+    image: "/Indian Banks SVG Logos/Bank Name=Federal Bank.svg",
+  },
+  {
+    name: "First Abu Dhabi Bank",
+    image: "/Indian Banks SVG Logos/Bank Name=First Abu Dhabi Bank.svg",
+  },
+  {
+    name: "FirstRand Bank",
+    image: "/Indian Banks SVG Logos/Bank Name=FirstRand Bank.svg",
+  },
+  {
+    name: "HDFC Bank",
+    image: "/Indian Banks SVG Logos/Bank Name=HDFC Bank.svg",
+  },
+  {
+    name: "Handelsbanken",
+    image: "/Indian Banks SVG Logos/Bank Name=Handelsbanken.svg",
+  },
+  {
+    name: "ICICI Bank",
+    image: "/Indian Banks SVG Logos/Bank Name=ICICI Bank.svg",
+  },
+  {
+    name: "IDBI Bank",
+    image: "/Indian Banks SVG Logos/Bank Name=IDBI Bank.svg",
+  },
+  {
+    name: "India Post Payments Bank",
+    image: "/Indian Banks SVG Logos/Bank Name=India Post Payments Bank.svg",
+  },
+  {
+    name: "Indian Bank",
+    image: "/Indian Banks SVG Logos/Bank Name=Indian Bank.svg",
+  },
+  {
+    name: "Indian Overseas Bank",
+    image: "/Indian Banks SVG Logos/Bank Name=Indian Overseas Bank.svg",
+  },
+  {
+    name: "Industrial & Commercial Bank of China",
+    image:
+      "/Indian Banks SVG Logos/Bank Name=Industrial & Commercial Bank of China.svg",
+  },
+  {
+    name: "Industrial Bank of Korea",
+    image: "/Indian Banks SVG Logos/Bank Name=Industrial Bank of Korea.svg",
+  },
+  {
+    name: "JPMorgan Chase",
+    image: "/Indian Banks SVG Logos/Bank Name=JPMorgan Chase.svg",
+  },
+  {
+    name: "Jammu & Kashmir Bank",
+    image: "/Indian Banks SVG Logos/Bank Name=Jammu & Kashmir Bank.svg",
+  },
+  {
+    name: "Jio Payments Bank",
+    image: "/Indian Banks SVG Logos/Bank Name=Jio Payments Bank.svg",
+  },
+  {
+    name: "KEB Hana Bank",
+    image: "/Indian Banks SVG Logos/Bank Name=KEB Hana Bank.svg",
+  },
+  {
+    name: "Kookmin Bank",
+    image: "/Indian Banks SVG Logos/Bank Name=Kookmin Bank.svg",
+  },
+  {
+    name: "Kotak Mahindra Bank",
+    image: "/Indian Banks SVG Logos/Bank Name=Kotak Mahindra Bank.svg",
+  },
+  {
+    name: "Krung Thai Bank",
+    image: "/Indian Banks SVG Logos/Bank Name=Krung Thai Bank.svg",
+  },
+  {
+    name: "MUFG Bank",
+    image: "/Indian Banks SVG Logos/Bank Name=MUFG Bank.svg",
+  },
+  {
+    name: "Mizuho Corporate Bank",
+    image: "/Indian Banks SVG Logos/Bank Name=Mizuho Corporate Bank.svg",
+  },
+  {
+    name: "Nainital bank",
+    image: "/Indian Banks SVG Logos/Bank Name=Nainital bank.svg",
+  },
+  {
+    name: "Paytm Payments Bank",
+    image: "/Indian Banks SVG Logos/Bank Name=Paytm Payments Bank.svg",
+  },
+  {
+    name: "Punjab & Sind Bank",
+    image: "/Indian Banks SVG Logos/Bank Name=Punjab & Sind Bank.svg",
+  },
+  {
+    name: "Punjab National Bank",
+    image: "/Indian Banks SVG Logos/Bank Name=Punjab National Bank.svg",
+  },
+  {
+    name: "Qatar National Bank",
+    image: "/Indian Banks SVG Logos/Bank Name=Qatar National Bank.svg",
+  },
+  { name: "Rabobank", image: "/Indian Banks SVG Logos/Bank Name=Rabobank.svg" },
+  { name: "RBL Bank", image: "/Indian Banks SVG Logos/Bank Name=RBL Bank.svg" },
+  {
+    name: "Saxo Bank",
+    image: "/Indian Banks SVG Logos/Bank Name=Saxo Bank.svg",
+  },
+  { name: "Sberbank", image: "/Indian Banks SVG Logos/Bank Name=Sberbank.svg" },
+  {
+    name: "Scotia Bank",
+    image: "/Indian Banks SVG Logos/Bank Name=Scotia Bank.svg",
+  },
+  {
+    name: "Shinhan Bank",
+    image: "/Indian Banks SVG Logos/Bank Name=Shinhan Bank.svg",
+  },
+  {
+    name: "Société Générale",
+    image: "/Indian Banks SVG Logos/Bank Name=Société Générale.svg",
+  },
+  {
+    name: "Sonali Bank",
+    image: "/Indian Banks SVG Logos/Bank Name=Sonali Bank.svg",
+  },
+  {
+    name: "South Indian Bank",
+    image: "/Indian Banks SVG Logos/Bank Name=South Indian Bank.svg",
+  },
+  {
+    name: "Standard Chartered Bank",
+    image: "/Indian Banks SVG Logos/Bank Name=Standard Chartered Bank.svg",
+  },
+  {
+    name: "State Bank of India",
+    image: "/Indian Banks SVG Logos/Bank Name=State Bank of India.svg",
+  },
+  {
+    name: "Sumitomo Mitsui Banking Corporation",
+    image:
+      "/Indian Banks SVG Logos/Bank Name=Sumitomo Mitsui Banking Corporation.svg",
+  },
+  {
+    name: "Tamilnad Mercantile Bank",
+    image: "/Indian Banks SVG Logos/Bank Name=Tamilnad Mercantile Bank.svg",
+  },
+  { name: "UCO Bank", image: "/Indian Banks SVG Logos/Bank Name=UCO Bank.svg" },
+  {
+    name: "Ujjivan Small Finance Bank",
+    image: "/Indian Banks SVG Logos/Bank Name=Ujjivan Small Finance Bank.svg",
+  },
+  {
+    name: "United Overseas Bank",
+    image: "/Indian Banks SVG Logos/Bank Name=United Overseas Bank.svg",
+  },
+  { name: "Westpac", image: "/Indian Banks SVG Logos/Bank Name=Westpac.svg" },
+  {
+    name: "Woori Bank",
+    image: "/Indian Banks SVG Logos/Bank Name=Woori Bank.svg",
+  },
+  { name: "YES Bank", image: "/Indian Banks SVG Logos/Bank Name=YES Bank.svg" },
 ];
-// ... existing code ...
+
 
 
 interface FormField {
@@ -106,20 +345,22 @@ const Kycforms: React.FC<KycFormsProps> = ({
 
   return (
     <form className="bg-white shadow-2xl p-5 rounded-lg w-full relative mt-20">
-      <button
-        onClick={(e) => {
-          e.preventDefault();
-          handlePrev();
-        }}
-        disabled={prevDisabled}
-      >
-        <Image
-          src="/icons/BackIcon.svg"
-          alt="backIcon"
-          width={20}
-          height={20}
-        />
-      </button>
+      {!prevDisabled && (
+        <button
+          onClick={(e) => {
+            e.preventDefault();
+            handlePrev();
+          }}
+        >
+          <Image
+            src="/icons/BackIcon.svg"
+            alt="backIcon"
+            width={20}
+            height={20}
+          />
+        </button>
+      )}
+
       <div className="flex flex-wrap w-[90%] mx-auto">
         {fields.map((field, index) => (
           <div key={field.id} className="w-full m-2 flex flex-col">
@@ -192,7 +433,11 @@ const Kycforms: React.FC<KycFormsProps> = ({
                         className="flex items-center space-x-2"
                       >
                         <div className="flex items-center space-x-2">
-                          {bank.image}
+                          <img
+                            src={bank.image}
+                            alt={bank.image}
+                            className="h-4 w-4"
+                          />
                           <span>{bank.name}</span>
                         </div>
                       </SelectItem>

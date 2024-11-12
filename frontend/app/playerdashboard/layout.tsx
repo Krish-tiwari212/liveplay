@@ -61,7 +61,7 @@ function CompletProfileWrapper({ children }: { children: React.ReactNode }) {
       if (!profileCompleted && user) {
         setShowProfilePopup(true);
       }
-    }, 5 * 60 * 1000);
+    }, 3 * 60 * 1000);
 
     return () => clearInterval(interval);
   }, [user, profileCompleted]);
