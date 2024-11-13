@@ -24,7 +24,7 @@ const OverviewSidebarContent = [
 
 interface EventInformation {
   handleNext: () => void;
-  ManageEventId:any
+  ManageEventId?:any
 }
 
 const EventInformation: React.FC<EventInformation> = ({

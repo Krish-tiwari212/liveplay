@@ -81,7 +81,7 @@ const formFields: FormField[] = [
     label: "Venue Link",
     type: "text",
     name: "venue_link",
-    placeholder: "Enter Link",
+    placeholder: "Enter Valid Google Location Link",
     required: true,
   },
 ];
@@ -211,7 +211,7 @@ const EventLocationForm: React.FC<EventLocationFormData> = ({
             </div>
           )
         )}
-        <div className="mt-2 mx-2 items-top flex justify-start space-x-2">
+        <div className="mt-2 mx-2 items-top flex justify-start space-x-2 w-full">
           <Checkbox
             id="venue"
             name="venue"
@@ -265,7 +265,7 @@ const EventLocationForm: React.FC<EventLocationFormData> = ({
           variant="tertiary"
           size="none"
           onClick={(e) => handleNext(e)}
-          className="mt-4 text-lg px-8 sm:px-16 py-1"
+          className="mt-4 text-lg px-10 sm:px-16 py-1"
         >
           {editPage === "manageEvent" ? "Save and Next" : "Next"}
         </Button>

@@ -249,6 +249,15 @@ const AddCategory = ({ setCategoryData ,type,category}: AddCategoryProps) => {
           ({ id }) => id !== "total_quantity" && id !== "max_ticket_quantity"
         );
 
+  const areRequiredFieldsFilled = () => {
+    return fields.every((field) => {
+      if (field.required) {
+        return categoryData[field.id as keyof typeof categoryData];
+      }
+      return true;
+    });
+  };
+
   useEffect(() => {
     if (type === "edit" && category) {
       setLocalCategoryData(category);
@@ -256,7 +265,7 @@ const AddCategory = ({ setCategoryData ,type,category}: AddCategoryProps) => {
   }, [type, category]);
 
   return (
-    <form className="bg-white shadow-2xl p-2 sm:p-5 rounded-lg m-3  overflow-y-auto">
+    <form className="bg-white shadow-2xl py-2 sm:py-5 rounded-lg  overflow-y-auto">
       <div className="flex flex-wrap w-full">
         <div className=" w-full m-2 flex flex-col">
           <label htmlFor="category_type">
@@ -437,6 +446,7 @@ const AddCategory = ({ setCategoryData ,type,category}: AddCategoryProps) => {
                         }
                         onChange={handleChange}
                         className="h-16 p-2 bg-white border rounded-md text-sm shadow-2xl text-[#17202A] focus:border-[#17202A] focus:outline-none focus:shadow-lg"
+                        maxLength={field.id === "discount_code" ? 10 : undefined}
                       />
                     </div>
                   ))}
@@ -461,6 +471,7 @@ const AddCategory = ({ setCategoryData ,type,category}: AddCategoryProps) => {
                         }
                         onChange={handleChange}
                         className="h-16 p-2 bg-white border rounded-md text-sm shadow-2xl text-[#17202A] focus:border-[#17202A] focus:outline-none focus:shadow-lg"
+                        maxLength={field.id === "discount_code" ? 10 : undefined}
                       />
                     </div>
                   ))}
@@ -471,8 +482,13 @@ const AddCategory = ({ setCategoryData ,type,category}: AddCategoryProps) => {
         </div>
 
         <button
-          className="w-full bg-[#17202A] text-white p-2 mx-2 rounded-md"
+          className={`w-full p-2 mx-2 rounded-md ${
+            areRequiredFieldsFilled()
+              ? "bg-[#17202A] text-white cursor-pointer"
+              : "bg-gray-600 text-white cursor-not-allowed"
+          }`}
           onClick={handleSubmit}
+          disabled={!areRequiredFieldsFilled()}
         >
           {type === "edit" ? "Update Category" : "Add Category"}
         </button>

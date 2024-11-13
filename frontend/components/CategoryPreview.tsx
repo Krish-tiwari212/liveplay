@@ -52,6 +52,7 @@ const CategoryPreview = ({
   const [tooltipVisible, setTooltipVisible] = useState<string | null>(null);
   const [isDialogOpen, setIsDialogOpen] = useState(false); 
   const [isEditDialogOpen, setIsEditDialogOpen] = useState(false); 
+  const [isDetailsDialogOpen, setIsDetailsDialogOpen] = useState(false);
   const [currentCategory, setCurrentCategory] = useState<Category | null>(null);
 
   const handleClick = () => {
@@ -60,6 +61,11 @@ const CategoryPreview = ({
 
   const openDialog = () => {
     setIsDialogOpen(true);
+  };
+
+  const openDetailsDialog = (category: Category) => {
+    setCurrentCategory(category);
+    setIsDetailsDialogOpen(true);
   };
 
   const addCategory = (newCategory: Omit<Category, 'id'>) => { 
@@ -183,6 +189,7 @@ const CategoryPreview = ({
                     ? "w-full sm:w-1/2 lg:w-[30%]"
                     : "w-full sm:w-1/2 lg:w-[46%] xl:w-[48%] 2xl:w-[30%]"
                 } cursor-pointer`}
+                onClick={() => openDetailsDialog(category)}
               >
                 <div
                   className={`flex justify-between items-start  rounded-lg shadow-lg   ${
@@ -297,6 +304,7 @@ const CategoryPreview = ({
           {editPage === "manageEvent" ? "Save and Next" : "Next"}
         </Button>
       </div>
+
       <Dialog open={isEditDialogOpen} onOpenChange={setIsEditDialogOpen}>
         <DialogContent
           aria-describedby={undefined}
@@ -311,6 +319,115 @@ const CategoryPreview = ({
             category={currentCategory}
             setCategoryData={handleEdit}
           />
+        </DialogContent>
+      </Dialog>
+
+      <Dialog open={isDetailsDialogOpen} onOpenChange={setIsDetailsDialogOpen}>
+        <DialogContent className="bg-white shadow-lg rounded-lg p-6 w-[90%] sm:max-w-2xl h-[90%] overflow-y-auto">
+          <DialogTitle className="text-2xl font-bold text-gray-800">
+            Category Details
+          </DialogTitle>
+          <DialogDescription className="mt-4">
+            <div className="space-y-4">
+              <div className="flex justify-between border-b pb-2">
+                <span className="font-semibold text-gray-700">Name:</span>
+                <span className="text-gray-800">
+                  {currentCategory?.category_name}
+                </span>
+              </div>
+              <div className="flex justify-between border-b pb-2">
+                <span className="font-semibold text-gray-700">
+                  Description:
+                </span>
+                <span className="text-gray-800">
+                  {currentCategory?.ticket_description}
+                </span>
+              </div>
+              <div className="flex justify-between border-b pb-2">
+                <span className="font-semibold text-gray-700">Type:</span>
+                <span className="text-gray-800">
+                  {currentCategory?.category_type}
+                </span>
+              </div>
+              <div className="flex justify-between border-b pb-2">
+                <span className="font-semibold text-gray-700">Price:</span>
+                <span className="text-gray-800">{currentCategory?.price}</span>
+              </div>
+              <div className="flex justify-between border-b pb-2">
+                <span className="font-semibold text-gray-700">
+                  Total Quantity:
+                </span>
+                <span className="text-gray-800">
+                  {currentCategory?.total_quantity}
+                </span>
+              </div>
+              <div className="flex justify-between border-b pb-2">
+                <span className="font-semibold text-gray-700">
+                  Max Ticket Quantity:
+                </span>
+                <span className="text-gray-800">
+                  {currentCategory?.max_ticket_quantity}
+                </span>
+              </div>
+              <div className="flex justify-between border-b pb-2">
+                <span className="font-semibold text-gray-700">
+                  Discount Code:
+                </span>
+                <span className="text-gray-800">
+                  {currentCategory?.discount_code}
+                </span>
+              </div>
+              <div className="flex justify-between border-b pb-2">
+                <span className="font-semibold text-gray-700">
+                  Number of Discounts:
+                </span>
+                <span className="text-gray-800">
+                  {currentCategory?.number_of_discounts}
+                </span>
+              </div>
+              <div className="flex justify-between border-b pb-2">
+                <span className="font-semibold text-gray-700">
+                  Percentage Input:
+                </span>
+                <span className="text-gray-800">
+                  {currentCategory?.percentage_input}
+                </span>
+              </div>
+              <div className="flex justify-between border-b pb-2">
+                <span className="font-semibold text-gray-700">
+                  Amount Input:
+                </span>
+                <span className="text-gray-800">
+                  {currentCategory?.amount_input}
+                </span>
+              </div>
+              <div className="flex justify-between border-b pb-2">
+                <span className="font-semibold text-gray-700">
+                  Discount Value:
+                </span>
+                <span className="text-gray-800">
+                  {currentCategory?.discountValue}
+                </span>
+              </div>
+              <div className="flex justify-between border-b pb-2">
+                <span className="font-semibold text-gray-700">From Date:</span>
+                <span className="text-gray-800">
+                  {currentCategory?.from_date}
+                </span>
+              </div>
+              <div className="flex justify-between">
+                <span className="font-semibold text-gray-700">Till Date:</span>
+                <span className="text-gray-800">
+                  {currentCategory?.till_date}
+                </span>
+              </div>
+            </div>
+          </DialogDescription>
+          <div className="flex justify-end mt-6">
+            <Button className="">
+              Close
+            </Button>
+          </div>
         </DialogContent>
       </Dialog>
     </div>

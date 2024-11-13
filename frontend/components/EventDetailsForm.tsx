@@ -16,6 +16,14 @@ import { Button } from "./ui/button";
 import { format } from "date-fns"; 
 import { FaBasketball } from "react-icons/fa6";
 import { toast } from "@/hooks/use-toast";
+import {
+  AlertDialog,
+  AlertDialogTrigger,
+  AlertDialogContent,
+  AlertDialogTitle,
+  AlertDialogDescription,
+  AlertDialogAction,
+} from "@/components/ui/alert-dialog";
 
 interface FormField {
   id: string;
@@ -216,8 +224,41 @@ const EventDetailsForm: React.FC<EventDetailsFormProps> = ({
   ManageEventId
 }) => {
   const { EventData,EventEditData, setEventData,editPage,setEventEditData,fetchedEventdatafromManagemeEvent } = useEventContext();
+  const [showDialog, setShowDialog] = useState(false);
+  const [dialogType,setDialogType]=useState("")
+
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
+    if (
+      name === "start_date" ||
+      name === "end_date" ||
+      name === "last_registration_date" ||
+      name === "last_withdrawal_date"
+    ) {
+      const startDate = new Date(
+        name === "start_date" ? value : formData.start_date
+      );
+      const endDate = new Date(name === "end_date" ? value : formData.end_date);
+      const lastRegistrationDate = new Date(
+        name === "last_registration_date"
+          ? value
+          : formData.last_registration_date
+      );
+      const lastWithdrawalDate = new Date(
+        name === "last_withdrawal_date" ? value : formData.last_withdrawal_date
+      );
+
+      if (startDate > endDate) {
+        setShowDialog(true);
+        setDialogType("Eventdate")
+        return;
+      }
+      if(lastWithdrawalDate >= lastRegistrationDate){
+        setShowDialog(true);
+        setDialogType("EventRedistrationDate")
+        return;
+      }
+    }
     setFormData({ ...formData, [name]: value });
     if (editPage === "manageEvent") {
       setEventEditData({ ...EventEditData, [name]: value });
@@ -310,6 +351,32 @@ const EventDetailsForm: React.FC<EventDetailsFormProps> = ({
 
   return (
     <form className="bg-white shadow-2xl p-5 rounded-lg ">
+      {dialogType === "EventRedistrationDate" ? (
+        <AlertDialog open={showDialog} onOpenChange={setShowDialog}>
+          <AlertDialogContent>
+            <AlertDialogTitle>Error</AlertDialogTitle>
+            <AlertDialogDescription>
+              Las Date To Withdraw must be less than or equal to Last Date To Register.
+            </AlertDialogDescription>
+            <AlertDialogAction onClick={() => setShowDialog(false)}>
+              OK
+            </AlertDialogAction>
+          </AlertDialogContent>
+        </AlertDialog>
+      ) : (
+        <AlertDialog open={showDialog} onOpenChange={setShowDialog}>
+          <AlertDialogContent>
+            <AlertDialogTitle>Error</AlertDialogTitle>
+            <AlertDialogDescription>
+              End date must be Greater than or equal to end date.
+            </AlertDialogDescription>
+            <AlertDialogAction onClick={() => setShowDialog(false)}>
+              OK
+            </AlertDialogAction>
+          </AlertDialogContent>
+        </AlertDialog>
+      )}
+
       <div className="flex flex-wrap w-full">
         {fields[0].Eventname?.map((field, i) => (
           <React.Fragment key={i}>

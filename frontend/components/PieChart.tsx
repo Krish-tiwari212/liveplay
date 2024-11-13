@@ -83,10 +83,18 @@ export function PieChartDemo({
       <CardContent className="flex-1 pb-0">
         <ChartContainer
           config={chartConfig}
-          className="w-full mx-auto  max-h-[250px] aspect-square max-h-[340px] pb-0 [&_.recharts-pie-label-text]:fill-foreground"
+          className="w-full mx-auto aspect-square max-h-[340px] pb-0 [&_.recharts-pie-label-text]:fill-foreground"
         >
           <PieChart>
-            <ChartTooltip content={<ChartTooltipContent indicator="line" />} />
+            <ChartTooltip
+              content={
+                <ChartTooltipContent
+                  labelKey="category"
+                  nameKey={dataKey}
+                  indicator="line"
+                />
+              }
+            />
             <Pie
               data={chartData}
               dataKey={dataKey}

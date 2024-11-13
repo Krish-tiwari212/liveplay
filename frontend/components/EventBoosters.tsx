@@ -3,31 +3,34 @@
 import React, { useEffect, useState } from 'react'
 import { IoCheckmarkDone } from 'react-icons/io5';
 import { Button } from './ui/button';
-import { MdOutlineCurrencyRupee } from 'react-icons/md';
+import { MdOutlineCurrencyRupee, MdTimer } from 'react-icons/md';
 import { toast } from "@/hooks/use-toast";
 import { useEventContext } from '@/context/EventDataContext';
+import { TbCoinRupeeFilled } from 'react-icons/tb';
+import { FaRegEye } from 'react-icons/fa';
+import { FaPeopleGroup } from 'react-icons/fa6';
+import Image from 'next/image';
 
 const features = {
-  standard: [
-    { name: "Unlimited Entries" },
-    { name: "Event Creation & Management" },
-    { name: "Front Page Listing" },
-  ],
+  standard: [{ name: "Unlimited Entries" }, { name: "Event  Management" }],
   pro: [
-    { name: "Featured Listing for 10 days" },
+    { name: "Unlimited Entries" },
+    { name: "Event  Management" },
+    { name: "Featured Listing" },
     { name: "Verified Badge" },
-    { name: "Live Match" },
-    { name: "1 Date Edit" },
-    { name: "7.5% Cancel Fee" },
-    { name: "3-5 Days Payout" },
+    { name: "Event Date Edit" },
+    { name: "Quick Payout" },
   ],
   elite: [
-    { name: "Topmost Listing for 10 Days" },
-    { name: "Elite Verified Badge" },
-    { name: "Live Match Progress Tracker" },
-    { name: "2 Date Edits Allowed" },
-    { name: "5% Cancel Fee" },
-    { name: "Payout Within 24 Hours" },
+    { name: "Unlimited Entries" },
+    { name: "Event  Management" },
+    { name: "Premium Listing" },
+    { name: "Verified Badge" },
+    { name: "Event Date Edits" },
+    { name: "Quick Payout" },
+    { name: "Lower Fees" },
+    { name: "Live Match Tracker" },
+    { name: "Setup and support" },
   ],
 };
 
@@ -63,14 +66,14 @@ interface EventBoostersProps {
 const EventBoosters = ({
   handleNext,
 }: EventBoostersProps) => {
-  const { EventData, setEventData,EventEditData,setEventEditData, isVenueNotDecided, setIsVenueNotDecided } =
+  const { EventData, setEventData,EventEditData,setEventEditData, isVenueNotDecided, setIsVenueNotDecided,editPage } =
     useEventContext();
-  const [selectedPlan, setSelectedPlan] = useState<string | null>("elite");
+  const [selectedPlan, setSelectedPlan] = useState<string | null>("pro");
 
   const handlePlanClick = (plan: string) => {
     setSelectedPlan(selectedPlan === plan ? null : plan);
-    setEventData({ ...EventData, selected_plan: plan || "elite" });
-    setEventEditData({ ...EventEditData, selected_plan: plan || "elite" });
+    setEventData({ ...EventData, selected_plan: plan || "standard" });
+    setEventEditData({ ...EventEditData, selected_plan: plan || "standard" });
   };
 
   const handleProceed = () => {
@@ -98,103 +101,154 @@ const EventBoosters = ({
       handleNext();
     }
   };
-
-  
    useEffect(() => {
      console.log(EventData);
    }, []);
   return (
-    <div className="m-3 w-full">
-      <h1 className="text-5xl text-center font-semibold  mt-10">
-        Event Boosters
+    <div className={`w-full`}>
+      <h1
+        className={`text-2xl sm:text-4xl text-center font-semibold ${
+          editPage !== "manageEvent" ? "pt-8" : ""
+        }`}
+      >
+        🚀 Supercharge your Event Now!
       </h1>
-      <div className="flex justify-center h-full gap-1 mt-10">
-        <div
-          className={`p-4 border border-gray-600 rounded-lg cursor-pointer w-72 transition-transform duration-400 bg-gray-800 text-white ${
-            selectedPlan === "standard"
-              ? "scale-110  shadow-lg shadow-gray-500"
-              : ""
-          } flex flex-col `}
-          onClick={() => handlePlanClick("standard")}
-        >
-          <h2 className="text-gray-400 ">Start</h2>
-          <p className="text-4xl mb-6">Free</p>
-          <div className="w-full mx-auto h-[0.1em] bg-gray-600"></div>
-          <div className="ml-3 items-center my-4">
-            <ul>
-              {features.standard.map((feature, index) => (
-                <li key={index} className="my-1">
-                  <div className="flex gap-2">
-                    <IoCheckmarkDone className="text-[#CDDC29]" />
-                    <h1>{feature.name}</h1>
-                  </div>
-                </li>
-              ))}
-            </ul>
+      <div className="flex flex-col sm:flex-row sm:justify-between gap-4 sm:gap-8 mt-4 text-2xl text-gray-800 sm:w-[80%] mx-auto font-semibold">
+        <div className="flex items-center gap-2">
+          <FaPeopleGroup />
+          <span style={{ textShadow: "0 3px 0 #cddc29" }}>
+            More Registrations
+          </span>
+        </div>
+        <div className="flex items-center gap-2">
+          <FaRegEye />
+          <span style={{ textShadow: "0 3px 0 #cddc29" }}>More Views</span>
+        </div>
+        <div className="flex items-center gap-2">
+          <TbCoinRupeeFilled />
+          <span style={{ textShadow: "0 3px 0 #cddc29" }}>Higher Earnings</span>
+        </div>
+        <div className="flex items-center gap-2">
+          <span role="img" aria-label="timer">
+            <MdTimer />
+          </span>
+          <span style={{ textShadow: "0 3px 0 #cddc29" }}>Faster Payouts</span>
+        </div>
+      </div>
+      <div className="flex flex-col sm:flex-row justify-center h-full gap-4 mt-10">
+        <div className=" w-[90%] sm:w-72 flex flex-col gap-1">
+          <div
+            className={`p-4 rounded-lg cursor-pointer transition-transform duration-400 bg-gray-800 text-white font-open-sauce ${
+              selectedPlan === "standard"
+                ? "border-8 border-[#cddc29]"
+                : "border-none"
+            } flex flex-col h-full`}
+            onClick={() => handlePlanClick("standard")}
+          >
+            <h2 className="text-2xl font-semibold">Standard</h2>
+            <p className="text-2xl mb-4 font-semibold">Free</p>
+            <div className="">
+              <h1 className="font-semibold ">Current Plan</h1>
+              <h1 className="text-[#6F808F] text-sm">Incudes</h1>
+            </div>
+            <div className="items-center">
+              <ul>
+                {features.standard.map((feature, index) => (
+                  <li key={index} className="my-1">
+                    <h1 className="text-[#CDDC29]">{feature.name}</h1>
+                  </li>
+                ))}
+              </ul>
+            </div>
           </div>
+          {editPage !== "manageEvent" && (
+            <Button onClick={handleProceed} className="hidden sm:block">
+              Skip For Now
+            </Button>
+          )}
         </div>
         <div
-          className={`p-4 border border-gray-600 rounded-lg cursor-pointer w-72 transition-transform duration-400 bg-gray-800 text-white ${
-            selectedPlan === "elite"
-              ? "  scale-110 shadow-lg shadow-gray-500 "
-              : ""
-          } flex flex-col `}
-          onClick={() => handlePlanClick("elite")}
-        >
-          <h2 className="text-gray-400 mt-3">Elite</h2>
-          <div className="flex gap-1 mb-6 items-center">
-            <p className="text-4xl flex items-center">
-              <MdOutlineCurrencyRupee />
-              4999
-            </p>
-            <p className="text-gray-400">/Mo</p>
-          </div>
-          <div className="w-full mx-auto h-[0.1em] bg-gray-600"></div>
-          <div className="ml-3 items-center my-4">
-            <ul>
-              {features.elite.map((feature, index) => (
-                <li key={index} className="my-1">
-                  <div className="flex gap-2">
-                    <IoCheckmarkDone className="text-[#CDDC29]" />
-                    <h1>{feature.name}</h1>
-                  </div>
-                </li>
-              ))}
-            </ul>
-          </div>
-        </div>
-        <div
-          className={`p-4 border border-gray-600 rounded-lg cursor-pointer w-72 transition-transform duration-400 bg-gray-800 text-white ${
-            selectedPlan === "pro"
-              ? "  scale-110  shadow-lg shadow-gray-500"
-              : ""
+          className={`relative p-4 rounded-lg cursor-pointer w-[90%] sm:w-72 transition-transform duration-400 bg-gray-800 text-white font-open-sauce ${
+            selectedPlan === "pro" ? "border-8 border-[#cddc29]" : "border-none"
           } flex flex-col`}
           onClick={() => handlePlanClick("pro")}
         >
-          <h2 className="text-gray-400 ">Pro</h2>
-          <div className="flex gap-1 mb-5 items-center">
-            <p className="text-4xl flex items-center ">
-              <MdOutlineCurrencyRupee />
-              2999
-            </p>
-            <p className="text-gray-400">/Mo</p>
+          <div className="absolute right-0 top-0 px-2 rounded-bl-lg rounded-tr-lg h-auto w-auto bg-[#7F1CFF]">
+            Most Popular
           </div>
-          <div className="w-full mx-auto h-[0.1em] bg-gray-600"></div>
-          <div className="ml-3 items-center my-4">
+          <div className="absolute right-10 top-10">
+            <Image
+              src="/icons/Asset 2.png"
+              alt="/icons/Asset 2.png"
+              width={70}
+              height={70}
+            />
+          </div>
+          <h2 className="text-2xl font-semibold">Pro</h2>
+          <div className="flex gap-1 mb-2 items-center justify-start">
+            <p className="text-2xl flex items-center ">₹3,999</p>
+          </div>
+          <div className="w-full flex flex-col gap-1">
+            <h1 className="font-semibold text-sm">Per Event</h1>
+            <Button
+              size="sm"
+              variant="tertiary"
+              className="bg-[#7F1CFF] text-white "
+            >
+              Get Boosted Up
+            </Button>
+            <h1 className="text-[#6F808F] text-sm">Incudes</h1>
+          </div>
+          <div className="items-center ">
             <ul>
               {features.pro.map((feature, index) => (
                 <li key={index} className="my-1">
-                  <div className="flex gap-2">
-                    <IoCheckmarkDone className="text-[#CDDC29]" />
-                    <h1>{feature.name}</h1>
-                  </div>
+                  <h1 className="text-[#CDDC29]">{feature.name}</h1>
                 </li>
               ))}
             </ul>
           </div>
         </div>
+        <div className="w-[90%] sm:w-72 flex flex-col gap-1">
+          <div
+            className={`p-4 rounded-lg cursor-pointer transition-transform duration-400 bg-gray-800 text-white font-open-sauce ${
+              selectedPlan === "elite"
+                ? "border-8 border-[#cddc29]"
+                : "border-none"
+            } flex flex-col`}
+            onClick={() => handlePlanClick("elite")}
+          >
+            <h2 className="text-2xl font-semibold">Elite</h2>
+            <div className="flex gap-1 mb-2 items-center justify-start">
+              <p className="text-2xl flex items-center ">₹4,999</p>
+            </div>
+            <div className="w-full flex flex-col gap-1">
+              <h1 className="font-semibold text-sm">Per Event</h1>
+              <Button size="sm" variant="tertiary">
+                Get The Best
+              </Button>
+              <h1 className="text-[#6F808F] text-sm">Incudes</h1>
+            </div>
+
+            <div className="items-center">
+              <ul>
+                {features.elite.map((feature, index) => (
+                  <li key={index} className="my-1">
+                    <h1 className="text-[#CDDC29]">{feature.name}</h1>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          </div>
+          {editPage !== "manageEvent" && (
+            <Button onClick={handleProceed} className="block sm:hidden">
+              Skip For Now
+            </Button>
+          )}
+        </div>
       </div>
-      <div className="flex justify-center items-center">
+
+      {/* <div className="flex justify-center items-center">
         <Button
           variant="tertiary"
           size="none"
@@ -203,7 +257,7 @@ const EventBoosters = ({
         >
           Proceed
         </Button>
-      </div>
+      </div> */}
     </div>
   );
 };
