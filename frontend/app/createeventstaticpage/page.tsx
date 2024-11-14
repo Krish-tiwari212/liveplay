@@ -1,6 +1,6 @@
 "use client"
 
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { Button } from '@/components/ui/button';
 import Image from 'next/image';
 import { Card, CardHeader, CardTitle, CardContent, CardFooter } from '@/components/ui/card';
@@ -11,6 +11,7 @@ import { FaTrophy } from 'react-icons/fa';
 import { MdEvent } from 'react-icons/md';
 import { TbListDetails } from 'react-icons/tb';
 import { useRouter } from 'next/navigation';
+import { createClient } from "@/utils/supabase/client";
 
 const cardData = [
   {
@@ -50,6 +51,22 @@ const cardData = [
 
 const page = () => {
   const router=useRouter()
+  const supabase = createClient();
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
+
+  useEffect(() => {
+    const checkLoginStatus = async () => {
+      const { data, error } = await supabase.auth.getSession();
+      if (data.session) {
+        setIsLoggedIn(true);
+      } else {
+        setIsLoggedIn(false);
+      }
+    };
+
+    checkLoginStatus();
+  }, []);
+
   return (
     <div>
       <nav className="bg-[#141f29] p-4">
@@ -82,7 +99,9 @@ const page = () => {
           </p>
           <Button
             onClick={() => {
-              router.push("/auth/login");
+              router.push(
+                `${isLoggedIn ? "/organizerDashboard" : "/auth/login"}`
+              );
             }}
             className="text-lg sm:text-xl pb-2"
             variant="tertiary"
@@ -91,11 +110,11 @@ const page = () => {
           </Button>
         </div>
       </div>
-      <div className="bg-[#141f29] py-8">
+      <div className="bg-[#141f29] py-8 px-10">
         <h2 className="text-center text-2xl sm:text-3xl md:text-4xl text-white font-semibold mb-8 sm:mb-12">
           Create and Manage Your Event in Just a Few Steps
         </h2>
-        <div className="flex flex-col sm:flex-row justify-center items-center space-y-8 sm:space-y-0 sm:space-x-8">
+        <div className="flex flex-col md:flex-row justify-center items-center space-y-8 md:space-y-0 md:space-x-8">
           <div className="text-center">
             <p className="text-[#ccdb28] text-xl sm:text-2xl font-semibold mb-2">
               Create Event for Free
@@ -152,10 +171,10 @@ const page = () => {
           </div>
         </div>
       </div>
-      <div className="relative bg-[#ccdb28] pt-12 pb-20">
-        <div className="flex flex-col sm:flex-row justify-center items-center space-y-8 sm:space-y-0 sm:space-x-12">
+      <div className="relative bg-[#ccdb28] pt-12 pb-32 md:pb-20">
+        <div className="flex flex-col xl:flex-row justify-center items-center space-y-8 xl:space-y-0 xl:space-x-12">
           <Card>
-            <CardContent className="flex flex-col items-center py-8 px-4 min-w-[550px] h-auto gap-4 shadow-xl">
+            <CardContent className="flex flex-col items-center py-8 px-4 max-w-[350px] sm:min-w-[600px] lg:max-w-[550px] h-auto gap-4 shadow-xl">
               <div className="flex justify-center items-center gap-1 text-4xl ">
                 <FaPersonRunning />
                 <h1 className="font-bold ">Players</h1>
@@ -163,21 +182,21 @@ const page = () => {
               <p className="text-[#65a30c] text-center text-6xl font-semibold ">
                 FREE
               </p>
-              <p className="text-[#141f29] text-3xl font-semibold">
+              <p className="text-[#141f29] text-3xl font-semibold text-center">
                 Just sign up and start playing
               </p>
             </CardContent>
           </Card>
           <Card>
-            <CardContent className="flex flex-col items-center py-8 px-4 min-w-[550px] h-auto gap-4 shadow-xl">
-              <div className="flex justify-center items-center gap-1 text-4xl">
+            <CardContent className="flex flex-col items-center py-8 px-4 max-w-[350px] sm:min-w-[600px] lg:max-w-[550px] h-auto gap-4 shadow-xl">
+              <div className="flex justify-center items-center gap-1 text-4xl ">
                 <BsPersonCheck />
                 <h1 className="font-bold ">Organizers*</h1>
               </div>
               <p className="text-[#65a30c] text-center text-6xl font-semibold ">
                 FREE
               </p>
-              <p className="text-[#141f29] text-3xl font-semibold">
+              <p className="text-[#141f29] text-3xl font-semibold text-center">
                 Just sign up and create your sports event
               </p>
             </CardContent>
@@ -193,7 +212,7 @@ const page = () => {
           Powerful Features for{" "}
           <span className="text-[#ccdb28]">Seamless Event Hosting</span>
         </h2>
-        <div className="flex flex-wrap justify-center items-center gap-4 px-32">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 px-10">
           {cardData.map((card, index) => (
             <Card
               key={index}
@@ -201,20 +220,22 @@ const page = () => {
                 [0, 2, 5, 7].includes(index)
                   ? "border border-[#141f29] bg-[#ccdb28] text-[#141f29]"
                   : "border border-[#ccdb28] bg-[#141f29] text-[#ccdb28]"
-              } flex-1 flex justify-center items-center min-w-[290px] min-h-[290px]`}
+              } flex justify-center items-center min-w-[200px] min-h-[200px] xl:min-w-[290px] xl:min-h-[290px]`}
             >
               <CardContent className="text-center p-4 flex flex-col justify-center items-center">
-                <h3 className=" text-3xl font-semibold mb-2">{card.title}</h3>
-                <p className="text-xl">{card.description}</p>
+                <h3 className="text-2xl xl:text-3xl font-semibold mb-2">
+                  {card.title}
+                </h3>
+                <p className="text-md xl:text-xl">{card.description}</p>
               </CardContent>
             </Card>
           ))}
         </div>
         <div className="flex flex-col justify-center mt-8">
-          <p className="text-white text-xl text-center mb-4">
+          <p className="text-white text-2xl sm:text-xl text-center mb-4">
             Payments powered by
           </p>
-          <div className="flex justify-center items-center space-x-4 mt-2">
+          <div className="flex flex-col sm:flex-row justify-center items-center xl:space-x-4 mt-2">
             <Image
               src="/images/payment1 (1).svg"
               alt="PayU"
@@ -237,26 +258,29 @@ const page = () => {
         </div>
       </div>
       <div className="bg-[#ccdb28] py-12 flex justify-center items-center w-full">
-        <div className="bg-white p-8 rounded-lg shadow-lg text-center w-[60%] border border-black">
-          <h2 className="text-6xl font-bold text-[#141f29] mb-4">
+        <div className="bg-white p-8 rounded-lg shadow-lg text-center w-[90%] lg:w-[60%] border border-black">
+          <h2 className="text-4xl md:text-6xl font-bold text-[#141f29] mb-2 md:mb-4">
             Free Match Generator
           </h2>
-          <p className="text-2xl text-[#141f29] mb-6">
+          <p className="text-xl md:text-2xl text-[#141f29] mb-4 md:mb-6">
             Generate match fixtures for your event
           </p>
           <Button className="mb-6 text-lg">Start Generating Fixtures</Button>
-          <ul className="text-left text-[#141f29] space-y-2 mx-12 text-2xl">
+          <ul className="text-left text-[#141f29] space-y-2 ld:mx-12 text-xl md:text-2xl">
             <li className="flex gap-4 items-center">
-              <IoArrowForwardCircle /> No Signup needed
+              <IoArrowForwardCircle className="flex-none" />{" "}
+              <h1>No Signup needed</h1>
             </li>
             <li className="flex gap-4 items-center">
-              <FaTrophy /> 10+ Sports
+              <FaTrophy className="flex-none" /> <h1>10+ Sports</h1>
             </li>
             <li className="flex gap-4 items-center">
-              <MdEvent /> Team events / Singles events / Doubles Events
+              <MdEvent className="flex-none" />{" "}
+              <h1>Team events / Singles events / Doubles Events</h1>
             </li>
             <li className="flex gap-4 items-center">
-              <TbListDetails /> Knockouts, Group Playoffs & Round Robin
+              <TbListDetails className="flex-none" />{" "}
+              <h1>Knockouts, Group Playoffs & Round Robin</h1>
             </li>
           </ul>
         </div>
@@ -270,19 +294,23 @@ const page = () => {
         }}
         className="flex flex-col justify-center items-center text-center  w-full relative"
       >
-        <div className="absolute bg-[#141f29] opacity-60 py-8 w-full min-h-60"></div>
+        <div className="absolute bg-[#141f29] opacity-60 w-full min-h-[300px]"></div>
         <div className=" z-10">
-          <h2 className="text-4xl sm:text-5xl font-bold mb-8 text-[#ccdb28]">
+          <h2 className="text-3xl sm:text-5xl font-bold mb-8 text-[#ccdb28]">
             Ready to Take Your Event to the Next Level?
           </h2>
-          <p className="text-lg sm:text-xl mb-6 text-white">
-            Join hundreds of other organizers who trust{" "}
-            <span className="font-bold text-[#ccdb28]">liveplay.in</span> and
-            create your event now
+          <p className="text-md mx-4 sm:mx-0 sm:text-xl mb-6 text-white">
+            Join hundreds of other organizers who trust
+            <span className="font-bold text-[#ccdb28] mx-2">
+              liveplay.in
+            </span>{" "}
+            and create your event now
           </p>
           <Button
             onClick={() => {
-              router.push("/auth/login");
+              router.push(
+                `${isLoggedIn ? "/organizerDashboard" : "/auth/login"}`
+              );
             }}
             className=" text-lg sm:text-xl"
             variant="tertiary"

@@ -12,6 +12,7 @@ import { MdAccountBalance, MdOutlineCategory, MdOutlineFeaturedPlayList, MdPerso
 import ProgressBar from '@/components/ProgressBar';
 import { useEventContext } from '@/context/EventDataContext';
 import { useUser } from '@/context/UserContext';
+import KYCFinalPage from '@/components/KYCFinalPage';
 
 
 
@@ -201,6 +202,7 @@ const Page = ({ params: kycID }: { params: { kycID: string } }) => {
       {currentPage === 3 && (
         <ThirdPage handleNext={handleNext} handlePrev={handlePrev} />
       )}
+      {currentPage === 4 && <KYCFinalPage />}
     </div>
   );
 };

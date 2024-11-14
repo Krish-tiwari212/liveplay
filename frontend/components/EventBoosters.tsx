@@ -77,26 +77,26 @@ const EventBoosters = ({
   };
 
   const handleProceed = () => {
-    // const fieldsToCheck = isVenueNotDecided
-    //   ? requiredFields.filter(
-    //       (field) =>
-    //         !["venue_name", "street_address", "pincode", "venue_link"].includes(
-    //           field
-    //         )
-    //     )
-    //   : requiredFields;
+    const fieldsToCheck = isVenueNotDecided
+      ? requiredFields.filter(
+          (field) =>
+            !["venue_name", "street_address", "pincode", "venue_link"].includes(
+              field
+            )
+        )
+      : requiredFields;
 
-    // const allFieldsPresent = fieldsToCheck.every(
-    //   (field) => EventData[field] !== undefined && EventData[field] !== ""
-    // );
+    const allFieldsPresent = fieldsToCheck.every(
+      (field) => EventData[field] !== undefined && EventData[field] !== ""
+    );
 
-    // if (!allFieldsPresent) {
-    //   toast({
-    //     title: "Please fill out the necessary details",
-    //   });
-    // } else {
+    if (!allFieldsPresent) {
+      toast({
+        title: "Please fill out the necessary details",
+      });
+    } else {
       handleNext();
-    // }
+    }
   };
    useEffect(() => {
      console.log(EventData);
