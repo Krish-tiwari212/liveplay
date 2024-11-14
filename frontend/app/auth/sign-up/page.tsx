@@ -18,6 +18,7 @@ import {
 import { Input } from "@/components/ui/input";
 import { useToast } from "@/hooks/use-toast";
 import { FaGoogle } from "react-icons/fa";
+import Image from "next/image";
 
 const formSchema = z
   .object({
@@ -86,16 +87,40 @@ const SignUpForm = () => {
   };
 
   return (
-    <div className="flex items-center justify-center min-h-screen bg-gray-50">
-      <div className="w-full max-w-lg p-8 bg-white rounded shadow-md">
-        <h2 className="text-2xl font-bold text-center mb-6">Create an Account</h2>
-        <div className="w-full flex justify-center mb-5">
-          <Button onClick={handleGoogleSignup} className="w-full bg-white text-black border border-gray-300 flex items-center justify-center space-x-2 hover:bg-slate-200">
-            <FaGoogle className="text-xl" />
+    <div
+      className="flex flex-col gap-4 items-center justify-center min-h-screen bg-gray-50"
+      style={{
+        backgroundImage: "url('/images/background.svg')",
+        backgroundSize: "cover",
+        backgroundPosition: "center",
+      }}
+    >
+      <Image
+        src="/images/Logo.png"
+        alt="/images/Logo.png"
+        width={350}
+        height={350}
+      />
+      <div className="w-[90%] mx-auto sm:w-full max-w-lg p-8 bg-white rounded shadow-md">
+        <h2 className="text-2xl font-bold text-center mb-6">
+          Create Your Account
+        </h2>
+        <div className="w-full flex justify-center mb-2">
+          <Button
+            onClick={handleGoogleSignup}
+            className="w-full bg-white text-black border border-gray-300 flex items-center justify-center space-x-2 hover:bg-slate-200"
+          >
+            <Image
+              src="/images/google.svg"
+              alt="/images/google.svg"
+              width="20"
+              height="20"
+              className="text-xl"
+            />
             <span>Sign up with Google</span>
           </Button>
         </div>
-        <div className="relative my-4">
+        <div className="relative my-2">
           <div className="absolute inset-0 flex items-center">
             <div className="w-full border-t border-gray-300"></div>
           </div>
@@ -104,39 +129,79 @@ const SignUpForm = () => {
           </div>
         </div>
         <Form {...form}>
-          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
-            <FormField control={form.control} name="full_name" render={({ field }) => (
-              <FormItem>
-                <FormLabel>Full Name</FormLabel>
-                <FormControl><Input placeholder="Enter your full name" {...field} /></FormControl>
-                <FormMessage />
-              </FormItem>
-            )} />
-            <FormField control={form.control} name="email" render={({ field }) => (
-              <FormItem>
-                <FormLabel>Email</FormLabel>
-                <FormControl><Input type="email" placeholder="Enter your email" {...field} /></FormControl>
-                <FormMessage />
-              </FormItem>
-            )} />
-            <FormField control={form.control} name="password" render={({ field }) => (
-              <FormItem>
-                <FormLabel>Password</FormLabel>
-                <FormControl><Input type="password" placeholder="Enter your password" {...field} /></FormControl>
-                <FormMessage />
-              </FormItem>
-            )} />
-            <FormField control={form.control} name="confirmPassword" render={({ field }) => (
-              <FormItem>
-                <FormLabel>Confirm Password</FormLabel>
-                <FormControl><Input type="password" placeholder="Confirm your password" {...field} /></FormControl>
-                <FormMessage />
-              </FormItem>
-            )} />
-            <Button type="submit" disabled={loading} className="w-full">{loading ? "Signing up..." : "Sign Up"}</Button>
+          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-2">
+            <FormField
+              control={form.control}
+              name="full_name"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Full Name</FormLabel>
+                  <FormControl>
+                    <Input placeholder="Enter your full name" {...field} />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
+              name="email"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Email</FormLabel>
+                  <FormControl>
+                    <Input
+                      type="email"
+                      placeholder="Enter your email"
+                      {...field}
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
+              name="password"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Password</FormLabel>
+                  <FormControl>
+                    <Input
+                      type="password"
+                      placeholder="Enter your password"
+                      {...field}
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
+              name="confirmPassword"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Confirm Password</FormLabel>
+                  <FormControl>
+                    <Input
+                      type="password"
+                      placeholder="Confirm your password"
+                      {...field}
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <Button type="submit" disabled={loading} className="w-full">
+              {loading ? "Signing up..." : "Sign Up"}
+            </Button>
           </form>
         </Form>
-        <Link href="/auth/login" className="text-blue-500 text-center block mt-4">Already have an account? Login here</Link>
+        <Link href="/auth/login" className=" text-center block mt-2">
+          Already have an account? <span className="font-bold">Login here</span>
+        </Link>
       </div>
     </div>
   );

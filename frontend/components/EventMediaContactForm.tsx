@@ -6,6 +6,7 @@ import { Label } from "@radix-ui/react-dropdown-menu";
 import { toast } from "@/hooks/use-toast";
 import { Button } from "./ui/button";
 import { useEventContext } from "@/context/EventDataContext";
+import SponsorSection from "./SponseSection";
 
 interface FormField {
   id: string;
@@ -241,6 +242,7 @@ const EventMediaContactForm: React.FC<EventMediaProps> = ({
           </div>
         ))}
       </div>
+      <SponsorSection />
       <div className="flex justify-center items-center">
         <Button
           variant="tertiary"

@@ -6,13 +6,21 @@ import loadingAnimation from "@/public/Animations/loading.json";
 import Image from 'next/image';
 import { useRouter } from 'next/navigation';
 import { useEventContext } from '@/context/EventDataContext';
+import { Checkbox } from "@/components/ui/checkbox";
+import { Label } from './ui/label';
+
 
 const GoLive = () => {
   const {EventData, setEventData}=useEventContext()
   const [isPlaying, setIsPlaying] = useState(false)
   const [isLoading, setIsLoading] = useState(false)
+  const [isCheckboxChecked, setIsCheckboxChecked] = useState(false)
   const router = useRouter()
   console.log(EventData)
+
+  const handleCheckboxChange = () => {
+    setIsCheckboxChecked(!isCheckboxChecked);
+  };
 
   const handleButtonClick = async () => {
     if (!isLoading) {
@@ -143,22 +151,19 @@ const GoLive = () => {
           Awesome, Now lets get this Event Live🎉
         </h1>
         <h1 className="mt-4 text-gray-800 text-center flex justify-center items-center gap-2">
-          <Image
-            src="/icons/tickMark.svg"
-            alt="public/icons/tickMark.svg"
-            width={15}
-            height={15}
-          />
-          Agree with the{" "}
-          <span className="underline cursor-pointer">Terms & Conditions</span>
-          for hosting events on liveplay.in
+          <Checkbox id="terms2" onCheckedChange={()=>setIsCheckboxChecked(!isCheckboxChecked)} />
+          <Label htmlFor="terms2">
+            Agree with the 
+            <span className="hover:underline cursor-pointer font-extrabold mx-2">Terms & Conditions</span>
+             for hosting events on liveplay.in
+          </Label>
         </h1>
         <Button
           variant="tertiary"
           size="none"
           className="mt-4 text-lg px-16 py-1"
           onClick={handleButtonClick}
-          disabled={isLoading}
+          disabled={!isCheckboxChecked || isLoading}
         >
           <div className="relative w-full">
             <h1>Go Live 🚀</h1>

@@ -88,7 +88,7 @@ const MNavbar = () => {
                 Dashboard
               </button>
             )}
-            <button className="flex items-center bg-purple-700 text-white px-6 py-1 hover:bg-purple-800 transition transform hover:-translate-y-1 hover:shadow-lg hover:shadow-violet-900 border border-transparent">
+            <button onClick={()=>{router.push("/createeventstaticpage")}} className="flex items-center bg-purple-700 text-white px-6 py-1 hover:bg-purple-800 transition transform hover:-translate-y-1 hover:shadow-lg hover:shadow-violet-900 border border-transparent">
               <MdOutlineEvent className="inline mr-2" size={20} />
               Create Event
             </button>

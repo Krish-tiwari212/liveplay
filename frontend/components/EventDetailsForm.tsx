@@ -253,9 +253,20 @@ const EventDetailsForm: React.FC<EventDetailsFormProps> = ({
         setDialogType("Eventdate")
         return;
       }
-      if(lastWithdrawalDate >= lastRegistrationDate){
+      if (
+        lastWithdrawalDate === lastRegistrationDate ||
+        lastWithdrawalDate > lastRegistrationDate
+      ) {
         setShowDialog(true);
-        setDialogType("EventRedistrationDate")
+        setDialogType("EventRedistrationDate");
+        return;
+      }
+      if (
+        startDate === lastRegistrationDate ||
+        startDate < lastRegistrationDate
+      ) {
+        setShowDialog(true);
+        setDialogType("StartRegistrationDate");
         return;
       }
     }
@@ -356,7 +367,20 @@ const EventDetailsForm: React.FC<EventDetailsFormProps> = ({
           <AlertDialogContent>
             <AlertDialogTitle>Error</AlertDialogTitle>
             <AlertDialogDescription>
-              Las Date To Withdraw must be less than or equal to Last Date To Register.
+              Las Date To Withdraw Must be on or before the last day to
+              register.
+            </AlertDialogDescription>
+            <AlertDialogAction onClick={() => setShowDialog(false)}>
+              OK
+            </AlertDialogAction>
+          </AlertDialogContent>
+        </AlertDialog>
+      ) : dialogType === "StartRegistrationDate" ? (
+        <AlertDialog open={showDialog} onOpenChange={setShowDialog}>
+          <AlertDialogContent>
+            <AlertDialogTitle>Error</AlertDialogTitle>
+            <AlertDialogDescription>
+              Start date has to be on or after last day to register.
             </AlertDialogDescription>
             <AlertDialogAction onClick={() => setShowDialog(false)}>
               OK
@@ -368,7 +392,7 @@ const EventDetailsForm: React.FC<EventDetailsFormProps> = ({
           <AlertDialogContent>
             <AlertDialogTitle>Error</AlertDialogTitle>
             <AlertDialogDescription>
-              End date must be Greater than or equal to end date.
+              End date must be after the start date.
             </AlertDialogDescription>
             <AlertDialogAction onClick={() => setShowDialog(false)}>
               OK

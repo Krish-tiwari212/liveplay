@@ -86,7 +86,7 @@ function KYCWrapper({ children }: { children: React.ReactNode }) {
             </p>
             <div className="flex gap-4">
               <Button
-                onClick={() => {router.push(`organizerDashboard/kyc/${user?.id}`);setShowKYCPopup(false);}}
+                onClick={() => {router.push(`/organizerDashboard/kyc/${user?.id}`);setShowKYCPopup(false);}}
                 className=""
               >
                 Complete KYC

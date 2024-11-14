@@ -472,6 +472,86 @@ export default function Home() {
         </div>
       </section>
       <section className="mt-8 bg-white shadow-md rounded-lg px-4 py-4">
+        <h2 className="text-xl font-semibold mb-2">Events I'm Interested In</h2>
+        <div className="flex space-x-4 overflow-x-auto pb-8">
+          {isLoading ? (
+            <div className="flex space-x-4">
+              {Array.from({ length: 3 }).map((_, index) => (
+                <div
+                  className="flex flex-col sm:flex-row h-[400px] w-[250px] sm:h-[200px] sm:w-[400px] gap-2"
+                  key={index}
+                >
+                  <Skeleton className="h-[250px] w-full sm:h-full sm:w-[250px] rounded-xl" />
+                  <div className="space-y-2">
+                    <Skeleton className="h-4 w-[150px]" />
+                    <Skeleton className="h-4 w-[100px]" />
+                    <Skeleton className="h-4 w-[100px]" />
+                    <Skeleton className="h-4 w-[100px]" />
+                    <Skeleton className="h-4 w-[100px]" />
+                    <Skeleton className="h-4 w-[100px]" />
+                    <Skeleton className="h-[50px] w-[150px]" />
+                  </div>
+                </div>
+              ))}
+            </div>
+          ) : (
+            events.map((event, i) => (
+              <React.Fragment key={event.id}>
+                <Card className="shadow-md cursor-pointer hover:shadow-2xl flex-none min-w-[240px] max-w-[270px] sm:min-w-[450px] sm:max-w-[550px] border-2 border-gray-800">
+                  <CardContent className="py-4 flex flex-col sm:flex-row gap-4 h-full">
+                    <div className="flex-[1]">
+                      <Image
+                        src={
+                          event.desktop_cover_image_url ||
+                          "/images/default.jpeg"
+                        }
+                        alt="eventBanner"
+                        width={200}
+                        height={200}
+                        className="rounded-lg h-full shadow-xl w-full "
+                      />
+                    </div>
+                    <div className="flex flex-col flex-[1] justify-between">
+                      <div>
+                        <div className="flex flex-col items-start mb-2">
+                          <h3 className="font-bold text-md line-clamp-2">
+                            {event.event_name}
+                          </h3>
+                          <span className="text-[0.8rem] flex gap-1">
+                            <h1 className="font-bold">By</h1>{" "}
+                            {event.organizer_name || "Mohit"}
+                          </span>
+                        </div>
+                        <div className="flex flex-col justify-between ">
+                          <span className="flex gap-1">
+                            <h1 className="font-bold">Venue:</h1>
+                            {event.venue_name || ""}
+                          </span>
+                          <span className="flex gap-1 whitespace-nowrap">
+                            <h1 className="font-bold">Event Date:</h1>
+                            {event.start_date
+                              ? formatDate(event.start_date)
+                              : "20th Nov 2024"}
+                          </span>
+                        </div>
+                      </div>
+                      <div className="flex flex-col justify-center items-center gap-2 mt-2">
+                        <button
+                          className="text-sm bg-[#17202A] text-[#CDDC29] hover:text-white py-1 w-full rounded-lg hover:shadow-xl"
+                          onClick={() => router.push("/")}
+                        >
+                          Register Now
+                        </button>
+                      </div>
+                    </div>
+                  </CardContent>
+                </Card>
+              </React.Fragment>
+            ))
+          )}
+        </div>
+      </section>
+      <section className="mt-8 bg-white shadow-md rounded-lg px-4 py-4">
         <h2 className="text-xl font-semibold mb-2">Past Events</h2>
         <div className="flex space-x-4 overflow-x-auto pb-8">
           {isLoading ? (
@@ -541,86 +621,6 @@ export default function Home() {
                           onClick={() => handleViewRegistrationClick(event.id)}
                         >
                           View My Registration
-                        </button>
-                      </div>
-                    </div>
-                  </CardContent>
-                </Card>
-              </React.Fragment>
-            ))
-          )}
-        </div>
-      </section>
-      <section className="mt-8 bg-white shadow-md rounded-lg px-4 py-4">
-        <h2 className="text-xl font-semibold mb-2">Events I'm Interested In</h2>
-        <div className="flex space-x-4 overflow-x-auto pb-8">
-          {isLoading ? (
-            <div className="flex space-x-4">
-              {Array.from({ length: 3 }).map((_, index) => (
-                <div
-                  className="flex flex-col sm:flex-row h-[400px] w-[250px] sm:h-[200px] sm:w-[400px] gap-2"
-                  key={index}
-                >
-                  <Skeleton className="h-[250px] w-full sm:h-full sm:w-[250px] rounded-xl" />
-                  <div className="space-y-2">
-                    <Skeleton className="h-4 w-[150px]" />
-                    <Skeleton className="h-4 w-[100px]" />
-                    <Skeleton className="h-4 w-[100px]" />
-                    <Skeleton className="h-4 w-[100px]" />
-                    <Skeleton className="h-4 w-[100px]" />
-                    <Skeleton className="h-4 w-[100px]" />
-                    <Skeleton className="h-[50px] w-[150px]" />
-                  </div>
-                </div>
-              ))}
-            </div>
-          ) : (
-            events.map((event, i) => (
-              <React.Fragment key={event.id}>
-                <Card className="shadow-md cursor-pointer hover:shadow-2xl flex-none min-w-[240px] max-w-[270px] sm:min-w-[450px] sm:max-w-[550px] border-2 border-gray-800">
-                  <CardContent className="py-4 flex flex-col sm:flex-row gap-4 h-full">
-                    <div className="flex-[1]">
-                      <Image
-                        src={
-                          event.desktop_cover_image_url ||
-                          "/images/default.jpeg"
-                        }
-                        alt="eventBanner"
-                        width={200}
-                        height={200}
-                        className="rounded-lg h-full shadow-xl w-full "
-                      />
-                    </div>
-                    <div className="flex flex-col flex-[1] justify-between">
-                      <div>
-                        <div className="flex flex-col items-start mb-2">
-                          <h3 className="font-bold text-md line-clamp-2">
-                            {event.event_name}
-                          </h3>
-                          <span className="text-[0.8rem] flex gap-1">
-                            <h1 className="font-bold">By</h1>{" "}
-                            {event.organizer_name || "Mohit"}
-                          </span>
-                        </div>
-                        <div className="flex flex-col justify-between ">
-                          <span className="flex gap-1">
-                            <h1 className="font-bold">Venue:</h1>
-                            {event.venue_name || ""}
-                          </span>
-                          <span className="flex gap-1 whitespace-nowrap">
-                            <h1 className="font-bold">Event Date:</h1>
-                            {event.start_date
-                              ? formatDate(event.start_date)
-                              : "20th Nov 2024"}
-                          </span>
-                        </div>
-                      </div>
-                      <div className="flex flex-col justify-center items-center gap-2 mt-2">
-                        <button
-                          className="text-sm bg-[#17202A] text-[#CDDC29] hover:text-white py-1 w-full rounded-lg hover:shadow-xl"
-                          onClick={() => handleViewRegistrationClick(event.id)}
-                        >
-                          Register
                         </button>
                       </div>
                     </div>
