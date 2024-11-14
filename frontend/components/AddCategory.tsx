@@ -58,7 +58,7 @@ const inputFields = [
     label: "Ticket Description",
     type: "textarea",
     placeholder: "Includes participation, e-certificate, refreshments",
-    maxLength: 100,
+    maxLength: 75,
   },
   {
     id: "price",
@@ -446,7 +446,9 @@ const AddCategory = ({ setCategoryData ,type,category}: AddCategoryProps) => {
                         }
                         onChange={handleChange}
                         className="h-16 p-2 bg-white border rounded-md text-sm shadow-2xl text-[#17202A] focus:border-[#17202A] focus:outline-none focus:shadow-lg"
-                        maxLength={field.id === "discount_code" ? 10 : undefined}
+                        maxLength={
+                          field.id === "discount_code" ? 10 : undefined
+                        }
                       />
                     </div>
                   ))}
@@ -471,7 +473,9 @@ const AddCategory = ({ setCategoryData ,type,category}: AddCategoryProps) => {
                         }
                         onChange={handleChange}
                         className="h-16 p-2 bg-white border rounded-md text-sm shadow-2xl text-[#17202A] focus:border-[#17202A] focus:outline-none focus:shadow-lg"
-                        maxLength={field.id === "discount_code" ? 10 : undefined}
+                        maxLength={
+                          field.id === "discount_code" ? 10 : undefined
+                        }
                       />
                     </div>
                   ))}

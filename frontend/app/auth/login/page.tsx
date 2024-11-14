@@ -19,6 +19,7 @@ import {
 import { Input } from "@/components/ui/input";
 import { useToast } from "@/hooks/use-toast";
 import { FaGoogle } from "react-icons/fa";
+import Image from "next/image";
 
 // Define the schema for login validation
 const loginSchema = z.object({
@@ -90,16 +91,41 @@ const LoginForm = () => {
   };
 
   return (
-    <div className="flex items-center justify-center min-h-screen bg-gray-50">
+    <div
+      className="flex flex-col gap-4 items-center justify-center min-h-screen bg-gray-50"
+      style={{
+        backgroundImage: "url('/images/background.svg')",
+        backgroundSize: "cover",
+        backgroundPosition: "center",
+      }}
+    >
+      <Image
+        src="/images/Logo.png"
+        alt="/images/Logo.png"
+        width={350}
+        height={350}
+      />
       <div className="w-full max-w-md p-8 bg-white rounded shadow-md">
-        <h2 className="text-2xl font-bold text-center mb-6">Login to Your Account</h2>
-        <div className="w-full flex justify-center mb-5" >
-          <Button onClick={handleGoogleLogin} disabled={loading} className="w-full bg-white text-black border border-gray-300 flex items-center justify-center space-x-2 hover:bg-slate-200">
-            <FaGoogle className="text-xl" />
+        <h2 className="text-2xl font-bold text-center mb-6">
+          Login to Your Account
+        </h2>
+        <div className="w-full flex justify-center mb-2">
+          <Button
+            onClick={handleGoogleLogin}
+            disabled={loading}
+            className="w-full bg-white text-black border border-gray-300 flex items-center justify-center space-x-2 hover:bg-slate-200"
+          >
+            <Image
+              src="/images/google.svg"
+              alt="/images/google.svg"
+              width="20"
+              height="20"
+              className="text-xl"
+            />
             <span>{loading ? "Logging in..." : "Login with Google"}</span>
           </Button>
         </div>
-        <div className="relative my-4">
+        <div className="relative my-2">
           <div className="absolute inset-0 flex items-center">
             <div className="w-full border-t border-gray-300"></div>
           </div>
@@ -108,7 +134,7 @@ const LoginForm = () => {
           </div>
         </div>
         <Form {...form}>
-          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
+          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-2">
             <FormField
               control={form.control}
               name="email"
@@ -116,7 +142,11 @@ const LoginForm = () => {
                 <FormItem>
                   <FormLabel>Email</FormLabel>
                   <FormControl>
-                    <Input type="email" placeholder="Enter your email" {...field} />
+                    <Input
+                      type="email"
+                      placeholder="Enter your email"
+                      {...field}
+                    />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -129,12 +159,30 @@ const LoginForm = () => {
                 <FormItem>
                   <FormLabel>Password</FormLabel>
                   <FormControl>
-                    <Input type="password" placeholder="Enter your password" {...field} />
+                    <Input
+                      type="password"
+                      placeholder="Enter your password"
+                      {...field}
+                    />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
               )}
             />
+            <div className="flex items-center justify-between mb-2">
+              <div className="flex items-center">
+                <input type="checkbox" id="rememberMe" className="mr-2 border-3" />
+                <label htmlFor="rememberMe" className="text-sm font-bold text-gray-600">
+                  Remember Me
+                </label>
+              </div>
+              <Link
+                href="/auth/forgot-password"
+                className="text-sm font-bold hover:underline"
+              >
+                Forgot Password?
+              </Link>
+            </div>
             <Button type="submit" disabled={loading} className="w-full">
               {loading ? "Logging in..." : "Login"}
             </Button>
@@ -143,9 +191,9 @@ const LoginForm = () => {
         {/* <Button onClick={handleGoogleLogin} disabled={loading} className="w-full mt-4">
           {loading ? "Logging in..." : "Login with Google"}
         </Button> */}
-        <div className="text-center mt-4">
+        <div className="text-center mt-2">
           <Link href="/auth/sign-up" className="">
-            Don't have an account? Sign up
+            Don't have an account? <span className="font-bold">Sign up</span>
           </Link>
         </div>
       </div>
