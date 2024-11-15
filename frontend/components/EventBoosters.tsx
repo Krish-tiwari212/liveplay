@@ -98,19 +98,16 @@ const EventBoosters = ({
       handleNext();
     }
   };
-   useEffect(() => {
-     console.log(EventData);
-   }, []);
   return (
     <div className={`w-full`}>
       <h1
-        className={`text-2xl sm:text-4xl text-center font-semibold ${
+        className={`text-2xl md:text-3xl lg::text-4xl text-center font-semibold ${
           editPage !== "manageEvent" ? "pt-8" : ""
         }`}
       >
         🚀 Supercharge your Event Now!
       </h1>
-      <div className="flex flex-col sm:flex-row sm:justify-between gap-4 sm:gap-8 mt-4 text-2xl text-gray-800 sm:w-[80%] mx-auto font-semibold">
+      <div className="flex flex-col md:flex-row sm:justify-between gap-4 sm:gap-8 mt-4 text-2xl text-gray-800 md:w-[80%] mx-auto font-semibold">
         <div className="flex items-center gap-2">
           <FaPeopleGroup />
           <span style={{ textShadow: "0 3px 0 #cddc29" }}>

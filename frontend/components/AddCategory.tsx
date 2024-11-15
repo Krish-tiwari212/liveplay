@@ -59,6 +59,7 @@ const inputFields = [
     type: "textarea",
     placeholder: "Includes participation, e-certificate, refreshments",
     maxLength: 75,
+    required: true,
   },
   {
     id: "price",
@@ -72,12 +73,14 @@ const inputFields = [
     label: "Total Quantity",
     type: "number",
     placeholder: "Enter Total Quantity",
+    required: true,
   },
   {
     id: "max_ticket_quantity",
     label: "Maximum Ticket Quantity",
     type: "number",
     placeholder: "Enter Max Ticket Quantity",
+    required: true,
   },
 ];
 
@@ -255,7 +258,7 @@ const AddCategory = ({ setCategoryData ,type,category}: AddCategoryProps) => {
         return categoryData[field.id as keyof typeof categoryData];
       }
       return true;
-    });
+    }) && categoryData.category_type && categoryData.age_from && categoryData.age_to;
   };
 
   useEffect(() => {
@@ -275,6 +278,7 @@ const AddCategory = ({ setCategoryData ,type,category}: AddCategoryProps) => {
             onValueChange={(value) =>
               setLocalCategoryData({ ...categoryData, category_type: value })
             }
+            required
           >
             <SelectTrigger className="w-full h-10 shadow-2xl focus:border-[#17202A] focus:outline-none focus:shadow-lg">
               <SelectValue
@@ -327,6 +331,7 @@ const AddCategory = ({ setCategoryData ,type,category}: AddCategoryProps) => {
                 });
               }}
               max="100"
+              required
               className="h-10 p-2 bg-white border rounded-md text-sm shadow-2xl text-[#17202A] focus:border-[#17202A] focus:outline-none focus:shadow-lg w-1/2"
             />
             <span className="text-lg">to</span>
@@ -342,6 +347,7 @@ const AddCategory = ({ setCategoryData ,type,category}: AddCategoryProps) => {
                 });
               }}
               max="100"
+              required
               className="h-10 p-2 bg-white border rounded-md text-sm shadow-2xl text-[#17202A] focus:border-[#17202A] focus:outline-none focus:shadow-lg w-1/2"
             />
           </div>
