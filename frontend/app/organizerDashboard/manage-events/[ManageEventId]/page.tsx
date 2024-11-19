@@ -55,12 +55,12 @@ const ProgressBarCheckpointsManageEventID = [
   },
   {
     icon: <TbTournament />,
-    label: "Draw Creation",
+    label: "Match Fixtures",
     placement: 7,
   },
   {
     icon: <MdLiveTv />,
-    label: "Live Match Tracking",
+    label: "Live Score Updation",
     placement: 8,
   },
 ];

@@ -33,8 +33,10 @@ interface EventContextType {
   setKycCompleted: React.Dispatch<React.SetStateAction<boolean>>;
   profileCompleted: boolean;
   setProfileCompleted: React.Dispatch<React.SetStateAction<boolean>>;
-  completeprofileDialog:boolean
+  completeprofileDialog: boolean;
   setCompleteprofileDialog: React.Dispatch<React.SetStateAction<boolean>>;
+  isNavberCollapsed:boolean
+  setIsNavbarCollapsed: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
 const EventContext = createContext<EventContextType | undefined>(undefined);
@@ -57,6 +59,7 @@ export const EventProvider: React.FC<{ children: ReactNode }> = ({
   const [kycCompleted,setKycCompleted]=useState(false)
   const [profileCompleted, setProfileCompleted] = useState(false);
   const [completeprofileDialog, setCompleteprofileDialog]=useState(false)
+  const [isNavberCollapsed, setIsNavbarCollapsed] = useState(true);
 
   return (
     <EventContext.Provider
@@ -84,7 +87,9 @@ export const EventProvider: React.FC<{ children: ReactNode }> = ({
         profileCompleted,
         setProfileCompleted,
         completeprofileDialog,
-        setCompleteprofileDialog
+        setCompleteprofileDialog,
+        isNavberCollapsed,
+        setIsNavbarCollapsed
       }}
     >
       {children}

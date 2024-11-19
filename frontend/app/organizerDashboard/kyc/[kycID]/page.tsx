@@ -81,14 +81,14 @@ const fields = [
     placeholder: "Enter Pincode",
     required: true,
   },
-  {
-    id: "pan",
-    label: "PAN (Citizen Identity No)",
-    type: "text",
-    name: "pan",
-    placeholder: "Enter PAN",
-    required: true,
-  },
+  // {
+  //   id: "pan",
+  //   label: "PAN (Citizen Identity No)",
+  //   type: "text",
+  //   name: "pan",
+  //   placeholder: "Enter PAN",
+  //   required: true,
+  // },
 ];
 
 const thirdfields = [
@@ -137,7 +137,7 @@ const thirdfields = [
 const additionalFields = [
   {
     id: "aadharFront",
-    label: "Upload Aadhar (Front)",
+    label: "Upload Document (Addhar)",
     type: "file",
     name: "aadharFront",
     required: true,
@@ -148,7 +148,7 @@ const additionalFields = [
   },
   {
     id: "aadharBack",
-    label: "Upload Aadhar (Back)",
+    label: "Upload Document (Pan)",
     type: "file",
     name: "aadharBack",
     required: true,

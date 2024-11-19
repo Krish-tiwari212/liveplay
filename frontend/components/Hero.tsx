@@ -1,117 +1,162 @@
-import * as React from "react";
-import Autoplay from "embla-carousel-autoplay";
-
-import { Card, CardContent } from "@/components/ui/card";
+import React, { useCallback, useEffect, useRef } from "react";
+import "../app/globals.css"
 import {
-  Carousel,
-  CarouselContent,
-  CarouselItem,
-  CarouselNext,
-  CarouselPrevious,
-} from "@/components/ui/carousel";
+  EmblaCarouselType,
+  EmblaEventType,
+  EmblaOptionsType,
+} from "embla-carousel";
+import useEmblaCarousel from "embla-carousel-react";
+import {
+  NextButton,
+  PrevButton,
+  usePrevNextButtons,
+} from "./EmbalaCarouselArroButtons";
+import { DotButton, useDotButton } from "./EmblaCarouselDotButton";
+import data from "@/data";
 import Image from "next/image";
-import data from "../data"; 
-const { eventsArray } = data;
+import { Button } from "./ui/button";
 
-const Hero=()=> {
-  const plugin = React.useRef(
-    Autoplay({ delay: 4000, stopOnInteraction: true })
+const TWEEN_FACTOR_BASE = 0.52;
+
+const numberWithinRange = (number: number, min: number, max: number): number =>
+  Math.min(Math.max(number, min), max);
+
+
+const EmblaCarousel: React.FC<PropType> = () => {
+  const {eventsArray} = data;
+  const options: EmblaOptionsType = { loop: true };
+  const SLIDE_COUNT = 5;
+  const slides = Array.from(Array(SLIDE_COUNT).keys());
+  const [emblaRef, emblaApi] = useEmblaCarousel(options);
+  const tweenFactor = useRef(0);
+  const tweenNodes = useRef<HTMLElement[]>([]);
+
+  const { selectedIndex, scrollSnaps, onDotButtonClick } =
+    useDotButton(emblaApi);
+
+  const {
+    prevBtnDisabled,
+    nextBtnDisabled,
+    onPrevButtonClick,
+    onNextButtonClick,
+  } = usePrevNextButtons(emblaApi);
+
+  const setTweenNodes = useCallback((emblaApi: EmblaCarouselType): void => {
+    tweenNodes.current = emblaApi.slideNodes().map((slideNode) => {
+      return slideNode.querySelector(".embla__slide__number") as HTMLElement;
+    });
+  }, []);
+
+  const setTweenFactor = useCallback((emblaApi: EmblaCarouselType) => {
+    tweenFactor.current = TWEEN_FACTOR_BASE * emblaApi.scrollSnapList().length;
+  }, []);
+
+  const tweenScale = useCallback(
+    (emblaApi: EmblaCarouselType, eventName?: EmblaEventType) => {
+      const engine = emblaApi.internalEngine();
+      const scrollProgress = emblaApi.scrollProgress();
+      const slidesInView = emblaApi.slidesInView();
+      const isScrollEvent = eventName === "scroll";
+
+      emblaApi.scrollSnapList().forEach((scrollSnap, snapIndex) => {
+        let diffToTarget = scrollSnap - scrollProgress;
+        const slidesInSnap = engine.slideRegistry[snapIndex];
+
+        slidesInSnap.forEach((slideIndex) => {
+          if (isScrollEvent && !slidesInView.includes(slideIndex)) return;
+
+          if (engine.options.loop) {
+            engine.slideLooper.loopPoints.forEach((loopItem) => {
+              const target = loopItem.target();
+
+              if (slideIndex === loopItem.index && target !== 0) {
+                const sign = Math.sign(target);
+
+                if (sign === -1) {
+                  diffToTarget = scrollSnap - (1 + scrollProgress);
+                }
+                if (sign === 1) {
+                  diffToTarget = scrollSnap + (1 - scrollProgress);
+                }
+              }
+            });
+          }
+
+          const tweenValue = 1 - Math.abs(diffToTarget * tweenFactor.current);
+          const scale = numberWithinRange(tweenValue, 0, 1).toString();
+          const tweenNode = tweenNodes.current[slideIndex];
+          tweenNode.style.transform = `scale(${scale})`;
+        });
+      });
+    },
+    []
   );
+
+  useEffect(() => {
+    if (!emblaApi) return;
+
+    setTweenNodes(emblaApi);
+    setTweenFactor(emblaApi);
+    tweenScale(emblaApi);
+
+    emblaApi
+      .on("reInit", setTweenNodes)
+      .on("reInit", setTweenFactor)
+      .on("reInit", tweenScale)
+      .on("scroll", tweenScale)
+      .on("slideFocus", tweenScale);
+  }, [emblaApi, tweenScale]);
+
   return (
-    <section className="w-full mt-4">
-      <Carousel
-        className="w-full h-full"
-        plugins={[plugin.current]}
-        onMouseEnter={plugin.current.stop}
-        onMouseLeave={plugin.current.reset}
-      >
-        <CarouselContent className="w-[80%] h-full mx-auto">
-          {eventsArray.map((e, i) => (
-            <CarouselItem key={i}>
-              <div className="w-full h-full relative">
-                <Image src={e.image} alt={e.image} fill className="rounded-2xl"/>
+    <section className="bg-[#121e28] h-64">
+      {/* <div className="embla relative">
+        <div className="embla__viewport" ref={emblaRef}>
+          <div className="embla__container mt-10">
+            {eventsArray.map((e, index) => (
+              <div className="embla__slide" key={index}>
+                <div className="embla__slide__number flex flex-col items-center justify-between">
+                  <div className="relative w-full h-full">
+                    <Image src={e.image} alt={e.title} fill />
+                  </div>
+                  <div className="flex items-center justify-between w-full px-4 py-2 border border-[#cddc29]">
+                    <h1 className="text-lg text-white font-semibold">
+                      {e.title}
+                    </h1>
+                    <Button variant="tertiary">Register</Button>
+                  </div>
+                </div>
               </div>
-            </CarouselItem>
-          ))}
-        </CarouselContent>
-        <CarouselPrevious />
-        <CarouselNext />
-      </Carousel>
+            ))}
+          </div>
+        </div>
+
+        <div className="embla__controls">
+          <div className="embla__buttons">
+            <PrevButton
+              onClick={onPrevButtonClick}
+              disabled={prevBtnDisabled}
+            />
+            <NextButton
+              onClick={onNextButtonClick}
+              disabled={nextBtnDisabled}
+            />
+          </div>
+
+          {/* <div className="embla__dots">
+            {scrollSnaps.map((_, index) => (
+              <DotButton
+                key={index}
+                onClick={() => onDotButtonClick(index)}
+                className={"embla__dot".concat(
+                  index === selectedIndex ? " embla__dot--selected" : ""
+                )}
+              />
+            ))}
+          </div> */}
+        {/* </div>
+      </div> */} */}
     </section>
   );
-}
+};
 
-export default Hero
-
-
-// import React, { useCallback } from "react";
-// import { EmblaOptionsType, EmblaCarouselType } from "embla-carousel";
-// import { DotButton, useDotButton } from "./CarouselDotButton";
-// import Autoplay from "embla-carousel-autoplay";
-// import useEmblaCarousel from "embla-carousel-react";
-// import data from "../data";
-// const { eventsArray } = data;
-// import Image from "next/image";
-
-// type PropType = {
-//   slides: number[];
-//   options?: EmblaOptionsType;
-// };
-
-// const EmblaCarousel: React.FC<PropType> = (props) => {
-//   const { slides, options } = props;
-//   const [emblaRef, emblaApi] = useEmblaCarousel(options, [Autoplay()]);
-
-//   const onNavButtonClick = useCallback((emblaApi: EmblaCarouselType) => {
-//     const autoplay = emblaApi?.plugins()?.autoplay;
-//     if (!autoplay) return;
-
-//     const resetOrStop =
-//       autoplay.options.stopOnInteraction === false
-//         ? autoplay.reset
-//         : autoplay.stop;
-
-//     resetOrStop();
-//   }, []);
-
-//   const { selectedIndex, scrollSnaps, onDotButtonClick } = useDotButton(
-//     emblaApi,
-//     onNavButtonClick
-//   );
-
-//   return (
-//     <section className="max-w-full mx-auto">
-//       <div className="overflow-hidden w-full" ref={emblaRef}>
-//         <div className="flex ml-2 w-full gap-4 mr-[-1rem]"> 
-//           {eventsArray.map((e, i) => (
-//             <div
-//               className=" w-[70%] flex-none transform translate-z-10"
-//               key={i}
-//             >
-//               <div className="bg-gray-200 shadow-inner rounded-2xl text-4xl font-semibold flex items-center justify-center h-[19rem] select-none">
-//                 <Image src={e.image} alt={e.image} fill  className="rounded-2xl"/>
-//               </div>
-//             </div>
-//           ))}
-//         </div>
-//       </div>
-
-//       <div className="flex justify-center gap-4 mt-7">
-//         <div className="flex justify-center items-center -mr-1 gap-5">
-//           {scrollSnaps.map((_, index) => (
-//             <button
-//               key={index}
-//               onClick={() => onDotButtonClick(index)}
-//               className={`flex items-center justify-center w-2 h-2 rounded-full transition-colors
-//             ${index === selectedIndex ? "bg-black" : "bg-gray-500 "}`}
-//             >
-//               <span className="w-6 h-6 rounded-full shadow-inner"></span>
-//             </button>
-//           ))}
-//         </div>
-//       </div>
-//     </section>
-//   );
-// };
-
-// export default EmblaCarousel;
+export default EmblaCarousel;

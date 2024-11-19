@@ -24,7 +24,7 @@ const formfields = [
     type: "text",
     placeholder: "Sponsor Name",
     required: true,
-    label: "Sponser Name",
+    label: "Sponsor Name",
   },
   {
     name: "sponsor_logo",
@@ -146,76 +146,87 @@ const SponsorSection = () => {
           <Label className="font-bold text-lg" htmlFor="registrationdetails">
             Sponsor Details
           </Label>
+          <Button
+            onClick={addSponsor}
+            disabled={isAdding || !areFieldsFilled()}
+            className="md:hidden my-2"
+            title={!areFieldsFilled() ? "Fill the input field first" : ""}
+          >
+            {isAdding
+              ? "Adding..."
+              : editIndex !== null
+              ? "Update Sponsor"
+              : "Add Sponsor"}
+          </Button>
           <div className="flex flex-col xl:flex-row w-full gap-3">
-            {formfields.map(
-              (field, i) =>
-                (field.type !== "file" ? (
-                  <div className="w-full flex flex-col" key={i}>
-                    <Label className="text-[0.8rem]">{field.label}</Label>
-                    <input
-                      id={field.name}
-                      type={field.type}
-                      name={field.name}
-                      required={field.required}
-                      value={newSponsor[field.name] || ""}
-                      placeholder={field.placeholder}
-                      onChange={handleSponsorChange}
-                      className="h-10 p-2 bg-white border rounded-md text-sm shadow-2xl text-[#17202A] focus:border-[#17202A] focus:outline-none focus:shadow-lg"
+            {formfields.map((field, i) =>
+              field.type !== "file" ? (
+                <div className="w-full flex flex-col" key={i}>
+                  <Label className="text-[0.8rem]">{field.label}</Label>
+                  <input
+                    id={field.name}
+                    type={field.type}
+                    name={field.name}
+                    required={field.required}
+                    value={newSponsor[field.name] || ""}
+                    placeholder={field.placeholder}
+                    onChange={handleSponsorChange}
+                    className="h-10 p-2 bg-white border rounded-md text-[0.8rem] md:text-sm shadow-2xl text-[#17202A] focus:border-[#17202A] focus:outline-none focus:shadow-lg"
+                  />
+                </div>
+              ) : (
+                <div className="flex flex-col w-full" key={field.name}>
+                  <Label className="text-[0.8rem]">{field.label}</Label>
+                  <div
+                    className="flex items-center shadow-md justify-center h-[40px] w-full cursor-pointer gap-3 rounded border-[1px] border-dashed border-gray-600 bg-white"
+                    onClick={() => imageRefs.current[i]?.click()}
+                  >
+                    <Input
+                      type="file"
+                      className="hidden capitalize"
+                      ref={(el) => {
+                        imageRefs.current[i] = el;
+                      }}
+                      onChange={handleFileChange(i)}
                     />
-                  </div>
-                ) : (
-                  <div className="flex flex-col w-full" key={field.name}>
-                    <Label className="text-[0.8rem]">{field.label}</Label>
-                    <div
-                      className="flex items-center shadow-md justify-center h-[40px] w-full cursor-pointer gap-3 rounded border-[1px] border-dashed border-gray-600 bg-white"
-                      onClick={() => imageRefs.current[i]?.click()}
-                    >
-                      <Input
-                        type="file"
-                        className="hidden"
-                        ref={(el) => {
-                          imageRefs.current[i] = el;
-                        }}
-                        onChange={handleFileChange(i)}
-                      />
-                      {!isImageLoading ? (
-                        newSponsor[`fileName${i}`] ? (
-                          <Image
-                            src="/icons/tickMark.svg"
-                            alt="file uploaded"
-                            width={24}
-                            height={24}
-                          />
-                        ) : (
-                          <Image
-                            src="/icons/upload-image.svg"
-                            alt="upload"
-                            width={24}
-                            height={24}
-                            className="invert"
-                          />
-                        )
+                    {!isImageLoading ? (
+                      newSponsor[`fileName${i}`] ? (
+                        <Image
+                          src="/icons/tickMark.svg"
+                          alt="file uploaded"
+                          width={24}
+                          height={24}
+                        />
                       ) : (
-                        <div className="text-16 flex items-center justify-center font-medium text-gray-700">
-                          Uploading
-                          <Loader size={20} className="animate-spin ml-2" />
-                        </div>
-                      )}
-                      <div className="flex flex-col items-center gap-1">
-                        <h2 className="text-10 font-bold text-gray-400">
-                          {newSponsor[`fileName${i}`] || "Click to upload"}
-                        </h2>
+                        <Image
+                          src="/icons/upload-image.svg"
+                          alt="upload"
+                          width={24}
+                          height={24}
+                          className="invert"
+                        />
+                      )
+                    ) : (
+                      <div className="text-16 flex items-center justify-center font-medium text-gray-700">
+                        Uploading
+                        <Loader size={20} className="animate-spin ml-2" />
                       </div>
+                    )}
+                    <div className="flex flex-col items-center gap-1">
+                      <h2 className="text-[0.5rem] md:text-10 font-bold text-gray-400">
+                        {newSponsor[`fileName${i}`] || "Click to upload"}
+                      </h2>
                     </div>
                   </div>
-                ))
+                </div>
+              )
             )}
           </div>
         </div>
         <Button
           onClick={addSponsor}
           disabled={isAdding || !areFieldsFilled()}
-          className="absolute right-2 top-1"
+          className="hidden md:absolute right-2 top-1"
           title={!areFieldsFilled() ? "Fill the input field first" : ""}
         >
           {isAdding

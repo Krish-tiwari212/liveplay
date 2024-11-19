@@ -43,6 +43,7 @@ interface Category {
   gender?:string;
   age_from?: string;
   age_to?: string;
+  ageRangeOption?: string;
 }
 
 const inputFields = [
@@ -181,6 +182,7 @@ const AddCategory = ({ setCategoryData ,type,category}: AddCategoryProps) => {
     gender:"",
     age_from: "",
     age_to: "",
+    ageRangeOption: "under11",
   });
   const {EventData}=useEventContext()
   const [showAmountInput, setShowAmountInput] = useState(false);
@@ -243,6 +245,7 @@ const AddCategory = ({ setCategoryData ,type,category}: AddCategoryProps) => {
       gender:"",
       age_from: "",
       age_to: "",
+      ageRangeOption: "under11",
     });
   };
   const fields =
@@ -252,13 +255,27 @@ const AddCategory = ({ setCategoryData ,type,category}: AddCategoryProps) => {
           ({ id }) => id !== "total_quantity" && id !== "max_ticket_quantity"
         );
 
+  const handleAgeRangeChange = (option: string) => {
+    setLocalCategoryData({
+      ...categoryData,
+      ageRangeOption: option,
+      ...(option !== "custom" && { age_from: "", age_to: "" }),
+    });
+  };
+
   const areRequiredFieldsFilled = () => {
-    return fields.every((field) => {
+    const requiredFieldsFilled = fields.every((field) => {
       if (field.required) {
         return categoryData[field.id as keyof typeof categoryData];
       }
       return true;
-    }) && categoryData.category_type && categoryData.age_from && categoryData.age_to;
+    }) && categoryData.category_type;
+
+    const ageRangeValid =
+      categoryData.ageRangeOption !== "custom" ||
+      (categoryData.age_from && categoryData.age_to);
+
+    return requiredFieldsFilled && ageRangeValid;
   };
 
   useEffect(() => {
@@ -314,43 +331,118 @@ const AddCategory = ({ setCategoryData ,type,category}: AddCategoryProps) => {
             </SelectContent>
           </Select>
         </div>
-        <div className=" w-full m-2 flex flex-col">
+        <div className="w-full m-2 flex flex-col">
           <label>
-            Age Range<span className="text-red-500">*</span>
+            Select Age Category<span className="text-red-500">*</span>
           </label>
-          <div className="flex gap-2 items-center">
-            <input
-              type="number"
-              name="age_from"
-              placeholder="From Age"
-              value={categoryData.age_from}
-              onChange={(e) => {
-                setLocalCategoryData({
-                  ...categoryData,
-                  age_from: e.target.value.toString(),
-                });
-              }}
-              max="100"
-              required
-              className="h-10 p-2 bg-white border rounded-md text-sm shadow-2xl text-[#17202A] focus:border-[#17202A] focus:outline-none focus:shadow-lg w-1/2"
-            />
-            <span className="text-lg">to</span>
-            <input
-              type="number"
-              name="age_to"
-              placeholder="To Age"
-              value={categoryData.age_to}
-              onChange={(e) => {
-                setLocalCategoryData({
-                  ...categoryData,
-                  age_to: e.target.value.toString(),
-                });
-              }}
-              max="100"
-              required
-              className="h-10 p-2 bg-white border rounded-md text-sm shadow-2xl text-[#17202A] focus:border-[#17202A] focus:outline-none focus:shadow-lg w-1/2"
-            />
+          <div className="flex justify-start lg:justify-between lg:items-center flex-col lg:flex-row space-y-2 p-2">
+            <div className="flex items-center space-x-4">
+              <input
+                type="radio"
+                id="under11"
+                name="ageRange"
+                value="under11"
+                checked={categoryData.ageRangeOption === "under11"}
+                onChange={() => handleAgeRangeChange("under11")}
+                className="h-4 w-4 text-[#17202A] border-gray-300 focus:ring-[#17202A]"
+              />
+              <Label htmlFor="under11" className="text-sm text-gray-700">
+                Under 11
+              </Label>
+            </div>
+            <div className="flex items-center space-x-4">
+              <input
+                type="radio"
+                id="under17"
+                name="ageRange"
+                value="under17"
+                checked={categoryData.ageRangeOption === "under17"}
+                onChange={() => handleAgeRangeChange("under17")}
+                className="h-4 w-4 text-[#17202A] border-gray-300 focus:ring-[#17202A]"
+              />
+              <Label htmlFor="under17" className="text-sm text-gray-700">
+                Under 17
+              </Label>
+            </div>
+            <div className="flex items-center space-x-4">
+              <input
+                type="radio"
+                id="under19"
+                name="ageRange"
+                value="under19"
+                checked={categoryData.ageRangeOption === "under19"}
+                onChange={() => handleAgeRangeChange("under19")}
+                className="h-4 w-4 text-[#17202A] border-gray-300 focus:ring-[#17202A]"
+              />
+              <Label htmlFor="under19" className="text-sm text-gray-700">
+                Under 19
+              </Label>
+            </div>
+            <div className="flex items-center space-x-4">
+              <input
+                type="radio"
+                id="30plus"
+                name="ageRange"
+                value="30plus"
+                checked={categoryData.ageRangeOption === "30plus"}
+                onChange={() => handleAgeRangeChange("30plus")}
+                className="h-4 w-4 text-[#17202A] border-gray-300 focus:ring-[#17202A]"
+              />
+              <Label htmlFor="30plus" className="text-sm text-gray-700">
+                30+
+              </Label>
+            </div>
+            <div className="flex items-center space-x-4">
+              <input
+                type="radio"
+                id="custom"
+                name="ageRange"
+                value="custom"
+                checked={categoryData.ageRangeOption === "custom"}
+                onChange={() => handleAgeRangeChange("custom")}
+                className="h-4 w-4 text-[#17202A] border-gray-300 focus:ring-[#17202A]"
+              />
+              <Label htmlFor="custom" className="text-sm text-gray-700">
+                Custom
+              </Label>
+            </div>
           </div>
+
+          {categoryData.ageRangeOption === "custom" && (
+            <div className="flex gap-2 items-center mt-2">
+              <input
+                type="number"
+                name="age_from"
+                placeholder="From Age"
+                value={categoryData.age_from}
+                onChange={(e) => {
+                  setLocalCategoryData({
+                    ...categoryData,
+                    age_from: e.target.value.toString(),
+                  });
+                }}
+                max="100"
+                required={categoryData.ageRangeOption === "custom"}
+                className="h-10 p-2 bg-white border rounded-md text-sm shadow-2xl text-[#17202A] focus:border-[#17202A] focus:outline-none focus:shadow-lg w-1/2"
+              />
+              <span className="text-lg">to</span>
+              <input
+                type="number"
+                name="age_to"
+                placeholder="To Age"
+                value={categoryData.age_to}
+                onChange={(e) => {
+                  setLocalCategoryData({
+                    ...categoryData,
+                    age_to: e.target.value.toString(),
+                  });
+                }}
+                max="100"
+                required={categoryData.ageRangeOption === "custom"}
+                className="h-10 p-2 bg-white border rounded-md text-sm shadow-2xl text-[#17202A] focus:border-[#17202A] focus:outline-none focus:shadow-lg w-1/2"
+              />
+            </div>
+          )}
         </div>
 
         {fields.map((field) => (
@@ -387,7 +479,7 @@ const AddCategory = ({ setCategoryData ,type,category}: AddCategoryProps) => {
                   categoryData[field.id as keyof typeof categoryData] || ""
                 }
                 onChange={handleChange}
-                className="h-16 p-2 bg-white border rounded-md text-sm shadow-2xl text-[#17202A] focus:border-[#17202A] focus:outline-none focus:shadow-lg"
+                className="h-10 p-2 bg-white border rounded-md text-sm shadow-2xl text-[#17202A] focus:border-[#17202A] focus:outline-none focus:shadow-lg"
               />
             )}
           </div>
@@ -451,7 +543,7 @@ const AddCategory = ({ setCategoryData ,type,category}: AddCategoryProps) => {
                           categoryData[field.id as keyof typeof categoryData]
                         }
                         onChange={handleChange}
-                        className="h-16 p-2 bg-white border rounded-md text-sm shadow-2xl text-[#17202A] focus:border-[#17202A] focus:outline-none focus:shadow-lg"
+                        className="h-10 p-2 bg-white border rounded-md text-sm shadow-2xl text-[#17202A] focus:border-[#17202A] focus:outline-none focus:shadow-lg"
                         maxLength={
                           field.id === "discount_code" ? 10 : undefined
                         }
@@ -478,7 +570,7 @@ const AddCategory = ({ setCategoryData ,type,category}: AddCategoryProps) => {
                           categoryData[field.id as keyof typeof categoryData]
                         }
                         onChange={handleChange}
-                        className="h-16 p-2 bg-white border rounded-md text-sm shadow-2xl text-[#17202A] focus:border-[#17202A] focus:outline-none focus:shadow-lg"
+                        className="h-10 p-2 bg-white border rounded-md text-sm shadow-2xl text-[#17202A] focus:border-[#17202A] focus:outline-none focus:shadow-lg"
                         maxLength={
                           field.id === "discount_code" ? 10 : undefined
                         }

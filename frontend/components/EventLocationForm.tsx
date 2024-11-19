@@ -69,6 +69,14 @@ const formFields: FormField[] = [
     required: true,
   },
   {
+    id: "state",
+    label: "State",
+    type: "text",
+    name: "state",
+    placeholder: "Enter State",
+    required: true,
+  },
+  {
     id: "pincode",
     label: "Pincode",
     type: "text",
@@ -249,11 +257,11 @@ const EventLocationForm: React.FC<EventLocationFormData> = ({
           <div className="flex flex-col leading-none">
             <label
               htmlFor="terms1"
-              className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
+              className="mb-2 md:mb-0 text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
             >
               Venue Not Decided Yet
             </label>
-            <p className="text-[0.8rem] text-muted-foreground">
+            <p className="text-[0.8rem] hidden md:block text-muted-foreground">
               once checked, you could proceed without entering a venue name and
               city
             </p>

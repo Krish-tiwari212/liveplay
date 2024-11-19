@@ -46,24 +46,35 @@ const Insightfields = [
   {
     label: "Event Description",
     name: "event_description",
+    type: "textarea",
     placeholder:
-      "Briefly describe your event, including the theme, key activities, and what makes it exciting for attendees.",
+      "Briefly describe your event, including the theme, key activities, and what makes it exciting for participants.",
   },
   {
     label: "Event USP",
     name: "event_usp",
+    type: "textarea",
     placeholder:
-      "Please describe what makes your event truly unique. (50 Charectors Only)",
+      "Please describe what makes your event truly unique. (50 Charecters Only)",
   },
   {
     label: "Rewards And Prizes",
     name: "rewards_for_participants",
+    type: "textarea",
     placeholder:
       "List the prizes for participants, eligibility criteria, and how winners will be chosen.",
   },
   {
     label: "Playing Rules",
     name: "playing_rules",
+    type: "textarea",
+    placeholder:
+      "Summarize the main rules for the event, including guidelines and scoring methods to ensure fair play.",
+  },
+  {
+    label: "Cash Prize Pool",
+    name: "cash_prize_pool",
+    type: "number",
     placeholder:
       "Summarize the main rules for the event, including guidelines and scoring methods to ensure fair play.",
   },
@@ -179,6 +190,7 @@ const EventInsights: React.FC<EventInsights> = ({
               rows={4}
               placeholder={field.placeholder}
               required
+              type={field.type}
               value={formData[field.name as keyof typeof formData] || ""}
               onChange={handleChange}
               className="w-full p-2 bg-white border rounded-md text-sm shadow-2xl text-[#17202A] focus:border-[#17202A] focus:outline-none focus:shadow-lg"

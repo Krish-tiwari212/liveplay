@@ -3,7 +3,66 @@ import Slider from "react-slick";
 import { FaChevronLeft, FaChevronRight } from "react-icons/fa";
 import EventCard from "./EventCard";
 import "slick-carousel/slick/slick.css";
-import "slick-carousel/slick/slick-theme.css";
+import "slick-carousel/slick/slick-theme.css";import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+const SportsType = [
+  {
+    name: "Tennis",
+    icon: <img src="/images/tennis.png" alt="Tennis" className="h-4 w-4" />,
+  },
+  {
+    name: "Table Tennis",
+    icon: (
+      <img
+        src="/images/table-tennis.png"
+        alt="Table Tennis"
+        className="h-4 w-4"
+      />
+    ),
+  },
+  {
+    name: "Squash",
+    icon: <img src="/images/squash.png" alt="Squash" className="h-4 w-4" />,
+  },
+  {
+    name: "Badminton",
+    icon: (
+      <img src="/images/shuttlecock.png" alt="Badminton" className="h-4 w-4" />
+    ),
+  },
+  {
+    name: "Pickleball",
+    icon: (
+      <img src="/images/pickleball.png" alt="Pickleball" className="h-4 w-4" />
+    ),
+  },
+  {
+    name: "Padel",
+    icon: <img src="/images/padel.png" alt="Padel" className="h-4 w-4" />,
+  },
+  {
+    name: "Cricket",
+    icon: <img src="/images/cricket.png" alt="Cricket" className="h-4 w-4" />,
+  },
+  {
+    name: "Football",
+    icon: <img src="/images/football.png" alt="Football" className="h-4 w-4" />,
+  },
+  {
+    name: "Running",
+    icon: <img src="/images/running.png" alt="Running" className="h-4 w-4" />,
+  },
+  {
+    name: "Marathon",
+    icon: <img src="/images/marathon.png" alt="Marathon" className="h-4 w-4" />,
+  },
+];
+
 
 const CardCarousel = () => {
   const scrollRef = useRef<HTMLDivElement>(null);
@@ -41,7 +100,7 @@ const CardCarousel = () => {
     dots: false,
     infinite: false,
     speed: 500,
-    slidesToShow: 4,
+    slidesToShow: 3,
     slidesToScroll: 1,
     nextArrow: <NextArrow />,
     prevArrow: <PrevArrow />,
@@ -85,21 +144,48 @@ const CardCarousel = () => {
         console.error("Error fetching events:", error);
       }
     };
-
     fetchEvents();
   }, []);
 
   return (
-    <div className="my-10 ">
-      <div className="text-center mb-4">
-        <h1 className="text-3xl md:text-5xl font-bold text-gray-800">
-          Featured Events
+    <div className="my-6">
+      <div className="md:text-center mb-6 relative mx-12 flex justify-between items-center">
+        <h1 className="text-xl sm:text-2xl md:text-3xl text-gray-800">
+          Upcoming Events
         </h1>
+        <Select>
+          <SelectTrigger className="w-[110px] sm:w-[130px] md:w-[150px] lg:w-[170px] bg-white text-[#141f29] border border-[#141f29] ">
+            <SelectValue placeholder="Sport" />
+          </SelectTrigger>
+          <SelectContent>
+            {SportsType.map((sport, i) => (
+              <SelectItem
+                key={sport.name}
+                value={sport.name}
+                className="flex items-center space-x-2"
+              >
+                <div className="flex items-center space-x-2">
+                  {sport.icon}
+                  <span>{sport.name}</span>
+                </div>
+              </SelectItem>
+            ))}
+          </SelectContent>
+        </Select>
       </div>
-      <div className="mx-auto px-7 sm:px-6 lg:px-8 md:mt-16">
-        <Slider {...settings}>
-          {events.map((e, i) => (
-            <div className="flex-shrink-0 w-full px-5 md:px-6" key={i}>
+      <div className="mx-auto w-[95%] overflow-x-auto flex gap-2 md:gap-4 scrollbar-hide">
+        <style jsx>{`
+          .scrollbar-hide::-webkit-scrollbar {
+            display: none; /* Safari and Chrome */
+          }
+          .scrollbar-hide {
+            -ms-overflow-style: none; /* IE and Edge */
+            scrollbar-width: none; /* Firefox */
+          }
+        `}</style>
+        {events.map((e, i) => (
+          <div className="w-full px-1 pb-6" key={i}>
+            <div className="">
               <EventCard
                 image={e.image}
                 date={e.date}
@@ -112,8 +198,8 @@ const CardCarousel = () => {
                 price={e.price}
               />
             </div>
-          ))}
-        </Slider>
+          </div>
+        ))}
       </div>
     </div>
   );

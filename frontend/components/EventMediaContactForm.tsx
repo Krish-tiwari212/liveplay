@@ -29,26 +29,26 @@ interface EventMediaProps {
 const additionalFields = [
   {
     id: "mobileBanner",
-    label: "Add Mobile Banner",
+    label: "Add Banner",
     type: "file",
     name: "mobileBanner",
     required: true,
     filecontnet: {
-      size: "SVG,JPG,PNG or GIF max(480x480px)",
+      size: "SVG,JPG or PNG max(16:9)",
       label: "Add Mobile Banner",
     },
   },
-  {
-    id: "desktopBanner",
-    label: "Add Desktop Banner",
-    type: "file",
-    name: "desktopBanner",
-    required: true,
-    filecontnet: {
-      size: "SVG,JPG,PNG or GIF max(1080x1080px)",
-      label: "Add Desktop Banner",
-    },
-  },
+  // {
+  //   id: "desktopBanner",
+  //   label: "Add Desktop Banner",
+  //   type: "file",
+  //   name: "desktopBanner",
+  //   required: true,
+  //   filecontnet: {
+  //     size: "SVG,JPG or PNG max(1080x1080px)",
+  //     label: "Add Desktop Banner",
+  //   },
+  // },
 ];
 
 const EventMediaContactForm: React.FC<EventMediaProps> = ({

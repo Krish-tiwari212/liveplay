@@ -271,6 +271,13 @@ export default function Home() {
     return `${day}${daySuffix(day)} ${month} ${year}`;
   };
 
+  const scrollToSection = (sectionId: string) => {
+    const section = document.getElementById(sectionId);
+    if (section) {
+      section.scrollIntoView({ behavior: "smooth" });
+    }
+  };
+
   return (
     <div className="flex flex-col m-3">
       {/* <div className={`flex flex-col sm:flex-row gap-2 sm:gap-4`}>
@@ -321,6 +328,14 @@ export default function Home() {
             className="text-sm sm:text-md"
           >
             Register for Events
+          </Button>
+          <Button
+            onClick={()=>scrollToSection("pastEvents")}
+            variant="tertiary"
+            size="xs"
+            className="text-sm sm:text-md"
+          >
+            Event Feedback
           </Button>
           <Button
             onClick={() => router.push("/organizerDashboard")}
@@ -551,7 +566,10 @@ export default function Home() {
           )}
         </div>
       </section>
-      <section className="mt-8 bg-white shadow-md rounded-lg px-4 py-4">
+      <section
+        id="pastEvents"
+        className="mt-8 bg-white shadow-md rounded-lg px-4 py-4"
+      >
         <h2 className="text-xl font-semibold mb-2">Past Events</h2>
         <div className="flex space-x-4 overflow-x-auto pb-8">
           {isLoading ? (
@@ -647,7 +665,7 @@ export default function Home() {
                 Select the categories you want to withdraw from.
               </DialogDescription>
             </DialogHeader>
-            <div className="space-y-4 h-[20rem] overflow-y-auto">
+            <div className="space-y-4 h-[20rem]">
               {categories.map((category) => (
                 <div
                   key={category.id}

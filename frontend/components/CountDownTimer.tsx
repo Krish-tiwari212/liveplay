@@ -3,6 +3,7 @@ import { useTimer } from "react-timer-hook";
 import { Switch } from "@/components/ui/switch";
 import { Label } from "./ui/label";
 import { useEventContext } from "@/context/EventDataContext";
+import Image from "next/image";
 
 interface MyTimerProps {
   setFeatureData: React.Dispatch<React.SetStateAction<any>>;
@@ -41,7 +42,9 @@ const MyTimer = ({ expiryTimestamp, setFeatureData }: MyTimerProps) => {
   return (
     <div className="text-center font-sans p-8 bg-gradient-to-r bg-white shadow-lg rounded-lg relative">
       <div className="flex items-center space-x-2 relative">
-        <Label htmlFor="airplane-mode" className="text-lg">Enable Countdown</Label>
+        <Label htmlFor="airplane-mode" className="text-sm md:text-lg">
+          Enable Countdown
+        </Label>
         <Switch
           id="enable-countdown"
           onCheckedChange={handlecountdown}
@@ -49,28 +52,15 @@ const MyTimer = ({ expiryTimestamp, setFeatureData }: MyTimerProps) => {
         />
       </div>
       {showCountdown && (
-        <>
-          <h1 className="text-5xl font-bold mt-4 mb-4 text-[#17202A]">
-            Countdown Timer
-          </h1>
-          {showModal ? (
-            <div className="bg-white p-6 rounded-lg shadow-lg">
-              <h2 className="text-xl font-bold mb-4">Time's Up!</h2>
-              <p className="mb-4">
-                The countdown has finished. Thank you for your patience!
-              </p>
-            </div>
-          ) : (
-            <>
-              <h2 className="text-4xl mb-2 text-[#17202A] ">
-                11 Days 15 Hours
-              </h2>
-              <p className="text-lg text-[#17202A] mb-4">
-                Until the final date!
-              </p>
-            </>
-          )}
-        </>
+        <div className="flex justify-center items-center pt-4">
+          <Image
+            src="/images/Countdown.svg"
+            alt="public/images/Countdown.svg"
+            width={800}
+            height={800}
+            className="border shadow-lg w-full max-w-xs sm:max-w-sm md:max-w-md lg:max-w-lg xl:max-w-xl"
+          />
+        </div>
       )}
     </div>
   );

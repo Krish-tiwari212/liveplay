@@ -34,7 +34,7 @@ export default function RootLayout({
                 <MSidebar />
               </div>
               <div
-                className={`bg-slate-200 overflow-x-hidden w-full h-full ml-16 lg:ml-0 lg:flex-[3] xl:flex-[4] 2xl:flex-[5] `}
+                className={`bg-slate-200 overflow-x-hidden w-full h-full lg:flex-[3] xl:flex-[4] 2xl:flex-[5] `}
               >
                 <Navbar />
                 {children}
@@ -78,7 +78,7 @@ function KYCWrapper({ children }: { children: React.ReactNode }) {
     <>
       {showKYCPopup && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-          <div className="bg-white p-6 rounded-lg shadow-lg w-[90%]">
+          <div className="bg-white p-6 rounded-lg shadow-lg w-[90%] sm:w-[35%]">
             <h2 className="text-xl font-bold mb-4">KYC Required</h2>
             <p className="mb-4">
               Please complete your KYC verification to continue using all
@@ -86,15 +86,15 @@ function KYCWrapper({ children }: { children: React.ReactNode }) {
             </p>
             <div className="flex gap-4">
               <Button
-                onClick={() => {router.push(`/organizerDashboard/kyc/${user?.id}`);setShowKYCPopup(false);}}
+                onClick={() => {
+                  router.push(`/organizerDashboard/kyc/${user?.id}`);
+                  setShowKYCPopup(false);
+                }}
                 className=""
               >
                 Complete KYC
               </Button>
-              <Button
-                onClick={() => setShowKYCPopup(false)}
-                className=""
-              >
+              <Button onClick={() => setShowKYCPopup(false)} className="">
                 Remind Me Later
               </Button>
             </div>
