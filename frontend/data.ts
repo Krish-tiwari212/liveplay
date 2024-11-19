@@ -114,15 +114,23 @@ const events = [
 const eventsArray = [
   {
     title: "Features Event Poster (Gold/Premium)",
-    image: "/images/imgbanner6.png",
+    image: "/images/carousel1 (1).svg",
   },
   {
-    title: "Features Event Poster (Silver/Standard)",
-    image: "/images/image (21).png",
+    title: "Features Event Poster (Gold/Premium)",
+    image: "/images/carousel1 (2).svg",
   },
   {
-    title: "Key Features of Organiser Poster",
-    image: "/images/imgbanner4.png",
+    title: "Features Event Poster (Gold/Premium)",
+    image: "/images/carousel1 (3).svg",
+  },
+  {
+    title: "Features Event Poster (Gold/Premium)",
+    image: "/images/carousel1 (4).svg",
+  },
+  {
+    title: "Features Event Poster (Gold/Premium)",
+    image: "/images/carousel1 (5).svg",
   },
 ];
 

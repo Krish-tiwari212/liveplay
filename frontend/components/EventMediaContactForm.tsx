@@ -25,50 +25,30 @@ interface EventMediaProps {
   handleNext: () => void;
   ManageEventId:any
 }
-const requiredFields = [
-  "eventAddress",
-  "desktopBanner",
-  "eventDescription",
-  "eventName",
-  "eventPincode",
-  "eventStreet",
-  "eventUSP",
-  "eventenddate",
-  "eventstartDate",
-  "lastRegistrationDate",
-  "lastWithdrawalDate",
-  "mobileBanner",
-  "organiserName",
-  "organiserNumber",
-  "organiseremailaddress",
-  "playingRules",
-  "rewardsAndParticipation",
-  "startTime",
-];
 
 const additionalFields = [
   {
     id: "mobileBanner",
-    label: "Add Mobile Banner",
+    label: "Add Banner",
     type: "file",
     name: "mobileBanner",
     required: true,
     filecontnet: {
-      size: "SVG,JPG,PNG or GIF max(480x480px)",
+      size: "SVG,JPG or PNG max(16:9)",
       label: "Add Mobile Banner",
     },
   },
-  {
-    id: "desktopBanner",
-    label: "Add Desktop Banner",
-    type: "file",
-    name: "desktopBanner",
-    required: true,
-    filecontnet: {
-      size: "SVG,JPG,PNG or GIF max(1080x1080px)",
-      label: "Add Desktop Banner",
-    },
-  },
+  // {
+  //   id: "desktopBanner",
+  //   label: "Add Desktop Banner",
+  //   type: "file",
+  //   name: "desktopBanner",
+  //   required: true,
+  //   filecontnet: {
+  //     size: "SVG,JPG or PNG max(1080x1080px)",
+  //     label: "Add Desktop Banner",
+  //   },
+  // },
 ];
 
 const EventMediaContactForm: React.FC<EventMediaProps> = ({
@@ -188,59 +168,60 @@ const EventMediaContactForm: React.FC<EventMediaProps> = ({
   return (
     <form className="bg-white p-5 rounded-lg">
       <div className="flex flex-wrap ">
-        {additionalFields.map((field, index) => (
-          <div className="flex flex-col w-full mt-5" key={field.id}>
-            <Label className="font-bold text-lg">
-              {field.filecontnet?.label}
-              <span className="text-red-500">*</span>
-            </Label>
-            <div
-              className="flex items-center justify-center mt-1 h-[142px] w-full cursor-pointer flex-col gap-3 rounded-xl border-[3.2px] border-dashed border-gray-600  bg-white "
-              onClick={() => imageRefs.current[index]?.click()}
-            >
-              <Input
-                type="file"
-                className="hidden"
-                ref={(el) => {
-                  imageRefs.current[index] = el;
-                }}
-                onChange={handleFileChange(index)}
-              />
-              {!isImageLoading ? (
-                <Image
-                  src="/icons/upload-image.svg"
-                  alt="upload"
-                  width={40}
-                  height={40}
-                  className="invert"
+        {additionalFields.map((field, index) => 
+           (
+            <div className="flex flex-col w-full mt-5" key={field.id}>
+              <Label className="font-bold text-lg">
+                {field.filecontnet?.label}
+                <span className="text-red-500">*</span>
+              </Label>
+              <div
+                className="flex items-center justify-center mt-1 h-[142px] w-full cursor-pointer flex-col gap-3 rounded-xl border-[3.2px] border-dashed border-gray-600  bg-white "
+                onClick={() => imageRefs.current[index]?.click()}
+              >
+                <Input
+                  type="file"
+                  className="hidden"
+                  ref={(el) => {
+                    imageRefs.current[index] = el;
+                  }}
+                  onChange={handleFileChange(index)}
                 />
-              ) : (
-                <div className="text-16 flex items-center justify-center  font-medium text-gray-700 ">
-                  Uploading
-                  <Loader size={20} className="animate-spin ml-2" />
+                {!isImageLoading ? (
+                  <Image
+                    src="/icons/upload-image.svg"
+                    alt="upload"
+                    width={40}
+                    height={40}
+                    className="invert"
+                  />
+                ) : (
+                  <div className="text-16 flex items-center justify-center  font-medium text-gray-700 ">
+                    Uploading
+                    <Loader size={20} className="animate-spin ml-2" />
+                  </div>
+                )}
+                <div className="flex flex-col items-center gap-1">
+                  <h2 className="text-12 font-bold text-gray-400 ">
+                    Click to upload
+                  </h2>
+                  <p className="text-12 text-center font-bold text-gray-500 ">
+                    {field.filecontnet?.size}
+                  </p>
+                </div>
+              </div>
+              {imagePreviews[index] && (
+                <div className="mt-2 items-center mx-auto">
+                  <Image
+                    src={imagePreviews[index]}
+                    alt="Preview"
+                    width={300}
+                    height={300}
+                  />
                 </div>
               )}
-              <div className="flex flex-col items-center gap-1">
-                <h2 className="text-12 font-bold text-gray-400 ">
-                  Click to upload
-                </h2>
-                <p className="text-12 text-center font-bold text-gray-500 ">
-                  {field.filecontnet?.size}
-                </p>
-              </div>
             </div>
-            {imagePreviews[index] && (
-              <div className="mt-2 items-center mx-auto">
-                <Image
-                  src={imagePreviews[index]}
-                  alt="Preview"
-                  width={300}
-                  height={300}
-                />
-              </div>
-            )}
-          </div>
-        ))}
+          ))}
       </div>
       <SponsorSection />
       <div className="flex justify-center items-center">

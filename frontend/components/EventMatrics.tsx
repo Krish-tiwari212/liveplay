@@ -187,13 +187,13 @@ const EventMatrics = ({ handleNext }: EventMatricsProps) => {
             ))}
           </div>
           {showUpsell && (
-            <div className="p-5 rounded-lg shadow-lg mt-5">
-              <h2 className="text-4xl font-bold text-gray-800 border-b-2 border-[#cddc29] mb-2">
+            <div className="rounded-lg  my-5">
+              <h2 className="text-2xl sm:text-4xl font-bold text-gray-800 border-b-2 border-[#cddc29] mb-2">
                 Boost Your Event Performance
               </h2>
-              <p className="text-gray-800 mb-4">
-                Noticed lower-than-expected registrations? Boost visibility and
-                enhance participant experience with Pro and Elite plans.
+              <p className="text-sm md:text-md text-gray-800 mb-4">
+                Noticed lower-than-expected registrations?<br></br> Boost visibility and
+                event sales  with Pro and Elite plans.
               </p>
               <EventBoosters handleNext={handleNext} />
             </div>

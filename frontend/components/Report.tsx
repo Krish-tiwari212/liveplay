@@ -40,13 +40,13 @@ interface ReportProps{
 const data = [
   {
     title: "salespercategory",
-    categories: ["Men's Singles", "Women's Singles", "Men's Doubles", "Women's Doubles", "Mixed Doubles", "Junior Singles", "Junior Doubles", "Senior Singles", "Senior Doubles", "Team Events", "Exhibition Matches", "Qualifiers"],
-    value: [1500, 1200, 1100, 1110, 1220, 1000, 900, 234, 215, 1300, 4500, 430],
+    categories: ["Men's Singles", "Women's Singles"],
+    value: [0,0],
   },
   {
     title: "entriesPerCategory",
-    categories: ["Men's Singles", "Women's Singles", "Men's Doubles", "Women's Doubles", "Mixed Doubles", "Junior Singles", "Junior Doubles", "Senior Singles", "Senior Doubles", "Team Events", "By Matches", "Qualify", "Open Category", "Veterans Matches", "Amateurs Matches"],
-    value: [50, 70, 30, 40, 70, 10, 4, 40, 3, 9, 2, 10, 70, 20, 90],
+    categories: ["Men's Singles", "Women's Singles"],
+    value: [0,0],
   },
 ];
 
@@ -351,26 +351,26 @@ const Report = ({ handleNext }: ReportProps) => {
       </div>
       <div className="charts flex flex-col xl:flex-row gap-5 text-white h-auto">
         <div className="w-full xl:w-[50%] h-full">
-          <PieChartDemo
-            chartData={SalesData.Cdata}
-            processCategory={(value: any) => value}
-            dataKey={SalesData.dataKey}
-            chartConfig={SalesData.chartConfig}
-            title={SalesData.title}
-            description={SalesData.description}
-            type={SalesData.type}
-          />
+            <PieChartDemo
+              chartData={SalesData.Cdata}
+              processCategory={(value: any) => value}
+              dataKey={SalesData.dataKey}
+              chartConfig={SalesData.chartConfig}
+              title={SalesData.title}
+              description={SalesData.description}
+              type={SalesData.type}
+            />
         </div>
         <div className="w-full xl:w-[50%] h-full">
-          <LineChartDemo
-            chartData={EntriesData.Cdata}
-            processCategory={(value: any) => value}
-            dataKey={EntriesData.dataKey}
-            chartConfig={EntriesData.chartConfig}
-            title={EntriesData.title}
-            description={EntriesData.description}
-            type={EntriesData.type}
-          />
+            <LineChartDemo
+              chartData={EntriesData.Cdata}
+              processCategory={(value: any) => value}
+              dataKey={EntriesData.dataKey}
+              chartConfig={EntriesData.chartConfig}
+              title={EntriesData.title}
+              description={EntriesData.description}
+              type={EntriesData.type}
+            />
         </div>
       </div>
 

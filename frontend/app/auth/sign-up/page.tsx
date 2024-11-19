@@ -98,8 +98,8 @@ const SignUpForm = () => {
       <Image
         src="/images/Logo.png"
         alt="/images/Logo.png"
-        width={350}
-        height={350}
+        width={300}
+        height={300}
       />
       <div className="w-[90%] mx-auto sm:w-full max-w-lg p-8 bg-white rounded shadow-md">
         <h2 className="text-2xl font-bold text-center mb-6">

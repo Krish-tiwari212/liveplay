@@ -4,7 +4,7 @@ import { Checkbox } from '@/components/ui/checkbox';
 import React, { useRef, useState } from 'react'
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Loader } from 'lucide-react';
+import { Currency, Loader } from 'lucide-react';
 import Image from 'next/image';
 import { Button } from './ui/button';
 import {
@@ -14,8 +14,9 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 
-// ... existing code ...
+
 const banks = [
   { name: "ABN AMRO", image: "/Indian Banks SVG Logos/Bank Name=ABN AMRO.svg" },
   {
@@ -342,6 +343,9 @@ const Kycforms: React.FC<KycFormsProps> = ({
 }) => {
   const imageRefs = useRef<(HTMLInputElement | null)[]>([]);
   const [isImageLoading, setIsImageLoading] = useState(false);
+  const [userType, setUserType] = useState<"business" | "individual">(
+    "business"
+  );
 
   return (
     <form className="bg-white shadow-2xl p-5 rounded-lg w-full relative mt-20">
@@ -360,13 +364,31 @@ const Kycforms: React.FC<KycFormsProps> = ({
           />
         </button>
       )}
-
       <div className="flex flex-wrap w-[90%] mx-auto">
+        {prevDisabled && (
+          <RadioGroup
+            defaultValue="business"
+            className="flex flex-col sm:flex-row gap-2"
+            onValueChange={(value) => setUserType(value as 'business' | 'individual')}
+          >
+            <Label>Are you a business or an individual</Label>
+            <div className="flex items-center space-x-2">
+              <RadioGroupItem value="business" id="business" />
+              <Label htmlFor="business">Business</Label>
+            </div>
+            <div className="flex items-center space-x-2">
+              <RadioGroupItem value="individual" id="individual" />
+              <Label htmlFor="individual">Individual</Label>
+            </div>
+          </RadioGroup>
+        )}
         {fields.map((field, index) => (
           <div key={field.id} className="w-full m-2 flex flex-col">
             {field.type !== "file" && field.type !== "select" && (
               <>
-                <label htmlFor={field.id}>{field.label}</label>
+                <label htmlFor={field.id}>
+                  {userType === 'business' && field.label === 'Full Name' ? 'Business Name' : field.label}
+                </label>
                 <input
                   id={field.id}
                   type={field.type}

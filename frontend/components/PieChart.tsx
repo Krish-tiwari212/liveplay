@@ -80,30 +80,36 @@ export function PieChartDemo({
           {description}
         </CardDescription>
       </CardHeader>
-      <CardContent className="flex-1 pb-0">
-        <ChartContainer
-          config={chartConfig}
-          className="w-full mx-auto aspect-square max-h-[340px] pb-0 [&_.recharts-pie-label-text]:fill-foreground"
-        >
-          <PieChart>
-            <ChartTooltip
-              content={
-                <ChartTooltipContent
-                  labelKey="category"
-                  nameKey={dataKey}
-                  indicator="line"
-                />
-              }
-            />
-            <Pie
-              data={chartData}
-              dataKey={dataKey}
-              label={({ name, value }) => `${name}: ${value}`}
-              nameKey="category"
-            />
-          </PieChart>
-        </ChartContainer>
-      </CardContent>
+      {chartData.every((item: any) => item.salsepercategory === 0) ? (
+        <div className="text-center text-gray-500 min-h-[200px] flex justify-center items-center">
+          Data not available
+        </div>
+      ) : (
+        <CardContent className="flex-1 pb-0">
+          <ChartContainer
+            config={chartConfig}
+            className="w-full mx-auto aspect-square max-h-[340px] pb-0 [&_.recharts-pie-label-text]:fill-foreground"
+          >
+            <PieChart>
+              <ChartTooltip
+                content={
+                  <ChartTooltipContent
+                    labelKey="category"
+                    nameKey={dataKey}
+                    indicator="line"
+                  />
+                }
+              />
+              <Pie
+                data={chartData}
+                dataKey={dataKey}
+                label={({ name, value }) => `${name}: ${value}`}
+                nameKey="category"
+              />
+            </PieChart>
+          </ChartContainer>
+        </CardContent>
+      )}
       <CardFooter className="flex-col gap-2 text-sm"></CardFooter>
     </Card>
   );

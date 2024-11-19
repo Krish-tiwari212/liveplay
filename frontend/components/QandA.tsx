@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react'
 import { Label } from './ui/label';
 import { Switch } from './ui/switch';
 import { useEventContext } from '@/context/EventDataContext';
+import Image from 'next/image';
 
 interface QandAProps{
   handleNext:()=>void
@@ -37,7 +38,7 @@ const QandA = ({ handleNext, FeatureData }: QandAProps) => {
   return (
     <div className="text-center font-sans p-8 bg-gradient-to-r bg-white shadow-lg rounded-lg relative">
       <div className="flex items-center space-x-2 relative">
-        <Label htmlFor="airplane-mode" className="text-lg">
+        <Label htmlFor="airplane-mode" className="text-sm md:text-lg">
           Enable Q&A
         </Label>
         <Switch
@@ -47,14 +48,17 @@ const QandA = ({ handleNext, FeatureData }: QandAProps) => {
         />
       </div>
       {showQnA && (
-        <>
-          <h1 className="text-5xl font-bold mt-4 mb-4 text-[#17202A]">
-            Countdown Timer
-          </h1>
-          <h2 className="text-4xl mb-2 text-[#17202A] ">11 Days 15 Hours</h2>
-          <p className="text-lg text-[#17202A] mb-4">Until the final date!</p>
-        </>
-      )}
+        
+        <div className="flex justify-center items-center pt-4">
+          <Image 
+            src="/images/QNA.svg" 
+            alt='public/images/QNA.svg' 
+            width={800} 
+            height={800} 
+            className='border shadow-lg w-full max-w-xs sm:max-w-sm md:max-w-md lg:max-w-lg xl:max-w-xl'
+          />
+        </div>
+      )} 
     </div>
   );
 };

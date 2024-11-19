@@ -1,18 +1,26 @@
 import React, { useEffect, useState } from "react";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import { MdOutlineEvent } from "react-icons/md";
-import { FaUserCircle } from "react-icons/fa";
+import { FaBars, FaSignOutAlt, FaUserCircle } from "react-icons/fa";
 import { IoMdList } from "react-icons/io";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useToast } from "@/hooks/use-toast";
-import { createClient } from "@/utils/supabase/client"; // Assuming you have a Supabase client setup
+import { createClient } from "@/utils/supabase/client"; 
+import Image from "next/image";
+import { Button } from "./ui/button";
+import { RiLoginCircleFill } from "react-icons/ri";
+import { Avatar, AvatarFallback, AvatarImage } from "./ui/avatar";
+import { Popover, PopoverContent, PopoverTrigger } from "./ui/popover";
+import { useUser } from "@/context/UserContext";
 
 const MNavbar = () => {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const { toast } = useToast();
   const router = useRouter();
   const supabase = createClient();
+  const { user, loading, setUser } = useUser();
+  const [isPopoverOpen, setIsPopoverOpen] = useState(false);
 
   useEffect(() => {
     const checkLoginStatus = async () => {
@@ -50,51 +58,103 @@ const MNavbar = () => {
     }
   };
 
+  const scrollToSection = (sectionId: string) => {
+    const section = document.getElementById(sectionId);
+    if (section) {
+      section.scrollIntoView({ behavior: "smooth" });
+    }
+  };
+
   return (
-    <div className="md:hidden flex items-center justify-between p-4 bg-[#17202A] text-white gap-10 shadow-lg">
-      <div className="flex items-center gap-10">
-        <div className="text-lg font-bold tracking-wider">liveplay.in</div>
-      </div>
-      <Sheet>
-        <SheetTrigger>
-          <IoMdList size={30} />
-        </SheetTrigger>
-        <SheetContent className="bg-[#17202A] w-[35%] border-none rounded-lg shadow-lg p-4">
-          <div className="flex flex-col pt-10">
-            {isLoggedIn ? (
-              <Link href={"/"}>
-                <button
-                  onClick={handleLogout}
-                  className="bg-transparent flex text-white py-4"
-                >
-                  <FaUserCircle className="inline mr-2" size={30} />
-                  <h1 className="block md:text-lg">LogOut</h1>
-                </button>
-              </Link>
-            ) : (
-              <Link href={"/auth/login"}>
-                <button className="bg-transparent flex text-white py-4">
-                  <FaUserCircle className="inline mr-2" size={30} />
-                  <h1 className="block md:text-lg">SignIn</h1>
-                </button>
-              </Link>
-            )}
-            {isLoggedIn && (
-              <button
-                onClick={() => router.push("organizerDashboard")}
-                className="flex items-center bg-white  text-[#17202A] rounded-full px-6 md:px-10 py-1 hover:bg-slate-400  transition transform hover:-translate-y-1 hover:shadow-lg hover:shadow-gray-500 border border-transparent"
+    <div className="lg:hidden flex items-center justify-between p-4 bg-[#17202A] text-white shadow-lg">
+      <div className="flex items-center gap-4">
+        <Sheet>
+          <SheetTrigger>
+            <FaBars className="text-3xl text-[#ccdb28]" />
+          </SheetTrigger>
+          <SheetContent className="bg-[#141f29] pt-16 border-none" side="top">
+            <div className="flex flex-col pt-10">
+              <Button
+                onClick={() => {
+                  scrollToSection("hero-features");
+                }}
+                className="w-full mb-4 bg-[#141f29] text-[#ccdb28] border border-[#ccdb28] text-2xl py-8"
               >
-                <MdOutlineEvent className="inline mr-2" size={20} />
-                Dashboard
-              </button>
-            )}
-            <button onClick={()=>{router.push("/createeventstaticpage")}} className="flex items-center bg-purple-700 text-white px-6 py-1 hover:bg-purple-800 transition transform hover:-translate-y-1 hover:shadow-lg hover:shadow-violet-900 border border-transparent">
-              <MdOutlineEvent className="inline mr-2" size={20} />
-              Create Event
-            </button>
+                Free Match Generator
+              </Button>
+              <Button
+                onClick={() => {
+                  router.push("/createeventstaticpage");
+                }}
+                className="w-full mb-4 bg-[#141f29] text-[#ccdb28] border border-[#ccdb28] text-2xl py-8"
+              >
+                Create Event
+              </Button>
+              {isLoggedIn && (
+                <Button
+                  onClick={() => router.push("organizerDashboard")}
+                  className="w-full mb-4 bg-[#141f29] text-[#ccdb28] border border-[#ccdb28] text-2xl py-8"
+                >
+                  Dashboard
+                </Button>
+              )}
+            </div>
+          </SheetContent>
+        </Sheet>
+        <div className="flex items-center gap-10">
+          <div className="tracking-wider">
+            <Image
+              src="/images/Logo.png"
+              alt="/images/Logo.png"
+              width={200}
+              height={200}
+            />
           </div>
-        </SheetContent>
-      </Sheet>
+        </div>
+      </div>
+      <Popover open={isPopoverOpen} onOpenChange={setIsPopoverOpen}>
+        <PopoverTrigger
+          className="lg:hidden"
+          onClick={() => setIsPopoverOpen(!isPopoverOpen)}
+        >
+          <Avatar>
+            <AvatarImage src={user?.user_metadata.picture} />
+            <AvatarFallback>CN</AvatarFallback>
+          </Avatar>
+        </PopoverTrigger>
+        <PopoverContent className="mr-10 w-40 p-1 bg-[#17202A] focus:ring-offset-none border-none z-10">
+          <div className="mt-auto">
+            <ul>
+              <li>
+                {isLoggedIn ? (
+                  <Link href={"/"}>
+                    <Button
+                      onClick={handleLogout}
+                      variant="tertiary"
+                      className="flex justify-center items-center w-full"
+                      size="xs"
+                    >
+                      <RiLoginCircleFill className="inline" />
+                      <h1 className="hidden md:block">Log Out</h1>
+                    </Button>
+                  </Link>
+                ) : (
+                  <Link href={"/auth/login"}>
+                    <Button
+                      variant="tertiary"
+                      className=" flex justify-center items-center w-full"
+                      size="xs"
+                    >
+                      <RiLoginCircleFill className="inline" />
+                      <h1 className="hidden md:block ">Sign Up/Login</h1>
+                    </Button>
+                  </Link>
+                )}
+              </li>
+            </ul>
+          </div>
+        </PopoverContent>
+      </Popover>
     </div>
   );
 };

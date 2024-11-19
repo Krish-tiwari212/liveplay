@@ -161,6 +161,12 @@ const CategoryPreview = ({
     }
   }, [EventData, EventEditData]);
 
+  const formatDate = (dateString: string | undefined) => {
+    if (!dateString) return "";
+    const date = new Date(dateString);
+    return new Intl.DateTimeFormat('en-US', { dateStyle: 'medium' }).format(date);
+  };
+
   return (
     <div className="flex flex-col mx-2 sm:mx-6">
       <div className="flex flex-col sm:flex-row justify-between">
@@ -412,19 +418,19 @@ const CategoryPreview = ({
               <div className="flex justify-between border-b pb-2">
                 <span className="font-semibold text-gray-700">From Date:</span>
                 <span className="text-gray-800">
-                  {currentCategory?.from_date}
+                  {formatDate(currentCategory?.from_date)}
                 </span>
               </div>
               <div className="flex justify-between">
                 <span className="font-semibold text-gray-700">Till Date:</span>
                 <span className="text-gray-800">
-                  {currentCategory?.till_date}
+                  {formatDate(currentCategory?.till_date)}
                 </span>
               </div>
             </div>
           </DialogDescription>
           <div className="flex justify-end mt-6">
-            <Button className="">
+            <Button onClick={() => setIsDetailsDialogOpen(false)} className="">
               Close
             </Button>
           </div>

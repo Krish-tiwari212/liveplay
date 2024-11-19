@@ -200,7 +200,7 @@ const fields = [
       {
         id: "organizer_contact_number",
         label: "Contact",
-        type: "text",
+        type: "number",
         name: "organizer_contact_number",
         placeholder: "Enter Contact Number",
         required: true,
@@ -211,6 +211,22 @@ const fields = [
         type: "email",
         name: "organizer_email",
         placeholder: "Enter Email",
+        required: true,
+      },
+      {
+        id: "website_link",
+        label: "Website Link",
+        type: "text",
+        name: "website_link",
+        placeholder: "Enter Website Link",
+        required: true,
+      },
+      {
+        id: "insta_id",
+        label: "Instagram Id",
+        type: "text",
+        name: "insta_id",
+        placeholder: "Enter Id",
         required: true,
       },
     ],
@@ -536,9 +552,9 @@ const EventDetailsForm: React.FC<EventDetailsFormProps> = ({
           <Label className="font-bold text-lg" htmlFor="OrganiserContactInfo">
             Organiser Contact Info
           </Label>
-          <div className="flex flex-col xl:flex-row w-full gap-3">
+          <div className="flex flex-wrap w-full gap-3">
             {fields[3].organizerContactInfo?.map((field, i) => (
-              <div className=" w-full flex flex-col" key={i}>
+              <div className="w-full xl:w-[32%] flex flex-col" key={i}>
                 <Label className="text-[0.8rem]">
                   {field.label}
                   <span className="text-red-500">*</span>
@@ -553,7 +569,7 @@ const EventDetailsForm: React.FC<EventDetailsFormProps> = ({
                     formData[field.name as keyof EventDetailsFormProps] || ""
                   }
                   onChange={handleChange}
-                  className=" w-full h-12 p-2 bg-white border rounded-md text-sm shadow-2xl text-[#17202A] focus:border-[#17202A] focus:outline-none focus:shadow-lg"
+                  className="w-full h-10 p-2 bg-white border rounded-md text-sm shadow-2xl text-[#17202A] focus:border-[#17202A] focus:outline-none focus:shadow-lg"
                 />
               </div>
             ))}
@@ -569,7 +585,7 @@ const EventDetailsForm: React.FC<EventDetailsFormProps> = ({
               >
                 Use organizer's info from profile.
               </label>
-              <p className="text-[0.8rem] text-muted-foreground">
+              <p className="text-[0.8rem] hidden md:block text-muted-foreground">
                 Details would be Automatically fetched from your user profile
               </p>
             </div>

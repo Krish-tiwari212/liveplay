@@ -68,7 +68,7 @@ const EventBoosters = ({
 }: EventBoostersProps) => {
   const { EventData, setEventData,EventEditData,setEventEditData, isVenueNotDecided, setIsVenueNotDecided,editPage } =
     useEventContext();
-  const [selectedPlan, setSelectedPlan] = useState<string | null>("pro");
+  const [selectedPlan, setSelectedPlan] = useState<string | null>(EventData.selected_plan || "pro");
 
   const handlePlanClick = (plan: string) => {
     setSelectedPlan(selectedPlan === plan ? null : plan);
@@ -95,22 +95,21 @@ const EventBoosters = ({
         title: "Please fill out the necessary details",
       });
     } else {
+      setSelectedPlan("standard");
       handleNext();
     }
   };
-   useEffect(() => {
-     console.log(EventData);
-   }, []);
+
+  useEffect(()=>{
+    console.log(EventData)
+  },[])
+
   return (
     <div className={`w-full`}>
-      <h1
-        className={`text-2xl sm:text-4xl text-center font-semibold ${
-          editPage !== "manageEvent" ? "pt-8" : ""
-        }`}
-      >
+      <h1 className={`text-xl lg::text-4xl text-center font-semibold `}>
         🚀 Supercharge your Event Now!
       </h1>
-      <div className="flex flex-col sm:flex-row sm:justify-between gap-4 sm:gap-8 mt-4 text-2xl text-gray-800 sm:w-[80%] mx-auto font-semibold">
+      <div className="flex flex-col md:flex-row sm:justify-between gap-4 sm:gap-8 mt-6 text-lg md:text-2xl text-gray-800 w-[90%] md:w-[80%] mx-auto font-semibold">
         <div className="flex items-center gap-2">
           <FaPeopleGroup />
           <span style={{ textShadow: "0 3px 0 #cddc29" }}>
@@ -133,7 +132,7 @@ const EventBoosters = ({
         </div>
       </div>
       <div className="flex flex-col sm:flex-row justify-center h-full gap-4 mt-10">
-        <div className=" w-[90%] sm:w-72 flex flex-col gap-1">
+        <div className=" w-[90%] sm:w-72 flex flex-col gap-1 mx-auto sm:mx-0">
           <div
             className={`p-4 rounded-lg cursor-pointer transition-transform duration-400 bg-gray-800 text-white font-open-sauce ${
               selectedPlan === "standard"
@@ -165,7 +164,7 @@ const EventBoosters = ({
           )}
         </div>
         <div
-          className={`relative p-4 rounded-lg cursor-pointer w-[90%] sm:w-72 transition-transform duration-400 bg-gray-800 text-white font-open-sauce ${
+          className={`relative p-4 rounded-lg cursor-pointer mx-auto sm:mx-0 w-[90%] sm:w-72 transition-transform duration-400 bg-gray-800 text-white font-open-sauce ${
             selectedPlan === "pro" ? "border-8 border-[#cddc29]" : "border-none"
           } flex flex-col`}
           onClick={() => handlePlanClick("pro")}
@@ -182,7 +181,7 @@ const EventBoosters = ({
             />
           </div>
           <h2 className="text-2xl font-semibold">Pro</h2>
-          <div className="flex gap-1 mb-2 items-center justify-start">
+          <div className="flex gap-1 items-center justify-start">
             <p className="text-2xl flex items-center ">₹3,999</p>
           </div>
           <div className="w-full flex flex-col gap-1">
@@ -198,15 +197,29 @@ const EventBoosters = ({
           </div>
           <div className="items-center ">
             <ul>
-              {features.pro.map((feature, index) => (
-                <li key={index} className="my-1">
-                  <h1 className="text-[#CDDC29]">{feature.name}</h1>
-                </li>
-              ))}
+              {features.pro.map((feature, index) =>
+                feature.name === "Verified Badge" ? (
+                  <li key={index} className="my-1 flex items-center gap-2 ">
+                    <h1 className="text-[#CDDC29]">{feature.name}</h1>
+                    <div>
+                      <Image
+                        src="/icons/ProBadgeLight.svg"
+                        alt="/icons/ProBadgeLight.svg"
+                        width={70}
+                        height={70}
+                      />
+                    </div>
+                  </li>
+                ) : (
+                  <li key={index} className="my-1">
+                    <h1 className="text-[#CDDC29]">{feature.name}</h1>
+                  </li>
+                )
+              )}
             </ul>
           </div>
         </div>
-        <div className="w-[90%] sm:w-72 flex flex-col gap-1">
+        <div className="w-[90%] sm:w-72 flex flex-col gap-1 mx-auto sm:mx-0" >
           <div
             className={`p-4 rounded-lg cursor-pointer transition-transform duration-400 bg-gray-800 text-white font-open-sauce ${
               selectedPlan === "elite"
@@ -216,7 +229,7 @@ const EventBoosters = ({
             onClick={() => handlePlanClick("elite")}
           >
             <h2 className="text-2xl font-semibold">Elite</h2>
-            <div className="flex gap-1 mb-2 items-center justify-start">
+            <div className="flex gap-1 items-center justify-start">
               <p className="text-2xl flex items-center ">₹4,999</p>
             </div>
             <div className="w-full flex flex-col gap-1">
@@ -229,11 +242,25 @@ const EventBoosters = ({
 
             <div className="items-center">
               <ul>
-                {features.elite.map((feature, index) => (
-                  <li key={index} className="my-1">
-                    <h1 className="text-[#CDDC29]">{feature.name}</h1>
-                  </li>
-                ))}
+                {features.elite.map((feature, index) =>
+                  feature.name === "Verified Badge" ? (
+                    <li key={index} className="my-1 flex items-center gap-2 ">
+                      <h1 className="text-[#CDDC29]">{feature.name} </h1>
+                      <div>
+                        <Image
+                          src="/icons/EliteBadgeDark.svg"
+                          alt="/icons/EliteBadgeDark.svg"
+                          width={70}
+                          height={70}
+                        />
+                      </div>
+                    </li>
+                  ) : (
+                    <li key={index} className="my-1">
+                      <h1 className="text-[#CDDC29]">{feature.name}</h1>
+                    </li>
+                  )
+                )}
               </ul>
             </div>
           </div>
@@ -244,17 +271,6 @@ const EventBoosters = ({
           )}
         </div>
       </div>
-
-      {/* <div className="flex justify-center items-center">
-        <Button
-          variant="tertiary"
-          size="none"
-          className="mt-10 text-lg px-16 py-1"
-          onClick={handleProceed}
-        >
-          Proceed
-        </Button>
-      </div> */}
     </div>
   );
 };

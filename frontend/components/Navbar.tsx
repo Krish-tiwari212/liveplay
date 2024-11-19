@@ -5,11 +5,24 @@ import { MdNotifications, MdOutlineChat, MdPublic, MdSearch, MdMenu, MdOutlineEv
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { toast } from '@/hooks/use-toast';
-import { createClient } from '@/utils/supabase/client'; // Assuming you have a Supabase client setup
+import { createClient } from '@/utils/supabase/client'; 
+import Image from 'next/image';
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import { Button } from './ui/button';
+import { RiLoginCircleFill } from 'react-icons/ri';
+
 
 const Navbar = () => {
   const supabase = createClient();
   const [isLoggedIn, setIsLoggedIn] = useState(false);
+
+  
 
   useEffect(() => {
     const checkLoginStatus = async () => {
@@ -48,48 +61,85 @@ const Navbar = () => {
 
   const router = useRouter();
 
+  const scrollToSection = (sectionId: string) => {
+    const section = document.getElementById(sectionId);
+    if (section) {
+      section.scrollIntoView({ behavior: 'smooth' });
+    }
+  };
+
   return (
-    <div className="hidden md:flex items-center justify-between p-4 bg-[#17202A] text-white gap-10 shadow-lg">
-      <div className="flex items-center gap-10">
-        <div className="text-lg md:text-3xl font-bold tracking-wider">
-          liveplay.in
+    <div className="hidden lg:flex items-center justify-between p-4 bg-[#17202A] text-white gap-10 shadow-lg">
+      <div className="flex items-center gap-5">
+        <div className="text-lg md:text-3xl font-bold tracking-wider flex-none">
+          <Image
+            src="/images/Logo.png"
+            alt="/images/Logo.png"
+            width={200}
+            height={200}
+          />
         </div>
+        <Select>
+          <SelectTrigger className="w-[110px] h-[30px] bg-[#141f29] text-[#ccdb28] border border-[#ccdb28]">
+            <SelectValue placeholder="Location" />
+          </SelectTrigger>
+          <SelectContent>
+            <SelectItem value="light">Pune</SelectItem>
+            <SelectItem value="dark">Delhi</SelectItem>
+            <SelectItem value="system">Chennai</SelectItem>
+          </SelectContent>
+        </Select>
       </div>
       <div className="flex items-center gap-4">
-        <button
+        <Button
+          onClick={() => {
+            scrollToSection("hero-features");
+          }}
+          size="xs"
+          className="w-full bg-[#141f29] text-[#ccdb28] border border-[#ccdb28]"
+        >
+          Free Match Generator
+        </Button>
+        <Button
           onClick={() => {
             router.push("/createeventstaticpage");
-          }} 
-          className="flex items-center bg-purple-700 text-white px-6 py-2 rounded-lg hover:bg-purple-800 transition transform hover:-translate-y-1 hover:shadow-lg hover:shadow-violet-900 border border-transparent"
+          }}
+          className="w-full bg-[#141f29] text-[#ccdb28] border border-[#ccdb28]"
+          size="xs"
         >
-          <MdOutlineEvent className="inline mr-2" size={20} />
           Create Event
-        </button>
+        </Button>
         {isLoggedIn && (
-          <button
+          <Button
             onClick={() => router.push("playerdashboard")}
-            className="flex items-center bg-white text-[#17202A] rounded-full px-6 md:px-10 py-2 hover:bg-slate-400 transition transform hover:-translate-y-1 hover:shadow-lg hover:shadow-gray-500 border border-transparent"
+            className="w-full bg-[#141f29] text-[#ccdb28] border border-[#ccdb28]"
+            size="xs"
           >
-            <MdOutlineEvent className="inline mr-2" size={20} />
             Dashboard
-          </button>
+          </Button>
         )}
         {isLoggedIn ? (
           <Link href={"/"}>
-            <button
+            <Button
               onClick={handleLogout}
-              className="bg-transparent flex items-center text-white md:px-4 py-2 ml-4 hover:text-gray-400 transition"
+              variant="tertiary"
+              className="flex justify-center items-center"
+              size="xs"
             >
-              <FaUserCircle className="inline md:mr-2" size={30} />
-              <h1 className="hidden md:block md:text-lg">Log Out</h1>
-            </button>
+              <RiLoginCircleFill className="inline" />
+              <h1 className="hidden md:block">Log Out</h1>
+            </Button>
           </Link>
         ) : (
           <Link href={"/auth/login"}>
-            <button className="bg-transparent flex items-center text-white md:px-4 py-2 ml-4 hover:text-gray-400 transition">
-              <FaUserCircle className="inline md:mr-2" size={30} />
-              <h1 className="hidden md:block md:text-lg">Sign In</h1>
-            </button>
+            <Button
+              variant="tertiary"
+              className=" flex justify-center items-center"
+              size="xs"
+            >
+              <RiLoginCircleFill className="inline" />
+              <h1 className="hidden md:block ">Sign Up/Login</h1>
+            </Button>
           </Link>
         )}
       </div>

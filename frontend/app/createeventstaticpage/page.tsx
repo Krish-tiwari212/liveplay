@@ -7,11 +7,12 @@ import { Card, CardHeader, CardTitle, CardContent, CardFooter } from '@/componen
 import { FaPersonRunning } from 'react-icons/fa6';
 import { BsPersonCheck } from "react-icons/bs";
 import { IoArrowForwardCircle } from 'react-icons/io5';
-import { FaTrophy } from 'react-icons/fa';
+import { FaBars, FaTrophy } from 'react-icons/fa';
 import { MdEvent } from 'react-icons/md';
 import { TbListDetails } from 'react-icons/tb';
 import { useRouter } from 'next/navigation';
 import { createClient } from "@/utils/supabase/client";
+import { Sheet, SheetTrigger, SheetContent } from '@/components/ui/sheet';
 
 const cardData = [
   {
@@ -50,9 +51,10 @@ const cardData = [
 ];
 
 const page = () => {
-  const router=useRouter()
+  const router = useRouter();
   const supabase = createClient();
   const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [isSheetOpen, setIsSheetOpen] = useState(false);
 
   useEffect(() => {
     const checkLoginStatus = async () => {
@@ -67,9 +69,69 @@ const page = () => {
     checkLoginStatus();
   }, []);
 
+  const scrollToSection = (id: string) => {
+    setIsSheetOpen(false);
+    const section = document.getElementById(id);
+    if (section) {
+      const navbarHeight = document.querySelector('nav')?.offsetHeight || 0;
+      const sectionPosition = section.getBoundingClientRect().top + window.scrollY;
+      window.scrollTo({
+        top: sectionPosition - navbarHeight,
+        behavior: "smooth"
+      });
+    }
+  };
+
   return (
     <div>
-      <nav className="bg-[#141f29] p-4">
+      <nav className="bg-[#141f29] p-4 flex justify-between items-center fixed w-full z-20 ">
+        <Sheet open={isSheetOpen} onOpenChange={setIsSheetOpen}>
+          <SheetTrigger asChild>
+            <button className="mr-4 lg:hidden">
+              <FaBars className="text-2xl text-[#ccdb28]" />
+            </button>
+          </SheetTrigger>
+          <SheetContent className="bg-[#141f29] pt-16 border-none" side="top">
+            <div className="px-2 py-4">
+              <Button
+                onClick={() => scrollToSection("hero")}
+                className="w-full mb-4 bg-[#141f29] text-[#ccdb28] border border-[#ccdb28] text-2xl py-8"
+              >
+                Home
+              </Button>
+              <Button
+                onClick={() => scrollToSection("pricing")}
+                className="w-full mb-4 bg-[#141f29] text-[#ccdb28] border border-[#ccdb28] text-2xl py-8"
+              >
+                Pricing
+              </Button>
+              <Button
+                onClick={() => scrollToSection("features")}
+                className="w-full mb-4 bg-[#141f29] text-[#ccdb28] border border-[#ccdb28] text-2xl py-8"
+              >
+                Features
+              </Button>
+              <Button
+                onClick={() => scrollToSection("freeMatchGenerator")}
+                className="w-full mb-4 bg-[#141f29] text-[#ccdb28] border border-[#ccdb28] text-2xl py-8"
+              >
+                Free Match Generator
+              </Button>
+              <Button
+                onClick={() => {
+                  router.push(
+                    `${isLoggedIn ? "/organizerDashboard" : "/auth/login"}`
+                  );
+                  setIsSheetOpen(false);
+                }}
+                className="w-full text-2xl py-8"
+                variant="tertiary"
+              >
+                Create Events
+              </Button>
+            </div>
+          </SheetContent>
+        </Sheet>
         <Image
           src="/images/Logo.png"
           alt="Liveplay Logo"
@@ -77,25 +139,63 @@ const page = () => {
           width={200}
           height={200}
         />
+        <div className="lg:flex space-x-4 hidden">
+          <Button
+            onClick={() => scrollToSection("hero")}
+            className="bg-[#141f29] text-[#ccdb28] border border-[#ccdb28]"
+          >
+            Home
+          </Button>
+          <Button
+            onClick={() => scrollToSection("pricing")}
+            className="bg-[#141f29] text-[#ccdb28] border border-[#ccdb28]"
+          >
+            Pricing
+          </Button>
+          <Button
+            onClick={() => scrollToSection("features")}
+            className="bg-[#141f29] text-[#ccdb28] border border-[#ccdb28]"
+          >
+            Features
+          </Button>
+          <Button
+            onClick={() => scrollToSection("freeMatchGenerator")}
+            className="bg-[#141f29] text-[#ccdb28] border border-[#ccdb28]"
+          >
+            Free Match Generator
+          </Button>
+          <Button
+            onClick={() => {
+              router.push(
+                `${isLoggedIn ? "/organizerDashboard" : "/auth/login"}`
+              );
+            }}
+            variant="tertiary"
+          >
+            Create Events
+          </Button>
+        </div>
       </nav>
       <div
+        id="hero"
         style={{ backgroundImage: "url('/images/createeventbanner1.svg')" }}
-        className="relative flex flex-col items-start pt-20 px-4 sm:px-8 text-white min-h-[500px] bg-cover bg-center w-full font-lato"
+        className="relative flex flex-col items-start pt-32 px-4 sm:px-8 text-white min-h-[500px] bg-cover bg-center w-full font-lato"
       >
-        <div className="absolute left-0 top-0 w-full h-full bg-gradient-to-b from-black via-black/50 to-transparent opacity-60"></div>
+        <div className="absolute left-0 top-0 w-full h-full bg-gradient-to-b from-[#141f29] via-black/50 to-transparent opacity-60"></div>
         <div className="z-10">
           <h1 className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-semibold mb-6">
             We <span className="text-[#ccdb28]">guarantee</span> your event
             success.
           </h1>
           <p className="text-sm sm:text-xl md:text-2xl mb-1 font-semibold ">
-            More visibility, more registrations, more earnings—
-            <span className="text-[#ccdb28] mx-2">all in one</span>platform
+            More visibility, more registrations, more earnings{" "}
+            <br className="sm:hidden" />
+            <span className="text-[#ccdb28] mx-1">all in one</span>platform
           </p>
           <p className="text-sm sm:text-xl md:text-2xl mb-12 font-semibold">
             Publish your event in under
-            <span className="text-[#ccdb28] mx-2">10 minutes</span> for
-            <span className="text-[#ccdb28] mx-2">FREE</span>
+            <span className="text-[#ccdb28] mx-1">10 minutes</span> for
+            <span className="text-[#ccdb28] mx-1">FREE</span>
           </p>
           <Button
             onClick={() => {
@@ -110,13 +210,13 @@ const page = () => {
           </Button>
         </div>
       </div>
-      <div className="bg-[#141f29] py-8 px-10">
+      <div className="bg-[#141f29] py-8 px-10 xl:px-32">
         <h2 className="text-center text-2xl sm:text-3xl md:text-4xl text-white font-semibold mb-8 sm:mb-12">
           Create and Manage Your Event in Just a Few Steps
         </h2>
         <div className="flex flex-col md:flex-row justify-center items-center space-y-8 md:space-y-0 md:space-x-8">
           <div className="text-center">
-            <p className="text-[#ccdb28] text-xl sm:text-2xl font-semibold mb-2">
+            <p className="text-[#ccdb28] text-xl lg:text-2xl font-semibold mb-2">
               Create Event for Free
             </p>
             <Image
@@ -124,7 +224,7 @@ const page = () => {
               alt="Create Event for Free"
               width={300}
               height={300}
-              className="w-full sm:w-auto"
+              className="w-full sm:w-auto "
             />
           </div>
           <div className="text-white text-xl sm:text-2xl">
@@ -137,7 +237,7 @@ const page = () => {
             />
           </div>
           <div className="text-center">
-            <p className="text-[#ccdb28] text-xl sm:text-2xl font-semibold mb-2">
+            <p className="text-[#ccdb28] text-xl lg:text-2xl font-semibold mb-2">
               Customize & Promote
             </p>
             <Image
@@ -158,7 +258,7 @@ const page = () => {
             />
           </div>
           <div className="text-center">
-            <p className="text-[#ccdb28] text-xl sm:text-2xl font-semibold mb-2">
+            <p className="text-[#ccdb28] text-xl lg:text-2xl font-semibold mb-2">
               Real Time Tracking
             </p>
             <Image
@@ -171,7 +271,7 @@ const page = () => {
           </div>
         </div>
       </div>
-      <div className="relative bg-[#ccdb28] pt-12 pb-32 md:pb-20">
+      <div id="pricing" className="relative bg-[#ccdb28] pt-12 pb-32 md:pb-20">
         <div className="flex flex-col xl:flex-row justify-center items-center space-y-8 xl:space-y-0 xl:space-x-12">
           <Card>
             <CardContent className="flex flex-col items-center py-8 px-4 max-w-[350px] sm:min-w-[600px] lg:max-w-[550px] h-auto gap-4 shadow-xl">
@@ -202,15 +302,18 @@ const page = () => {
             </CardContent>
           </Card>
         </div>
-        <p className="text-black text-center mt-4 text-md absolute right-2 bottom-2 font-semibold ">
-          *No amount to be paid upfront by organizers. However, a 10% platform
-          fee shall be deducted from event proceeds.
+        <p className="text-black text-center mt-4 text-[0.8rem] sm:text-md absolute right-2 bottom-2 font-semibold ">
+          *No amount to be paid upfront by organizers.{" "}
+          <br className="sm:hidden" />
+          However, a platform fee shall be deducted from event proceeds.
         </p>
       </div>
-      <div className="bg-[#141f29] py-12">
+      <div id="features" className="bg-[#141f29] py-12">
         <h2 className="text-center text-2xl sm:text-3xl md:text-4xl text-white font-semibold mb-8">
-          Powerful Features for{" "}
-          <span className="text-[#ccdb28]">Seamless Event Hosting</span>
+          Powerful Features for
+          <span className="text-[#ccdb28] mx-1 sm:mx-2">
+            Seamless Event Hosting
+          </span>
         </h2>
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 px-10">
           {cardData.map((card, index) => (
@@ -257,16 +360,19 @@ const page = () => {
           </div>
         </div>
       </div>
-      <div className="bg-[#ccdb28] py-12 flex justify-center items-center w-full">
+      <div
+        id="freeMatchGenerator"
+        className="bg-[#ccdb28] py-12 flex justify-center items-center w-full"
+      >
         <div className="bg-white p-8 rounded-lg shadow-lg text-center w-[90%] lg:w-[60%] border border-black">
-          <h2 className="text-4xl md:text-6xl font-bold text-[#141f29] mb-2 md:mb-4">
+          <h2 className="text-3xl md:text-6xl font-bold text-[#141f29] mb-2 md:mb-4">
             Free Match Generator
           </h2>
-          <p className="text-xl md:text-2xl text-[#141f29] mb-4 md:mb-6">
+          <p className="text-[16px] md:text-2xl text-[#141f29] mb-4 md:mb-6">
             Generate match fixtures for your event
           </p>
           <Button className="mb-6 text-lg">Start Generating Fixtures</Button>
-          <ul className="text-left text-[#141f29] space-y-2 ld:mx-12 text-xl md:text-2xl">
+          <ul className="text-left text-[#141f29] space-y-2 ld:mx-12 text-[16px] md:text-2xl">
             <li className="flex gap-4 items-center">
               <IoArrowForwardCircle className="flex-none" />{" "}
               <h1>No Signup needed</h1>
@@ -301,9 +407,7 @@ const page = () => {
           </h2>
           <p className="text-md mx-4 sm:mx-0 sm:text-xl mb-6 text-white">
             Join hundreds of other organizers who trust
-            <span className="font-bold text-[#ccdb28] mx-2">
-              liveplay.in
-            </span>{" "}
+            <span className="font-bold text-[#ccdb28] mx-1">liveplay.in</span>
             and create your event now
           </p>
           <Button
