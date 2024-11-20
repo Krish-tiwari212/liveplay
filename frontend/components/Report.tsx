@@ -32,6 +32,7 @@ import {
 import { Button } from './ui/button';
 import { FaPeopleGroup } from 'react-icons/fa6';
 import { PieChartDemo } from './PieChart';
+import { BiLike } from 'react-icons/bi';
 
 interface ReportProps{
     handleNext:()=>void
@@ -73,7 +74,7 @@ const Report = ({ handleNext }: ReportProps) => {
     {
       title: "Number of Interested People",
       description: "Total number of users interested in this event",
-      icon: <FaRegThumbsUp />,
+      icon: <BiLike />,
       data: 0,
     },
   ];

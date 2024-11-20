@@ -108,8 +108,8 @@ const EmblaCarousel: React.FC<PropType> = () => {
   }, [emblaApi, tweenScale]);
 
   return (
-    <section className="bg-[#121e28] h-64">
-      {/* <div className="embla relative">
+    <section className="bg-[#121e28]">
+      <div className="embla relative">
         <div className="embla__viewport" ref={emblaRef}>
           <div className="embla__container mt-10">
             {eventsArray.map((e, index) => (
@@ -142,7 +142,7 @@ const EmblaCarousel: React.FC<PropType> = () => {
             />
           </div>
 
-          {/* <div className="embla__dots">
+          <div className="embla__dots">
             {scrollSnaps.map((_, index) => (
               <DotButton
                 key={index}
@@ -152,9 +152,9 @@ const EmblaCarousel: React.FC<PropType> = () => {
                 )}
               />
             ))}
-          </div> */}
-        {/* </div>
-      </div> */} */}
+          </div>
+        </div>
+      </div>
     </section>
   );
 };

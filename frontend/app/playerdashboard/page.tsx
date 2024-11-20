@@ -52,6 +52,9 @@ import {
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
 import CompleteDetailsForm from "@/components/CompleteDetailsForm";
+import FeedbackForm from "@/components/Rating";
+import Rating from "@/components/Rating";
+import { Label } from "@/components/ui/label";
 
 interface EventCard {
   id: number;
@@ -103,23 +106,41 @@ const EventDetails = () => {
 export default function Home() {
   const { setTheme } = useAppContext();
   const { user } = useUser();
-  const { setDashboardName, UserType, setNotification,completeprofileDialog,setCompleteprofileDialog } = useEventContext();
+  const {
+    setDashboardName,
+    UserType,
+    setNotification,
+    completeprofileDialog,
+    setCompleteprofileDialog,
+  } = useEventContext();
   const [events, setEvents] = useState<EventCard[]>([]);
   const [categories, setCategories] = useState<Category[]>([]);
   const [selectedEvent, setSelectedEvent] = useState<number | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isRegistrationModalOpen, setIsRegistrationModalOpen] = useState(false);
-  const [registeredCategories, setRegisteredCategories] = useState<Category[]>([]);
+  const [registeredCategories, setRegisteredCategories] = useState<Category[]>(
+    []
+  );
   const router = useRouter();
   const supabase = createClient();
-  const [userDetails, setUserDetails] = useState(null); 
+  const [userDetails, setUserDetails] = useState(null);
   const [isAlertOpen, setIsAlertOpen] = useState(false);
   const [selectedEventForWithdraw, setSelectedEventForWithdraw] = useState<
     string | null
   >(null);
+  const [isFeedbackModalOpen, setIsFeedbackModalOpen] = useState(false);
+  const [selectedEventForFeedback, setSelectedEventForFeedback] = useState<
+    number | null
+  >(null);
   const [isRed, setIsRed] = useState(false);
   const [isYellow, setIsYellow] = useState(false);
+  const [feedbackdisable,setFeedbackDisable]=useState(false)
+  const [OrganizerConduct,setOrganizeConduct]=useState(0)
+  const [Refreshments, setRefreshments] = useState(0);
+  const [EventManagement,setEventManagement]=useState(0)
+
+
 
   useEffect(() => {
     const interval = setInterval(() => {
@@ -130,11 +151,22 @@ export default function Home() {
     return () => clearInterval(interval);
   }, []);
 
-  
+  // Handler for Opening Feedback Dialog
+  const handleFeedbackClick = (eventId: number) => {
+    setSelectedEventForFeedback(eventId);
+    setIsFeedbackModalOpen(true);
+  };
+
+  // Handler for Closing Feedback Dialog
+  const handleCloseFeedbackDialog = () => {
+    setIsFeedbackModalOpen(false);
+    setSelectedEventForFeedback(null);
+  };
+
   const handleButtonClick = () => {
     setCompleteprofileDialog(true);
   };
-  
+
   const handleCloseDialog = () => {
     setCompleteprofileDialog(false);
   };
@@ -160,13 +192,13 @@ export default function Home() {
     const fetchUserDetails = async () => {
       if (user?.id) {
         const { data, error } = await supabase
-          .from('users')
-          .select('*')
-          .eq('id', user.id)
+          .from("users")
+          .select("*")
+          .eq("id", user.id)
           .single();
 
         if (error) {
-          console.error('Error fetching user details:', error);
+          console.error("Error fetching user details:", error);
         } else {
           setUserDetails(data);
         }
@@ -189,7 +221,8 @@ export default function Home() {
       } catch (error) {
         console.error("Error fetching events:", error);
         toast({
-          title: "Failed to fetch events. Please check your network connection.",
+          title:
+            "Failed to fetch events. Please check your network connection.",
           variant: "destructive",
         });
       } finally {
@@ -200,7 +233,7 @@ export default function Home() {
     fetchEvents();
   }, []);
 
-  const handleWithdrawClick = async(eventId: number) => {
+  const handleWithdrawClick = async (eventId: number) => {
     setIsModalOpen(true);
     try {
       const response = await fetch(`/api/event/categories/${eventId}`);
@@ -234,6 +267,15 @@ export default function Home() {
     setIsAlertOpen(true);
   };
 
+  const handlefeedbacksubmit=()=>{
+    setIsAlertOpen(false)
+    setFeedbackDisable(true)
+    toast({
+      title:"Feedback submitted succesfully"
+    })
+
+  }
+
   const handleViewRegistrationClick = async (eventId: number) => {
     try {
       const response = await fetch(`/api/event/categories/${eventId}`);
@@ -246,7 +288,8 @@ export default function Home() {
     } catch (error) {
       console.error("Error fetching registered categories:", error);
       toast({
-        title: "Failed to fetch registered categories. Please check your network connection.",
+        title:
+          "Failed to fetch registered categories. Please check your network connection.",
         variant: "destructive",
       });
     }
@@ -255,19 +298,23 @@ export default function Home() {
   const formatDate = (dateString: string): string => {
     const date = new Date(dateString);
     const day = date.getDate();
-    const month = date.toLocaleString('default', { month: 'long' });
+    const month = date.toLocaleString("default", { month: "long" });
     const year = date.getFullYear();
-  
+
     const daySuffix = (day: number): string => {
-      if (day > 3 && day < 21) return 'th';
+      if (day > 3 && day < 21) return "th";
       switch (day % 10) {
-        case 1: return 'st';
-        case 2: return 'nd';
-        case 3: return 'rd';
-        default: return 'th';
+        case 1:
+          return "st";
+        case 2:
+          return "nd";
+        case 3:
+          return "rd";
+        default:
+          return "th";
       }
     };
-  
+
     return `${day}${daySuffix(day)} ${month} ${year}`;
   };
 
@@ -277,6 +324,7 @@ export default function Home() {
       section.scrollIntoView({ behavior: "smooth" });
     }
   };
+
 
   return (
     <div className="flex flex-col m-3">
@@ -330,7 +378,7 @@ export default function Home() {
             Register for Events
           </Button>
           <Button
-            onClick={()=>scrollToSection("pastEvents")}
+            onClick={() => scrollToSection("pastEvents")}
             variant="tertiary"
             size="xs"
             className="text-sm sm:text-md"
@@ -633,7 +681,14 @@ export default function Home() {
                           </span>
                         </div>
                       </div>
-                      <div className="flex flex-col justify-center items-center gap-2 mt-2">
+                      <div className="flex flex-col justify-between items-center gap-2 mt-2">
+                        <button
+                          className="text-sm bg-[#17202A] text-[#CDDC29] hover:text-white py-1 w-full rounded-lg hover:shadow-xl"
+                          onClick={() => handleFeedbackClick(event.id)}
+                          disabled={feedbackdisable}
+                        >
+                          Event Feedback
+                        </button>
                         <button
                           className="text-sm bg-[#17202A] text-[#CDDC29] hover:text-white py-1 w-full rounded-lg hover:shadow-xl"
                           onClick={() => handleViewRegistrationClick(event.id)}
@@ -776,6 +831,53 @@ export default function Home() {
             </AlertDialogFooter>
           </AlertDialogContent>
         </AlertDialog>
+      )}
+      {isFeedbackModalOpen && selectedEventForFeedback && (
+        <Dialog
+          open={isFeedbackModalOpen}
+          onOpenChange={setIsFeedbackModalOpen}
+        >
+          <DialogTrigger asChild>
+            <Button className="hidden">Open Feedback</Button>
+          </DialogTrigger>
+          <DialogContent className="w-[90%] sm:max-w-2xl p-4 flex flex-col h-auto overflow-y-auto">
+            <DialogHeader>
+              <DialogTitle className="text-3xl">Event Feedback</DialogTitle>
+              <DialogDescription className="text-sm text-gray-500">
+                Please provide your feedback for the event.
+              </DialogDescription>
+            </DialogHeader>
+            <div className="space-y-4">
+              <Rating
+                eventId={selectedEventForFeedback}
+                label="Organizer Conduct"
+                setratingvalue={setOrganizeConduct}
+              />
+              <Rating
+                eventId={selectedEventForFeedback}
+                label="Event Management"
+                setratingvalue={setEventManagement}
+              />
+              <Rating
+                eventId={selectedEventForFeedback}
+                label="Refreshments"
+                setratingvalue={setRefreshments}
+              />
+            </div>
+            <div className="flex justify-between mt-4">
+              <Button variant="outline" onClick={handleCloseFeedbackDialog}>
+                Close
+              </Button>
+              <Button
+                variant="default"
+                onClick={handlefeedbacksubmit}
+                className={``}
+              >
+                Submit
+              </Button>
+            </div>
+          </DialogContent>
+        </Dialog>
       )}
     </div>
   );
