@@ -41,6 +41,7 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog";
 import { useEventContext } from '@/context/EventDataContext';
+import { BiLike } from 'react-icons/bi';
 
 
 const metrics = [
@@ -65,7 +66,7 @@ const metrics = [
   {
     title: "Number of Interested People",
     description: "Total number of users interested in this event",
-    icon: <FaRegThumbsUp />,
+    icon: <BiLike />,
     data: 0,
   },
 ];

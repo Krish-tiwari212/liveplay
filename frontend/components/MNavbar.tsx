@@ -21,6 +21,9 @@ const MNavbar = () => {
   const supabase = createClient();
   const { user, loading, setUser } = useUser();
   const [isPopoverOpen, setIsPopoverOpen] = useState(false);
+  
+  // State to control the Sheet (Navbar) open state
+  const [isSheetOpen, setIsSheetOpen] = useState(false);
 
   useEffect(() => {
     const checkLoginStatus = async () => {
@@ -48,6 +51,7 @@ const MNavbar = () => {
         description: "Successfully Logged Out!",
         variant: "default",
       });
+      setIsSheetOpen(false); // Close the Sheet on logout
     } else {
       const result = await response.json();
       toast({
@@ -58,41 +62,41 @@ const MNavbar = () => {
     }
   };
 
-  const scrollToSection = (sectionId: string) => {
-    const section = document.getElementById(sectionId);
-    if (section) {
-      section.scrollIntoView({ behavior: "smooth" });
-    }
+  const handleButtonClick = (action: () => void) => {
+    action();
+    setIsSheetOpen(false); 
   };
 
   return (
-    <div className="lg:hidden flex items-center justify-between p-4 bg-[#17202A] text-white shadow-lg">
+    <div className="lg:hidden flex fixed w-full items-center justify-between p-4 bg-[#17202A] text-white shadow-lg z-20">
       <div className="flex items-center gap-4">
-        <Sheet>
+        <Sheet open={isSheetOpen} onOpenChange={setIsSheetOpen}>
           <SheetTrigger>
             <FaBars className="text-3xl text-[#ccdb28]" />
           </SheetTrigger>
           <SheetContent className="bg-[#141f29] pt-16 border-none" side="top">
             <div className="flex flex-col pt-10">
               <Button
-                onClick={() => {
-                  scrollToSection("hero-features");
-                }}
+                onClick={() =>
+                  handleButtonClick(() => router.push("/eventspage"))
+                }
                 className="w-full mb-4 bg-[#141f29] text-[#ccdb28] border border-[#ccdb28] text-2xl py-8"
               >
                 Free Match Generator
               </Button>
               <Button
-                onClick={() => {
-                  router.push("/createeventstaticpage");
-                }}
+                onClick={() =>
+                  handleButtonClick(() => router.push("/createeventstaticpage"))
+                }
                 className="w-full mb-4 bg-[#141f29] text-[#ccdb28] border border-[#ccdb28] text-2xl py-8"
               >
                 Create Event
               </Button>
               {isLoggedIn && (
                 <Button
-                  onClick={() => router.push("organizerDashboard")}
+                  onClick={() =>
+                    handleButtonClick(() => router.push("/playerdashboard"))
+                  }
                   className="w-full mb-4 bg-[#141f29] text-[#ccdb28] border border-[#ccdb28] text-2xl py-8"
                 >
                   Dashboard
@@ -135,7 +139,7 @@ const MNavbar = () => {
                       size="xs"
                     >
                       <RiLoginCircleFill className="inline" />
-                      <h1 className="hidden md:block">Log Out</h1>
+                      <h1 className="">Log Out</h1>
                     </Button>
                   </Link>
                 ) : (
@@ -146,7 +150,7 @@ const MNavbar = () => {
                       size="xs"
                     >
                       <RiLoginCircleFill className="inline" />
-                      <h1 className="hidden md:block ">Sign Up/Login</h1>
+                      <h1 className="">Sign Up/Login</h1>
                     </Button>
                   </Link>
                 )}

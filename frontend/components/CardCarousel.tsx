@@ -149,12 +149,12 @@ const CardCarousel = () => {
 
   return (
     <div className="my-6">
-      <div className="md:text-center mb-6 relative mx-12 flex justify-between items-center">
-        <h1 className="text-xl sm:text-2xl md:text-3xl text-gray-800">
+      <div className="md:text-center mb-6 relative mx-4 md:mx-12 flex justify-between md:justify-center items-center">
+        <h1 className="text-xl text-start md:text-center sm:text-2xl md:text-3xl text-gray-800 font-semibold">
           Upcoming Events
         </h1>
         <Select>
-          <SelectTrigger className="w-[110px] sm:w-[130px] md:w-[150px] lg:w-[170px] bg-white text-[#141f29] border border-[#141f29] ">
+          <SelectTrigger className="md:absolute md:right-0 w-[110px] sm:w-[130px] md:w-[150px] lg:w-[170px] bg-white text-[#141f29] border border-[#141f29] ">
             <SelectValue placeholder="Sport" />
           </SelectTrigger>
           <SelectContent>

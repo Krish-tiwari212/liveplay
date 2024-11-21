@@ -317,21 +317,50 @@ const page = () => {
         </h2>
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 px-10">
           {cardData.map((card, index) => (
-            <Card
-              key={index}
-              className={`${
-                [0, 2, 5, 7].includes(index)
-                  ? "border border-[#141f29] bg-[#ccdb28] text-[#141f29]"
-                  : "border border-[#ccdb28] bg-[#141f29] text-[#ccdb28]"
-              } flex justify-center items-center min-w-[200px] min-h-[200px] xl:min-w-[290px] xl:min-h-[290px]`}
-            >
-              <CardContent className="text-center p-4 flex flex-col justify-center items-center">
-                <h3 className="text-2xl xl:text-3xl font-semibold mb-2">
-                  {card.title}
-                </h3>
-                <p className="text-md xl:text-xl">{card.description}</p>
-              </CardContent>
-            </Card>
+            <React.Fragment key={index}>
+              <Card
+                className={`${
+                  [0, 2, 5, 7].includes(index)
+                    ? "border border-[#141f29] bg-[#ccdb28] text-[#141f29]"
+                    : "border border-[#ccdb28] bg-[#141f29] text-[#ccdb28]"
+                } justify-center items-center min-w-[200px] min-h-[200px] xl:min-w-[290px] xl:min-h-[290px] hidden lg:flex`}
+              >
+                <CardContent className="text-center p-4 flex flex-col justify-center items-center">
+                  <h3 className="text-2xl xl:text-3xl font-semibold mb-2">
+                    {card.title}
+                  </h3>
+                  <p className="text-md xl:text-xl">{card.description}</p>
+                </CardContent>
+              </Card>
+              <Card
+                className={`${
+                  [0, 3, 4, 7].includes(index)
+                    ? "border border-[#141f29] bg-[#ccdb28] text-[#141f29]"
+                    : "border border-[#ccdb28] bg-[#141f29] text-[#ccdb28]"
+                }  justify-center items-center min-w-[200px] min-h-[200px] xl:min-w-[290px] xl:min-h-[290px] hidden sm:flex lg:hidden`}
+              >
+                <CardContent className="text-center p-4 flex flex-col justify-center items-center">
+                  <h3 className="text-2xl xl:text-3xl font-semibold mb-2">
+                    {card.title}
+                  </h3>
+                  <p className="text-md xl:text-xl">{card.description}</p>
+                </CardContent>
+              </Card>
+              <Card
+                className={`${
+                  [0, 2, 4, 6].includes(index)
+                    ? "border border-[#141f29] bg-[#ccdb28] text-[#141f29]"
+                    : "border border-[#ccdb28] bg-[#141f29] text-[#ccdb28]"
+                } flex justify-center items-center min-w-[200px] min-h-[200px] xl:min-w-[290px] xl:min-h-[290px] sm:hidden`}
+              >
+                <CardContent className="text-center p-4 flex flex-col justify-center items-center">
+                  <h3 className="text-2xl xl:text-3xl font-semibold mb-2">
+                    {card.title}
+                  </h3>
+                  <p className="text-md xl:text-xl">{card.description}</p>
+                </CardContent>
+              </Card>
+            </React.Fragment>
           ))}
         </div>
         <div className="flex flex-col justify-center mt-8">

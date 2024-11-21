@@ -7,8 +7,15 @@ const HeroChangingTagLine = () => {
     "FREE for Players - Zero Platform Fees",
     "FREE for Organizers - Zero Platform Fees",
     "View Live Match Scores and share results.",
-    "Register early to grab Early Bird Discounts",
+    "Register early for Early Bird Discounts",
     "Sign up now and access Free Dashboard"
+  ];
+  const taglineslargs = [
+    "FREE for Players – Zero Platform Fees for registering in events.",
+    "FREE for Organizers - Zero Platform Fees for event creation and management.",
+    "View Live Match Scores and share your match results.",
+    "Register early to grab Early Bird Discounts",
+    "Sign up now and access Player Dashboard for Free.",
   ];
 
   const [currentTaglineIndex, setCurrentTaglineIndex] = useState(0);
@@ -22,7 +29,7 @@ const HeroChangingTagLine = () => {
   }, [taglines.length]);
 
   return (
-    <div className="bg-[#cddc29] w-full flex justify-center items-center p-3 gap-2">
+    <div className="bg-[#cddc29] w-full flex justify-center items-center p-3 gap-2 pt-20">
       <div>
         <Image
           src={icons[currentTaglineIndex]}
@@ -31,8 +38,13 @@ const HeroChangingTagLine = () => {
           height={30}
         />
       </div>
-      <p className={`text-lg sm:text-xl text-center sm:text-left transition-opacity duration-500 opacity-100`}>
-        {taglines[currentTaglineIndex]}
+      <p className="text-lg sm:text-xl text-center sm:text-left transition-opacity duration-500 opacity-100">
+        <span className="block md:hidden">
+          {taglines[currentTaglineIndex]}
+        </span>
+        <span className="hidden md:block">
+          {taglineslargs[currentTaglineIndex]}
+        </span>
       </p>
     </div>
   );

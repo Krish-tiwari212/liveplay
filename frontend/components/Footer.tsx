@@ -9,7 +9,7 @@ const Footer = () => {
         <div className="flex flex-col md:flex-row w-[90%] mx-auto justify-between ">
           {/* Left Section */}
           <div className=" flex flex-col  pt-6">
-            <div className="flex items-center justify-center sm:justify-start">
+            <div className="flex items-center justify-center md:justify-start">
               <h4 className="text-3xl font-bold  mr-4">
                 <Image
                   src="/images/Logo.png"
@@ -21,11 +21,26 @@ const Footer = () => {
             </div>
             <p className="text-gray-400 my-2 text-md">
               liveplay.in is a platform that helps you discover and participate
-              in the best <br className='hidden sm:block'/>
+              in the best <br className="hidden sm:block" />
               sporting events
             </p>
-            {/* <hr className="my-4 border-gray-700" /> */}
-            <div className=" flex gap-2 items-center mb-2 justify-center sm:justify-start">
+            <div className="md:hidden flex flex-col py-2 mb-2">
+              <h4 className="text-lg font-semibold text-white mb-2">
+                Quick Links
+              </h4>
+              <ul className="list-none pl-0 space-y-1 cursor-pointer">
+                <li className="text-[#cad927] hover:text-white transition duration-300">
+                  Create your Event
+                </li>
+                <li className="text-[#cad927] hover:text-white transition duration-300">
+                  About Us
+                </li>
+                <li className="text-[#cad927] hover:text-white transition duration-300">
+                  FAQs
+                </li>
+              </ul>
+            </div>
+            <div className=" flex gap-2 items-center mb-2 justify-center md:justify-start">
               <h4 className="text-lg font-semibold text-gray-300 ">
                 Connect With Us:
               </h4>
@@ -68,7 +83,7 @@ const Footer = () => {
               </a>
             </p>
           </div>
-          <div className=" flex flex-col pt-2 sm:pt-0 sm:py-6">
+          <div className="hidden md:flex flex-col pt-2 sm:pt-0 sm:py-6">
             <h4 className="text-lg font-semibold text-white mb-2">
               Quick Links
             </h4>

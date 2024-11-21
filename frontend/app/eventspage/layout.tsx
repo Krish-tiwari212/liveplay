@@ -12,6 +12,7 @@ import { Button } from "@/components/ui/button";
 import MNavbar from "@/components/MNavbar";
 import Navbar from "@/components/Navbar";
 import HeroChangingTagLine from "@/components/HeroChangingTagLine";
+import Footer from "@/components/Footer";
 
 export default function RootLayout({
   children,
@@ -25,6 +26,7 @@ export default function RootLayout({
       <Navbar />
       <HeroChangingTagLine />
       {children}
+      <Footer />
     </UserProvider>
   );
 }
