@@ -43,34 +43,6 @@ import {
 import { useEventContext } from '@/context/EventDataContext';
 import { BiLike } from 'react-icons/bi';
 
-
-const metrics = [
-  {
-    title: "Event Sales",
-    description: "Total Entry Fees Collected",
-    icon: <FaRupeeSign />,
-    data: 0,
-  },
-  {
-    title: "Event Views",
-    description: "Total number of users who have viewed this event",
-    icon: <FaRegEye />,
-    data: 0,
-  },
-  {
-    title: "Number of Registrations",
-    description: "Total number of event registrations",
-    icon: <FaPeopleGroup />,
-    data: 0,
-  },
-  {
-    title: "Number of Interested People",
-    description: "Total number of users interested in this event",
-    icon: <BiLike />,
-    data: 0,
-  },
-];
-
 const secondaryMetrics = [
   {
     title: "Top Performing Teams",
@@ -136,11 +108,60 @@ const EventMatrics = ({ handleNext }: EventMatricsProps) => {
     const [ParticipantRefund, setParticipantRefund] = useState(3000);
     const cancellationFeePercentage = 0.075;
     const [isAlertOpen, setIsAlertOpen] = useState(false);
+    const [data, setData] = useState(null);
+    const [error, setError] = useState(null);
+    const [loading, setLoading] = useState(true);
     const [selectedEventForWithdraw, setSelectedEventForWithdraw] = useState<
       string | null
     >(null);
     const netEventSales = amountPaid - ParticipantRefund;
     const cancellationFee = netEventSales * cancellationFeePercentage;
+
+    useEffect(() => {
+      const fetchData = async () => {
+        try {
+          const response = await fetch('/api/event/categories/d262e530-8109-4d6f-9c9d-e74f92a28806');
+          if (!response.ok) {
+            throw new Error('Network response was not ok');
+          }
+          const result = await response.json();
+          setData(result);
+        } catch (error) {
+          setError(error);
+        } finally {
+          setLoading(false);
+        }
+      };
+  
+      fetchData();
+    }, []);
+
+    const metrics = [
+      {
+        title: "Event Sales",
+        description: "Total Entry Fees Collected",
+        icon: <FaRupeeSign />,
+        data: data?.totalEntryFeesCollected || 0,
+      },
+      {
+        title: "Event Views",
+        description: "Total number of users who have viewed this event",
+        icon: <FaRegEye />,
+        data: data?.totalEventViews || 0,
+      },
+      {
+        title: "Number of Registrations",
+        description: "Total number of event registrations",
+        icon: <FaPeopleGroup />,
+        data: data?.totalNumberOfRegistrations || 0,
+      },
+      {
+        title: "Number of Interested People",
+        description: "Total number of users interested in this event",
+        icon: <BiLike />,
+        data: data?.totalInterestedPeople || 0,
+      },
+    ];
 
     const handleUpgradeClick = () => {
         router.push('/payment');
