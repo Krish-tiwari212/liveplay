@@ -29,7 +29,7 @@ const HeroChangingTagLine = () => {
   }, [taglines.length]);
 
   return (
-    <div className="bg-[#cddc29] w-full flex justify-center items-center p-3 gap-2 pt-20">
+    <div className="bg-[#cddc29] w-full flex justify-center items-center p-3 gap-2">
       <div>
         <Image
           src={icons[currentTaglineIndex]}
