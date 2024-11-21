@@ -20,6 +20,7 @@ import { Input } from "@/components/ui/input";
 import { useToast } from "@/hooks/use-toast";
 import { FaGoogle } from "react-icons/fa";
 import Image from "next/image";
+import Script from "next/script";
 
 // Define the schema for login validation
 const loginSchema = z.object({
@@ -43,10 +44,12 @@ const LoginForm = () => {
   const onSubmit = async (data: any) => {
     setLoading(true);
 
+    const token = (document.getElementById("cf-turnstile") as HTMLInputElement).value;
+
     const response = await fetch("/api/auth/login", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(data),
+      body: JSON.stringify({ ...data, "cf-turnstile-response": token }),
     });
 
     const result = await response.json();
@@ -100,6 +103,7 @@ const LoginForm = () => {
         backgroundRepeat: "no-repeat",
       }}
     >
+      <Script src="https://challenges.cloudflare.com/turnstile/v0/api.js" async defer />
       <Image
         src="/images/Logo.png"
         alt="/images/Logo.png"
@@ -184,14 +188,12 @@ const LoginForm = () => {
                 Forgot Password?
               </Link>
             </div>
+            <div className="cf-turnstile" data-sitekey="0x4AAAAAAA0kQ69J4ryUn-__"></div>
             <Button type="submit" disabled={loading} className="w-full">
               {loading ? "Logging in..." : "Login"}
             </Button>
           </form>
         </Form>
-        {/* <Button onClick={handleGoogleLogin} disabled={loading} className="w-full mt-4">
-          {loading ? "Logging in..." : "Login with Google"}
-        </Button> */}
         <div className="text-center mt-2">
           <Link href="/auth/sign-up" className="">
             Don't have an account? <span className="font-bold">Sign up</span>

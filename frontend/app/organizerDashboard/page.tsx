@@ -64,6 +64,9 @@ export default function Home() {
   const [isLoading, setIsLoading] = useState(true);
   const { user } = useUser();
   const [isRed, setIsRed] = useState(false);
+  const [data, setData] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
 
   const handleCopy = (text: string) => {
     navigator.clipboard
@@ -100,6 +103,25 @@ export default function Home() {
     return () => {
       matchMedia.removeEventListener("change", handleThemeChange);
     };
+  }, []);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const response = await fetch('/api/event/categories/d262e530-8109-4d6f-9c9d-e74f92a28806');
+        if (!response.ok) {
+          throw new Error('Network response was not ok');
+        }
+        const result = await response.json();
+        setData(result);
+      } catch (error) {
+        setError(error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchData();
   }, []);
 
   useEffect(() => {
@@ -171,7 +193,7 @@ export default function Home() {
               <h1 className="font-semibold text-lg">Event Sales</h1>
               <div className="flex justify-start items-center text-xl gap-2">
                 <TbCoinRupeeFilled />
-                <h1 className="">0</h1>
+                <h1 className="">{data.totalEntryFeesCollected || 0}</h1>
               </div>
             </CardContent>
           </Card>
@@ -180,7 +202,7 @@ export default function Home() {
               <h1 className="font-semibold text-lg">Event Views</h1>
               <div className="flex justify-start items-center text-xl gap-2">
                 <FaRegEye />
-                <h1 className="">0</h1>
+                <h1 className="">{data.totalEventViews || 0}</h1>
               </div>
             </CardContent>
           </Card>
@@ -189,7 +211,7 @@ export default function Home() {
               <h1 className="font-semibold text-lg">Events Hosted</h1>
               <div className="flex justify-start items-center text-xl gap-2">
                 <FaCalendarCheck />
-                <h1 className="">{events.length}</h1>
+                <h1 className="">{events.length || 0}</h1>
               </div>
             </CardContent>
           </Card>
@@ -198,7 +220,7 @@ export default function Home() {
               <h1 className="font-semibold text-lg">Event Registrations</h1>
               <div className="flex justify-start items-center text-xl gap-2">
                 <FaPeopleGroup />
-                <h1 className="">0</h1>
+                <h1 className="">{data.totalNumberOfRegistrations || 0}</h1>
               </div>
             </CardContent>
           </Card>
@@ -303,19 +325,19 @@ export default function Home() {
                         <div className="flex flex-col justify-between">
                           <span className="flex gap-2 items-center">
                             <p className="font-semibold ">Sales:</p>{" "}
-                            {event.revenue || "7800"}
+                            {data.totalEntryFeesCollected || "0"}
                           </span>
                           <span className="flex gap-2 items-center">
                             <p className="font-semibold ">Views:</p>{" "}
-                            {event.event_views || "20000"}
+                            {data.totalEventViews || "0"}
                           </span>
                           <span className="flex gap-2 items-center">
                             <p className="font-semibold ">Registrations:</p>{" "}
-                            {event.entries || "200"}
+                            {data.totalNumberOfRegistrations || "0"}
                           </span>
                           <span className="flex gap-2 items-center">
                             <p className="font-semibold ">Interested:</p>{" "}
-                            {event.interested_people || "891"}
+                            {data.totalInterestedPeople || "0"}
                           </span>
                           {/* <TooltipProvider>
                           <Tooltip>
@@ -377,7 +399,7 @@ export default function Home() {
                             onClick={(e) => {
                               e.stopPropagation();
                             }}
-                            className="z-50 w-full bg-[#17202a] text-[#cddc29] hover:text-white flex gap-2 mt-2 py-1 rounded-lg hover:shadow-xl justify-center items-center"
+                            className="z-10 w-full bg-[#17202a] text-[#cddc29] hover:text-white flex gap-2 mt-2 py-1 rounded-lg hover:shadow-xl justify-center items-center"
                           >
                             <h1>Share</h1>
                             <IoShareSocialSharp />
