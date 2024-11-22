@@ -73,11 +73,11 @@ const CardCarousel = () => {
     const { className, onClick } = props;
     return (
       <div
-        className="absolute -right-4 top-1/2 -mt-6 z-50 cursor-pointer"
+        className="absolute hidden sm:block sm:-right-6 top-1/2 -mt-6 z-50 cursor-pointer"
         onClick={onClick}
       >
-        <div className="bg-gray-800 rounded-full p-3 transition-colors duration-200 shadow-xl hover:bg-gray-700">
-          <FaChevronRight className="text-white text-2xl" />
+        <div className="bg-gray-800 rounded-full p-1 transition-colors duration-200 shadow-xl hover:bg-gray-700">
+          <FaChevronRight className="text-white text-lg" />
         </div>
       </div>
     );
@@ -87,11 +87,11 @@ const CardCarousel = () => {
     const { className, onClick } = props;
     return (
       <div
-        className="absolute -left-4 top-1/2 -mt-6 z-50 cursor-pointer"
+        className="absolute hidden sm:block sm:-left-6 top-1/2 -mt-6 z-50 cursor-pointer"
         onClick={onClick}
       >
-        <div className="bg-gray-800 rounded-full p-3 shadow-lg transition-colors duration-200 hover:bg-gray-700">
-          <FaChevronLeft className="text-white text-2xl" />
+        <div className="bg-gray-800 rounded-full p-1 shadow-lg transition-colors duration-200 hover:bg-gray-700">
+          <FaChevronLeft className="text-white text-lg" />
         </div>
       </div>
     );
@@ -149,13 +149,13 @@ const CardCarousel = () => {
   }, []);
 
   return (
-    <div className="my-6">
+    <div className="my-6 overflow-x-hidden">
       <div className="md:text-center mb-6 relative mx-4 md:mx-12 flex justify-between md:justify-center items-center">
         <h1 className="text-xl text-start md:text-center sm:text-2xl md:text-3xl text-gray-800 font-semibold">
           Upcoming Events
         </h1>
         <Select>
-          <SelectTrigger className="md:absolute md:right-0 w-[110px] sm:w-[130px] md:w-[150px] lg:w-[170px] bg-white text-[#141f29] border border-[#141f29] ">
+          <SelectTrigger className="md:absolute top-0 md:right-0 w-[110px] sm:w-[130px] md:w-[150px] lg:w-[170px] bg-white text-[#141f29] border border-[#141f29] ">
             <SelectValue placeholder="Sport" />
           </SelectTrigger>
           <SelectContent>
@@ -174,9 +174,9 @@ const CardCarousel = () => {
           </SelectContent>
         </Select>
       </div>
-      <Slider {...settings} className="mx-10">
+      <Slider {...settings} className="mx-6 sm:mx-10 xl:mx-20">
         {events.map((e, i) => (
-          <div className=" px-2 lg:px-16 pb-6" key={i}>
+          <div className="px-2 xl:px-10 pb-6" key={i}>
             <EventCard
               image={e.image}
               date={e.date}

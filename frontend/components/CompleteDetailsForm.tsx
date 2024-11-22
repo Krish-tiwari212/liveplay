@@ -272,8 +272,9 @@ const CompleteDetailsForm = () => {
             <AlertDialogHeader>
               <AlertDialogTitle>Underage Confirmation</AlertDialogTitle>
               <AlertDialogDescription>
-                You are under 18 years old. Do you want to proceed with this
-                date of birth?
+                Please confirm that you are under the legal age of 18 and have
+                obtained consent from your parent or legal guardian to use
+                liveplay.in.
               </AlertDialogDescription>
             </AlertDialogHeader>
             <AlertDialogFooter>

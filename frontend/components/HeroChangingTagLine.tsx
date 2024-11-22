@@ -20,7 +20,7 @@ const HeroChangingTagLine = ({
   const taglines = [
     "FREE for Players - Zero Platform Fees",
     "FREE for Organizers - Zero Platform Fees",
-    "View Live Match Scores and share results.",
+    "View Live Scores and share results.",
     "Register early for Early Bird Discounts",
     "Sign up now and access Free Dashboard",
   ];

@@ -23,7 +23,7 @@ const Footer = () => {
               </h4>
             </div>
             <p className="text-gray-400 my-2 text-md">
-              <span className="font-semibold hover:underline text-[#cad927]">
+              <span className="font-semibold hover:underline text-[#cad927] mr-1">
                 liveplay.in
               </span>
               helps organizers in hosting sports events and players to discover

@@ -5,9 +5,10 @@ interface FeedbackFormInterface {
   eventId: any;
   label: string;
   setratingvalue: (value: number) => void;
+  description?:string
 }
 
-const Rating = ({ eventId, label, setratingvalue }: FeedbackFormInterface) => {
+const Rating = ({ eventId, label, setratingvalue,description }: FeedbackFormInterface) => {
   const [rating, setRating] = useState<number>(0);
   const [hover, setHover] = useState<number>(0);
 
@@ -35,9 +36,9 @@ const Rating = ({ eventId, label, setratingvalue }: FeedbackFormInterface) => {
   };
 
   return (
-    
     <div className="flex flex-col m-5">
-      <h2 className="text-2xl font-semibold mb-4">{label}</h2>
+      <h2 className="text-2xl font-semibold leading-none">{label}</h2>
+      <p className="text-[14px] font-normal mb-1">{description}</p>
       <div className="flex flex-row">
         {[1, 2, 3, 4, 5].map((star) => (
           <span

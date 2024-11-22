@@ -113,13 +113,13 @@ const events = [
 
 const eventsArray = [
   {
-    title: "Features Event Poster (Gold/Premium)",
+    title: "Start playing in sports events",
     image: "/images/carousel1 (1).svg",
     buttontext:"View My Profile",
     buttoncolor:"purple"
   },
   {
-    title: "Features Event Poster (Gold/Premium)",
+    title: "Host your Event with Us",
     image: "/images/carousel1 (2).svg",
     buttontext:"Create Your Event",
     buttoncolor:"yellow"

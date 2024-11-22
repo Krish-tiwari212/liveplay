@@ -230,7 +230,7 @@ const EventMatrics = ({ handleNext }: EventMatricsProps) => {
             <h2 className="text-2xl sm:text-4xl font-bold text-gray-800 border-b-2 border-[#cddc29] mb-2">
               Boost Your Event Performance
             </h2>
-            <p className="text-sm md:text-md text-gray-800 mb-4">
+            <p className="text-sm md:text-lg text-gray-800 mb-4">
               Noticed lower-than-expected registrations?<br></br> Boost
               visibility and event sales with Pro and Elite plans.
             </p>

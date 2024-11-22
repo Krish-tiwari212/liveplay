@@ -83,6 +83,13 @@ const inputFields = [
     placeholder: "Enter Max Ticket Quantity",
     required: true,
   },
+  {
+    id: "max_teams_size",
+    label: "Maximum Team Size",
+    type: "number",
+    placeholder: "Enter Max Team Size",
+    required: true,
+  },
 ];
 
 const discountFields = {
@@ -188,6 +195,7 @@ const AddCategory = ({ setCategoryData ,type,category}: AddCategoryProps) => {
   const [showAmountInput, setShowAmountInput] = useState(false);
   const [showPercentageInput, setShowPercentageInput] = useState(false);
   const [isDiscount, setisDiscount] = useState(false); 
+  const [isTeam,setIsTeam]=useState(false)
 
   const handleChange = (
     e: React.ChangeEvent<
@@ -292,9 +300,10 @@ const AddCategory = ({ setCategoryData ,type,category}: AddCategoryProps) => {
             Category Type<span className="text-red-500">*</span>
           </label>
           <Select
-            onValueChange={(value) =>
-              setLocalCategoryData({ ...categoryData, category_type: value })
-            }
+            onValueChange={(value) => {
+              setLocalCategoryData({ ...categoryData, category_type: value });
+              setIsTeam(value === "Team");
+            }}
             required
           >
             <SelectTrigger className="w-full h-10 shadow-2xl focus:border-[#17202A] focus:outline-none focus:shadow-lg">
@@ -462,40 +471,40 @@ const AddCategory = ({ setCategoryData ,type,category}: AddCategoryProps) => {
         {fields.map((field) => (
           <div
             key={field.id}
-            className={` ${
+            className={`${
               field.type === "textarea" ? "" : "lg:w-[46%]"
             } w-full m-2 flex flex-col`}
           >
-            <label htmlFor={field.id}>
+           { field.id !== "max_teams_size" || isTeam ? (
+               <label htmlFor={field.id}>
               {field.label}
-              <span className="text-red-500">*</span>
+              {field.required && <span className="text-red-500">*</span>}
             </label>
+            ) : null}
+           
             {field.type === "textarea" ? (
               <textarea
                 id={field.id}
                 name={field.id}
                 placeholder={field.placeholder}
                 maxLength={field.maxLength}
-                value={
-                  categoryData[field.id as keyof typeof categoryData] || ""
-                }
+                value={categoryData[field.id as keyof typeof categoryData] || ""}
                 onChange={handleChange}
                 className="h-20 p-2 bg-white border rounded-md text-sm shadow-2xl text-[#17202A] focus:border-[#17202A] focus:outline-none focus:shadow-lg"
+                required={field.required}
               />
-            ) : (
+            ) : field.id !== "max_teams_size" || isTeam ? (
               <input
                 id={field.id}
                 type={field.type}
                 name={field.id}
                 placeholder={field.placeholder}
                 required={field.required}
-                value={
-                  categoryData[field.id as keyof typeof categoryData] || ""
-                }
+                value={categoryData[field.id as keyof typeof categoryData] || ""}
                 onChange={handleChange}
                 className="h-10 p-2 bg-white border rounded-md text-sm shadow-2xl text-[#17202A] focus:border-[#17202A] focus:outline-none focus:shadow-lg"
               />
-            )}
+            ) : null}
           </div>
         ))}
         <div className="flex flex-col w-full m-2">

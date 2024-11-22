@@ -731,10 +731,6 @@ export default function Home() {
                             <h1 className="font-bold">Interested:</h1>
                             1000
                           </span>
-                          <span className="flex gap-1 whitespace-nowrap  items-center">
-                            <h1 className="font-bold">Event Feedback:</h1>
-                            4.5 <FaStar />
-                          </span>
                         </div>
                       </div>
                       <div className="flex flex-col justify-between items-center gap-2 mt-2">
@@ -917,16 +913,19 @@ export default function Home() {
               <Rating
                 eventId={selectedEventForFeedback}
                 label="Organizer Conduct"
+                description="Rate the organizer conduct (Out of 5 ⭐)"
                 setratingvalue={setOrganizeConduct}
               />
               <Rating
                 eventId={selectedEventForFeedback}
                 label="Event Management"
+                description="Rate the event management (Out of 5 ⭐)"
                 setratingvalue={setEventManagement}
               />
               <Rating
                 eventId={selectedEventForFeedback}
                 label="Venue and location"
+                description="Rate the Venue and Location (Out of 5 ⭐)"
                 setratingvalue={setRefreshments}
               />
             </div>
@@ -962,8 +961,6 @@ export default function Home() {
       )}
       {isEventPassOpen && (
         <Dialog open={isEventPassOpen} onOpenChange={setIsEventPassOpen}>
-          // Updated code within the Home component's isEventPassOpen
-          DialogContent
           <DialogContent className="w-full sm:w-[90%] max-w-md flex flex-col items-center h-auto p-4">
             <div
               className="w-full h-96 bg-cover bg-center rounded-lg shadow-xl flex items-center justify-center relative"
@@ -995,7 +992,7 @@ export default function Home() {
                   <p className="text-[12px] font-semibold text-[#64758B]">
                     Player
                   </p>
-                  <h1 className="text-[14px]">MOHIT BHATE</h1>
+                  <h1 className="text-[14px]">Roshan</h1>
                 </div>
                 <div className=" leading-tight">
                   <p className="text-[12px] font-semibold text-[#64758B]">
@@ -1022,7 +1019,7 @@ export default function Home() {
 
             <Button
               variant="default"
-              className="mt-6"
+              className=""
               onClick={() => setIsEventPassOpen(false)}
             >
               Close

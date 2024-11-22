@@ -11,10 +11,8 @@ interface Category {
   price: number;
   discountedPrice?: number;
   type: string;
-  isTeamGame: boolean;
   details: string;
   sport?: string;
-  quantity?: number;
 }
 
 const categories: Category[] = [
@@ -23,7 +21,6 @@ const categories: Category[] = [
     name: "Mens Singles (Open)",
     price: 699,
     type: "Singles",
-    isTeamGame: false,
     details: "Includes participation, e-certificate, refreshments",
   },
   {
@@ -32,7 +29,6 @@ const categories: Category[] = [
     price: 599,
     discountedPrice: 559,
     type: "Doubles",
-    isTeamGame: true,
     details: "Includes participation, e-certificate, refreshments",
   },
   {
@@ -40,7 +36,6 @@ const categories: Category[] = [
     name: "Couple 100m Race - Team Event",
     price: 699,
     type: "Team",
-    isTeamGame: true,
     details: "Each team of 2 married couples only. Certificate included.",
   },
   {
@@ -48,8 +43,7 @@ const categories: Category[] = [
     name: "Womens Marathon 10KM (30+)",
     price: 1099,
     discountedPrice: 999,
-    type: "Individual",
-    isTeamGame: false,
+    type: "Singles",
     details: "Includes participation, e-certificate, refreshments",
     sport: "marathon",
   },

@@ -38,6 +38,9 @@ const BillingSummary: React.FC = () => {
   const handleRemoveFee = () => {
     setWithdrawalFee(false);
   };
+  const handleAddFee = () => {
+    setWithdrawalFee(true);
+  };
 
   // Handler to clear cart after payment
   const handlePay = () => {
@@ -69,7 +72,10 @@ const BillingSummary: React.FC = () => {
                     ₹{(item.price * item.quantity).toFixed(2)}
                   </p>
                   <p className="text-green-600 font-semibold">
-                    ₹{((item.discountedPrice ?? item.price) * item.quantity).toFixed(2)}
+                    ₹
+                    {(
+                      (item.discountedPrice ?? item.price) * item.quantity
+                    ).toFixed(2)}
                   </p>
                 </div>
               </div>
@@ -83,17 +89,23 @@ const BillingSummary: React.FC = () => {
               <div className="flex flex-col">
                 <div className="flex">
                   <p className="font-medium">Withdrawal Fee (5%)</p>
-                  {withdrawalFee && (
+                  {withdrawalFee ? (
                     <button
                       onClick={handleRemoveFee}
-                      className="ml-2 text-red-500 hover:underline"
+                      className="ml-2 text-red-500 underline"
                     >
                       Remove
+                    </button>
+                  ) : (
+                    <button onClick={handleAddFee} className="ml-2 underline ">
+                      Add
                     </button>
                   )}
                 </div>
                 <span className="text-xs text-gray-500">
-                  Withdraw anytime and get an instant refund ⚡
+                  {withdrawalFee
+                    ? `Withdraw anytime and get an instant refund ⚡`
+                    : `Withdrawals not allowed without fee 😭`}
                 </span>
               </div>
               <div className="flex items-center">
@@ -111,6 +123,7 @@ const BillingSummary: React.FC = () => {
 
         {items.length > 0 && (
           <Button
+            disabled={withdrawalFee}
             variant="tertiary"
             className="flex justify-center items-center py-8 w-full border-2 border-gray-800"
             onClick={handlePay}
@@ -124,12 +137,11 @@ const BillingSummary: React.FC = () => {
           <div className="py-2 rounded-md flex justify-center items-center">
             <p className="flex justify-center items-center gap-2">
               <RiDiscountPercentFill className="text-2xl" />
-              Wohoo! You’ve saved <span className='font-semibold'>₹{savings.toFixed(2)}</span>
+              Wohooo! You’ve saved{" "}
+              <span className="font-semibold">₹{savings.toFixed(2)}</span>
             </p>
           </div>
         )}
-
-        
       </div>
     </div>
   );

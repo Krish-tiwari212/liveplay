@@ -1,6 +1,7 @@
 "use client"
 
 import React, { useEffect, useState } from 'react'
+import ReactMarkdown from 'react-markdown'
 import { IoCheckmarkDone } from 'react-icons/io5';
 import { Button } from './ui/button';
 import { MdOutlineCurrencyRupee, MdTimer } from 'react-icons/md';
@@ -22,91 +23,98 @@ const features = {
     {
       name: "Unlimited Entries",
       description:
-        "Allow an unlimited number of participants to register for your event, ensuring maximum reach and engagement.",
+        "Host your sports event and accept unlimited registrations 😄",
     },
     {
       name: "Event Management",
       description:
-        "Comprehensive tools to manage all aspects of your event, from scheduling to participant communication.",
+        "Manage your events effortlessly and get insights to increase event sales 💹",
     },
   ],
   pro: [
     {
       name: "Unlimited Entries",
       description:
-        "Allow an unlimited number of participants to register for your event, ensuring maximum reach and engagement.",
+        "Host your sports event and accept unlimited registrations 😄",
     },
     {
       name: "Event Management",
       description:
-        "Comprehensive tools to manage all aspects of your event, from scheduling to participant communication.",
+        "Manage your events effortlessly and get insights to increase event sales 💹",
     },
     {
       name: "Featured Listing",
       description:
-        "Enhance the visibility of your event by featuring it prominently on the platform, attracting more attendees.",
+        "Gain max visibility when your event will be featured on the front page slideshow for 3 days 🚀",
     },
     {
       name: "Verified Badge",
       description:
-        "Gain trust and credibility with a verified badge, assuring participants of the event's legitimacy and quality.",
+        "Get a Verified Badge displayed next to your name to increase trust 🏆",
     },
     {
       name: "Event Date Edit",
       description:
-        "Flexibly modify the dates of your event as needed, accommodating any schedule changes without hassle.",
+        "Edit event dates flexibly and accommodate last minute changes 🗓️",
     },
     {
       name: "Quick Payout",
-      description:
-        "Receive your earnings faster with our expedited payout system, ensuring timely access to your funds.",
+      description: (
+        <>
+          Receive event earnings instantly within <strong>24 hours</strong> of
+          event completion ⚡
+        </>
+      ),
     },
   ],
   elite: [
     {
       name: "Unlimited Entries",
       description:
-        "Allow an unlimited number of participants to register for your event, ensuring maximum reach and engagement.",
+        "Host your sports event and accept unlimited registrations 😄",
     },
     {
       name: "Event Management",
       description:
-        "Comprehensive tools to manage all aspects of your event, from scheduling to participant communication.",
+        "Manage your events effortlessly and get insights to increase event sales 💹",
     },
     {
       name: "Premium Listing",
       description:
-        "Achieve top-tier visibility with premium listings, placing your event at the forefront of the platform.",
+        "Gain max visibility when your event will be featured on the front page slideshow for 7 days 🚀",
     },
     {
       name: "Verified Badge",
       description:
-        "Gain trust and credibility with a verified badge, assuring participants of the event's legitimacy and quality.",
+        "Get a Verified Badge displayed next to your name to increase trust 🏆",
     },
     {
       name: "Event Date Edits",
       description:
-        "Flexibly modify the dates of your event as needed, accommodating any schedule changes without hassle.",
+        "Edit event dates flexibly and accommodate last minute changes 🗓️",
     },
     {
       name: "Quick Payout",
-      description:
-        "Receive your earnings faster with our expedited payout system, ensuring timely access to your funds.",
+      description: (
+        <>
+          Receive event earnings instantly within <strong>24 hours</strong> of
+          event completion ⚡
+        </>
+      ),
     },
     {
       name: "Lower Fees",
-      description:
-        "Benefit from reduced transaction fees, maximizing your profits and minimizing costs associated with event management.",
+      description: "Enjoy a lower cancellation fee 🤑",
     },
     {
       name: "Live Match Tracker",
       description:
-        "Provide real-time updates and tracking for matches or activities within your event, enhancing participant engagement.",
+        "Update live scores for matches and enhance player engagement 📺",
     },
     {
       name: "Setup and Support",
       description:
-        "Receive dedicated assistance with setting up your event and ongoing support to ensure everything runs smoothly.",
+        "Receive priority support and assistance to boost your event 📞",
     },
   ],
 };
@@ -208,7 +216,7 @@ const EventBoosters = ({
           <span style={{ textShadow: "0 3px 0 #cddc29" }}>Faster Payouts</span>
         </div>
       </div>
-      <div className="flex flex-col sm:flex-row justify-center h-full gap-4 mt-10">
+      <div className="flex flex-col sm:flex-row justify-center h-full gap-4 my-10">
         <div className=" w-[90%] sm:w-72 flex flex-col gap-1 mx-auto sm:mx-0">
           <div
             className={`p-4 rounded-lg cursor-pointer transition-transform duration-400 bg-gray-800 text-white font-open-sauce ${
@@ -232,7 +240,9 @@ const EventBoosters = ({
                       <HoverCardTrigger>
                         <h1 className="text-[#CDDC29]">{feature.name}</h1>
                       </HoverCardTrigger>
-                      <HoverCardContent>{feature.description}</HoverCardContent>
+                      <HoverCardContent className="text-[14px] leading-none p-2 bg-[#CDDC29] text-[#1f2937] shadow shadow-[#CDDC29] border-none">
+                        <ReactMarkdown>{feature.description}</ReactMarkdown>
+                      </HoverCardContent>
                     </HoverCard>
                   </li>
                 ))}
@@ -294,7 +304,9 @@ const EventBoosters = ({
                           />
                         </div>
                       </HoverCardTrigger>
-                      <HoverCardContent>{feature.description}</HoverCardContent>
+                      <HoverCardContent className="text-[14px] leading-none p-2 bg-[#CDDC29] text-[#1f2937] shadow-md shadow-[#CDDC29] border-none">
+                        {feature.description}
+                      </HoverCardContent>
                     </HoverCard>
                   </li>
                 ) : (
@@ -303,7 +315,9 @@ const EventBoosters = ({
                       <HoverCardTrigger>
                         <h1 className="text-[#CDDC29]">{feature.name}</h1>
                       </HoverCardTrigger>
-                      <HoverCardContent>{feature.description}</HoverCardContent>
+                      <HoverCardContent className="text-[14px] leading-none p-2 bg-[#CDDC29] text-[#1f2937] shadow-md shadow-[#CDDC29] border-none">
+                        {feature.description}
+                      </HoverCardContent>
                     </HoverCard>
                   </li>
                 )
@@ -338,7 +352,7 @@ const EventBoosters = ({
                   feature.name === "Verified Badge" ? (
                     <li key={index} className="my-1 flex items-center gap-2 ">
                       <HoverCard>
-                        <HoverCardTrigger>
+                        <HoverCardTrigger className="my-1 flex items-center gap-2 ">
                           <h1 className="text-[#CDDC29]">{feature.name} </h1>
                           <div>
                             <Image
@@ -349,7 +363,7 @@ const EventBoosters = ({
                             />
                           </div>
                         </HoverCardTrigger>
-                        <HoverCardContent>
+                        <HoverCardContent className="text-[14px] leading-none p-2 bg-[#CDDC29] text-[#1f2937] shadow-md shadow-[#CDDC29] border-none">
                           {feature.description}
                         </HoverCardContent>
                       </HoverCard>
@@ -360,7 +374,7 @@ const EventBoosters = ({
                         <HoverCardTrigger>
                           <h1 className="text-[#CDDC29]">{feature.name}</h1>
                         </HoverCardTrigger>
-                        <HoverCardContent>
+                        <HoverCardContent className="text-[14px] leading-none p-2 bg-[#CDDC29] text-[#1f2937] shadow-md shadow-[#CDDC29] border-none">
                           {feature.description}
                         </HoverCardContent>
                       </HoverCard>

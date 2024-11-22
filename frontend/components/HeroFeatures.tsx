@@ -8,6 +8,7 @@ import { RiMoneyRupeeCircleFill } from 'react-icons/ri';
 import Image from 'next/image';
 import { Button } from './ui/button';
 import { useRouter } from 'next/navigation';
+import Contactus from './Contactus';
 
 const feature1 = [
   { icon: "/icons/Vector.svg", text: "FREE for Players" },
@@ -88,8 +89,9 @@ const HeroFeatures = () => {
           ))}
         </div> */}
       </div>
-      <div className="text-center bg-[#ccdb28] p-6">
-        <h2 className="text-xl sm:text-4xl font-bold mb-6">
+      <Contactus/>
+      <div className="text-center bg-[#ccdb28] p-6 border-none">
+        <h2 className="text-lg sm:text-4xl font-bold mb-4 sm:mb-6">
           Create, manage, participate and win!!
         </h2>
         <p className="text-md sm:text-2xl mb-6">
@@ -105,7 +107,7 @@ const HeroFeatures = () => {
                 I am a Player
               </Button>
               <Button
-                className="bg-purple-600 text-md text-white py-2 px-4 rounded"
+                className="bg-purple-600 text-md text-white py-2 px-4 rounded hover:bg-purple-300 hover:text-black  "
                 onClick={() => setIsPlayer(false)}
               >
                 I am an Organizer
