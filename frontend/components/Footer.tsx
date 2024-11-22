@@ -1,8 +1,11 @@
 import React from 'react'
 import { FaInstagram, FaTwitter } from 'react-icons/fa'; // Importing icons
 import Image from 'next/image';
+import Link from 'next/link';
+import { useRouter } from 'next/navigation';
 
 const Footer = () => {
+  const router=useRouter()
   return (
     <div>
       <footer className="bg-gray-800 text-white py-6 flex flex-col text-center md:text-start">
@@ -22,7 +25,7 @@ const Footer = () => {
             <p className="text-gray-400 my-2 text-md">
               <span className="font-semibold hover:underline text-[#cad927]">
                 liveplay.in
-              </span>{" "}
+              </span>
               helps organizers in hosting sports events and players to discover
               and join them across 10+ sports
             </p>
@@ -105,18 +108,18 @@ const Footer = () => {
         <hr className="my-4 mx-auto border-gray-600 w-[80%] md:w-[90%]" />
         <div className="flex flex-col md:flex-row justify-between text-center text-wrap sm:text-sm w-[90%] mx-auto">
           <div className="flex flex-col md:flex-row space-y-2 md:space-y-0 md:space-x-4">
-            <a href="#" className="text-[#cad927] hover:underline">
+            <Link href="/policies/termsandcondition" className="text-[#cad927] hover:underline">
               Terms & Conditions
-            </a>
-            <a href="#" className="text-[#cad927] hover:underline">
+            </Link>
+            <Link href="/policies/privacypolicy" className="text-[#cad927] hover:underline">
               Privacy Policy
-            </a>
-            <a href="#" className="text-[#cad927] hover:underline">
+            </Link>
+            <Link href="/policies/refund" className="text-[#cad927] hover:underline">
               Refund Policy
-            </a>
-            <a href="#" className="text-[#cad927] hover:underline">
+            </Link>
+            <Link href="/policies/cancelation" className="text-[#cad927] hover:underline">
               Cancellation Policy
-            </a>
+            </Link>
           </div>
           <div className="mt-4 md:mt-0">
             &copy; 2024 Impact Stream Ventures. liveplay.in™ All rights reserved

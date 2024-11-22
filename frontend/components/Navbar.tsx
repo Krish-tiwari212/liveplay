@@ -71,7 +71,10 @@ const Navbar = () => {
   return (
     <div className="hidden lg:flex items-center justify-between p-4 bg-[#17202A] text-white gap-10 shadow-lg">
       <div className="flex items-center gap-5">
-        <div className="text-lg md:text-3xl font-bold tracking-wider flex-none">
+        <div
+          onClick={() => router.push("/")}
+          className="text-lg md:text-3xl font-bold tracking-wider flex-none cursor-pointer"
+        >
           <Image
             src="/images/Logo.png"
             alt="/images/Logo.png"

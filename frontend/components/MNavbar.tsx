@@ -106,7 +106,7 @@ const MNavbar = () => {
           </SheetContent>
         </Sheet>
         <div className="flex items-center gap-10">
-          <div className="tracking-wider">
+          <div onClick={() => router.push("/")} className="tracking-wider cursor-pointer">
             <Image
               src="/images/Logo.png"
               alt="/images/Logo.png"
