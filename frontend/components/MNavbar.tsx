@@ -68,7 +68,7 @@ const MNavbar = () => {
   };
 
   return (
-    <div className="lg:hidden flex fixed w-full items-center justify-between p-4 bg-[#17202A] text-white shadow-lg z-20">
+    <div className="lg:hidden flex w-full items-center justify-between p-4 bg-[#17202A] text-white shadow-lg z-20">
       <div className="flex items-center gap-4">
         <Sheet open={isSheetOpen} onOpenChange={setIsSheetOpen}>
           <SheetTrigger>

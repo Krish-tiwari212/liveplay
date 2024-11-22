@@ -145,16 +145,16 @@ const GoLive = () => {
   }
 
   return (
-    <div className="w-full flex justify-center items-center h-80 mt-24">
+    <div className="w-full flex justify-center items-center h-80 mt-20 md:mt-44">
       <div className="w-full mx-5 sm:mx-20 flex flex-col justify-center items-center">
-        <h1 className="text-2xl sm:text-5xl text-gray-800 font-bold text-center">
+        <h1 className="text-2xl sm:text-5xl text-gray-800 font-bold text-center mb-4">
           Awesome, Now lets get this Event Live🎉
         </h1>
-        <h1 className="mt-4 text-gray-800 flex justify-center gap-2 w-[90%] mx-auto">
+        <h1 className="mt-4 text-gray-800 flex justify-center items-center gap-2 w-[90%] mx-auto">
           <Checkbox id="terms2" onCheckedChange={()=>setIsCheckboxChecked(!isCheckboxChecked)} />
           <Label htmlFor="terms2">
             Agree with the 
-            <span className="hover:underline cursor-pointer font-extrabold mx-1">Terms & Conditions</span>
+            <span className="hover:underline cursor-pointer font-extrabold mx-1 text-sm md:text-lg">Terms & Conditions</span>
              for hosting events on liveplay.in
           </Label>
         </h1>

@@ -16,7 +16,7 @@ import data from "@/data";
 import Image from "next/image";
 import { Button } from "./ui/button";
 
-const TWEEN_FACTOR_BASE = 0.52;
+const TWEEN_FACTOR_BASE = 0.32;
 
 const numberWithinRange = (number: number, min: number, max: number): number =>
   Math.min(Math.max(number, min), max);
@@ -110,20 +110,36 @@ const EmblaCarousel: React.FC<PropType> = () => {
   return (
     <section className="bg-[#121e28]">
       <div className="embla relative">
-        <div className="embla__viewport" ref={emblaRef}>
+        <div className="embla__viewport w-full " ref={emblaRef}>
           <div className="embla__container mt-10">
             {eventsArray.map((e, index) => (
-              <div className="embla__slide" key={index}>
-                <div className="embla__slide__number flex flex-col items-center justify-between">
-                  <div className="relative w-full h-full">
-                    <Image src={e.image} alt={e.title} fill />
+              <div className="embla__slide relative" key={index}>
+                <div className="embla__slide__number flex flex-col items-center w-full">
+                  <div className="relative w-full min-h-[520px]">
+                    <Image
+                      src={e.image}
+                      alt={e.title}
+                      fill
+                      priority
+                      className="object-contain"
+                    />
                   </div>
-                  <div className="flex items-center justify-between w-full px-4 py-2 border border-[#cddc29]">
+                  <div className="flex items-center justify-between w-full px-4 py-2 border-4 border-[#cddc29] ">
                     <h1 className="text-lg text-white font-semibold">
                       {e.title}
                     </h1>
-                    <Button variant="tertiary">Register</Button>
+                    <Button
+                      variant="tertiary"
+                      className={`${
+                        e.buttoncolor === "purple" && "bg-[#7f1cff]"
+                      }`}
+                    >
+                      {e.buttontext}
+                    </Button>
                   </div>
+                  {index !== selectedIndex && (
+                    <div className="absolute top-0 left-0 w-full h-full bg-black opacity-80 transition-opacity duration-1000 "></div>
+                  )}
                 </div>
               </div>
             ))}

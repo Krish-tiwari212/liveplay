@@ -25,7 +25,7 @@ export default function Home() {
     <UserProvider>
       <MNavbar />
       <Navbar />
-      <HeroChangingTagLine />
+      <HeroChangingTagLine ishero={true}/>
       <Hero />
       <CardCarousel />
       <SportsSlider />

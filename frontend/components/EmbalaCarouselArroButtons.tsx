@@ -42,7 +42,7 @@ export const PrevButton = (props:any) => {
 
   return (
     <button
-      className=" hidden lg:flex absolute w-8 h-8  justify-center items-center rounded-full -left-[5%] top-[50%] bg-[#cddc29] "
+      className=" hidden lg:flex absolute w-8 h-8  justify-center items-center rounded-full left-[5%] top-[50%] bg-[#cddc29] "
       type="button"
       {...restProps}
     >
@@ -62,7 +62,7 @@ export const NextButton = (props:any) => {
 
   return (
     <button
-      className="hidden lg:flex absolute w-8 h-8 justify-center items-center rounded-full -right-[5%] top-[50%] bg-[#cddc29]"
+      className="hidden lg:flex absolute w-8 h-8 justify-center items-center rounded-full right-[5%] top-[50%] bg-[#cddc29]"
       type="button"
       {...restProps}
     >

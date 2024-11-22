@@ -100,17 +100,17 @@ const page = ({}) => {
           <PlayerRegistrationmenu />
         </div>
         <div className="w-full lg:w-1/3 flex flex-col gap-4">
-          <div className="w-full h-full">
+          <div className="w-full h-64 hidden md:block">
             <Image
               src="/images/img2.jpeg"
               alt="Event Poster"
-              className="object-cover w-full h-64  rounded-lg"
+              className="object-cover w-full h-64 rounded-lg"
               width={200}
               height={200}
             />
           </div>
           <div className="border-2 border-[#141F29] p-4 rounded-lg text-[#141F29]">
-            <h1 className="text-xl sm:text-2xl md:text-3xl font-bold mb-4">
+            <h1 className="text-xl sm:text-2xl md:text-3xl font-bold mb-4 line-clamp-2">
               Summer Basketball Tournament Pro League Men Champ 2.0 2024
             </h1>
 
@@ -159,7 +159,7 @@ const page = ({}) => {
             <Button
               onClick={() => router.push("/eventspage/1234")}
               variant="tertiary"
-              className="w-full border-2 border-black text-sm sm:text-base"
+              className="w-full border-2 border-black text-sm py-8 text-md sm:text-xl"
             >
               Register Now
             </Button>

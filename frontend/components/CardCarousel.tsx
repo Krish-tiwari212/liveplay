@@ -3,13 +3,15 @@ import Slider from "react-slick";
 import { FaChevronLeft, FaChevronRight } from "react-icons/fa";
 import EventCard from "./EventCard";
 import "slick-carousel/slick/slick.css";
-import "slick-carousel/slick/slick-theme.css";import {
+import "slick-carousel/slick/slick-theme.css";
+import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+
 const SportsType = [
   {
     name: "Tennis",
@@ -63,7 +65,6 @@ const SportsType = [
   },
 ];
 
-
 const CardCarousel = () => {
   const scrollRef = useRef<HTMLDivElement>(null);
   const [events, setEvents] = useState([]);
@@ -98,25 +99,25 @@ const CardCarousel = () => {
 
   const settings = {
     dots: false,
-    infinite: false,
+    infinite: events.length > 3,
     speed: 500,
     slidesToShow: 3,
     slidesToScroll: 1,
     nextArrow: <NextArrow />,
     prevArrow: <PrevArrow />,
-    className: "flex items-stretch",
+    className: "my-6",
     responsive: [
       {
         breakpoint: 1024,
         settings: {
-          slidesToShow: 2,
+          slidesToShow: 3,
           slidesToScroll: 1,
         },
       },
       {
         breakpoint: 640,
         settings: {
-          slidesToShow: 1,
+          slidesToShow: 3,
           slidesToScroll: 1,
         },
       },
@@ -173,34 +174,23 @@ const CardCarousel = () => {
           </SelectContent>
         </Select>
       </div>
-      <div className="mx-auto w-[95%] overflow-x-auto flex gap-2 md:gap-4 scrollbar-hide">
-        <style jsx>{`
-          .scrollbar-hide::-webkit-scrollbar {
-            display: none; /* Safari and Chrome */
-          }
-          .scrollbar-hide {
-            -ms-overflow-style: none; /* IE and Edge */
-            scrollbar-width: none; /* Firefox */
-          }
-        `}</style>
+      <Slider {...settings} className="mx-10">
         {events.map((e, i) => (
-          <div className="w-full px-1 pb-6" key={i}>
-            <div className="">
-              <EventCard
-                image={e.image}
-                date={e.date}
-                name={e.name}
-                eventname={e.eventname}
-                location={e.location}
-                time={e.time}
-                noOfEntries={e.noOfEntries}
-                sport={e.sport}
-                price={e.price}
-              />
-            </div>
+          <div className="px-16 pb-6" key={i}>
+            <EventCard
+              image={e.image}
+              date={e.date}
+              name={e.name}
+              eventname={e.eventname}
+              location={e.location}
+              time={e.time}
+              noOfEntries={e.noOfEntries}
+              sport={e.sport}
+              price={e.price}
+            />
           </div>
         ))}
-      </div>
+      </Slider>
     </div>
   );
 };

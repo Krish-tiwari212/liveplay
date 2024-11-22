@@ -111,8 +111,12 @@ const initialQAs: QA[] = [
   },
 ];
 
-const QnaSectionEventpage = () => {
-  const [question, setQuestion] = useState('');
+interface QnaSectionEventpageProps {
+  isright:boolean
+}
+
+const QnaSectionEventpage = ({ isright }: QnaSectionEventpageProps) => {
+  const [question, setQuestion] = useState("");
   const [questions, setQuestions] = useState<QA[]>(initialQAs);
   const [currentPage, setCurrentPage] = useState(1);
   const questionsPerPage = 4;
@@ -125,22 +129,25 @@ const QnaSectionEventpage = () => {
   // Handle form submission
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    if (question.trim() === '') return;
+    if (question.trim() === "") return;
     const newQA: QA = {
       id: questions.length + 1,
-      name: 'pell',
+      name: "pell",
       question: question.trim(),
-      answer: 'This is a placeholder answer.',
+      answer: "This is a placeholder answer.",
     };
     setQuestions([newQA, ...questions]);
-    setQuestion('');
+    setQuestion("");
     setCurrentPage(1); // Reset to first page on new submission
   };
 
   // Calculate pagination
   const indexOfLastQuestion = currentPage * questionsPerPage;
   const indexOfFirstQuestion = indexOfLastQuestion - questionsPerPage;
-  const currentQuestions = questions.slice(indexOfFirstQuestion, indexOfLastQuestion);
+  const currentQuestions = questions.slice(
+    indexOfFirstQuestion,
+    indexOfLastQuestion
+  );
   const totalPages = Math.ceil(questions.length / questionsPerPage);
 
   const paginate = (pageNumber: number) => setCurrentPage(pageNumber);
@@ -154,7 +161,9 @@ const QnaSectionEventpage = () => {
   };
 
   return (
-    <div className="qna-section">
+    <div
+      className={`qna-section ${!isright ? "lg:hidden " : "hidden lg:block"}`}
+    >
       <div className="flex gap-2 items-center text-xl">
         <RiQuestionnaireFill />
         <h1>Ask your question to the organizer!</h1>
@@ -168,12 +177,12 @@ const QnaSectionEventpage = () => {
             onChange={handleChange}
           />
           <div className="flex flex-col gap-4 absolute right-2 bottom-4">
-            <Button type="submit">Submit Reply</Button>
+            <Button type="submit">Submit</Button>
           </div>
         </div>
       </form>
 
-      <div className='mb-2'>
+      <div className="mb-2">
         <h1 className="py-2 text-xl font-bold ">
           See What Other Player Have asked?
         </h1>
@@ -181,9 +190,13 @@ const QnaSectionEventpage = () => {
           {currentQuestions.map((qa) => (
             <li key={qa.id} className="py-2">
               <div className="w-full">
-                <h1 className="font-semibold text-xl mb-1 leading-tight">{qa.name}</h1>
+                <h1 className="font-semibold text-xl mb-1 leading-tight">
+                  {qa.name}
+                </h1>
                 <div className="">
-                  <h1 className="font-semibold text-lg leading-tight">{qa.question}</h1>
+                  <h1 className="font-semibold text-lg leading-tight">
+                    {qa.question}
+                  </h1>
                   <div className="border-l-4 border-gray-500 px-4 py-1 mt-2">
                     {qa.answer}
                   </div>
@@ -198,7 +211,10 @@ const QnaSectionEventpage = () => {
         <Pagination>
           <PaginationContent>
             <PaginationItem>
-              <PaginationPrevious onClick={handlePrevious} disabled={currentPage === 1} />
+              <PaginationPrevious
+                onClick={handlePrevious}
+                disabled={currentPage === 1}
+              />
             </PaginationItem>
             {Array.from({ length: totalPages }, (_, i) => (
               <PaginationItem key={i}>
@@ -208,14 +224,17 @@ const QnaSectionEventpage = () => {
                     e.preventDefault();
                     paginate(i + 1);
                   }}
-                  className={currentPage === i + 1 ? 'active' : ''}
+                  className={currentPage === i + 1 ? "active" : ""}
                 >
                   {i + 1}
                 </PaginationLink>
               </PaginationItem>
             ))}
             <PaginationItem>
-              <PaginationNext onClick={handleNext} disabled={currentPage === totalPages} />
+              <PaginationNext
+                onClick={handleNext}
+                disabled={currentPage === totalPages}
+              />
             </PaginationItem>
           </PaginationContent>
         </Pagination>

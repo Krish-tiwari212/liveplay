@@ -1,7 +1,7 @@
 import { Input } from './ui/input';
 import React, { useEffect, useState } from 'react';
 import { FaUserCircle } from 'react-icons/fa';
-import { MdNotifications, MdOutlineChat, MdPublic, MdSearch, MdMenu, MdOutlineEvent, MdPerson } from 'react-icons/md';
+import { MdNotifications, MdOutlineChat, MdPublic, MdSearch, MdMenu, MdOutlineEvent, MdPerson, MdLocationOn } from 'react-icons/md';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { toast } from '@/hooks/use-toast';
@@ -80,7 +80,8 @@ const Navbar = () => {
           />
         </div>
         <Select>
-          <SelectTrigger className="w-[110px] h-[30px] bg-[#141f29] text-[#ccdb28] border border-[#ccdb28]">
+          <SelectTrigger className="w-[120px] h-[30px] bg-[#141f29] font-semibold text-[#ccdb28] border border-[#ccdb28]">
+            <MdLocationOn className="mr-1" />
             <SelectValue placeholder="Location" />
           </SelectTrigger>
           <SelectContent>
@@ -111,7 +112,7 @@ const Navbar = () => {
         </Button>
         {isLoggedIn && (
           <Button
-            onClick={() => router.push("playerdashboard")}
+            onClick={() => router.push("/playerdashboard")}
             className="w-full bg-[#141f29] text-[#ccdb28] border border-[#ccdb28]"
             size="xs"
           >

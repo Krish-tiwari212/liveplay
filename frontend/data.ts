@@ -115,22 +115,32 @@ const eventsArray = [
   {
     title: "Features Event Poster (Gold/Premium)",
     image: "/images/carousel1 (1).svg",
+    buttontext:"View My Profile",
+    buttoncolor:"purple"
   },
   {
     title: "Features Event Poster (Gold/Premium)",
     image: "/images/carousel1 (2).svg",
+    buttontext:"Create Your Event",
+    buttoncolor:"yellow"
   },
   {
     title: "Features Event Poster (Gold/Premium)",
     image: "/images/carousel1 (3).svg",
+    buttontext:"Register Now",
+    buttoncolor:"yellow"
   },
   {
     title: "Features Event Poster (Gold/Premium)",
     image: "/images/carousel1 (4).svg",
+    buttontext:"Register Now",
+    buttoncolor:"yellow"
   },
   {
     title: "Features Event Poster (Gold/Premium)",
     image: "/images/carousel1 (5).svg",
+    buttontext:"Register Now",
+    buttoncolor:"yellow"
   },
 ];
 

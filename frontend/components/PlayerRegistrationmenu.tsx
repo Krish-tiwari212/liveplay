@@ -58,7 +58,7 @@ const PlayerRegistrationmenu = () => {
   const [searchTerm, setSearchTerm] = useState('');
   const [filteredPlayers, setFilteredPlayers] = useState<Player[]>(players);
   const [currentPage, setCurrentPage] = useState(1);
-  const playersPerPage = 10;
+  const playersPerPage = 14;
 
   const handleSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value;

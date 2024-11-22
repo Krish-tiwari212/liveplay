@@ -30,7 +30,7 @@ const ProgressBarCheckpoints = [
         className="w-5 h-5"
       />
     ),
-    label: "Upload Aadhar",
+    label: "Upload Document",
     placement: 2,
   },
   {
@@ -142,7 +142,7 @@ const additionalFields = [
     name: "aadharFront",
     required: true,
     filecontnet: {
-      size: "SVG,JPG,PNG or GIF max(480x480px)",
+      size: "JPG,PNG",
       label: "Upload Aadhar (Front)",
     },
   },
@@ -153,8 +153,19 @@ const additionalFields = [
     name: "aadharBack",
     required: true,
     filecontnet: {
-      size: "SVG,JPG,PNG or GIF max(480x480px)",
+      size: "JPG,PNG",
       label: "Upload Aadhar (Back)",
+    },
+  },
+  {
+    id: "aadharBack",
+    label: "Upload Document (Pan)",
+    type: "file",
+    name: "aadharBack",
+    required: true,
+    filecontnet: {
+      size: "JPG,PNG",
+      label: "Upload PAN",
     },
   },
 ];

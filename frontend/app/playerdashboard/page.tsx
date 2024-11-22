@@ -1,11 +1,11 @@
 "use client";
 
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useMemo } from "react";
 import Sidebar from "@/components/Sidebar";
 import { useAppContext } from "@/lib/context/AppContext";
 import Image from "next/image";
 import Link from "next/link";
-import { FaCalendarAlt, FaPlus, FaRegEye, FaRegThumbsUp } from "react-icons/fa";
+import { FaCalendarAlt, FaPlus, FaRegEye, FaStar } from "react-icons/fa";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { createClient } from "@/utils/supabase/client";
 import {
@@ -35,8 +35,10 @@ import {
 import { toast } from "@/hooks/use-toast";
 import {
   Dialog,
+  DialogClose,
   DialogContent,
   DialogDescription,
+  DialogFooter,
   DialogHeader,
   DialogTitle,
   DialogTrigger,
@@ -55,6 +57,10 @@ import CompleteDetailsForm from "@/components/CompleteDetailsForm";
 import FeedbackForm from "@/components/Rating";
 import Rating from "@/components/Rating";
 import { Label } from "@/components/ui/label";
+import { BiLike } from "react-icons/bi";
+import { Input } from "@/components/ui/input";
+import { Copy } from "lucide-react";
+import { FaSmile } from "react-icons/fa";
 
 interface EventCard {
   id: number;
@@ -139,6 +145,8 @@ export default function Home() {
   const [OrganizerConduct,setOrganizeConduct]=useState(0)
   const [Refreshments, setRefreshments] = useState(0);
   const [EventManagement,setEventManagement]=useState(0)
+  const [isThankYouOpen, setIsThankYouOpen] = useState(false);
+  const [averageRating, setAverageRating] = useState<number | null>(null);
 
 
 
@@ -267,16 +275,24 @@ export default function Home() {
     setIsAlertOpen(true);
   };
 
-  const handlefeedbacksubmit=()=>{
-    setIsAlertOpen(false)
-    setFeedbackDisable(true)
-    toast({
-      title:"Feedback submitted succesfully"
-    })
+  const handlefeedbacksubmit = () => {
+    setIsAlertOpen(false);
+    setFeedbackDisable(false);
 
-  }
+    const total = OrganizerConduct + EventManagement + Refreshments;
+    const avg = total / 3;
+    setAverageRating(avg);
+
+    setIsThankYouOpen(true);
+
+    toast({
+      title: "Feedback submitted successfully",
+    });
+  };
 
   const handleViewRegistrationClick = async (eventId: number) => {
+    
+    setIsRegistrationModalOpen(true);
     try {
       const response = await fetch(`/api/event/categories/${eventId}`);
       if (!response.ok) {
@@ -284,7 +300,6 @@ export default function Home() {
       }
       const data = await response.json();
       setRegisteredCategories(data.categories);
-      setIsRegistrationModalOpen(true);
     } catch (error) {
       console.error("Error fetching registered categories:", error);
       toast({
@@ -385,14 +400,53 @@ export default function Home() {
           >
             Event Feedback
           </Button>
-          <Button
-            onClick={() => router.push("/organizerDashboard")}
-            variant="tertiary"
-            size="xs"
-            className="text-sm sm:text-md"
-          >
-            Create Event
-          </Button>
+          <Dialog>
+            <DialogTrigger asChild>
+              <Button
+                variant="tertiary"
+                size="xs"
+                className="text-sm sm:text-md"
+              >
+                Enter Pair / Team Code
+              </Button>
+            </DialogTrigger>
+            <DialogContent className="sm:max-w-md h-auto">
+              <AlertDialogHeader>
+                <DialogTitle>Share link</DialogTitle>
+                <DialogDescription>
+                  Anyone who has this link will be able to view this.
+                </DialogDescription>
+              </AlertDialogHeader>
+              <div className="flex items-center space-x-2">
+                <div className="grid flex-1 gap-2">
+                  <Label htmlFor="link" className="sr-only">
+                    Link
+                  </Label>
+                  <Input
+                    id="link"
+                    defaultValue={`/event/1/share-link`}
+                    readOnly
+                  />
+                </div>
+                <Button
+                  type="button"
+                  size="sm"
+                  className="px-3"
+                  // onClick={() => handleCopy(`/event/1/share-link`)}
+                >
+                  <span className="sr-only">Copy</span>
+                  <Copy />
+                </Button>
+              </div>
+              <DialogFooter className="sm:justify-start">
+                <DialogClose asChild>
+                  <Button type="button" variant="secondary">
+                    Close
+                  </Button>
+                </DialogClose>
+              </DialogFooter>
+            </DialogContent>
+          </Dialog>
         </div>
         <div className="absolute hidden left-4 -bottom-8 md:flex flex-wrap gap-4 w-full">
           <Card className="w-auto shadow-xl">
@@ -410,7 +464,7 @@ export default function Home() {
                 Events I’m interested in
               </h1>
               <div className="flex justify-start items-center text-xl gap-2">
-                <FaRegThumbsUp className="" />
+                <BiLike className="" />
                 <h1 className="">0</h1>
               </div>
             </CardContent>
@@ -431,7 +485,7 @@ export default function Home() {
           <CardContent className="flex flex-col gap-1 mt-4">
             <h1 className="font-semibold text-lg">Events I’m interested in</h1>
             <div className="flex justify-start items-center text-xl gap-2">
-              <FaRegThumbsUp className="" />
+              <BiLike className="" />
               <h1 className="">0</h1>
             </div>
           </CardContent>
@@ -506,14 +560,14 @@ export default function Home() {
                           className="text-sm bg-[#17202A] text-[#CDDC29] hover:text-white py-1 w-full rounded-lg hover:shadow-xl"
                           onClick={() => handleViewRegistrationClick(event.id)}
                         >
-                          View My Registration
+                          Registration panel
                         </button>
-                        <button
+                        {/* <button
                           className="text-sm bg-[#E53935] text-white  py-1 w-full rounded-lg hover:shadow-xl"
                           onClick={() => handleWithdrawClick(event.id)}
                         >
                           Withdraw From Event
-                        </button>
+                        </button> */}
                         {i % 2 == 0 && (
                           <span className="flex gap-1 text-sm text-gray-800">
                             <h1
@@ -521,7 +575,7 @@ export default function Home() {
                                 isYellow ? "text-[#CDDC29]" : ""
                               }`}
                             >
-                              Event Draws are Live
+                              Match Fixtures are live
                             </h1>
                           </span>
                         )}
@@ -643,7 +697,7 @@ export default function Home() {
           ) : (
             events.map((event, i) => (
               <React.Fragment key={event.id}>
-                <Card className="shadow-md cursor-pointer hover:shadow-2xl flex-none min-w-[240px] max-w-[270px] sm:min-w-[500px] border-2 border-gray-800">
+                <Card className="shadow-md cursor-pointer hover:shadow-2xl flex-none min-w-[240px] max-w-[270px] sm:min-w-[600px] border-2 border-gray-800">
                   <CardContent className="py-4 flex flex-col sm:flex-row gap-4 h-full">
                     <div className="flex-[1]">
                       <Image
@@ -670,14 +724,24 @@ export default function Home() {
                         </div>
                         <div className="flex flex-col justify-between ">
                           <span className="flex gap-1">
-                            <h1 className="font-bold">Venue:</h1>
-                            {event.venue_name || ""}
+                            <h1 className="font-bold">Sales:</h1>
+                            100000
                           </span>
                           <span className="flex gap-1 whitespace-nowrap">
-                            <h1 className="font-bold">Event Date:</h1>
-                            {event.start_date
-                              ? formatDate(event.start_date)
-                              : "20th Nov 2024"}
+                            <h1 className="font-bold">Views:</h1>
+                            10000
+                          </span>
+                          <span className="flex gap-1 whitespace-nowrap">
+                            <h1 className="font-bold">Registrations:</h1>
+                            10000
+                          </span>
+                          <span className="flex gap-1 whitespace-nowrap">
+                            <h1 className="font-bold">Interested:</h1>
+                            1000
+                          </span>
+                          <span className="flex gap-1 whitespace-nowrap  items-center">
+                            <h1 className="font-bold">Event Feedback:</h1>
+                            4.5 <FaStar />
                           </span>
                         </div>
                       </div>
@@ -687,13 +751,13 @@ export default function Home() {
                           onClick={() => handleFeedbackClick(event.id)}
                           disabled={feedbackdisable}
                         >
-                          Event Feedback
+                          Give Feedback
                         </button>
                         <button
                           className="text-sm bg-[#17202A] text-[#CDDC29] hover:text-white py-1 w-full rounded-lg hover:shadow-xl"
                           onClick={() => handleViewRegistrationClick(event.id)}
                         >
-                          View My Registration
+                          Registration panel
                         </button>
                       </div>
                     </div>
@@ -705,7 +769,7 @@ export default function Home() {
         </div>
       </section>
 
-      {isModalOpen && (
+      {/* {isModalOpen && (
         <Dialog open={isModalOpen} onOpenChange={setIsModalOpen}>
           <DialogTrigger asChild>
             <Button className="hidden">Open</Button>
@@ -756,7 +820,7 @@ export default function Home() {
             </Button>
           </DialogContent>
         </Dialog>
-      )}
+      )} */}
       {isRegistrationModalOpen && (
         <Dialog
           open={isRegistrationModalOpen}
@@ -777,13 +841,20 @@ export default function Home() {
 
               <div className="space-y-4">
                 {registeredCategories.map((category) => (
-                  <div
-                    key={category.id}
-                    className="flex flex-col p-2 border rounded-md shadow-sm"
-                  >
-                    <span className="font-medium">
-                      {category.category_name} - Rs. {category.price}
-                    </span>
+                  <div className="flex justify-between gap-2" key={category.id}>
+                    <div className="flex flex-col p-2 border rounded-md shadow-sm w-full">
+                      <span className="font-medium">
+                        {category.category_name} - Rs. {category.price}
+                      </span>
+                    </div>
+                    <Button
+                      className="px-3 py-1 text-sm"
+                      onClick={() =>
+                        handleWithdrawFromCategory(category.category_name)
+                      }
+                    >
+                      Withdraw
+                    </Button>
                   </div>
                 ))}
               </div>
@@ -860,7 +931,7 @@ export default function Home() {
               />
               <Rating
                 eventId={selectedEventForFeedback}
-                label="Refreshments"
+                label="Venue and location"
                 setratingvalue={setRefreshments}
               />
             </div>
@@ -868,14 +939,29 @@ export default function Home() {
               <Button variant="outline" onClick={handleCloseFeedbackDialog}>
                 Close
               </Button>
-              <Button
-                variant="default"
-                onClick={handlefeedbacksubmit}
-                className={``}
-              >
+              <Button variant="default" onClick={handlefeedbacksubmit}>
                 Submit
               </Button>
             </div>
+          </DialogContent>
+        </Dialog>
+      )}
+      {isThankYouOpen && averageRating !== null && (
+        <Dialog open={isThankYouOpen} onOpenChange={setIsThankYouOpen}>
+          <DialogContent className="w-[90%] sm:max-w-md p-6 flex flex-col items-center h-auto">
+            <FaSmile className="text-4xl mb-4" />
+            <DialogTitle className="text-2xl mb-2">Thank You!</DialogTitle>
+            <DialogDescription className="text-center text-gray-700">
+              You have submitted an average rating of {averageRating.toFixed(1)}{" "}
+              stars to this event organizer.
+            </DialogDescription>
+            <Button
+              variant="default"
+              className="mt-6"
+              onClick={() => setIsThankYouOpen(false)}
+            >
+              Close
+            </Button>
           </DialogContent>
         </Dialog>
       )}

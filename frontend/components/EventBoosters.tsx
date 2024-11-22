@@ -10,27 +10,104 @@ import { TbCoinRupeeFilled } from 'react-icons/tb';
 import { FaRegEye } from 'react-icons/fa';
 import { FaPeopleGroup } from 'react-icons/fa6';
 import Image from 'next/image';
+import {
+  HoverCard,
+  HoverCardContent,
+  HoverCardTrigger,
+} from "@/components/ui/hover-card";
+
 
 const features = {
-  standard: [{ name: "Unlimited Entries" }, { name: "Event  Management" }],
+  standard: [
+    {
+      name: "Unlimited Entries",
+      description:
+        "Allow an unlimited number of participants to register for your event, ensuring maximum reach and engagement.",
+    },
+    {
+      name: "Event Management",
+      description:
+        "Comprehensive tools to manage all aspects of your event, from scheduling to participant communication.",
+    },
+  ],
   pro: [
-    { name: "Unlimited Entries" },
-    { name: "Event  Management" },
-    { name: "Featured Listing" },
-    { name: "Verified Badge" },
-    { name: "Event Date Edit" },
-    { name: "Quick Payout" },
+    {
+      name: "Unlimited Entries",
+      description:
+        "Allow an unlimited number of participants to register for your event, ensuring maximum reach and engagement.",
+    },
+    {
+      name: "Event Management",
+      description:
+        "Comprehensive tools to manage all aspects of your event, from scheduling to participant communication.",
+    },
+    {
+      name: "Featured Listing",
+      description:
+        "Enhance the visibility of your event by featuring it prominently on the platform, attracting more attendees.",
+    },
+    {
+      name: "Verified Badge",
+      description:
+        "Gain trust and credibility with a verified badge, assuring participants of the event's legitimacy and quality.",
+    },
+    {
+      name: "Event Date Edit",
+      description:
+        "Flexibly modify the dates of your event as needed, accommodating any schedule changes without hassle.",
+    },
+    {
+      name: "Quick Payout",
+      description:
+        "Receive your earnings faster with our expedited payout system, ensuring timely access to your funds.",
+    },
   ],
   elite: [
-    { name: "Unlimited Entries" },
-    { name: "Event  Management" },
-    { name: "Premium Listing" },
-    { name: "Verified Badge" },
-    { name: "Event Date Edits" },
-    { name: "Quick Payout" },
-    { name: "Lower Fees" },
-    { name: "Live Match Tracker" },
-    { name: "Setup and support" },
+    {
+      name: "Unlimited Entries",
+      description:
+        "Allow an unlimited number of participants to register for your event, ensuring maximum reach and engagement.",
+    },
+    {
+      name: "Event Management",
+      description:
+        "Comprehensive tools to manage all aspects of your event, from scheduling to participant communication.",
+    },
+    {
+      name: "Premium Listing",
+      description:
+        "Achieve top-tier visibility with premium listings, placing your event at the forefront of the platform.",
+    },
+    {
+      name: "Verified Badge",
+      description:
+        "Gain trust and credibility with a verified badge, assuring participants of the event's legitimacy and quality.",
+    },
+    {
+      name: "Event Date Edits",
+      description:
+        "Flexibly modify the dates of your event as needed, accommodating any schedule changes without hassle.",
+    },
+    {
+      name: "Quick Payout",
+      description:
+        "Receive your earnings faster with our expedited payout system, ensuring timely access to your funds.",
+    },
+    {
+      name: "Lower Fees",
+      description:
+        "Benefit from reduced transaction fees, maximizing your profits and minimizing costs associated with event management.",
+    },
+    {
+      name: "Live Match Tracker",
+      description:
+        "Provide real-time updates and tracking for matches or activities within your event, enhancing participant engagement.",
+    },
+    {
+      name: "Setup and Support",
+      description:
+        "Receive dedicated assistance with setting up your event and ongoing support to ensure everything runs smoothly.",
+    },
   ],
 };
 
@@ -151,7 +228,12 @@ const EventBoosters = ({
               <ul>
                 {features.standard.map((feature, index) => (
                   <li key={index} className="my-1">
-                    <h1 className="text-[#CDDC29]">{feature.name}</h1>
+                    <HoverCard>
+                      <HoverCardTrigger>
+                        <h1 className="text-[#CDDC29]">{feature.name}</h1>
+                      </HoverCardTrigger>
+                      <HoverCardContent>{feature.description}</HoverCardContent>
+                    </HoverCard>
                   </li>
                 ))}
               </ul>
@@ -200,26 +282,36 @@ const EventBoosters = ({
               {features.pro.map((feature, index) =>
                 feature.name === "Verified Badge" ? (
                   <li key={index} className="my-1 flex items-center gap-2 ">
-                    <h1 className="text-[#CDDC29]">{feature.name}</h1>
-                    <div>
-                      <Image
-                        src="/icons/ProBadgeLight.svg"
-                        alt="/icons/ProBadgeLight.svg"
-                        width={70}
-                        height={70}
-                      />
-                    </div>
+                    <HoverCard>
+                      <HoverCardTrigger className="my-1 flex items-center gap-2 ">
+                        <h1 className="text-[#CDDC29]">{feature.name}</h1>
+                        <div>
+                          <Image
+                            src="/icons/ProBadgeLight.svg"
+                            alt="/icons/ProBadgeLight.svg"
+                            width={70}
+                            height={70}
+                          />
+                        </div>
+                      </HoverCardTrigger>
+                      <HoverCardContent>{feature.description}</HoverCardContent>
+                    </HoverCard>
                   </li>
                 ) : (
                   <li key={index} className="my-1">
-                    <h1 className="text-[#CDDC29]">{feature.name}</h1>
+                    <HoverCard>
+                      <HoverCardTrigger>
+                        <h1 className="text-[#CDDC29]">{feature.name}</h1>
+                      </HoverCardTrigger>
+                      <HoverCardContent>{feature.description}</HoverCardContent>
+                    </HoverCard>
                   </li>
                 )
               )}
             </ul>
           </div>
         </div>
-        <div className="w-[90%] sm:w-72 flex flex-col gap-1 mx-auto sm:mx-0" >
+        <div className="w-[90%] sm:w-72 flex flex-col gap-1 mx-auto sm:mx-0">
           <div
             className={`p-4 rounded-lg cursor-pointer transition-transform duration-400 bg-gray-800 text-white font-open-sauce ${
               selectedPlan === "elite"
@@ -245,19 +337,33 @@ const EventBoosters = ({
                 {features.elite.map((feature, index) =>
                   feature.name === "Verified Badge" ? (
                     <li key={index} className="my-1 flex items-center gap-2 ">
-                      <h1 className="text-[#CDDC29]">{feature.name} </h1>
-                      <div>
-                        <Image
-                          src="/icons/EliteBadgeDark.svg"
-                          alt="/icons/EliteBadgeDark.svg"
-                          width={70}
-                          height={70}
-                        />
-                      </div>
+                      <HoverCard>
+                        <HoverCardTrigger>
+                          <h1 className="text-[#CDDC29]">{feature.name} </h1>
+                          <div>
+                            <Image
+                              src="/icons/EliteBadgeDark.svg"
+                              alt="/icons/EliteBadgeDark.svg"
+                              width={70}
+                              height={70}
+                            />
+                          </div>
+                        </HoverCardTrigger>
+                        <HoverCardContent>
+                          {feature.description}
+                        </HoverCardContent>
+                      </HoverCard>
                     </li>
                   ) : (
                     <li key={index} className="my-1">
-                      <h1 className="text-[#CDDC29]">{feature.name}</h1>
+                      <HoverCard>
+                        <HoverCardTrigger>
+                          <h1 className="text-[#CDDC29]">{feature.name}</h1>
+                        </HoverCardTrigger>
+                        <HoverCardContent>
+                          {feature.description}
+                        </HoverCardContent>
+                      </HoverCard>
                     </li>
                   )
                 )}

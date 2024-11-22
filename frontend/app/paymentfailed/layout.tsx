@@ -13,6 +13,7 @@ import MNavbar from "@/components/MNavbar";
 import Navbar from "@/components/Navbar";
 import HeroChangingTagLine from "@/components/HeroChangingTagLine";
 import Footer from "@/components/Footer";
+import { CartProvider } from "@/context/CartContext";
 
 export default function RootLayout({
   children,
@@ -22,11 +23,14 @@ export default function RootLayout({
   const [navexpanded, setnavexpanded] = useState(true);
   return (
     <UserProvider>
-      <MNavbar />
-      <Navbar />
-      <HeroChangingTagLine ishero={true}/>
-      {children}
-      <Footer />
+      <CartProvider>
+        <MNavbar />
+        <Navbar />
+        <HeroChangingTagLine ishero={true} />
+        <HeroChangingTagLine />
+        {children}
+        <Footer />
+      </CartProvider>
     </UserProvider>
   );
 }

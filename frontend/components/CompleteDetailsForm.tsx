@@ -24,6 +24,17 @@ import {
 } from "@/components/ui/select";
 import { Input } from "@/components/ui/input";
 import { useToast } from "@/hooks/use-toast";
+import {
+  AlertDialog,
+  AlertDialogTrigger,
+  AlertDialogContent,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogCancel,
+  AlertDialogAction,
+} from "@/components/ui/alert-dialog";
 
 // Validation schema for form fields
 const formSchema = z.object({
@@ -39,8 +50,10 @@ const CompleteDetailsForm = () => {
   const router = useRouter();
   const { toast } = useToast();
   const [loading, setLoading] = useState(false);
-  const {user} = useUser();
-  // console.log(user);
+  const { user } = useUser();
+  const [prevDob, setPrevDob] = useState("");
+  const [newDob, setNewDob] = useState("");
+  const [isAlertOpen, setIsAlertOpen] = useState(false);
 
   const form = useForm({
     resolver: zodResolver(formSchema),
@@ -54,31 +67,73 @@ const CompleteDetailsForm = () => {
     },
   });
 
-  // Form submission for completing user details
+  useState(() => {
+    const existingDob = form.getValues("date_of_birth");
+    if (existingDob) {
+      setPrevDob(existingDob);
+    }
+  }, [form]);
+
+  const calculateAge = (dob: string): number => {
+    const birthDate = new Date(dob);
+    const today = new Date();
+    let age = today.getFullYear() - birthDate.getFullYear();
+    const m = today.getMonth() - birthDate.getMonth();
+
+    if (m < 0 || (m === 0 && today.getDate() < birthDate.getDate())) {
+      age--;
+    }
+
+    return age;
+  };
+
   const onSubmit = async (data: any) => {
     setLoading(true);
-    console.log(user)
-    // Assuming `user` is available in the scope
+    console.log(user);
     const requestData = {
       ...data,
       user_id: user?.id,
     };
-  
+
     const response = await fetch("/api/auth/details", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(requestData),
     });
-  
+
     const result = await response.json();
     setLoading(false);
-  
+
     if (response.ok) {
       toast({ title: "Details Updated", description: "Your details have been updated successfully!" });
       router.push("/");
     } else {
       toast({ title: "Update Failed", description: result.error || "An error occurred. Please try again.", variant: "destructive" });
     }
+  };
+
+  const handleDobChange = (e: React.ChangeEvent<HTMLInputElement>, fieldOnChange: (...event: any[]) => void) => {
+    const selectedDob = e.target.value;
+    const age = calculateAge(selectedDob);
+
+    if (age < 18) {
+      setNewDob(selectedDob);
+      setIsAlertOpen(true);
+    } else {
+      setPrevDob(selectedDob);
+      fieldOnChange(selectedDob);
+    }
+  };
+
+  const confirmDobChange = (fieldOnChange: (...event: any[]) => void) => {
+    setPrevDob(newDob);
+    fieldOnChange(newDob);
+    setIsAlertOpen(false);
+  };
+
+  const cancelDobChange = (fieldOnChange: (...event: any[]) => void) => {
+    fieldOnChange(prevDob);
+    setIsAlertOpen(false);
   };
 
   return (
@@ -136,7 +191,8 @@ const CompleteDetailsForm = () => {
                     <Input
                       type="date"
                       placeholder="Enter your date of birth"
-                      {...field}
+                      value={field.value}
+                      onChange={(e) => handleDobChange(e, field.onChange)}
                     />
                   </FormControl>
                   <FormMessage />
@@ -187,6 +243,25 @@ const CompleteDetailsForm = () => {
             </Button>
           </form>
         </Form>
+
+        <AlertDialog open={isAlertOpen} onOpenChange={setIsAlertOpen}>
+          <AlertDialogContent>
+            <AlertDialogHeader>
+              <AlertDialogTitle>Underage Confirmation</AlertDialogTitle>
+              <AlertDialogDescription>
+                You are under 18 years old. Do you want to proceed with this date of birth?
+              </AlertDialogDescription>
+            </AlertDialogHeader>
+            <AlertDialogFooter>
+              <AlertDialogCancel onClick={() => cancelDobChange(form.setValue)}>
+                Cancel
+              </AlertDialogCancel>
+              <AlertDialogAction onClick={() => confirmDobChange(form.setValue)}>
+                Confirm
+              </AlertDialogAction>
+            </AlertDialogFooter>
+          </AlertDialogContent>
+        </AlertDialog>
       </div>
     </div>
   );

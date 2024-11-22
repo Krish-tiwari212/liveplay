@@ -5,7 +5,7 @@ import { useAppContext } from "@/lib/context/AppContext";
 import Image from "next/image";
 import Link from "next/link";
 import React, { useEffect, useState } from "react";
-import { FaCalendarAlt, FaCalendarCheck, FaPlus, FaRegEye, FaRegThumbsUp, FaUnlockAlt } from "react-icons/fa";
+import { FaCalendarAlt, FaCalendarCheck, FaPlus, FaRegEye, FaUnlockAlt } from "react-icons/fa";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { FaHandHoldingDollar, FaIndianRupeeSign, FaPeopleGroup } from "react-icons/fa6";
 import { LiaStreetViewSolid } from "react-icons/lia";
@@ -354,7 +354,7 @@ export default function Home() {
                           <Tooltip>
                             <TooltipTrigger>
                               <span className="flex gap-2 items-center">
-                                <FaRegThumbsUp />{" "}
+                                <<BiLike />{" "}
                                 {event.interested_people || "20"}
                               </span>
                             </TooltipTrigger>
@@ -377,7 +377,7 @@ export default function Home() {
                             onClick={(e) => {
                               e.stopPropagation();
                             }}
-                            className="z-50 w-full bg-[#17202a] text-[#cddc29] hover:text-white flex gap-2 mt-2 py-1 rounded-lg hover:shadow-xl justify-center items-center"
+                            className="w-full bg-[#17202a] text-[#cddc29] hover:text-white flex gap-2 mt-2 py-1 rounded-lg hover:shadow-xl justify-center items-center"
                           >
                             <h1>Share</h1>
                             <IoShareSocialSharp />

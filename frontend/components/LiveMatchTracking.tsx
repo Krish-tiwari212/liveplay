@@ -39,7 +39,8 @@ const LiveMatchTracking = ({ handleNext }: LiveMatchTrackingProps) => {
    const handlePlanClick = (plan: string) => {
     setSelectedPlan(selectedPlan === plan ? null : plan)}
   return (
-    <div className="m-3 bg-white">
+    <div className="m-3 flex flex-col gap-4 justify-center items-center">
+      <h1 className='text-2xl font-bold text-center'>Boost</h1>
       <div className="w-[90%] sm:w-72 flex flex-col gap-1 mx-auto sm:mx-0">
         <div
           className={`p-4 rounded-lg cursor-pointer transition-transform duration-400 bg-gray-800 text-white font-open-sauce ${
@@ -85,12 +86,6 @@ const LiveMatchTracking = ({ handleNext }: LiveMatchTrackingProps) => {
             </ul>
           </div>
         </div>
-        {editPage !== "manageEvent" && (
-          <Button onClick={()=>{setSelectedPlan("standard");
-      handleNext()}} className="block sm:hidden">
-            Skip For Now
-          </Button>
-        )}
       </div>
     </div>
   );

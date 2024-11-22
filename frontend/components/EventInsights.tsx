@@ -72,11 +72,11 @@ const Insightfields = [
       "Summarize the main rules for the event, including guidelines and scoring methods to ensure fair play.",
   },
   {
-    label: "Cash Prize Pool",
-    name: "cash_prize_pool",
+    label: "Cash Price Pool",
+    name: "cash_price_pool",
     type: "number",
     placeholder:
-      "Summarize the main rules for the event, including guidelines and scoring methods to ensure fair play.",
+      "Enter Cash Price Pool",
   },
 ];
 
@@ -184,18 +184,31 @@ const EventInsights: React.FC<EventInsights> = ({
               {field.label}
               <span className="text-red-500">*</span>
             </Label>
-            <textarea
-              id={field.name}
-              name={field.name}
-              rows={4}
-              placeholder={field.placeholder}
-              required
-              type={field.type}
-              value={formData[field.name as keyof typeof formData] || ""}
-              onChange={handleChange}
-              className="w-full p-2 bg-white border rounded-md text-sm shadow-2xl text-[#17202A] focus:border-[#17202A] focus:outline-none focus:shadow-lg"
-              maxLength={field.name === "event_usp" ? 50 : undefined}
-            />
+            {field.type === "number" ? (
+              <input
+                id={field.name}
+                name={field.name}
+                placeholder={field.placeholder}
+                required
+                type={field.type}
+                value={formData[field.name as keyof typeof formData] || ""}
+                onChange={handleChange}
+                className="w-full p-2 bg-white border rounded-md text-sm shadow-2xl text-[#17202A] focus:border-[#17202A] focus:outline-none focus:shadow-lg"
+             />
+            ) : (
+              <textarea
+                id={field.name}
+                name={field.name}
+                rows={4}
+                placeholder={field.placeholder}
+                required
+                type={field.type}
+                value={formData[field.name as keyof typeof formData] || ""}
+                onChange={handleChange}
+                className="w-full p-2 bg-white border rounded-md text-sm shadow-2xl text-[#17202A] focus:border-[#17202A] focus:outline-none focus:shadow-lg"
+                maxLength={field.name === "event_usp" ? 50 : undefined}
+              />
+            )}
           </div>
         ))}
       </div>

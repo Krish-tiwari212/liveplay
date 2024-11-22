@@ -9,16 +9,19 @@ import { Badge } from './ui/badge';
 import { Button } from './ui/button';
 import { HiCurrencyRupee } from 'react-icons/hi2';
 import { VscGraph } from 'react-icons/vsc';
-import { IoLocationSharp } from 'react-icons/io5';
+import { IoLocationSharp, IoShareSocialSharp } from 'react-icons/io5';
 import { CalendarIcon } from 'lucide-react';
 import { useRouter } from 'next/navigation';
+import QnaSectionEventpage from './QnaSectionEventpage';
+import EventCategoryCard from './EventCategoryCard';
+import { BiLike } from 'react-icons/bi';
 
-const EventPageRightContent = () => {
-    const router=useRouter()
+const EventPageRightContent = ({ eventDetails }: any) => {
+  const router = useRouter();
   return (
     <div className="w-full lg:w-1/3 flex flex-col gap-4">
-      <div className="border-2 border-[#141F29] p-4 rounded-lg text-[#141F29]">
-        <h1 className="text-xl sm:text-2xl md:text-3xl font-bold mb-4">
+      <div className="hidden lg:block border-2 border-[#141F29] p-4 rounded-lg text-[#141F29]">
+        <h1 className="text-xl sm:text-2xl md:text-3xl font-bold mb-4 line-clamp-2">
           Summer Basketball Tournament Pro League Men Champ 2.0 2024
         </h1>
 
@@ -63,16 +66,16 @@ const EventPageRightContent = () => {
         </div>
 
         <Button
-          onClick={()=>router.push("/eventspage/1234")}
+          onClick={() => router.push("/eventspage/1234")}
           variant="tertiary"
-          className="w-full border-2 border-black text-sm sm:text-base"
+          className="w-full border-2 border-black py-8 text-sm sm:text-xl"
         >
           Register Now
         </Button>
       </div>
 
       {/* Event Features */}
-      <div className="border-2 border-[#141F29] p-4 rounded-lg text-[#141F29]">
+      <div className="hidden lg:block border-2 border-[#141F29] p-4 rounded-lg text-[#141F29]">
         <h1 className="text-xl sm:text-2xl md:text-3xl font-bold mb-4">
           Event Features
         </h1>
@@ -91,7 +94,7 @@ const EventPageRightContent = () => {
             Team
           </Badge>
         </div>
-        <div className="flex flex-col md:flex-row my-1">
+        <div className="flex flex-col md:flex-row my-4">
           <span className="text-base sm:text-lg md:text-xl font-bold flex items-center gap-2">
             <MdCategory className="h-4 w-4 sm:h-5 sm:w-5" />
             Number of Categories:
@@ -104,16 +107,16 @@ const EventPageRightContent = () => {
             (View Categories)
           </a>
         </div>
-        <div className="flex flex-col md:flex-row my-1">
+        <div className="flex flex-col md:flex-row my-4">
           <span className="text-base sm:text-lg md:text-xl font-bold flex items-center gap-2">
             <GrTrophy className="h-4 w-4 sm:h-5 sm:w-5" />
             Cash Prize Pool:
             <strong className="font-normal">₹100,000</strong>
           </span>
         </div>
-        <div className="my-1">
-          <h3 className="text-lg sm:text-xl md:text-2xl font-bold flex items-center mb-2">
-            <FaStar className="mr-2" /> Event USP
+        <div className="my-4">
+          <h3 className="text-base sm:text-lg md:text-xl font-bold flex items-center mb-2">
+            <FaStar className="mr-2 text-2xl" /> Event USP
           </h3>
           <ul className="space-y-2 ml-6">
             <li className="flex items-center text-sm sm:text-base">
@@ -126,9 +129,9 @@ const EventPageRightContent = () => {
             </li>
           </ul>
         </div>
-        <div>
-          <h3 className="text-lg sm:text-xl md:text-2xl font-bold flex items-center mb-2">
-            <RiStarSmileFill className="mr-2" /> Sponsored By
+        <div className="my-4">
+          <h3 className="text-base sm:text-lg md:text-xl font-bold flex items-center mb-2">
+            <RiStarSmileFill className="mr-2 text-2xl" /> Sponsored By
           </h3>
           <div className="grid grid-cols-3 gap-4 ml-6">
             <div className="rounded-lg flex flex-col p-4">
@@ -172,7 +175,7 @@ const EventPageRightContent = () => {
       </div>
 
       {/* Event Organizer */}
-      <div className="border-2 border-[#141F29] p-4 rounded-lg text-[#141F29]">
+      <div className="hidden lg:block border-2 border-[#141F29] p-4 rounded-lg text-[#141F29]">
         <h1 className="text-xl sm:text-2xl md:text-3xl font-bold mb-4">
           Event Organizer
         </h1>
@@ -234,8 +237,99 @@ const EventPageRightContent = () => {
           </div>
         </div>
       </div>
+      <div className="w-full flex lg:hidden flex-col md:flex-row justify-between items-center my-4 space-y-4 md:space-y-0">
+        <h1
+          className="text-xl font-semibold text-center lg:text-left"
+          style={{ textShadow: "0 3px 0 #cddc29" }}
+        >
+          Liked By 1983 Players
+        </h1>
+
+        <div className="flex justify-center md:justify-between gap-2 xl:gap-12">
+          <Button
+            size="sm"
+            variant="outline"
+            className="border-2 shadow-lg border-black flex items-center"
+          >
+            <h1 className=" mr-1">Like</h1> <BiLike />
+          </Button>
+          <Button
+            size="sm"
+            variant="outline"
+            className="border-2 shadow-lg border-black flex items-center"
+          >
+            <h1 className=" mr-1">Share</h1> <IoShareSocialSharp />
+          </Button>
+          <Button
+            size="sm"
+            variant="outline"
+            className="border-2 shadow-lg border-black"
+          >
+            View Matches
+          </Button>
+        </div>
+
+        <div className="flex justify-center items-center gap-4 bg-[#E6EAC5] px-4 rounded py-2 w-full md:w-auto">
+          <h1 className="font-semibold text-center">Countdown</h1>
+          <div className="flex gap-2 sm:gap-4">
+            <div className="flex flex-col items-center justify-center leading-tight">
+              <h1 className="font-semibold">12</h1>
+              <p className="text-[10px]">Days</p>
+            </div>
+            <div className="flex flex-col items-center justify-center leading-tight">
+              <h1 className="font-semibold">10</h1>
+              <p className="text-[10px]">Hours</p>
+            </div>
+            <div className="flex flex-col items-center justify-center leading-tight">
+              <h1 className="font-semibold">20</h1>
+              <p className="text-[10px]">Minutes</p>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div className="w-full lg:hidden relative h-auto sm:h-auto lg:h-auto">
+        <div>
+          <h1 className="text-2xl font-semibold mb-2">Event Information</h1>
+          <h2 className="mb-4">
+            Total Registrations: {eventDetails.totalRegistrations}
+            <a href="#" className="text-blue-600 ml-2 hover:underline">
+              View player names
+            </a>
+          </h2>
+        </div>
+        <div className="mb-6">
+          <h3 className="text-xl font-bold mb-2">Location</h3>
+          <p>{eventDetails.location}</p>
+        </div>
+        <div className="mb-6">
+          <h3 className="text-xl font-bold mb-2">Description</h3>
+          <p>{eventDetails.description}</p>
+        </div>
+        <div className="mb-6">
+          <h3 className="text-xl font-bold mb-2">Event Categories</h3>
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+            {eventDetails.events.map((event: any, index: number) => (
+              <EventCategoryCard key={index} event={event} />
+            ))}
+          </div>
+        </div>
+        <div className="mb-6">
+          <h3 className="text-xl font-bold mb-2">Rewards</h3>
+          <div className="mb-4">
+            <p className="whitespace-pre-line">{eventDetails.rewards}</p>
+          </div>
+        </div>
+
+        <div className="mb-6">
+          <h3 className="text-xl font-bold mb-2">Rules</h3>
+          <div className="mb-4">
+            <p className="whitespace-pre-line">{eventDetails.rules}</p>
+          </div>
+        </div>
+      </div>
+      <QnaSectionEventpage isright={false}/>
     </div>
   );
-}
+};
 
 export default EventPageRightContent

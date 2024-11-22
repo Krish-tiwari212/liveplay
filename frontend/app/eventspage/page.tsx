@@ -108,8 +108,8 @@ const EventPage = () => {
   return (
     <div className="mx-auto p-5">
       <div className="flex flex-col lg:flex-row gap-4">
-        <EventPageLeftContnt eventDetails={eventDetails}/>
-        <EventPageRightContent/>
+        <EventPageLeftContnt eventDetails={eventDetails} />
+        <EventPageRightContent eventDetails={eventDetails} />
       </div>
       <CardCarousel />
     </div>

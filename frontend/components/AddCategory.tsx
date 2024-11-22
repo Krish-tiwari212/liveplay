@@ -59,7 +59,7 @@ const inputFields = [
     label: "Ticket Description",
     type: "textarea",
     placeholder: "Includes participation, e-certificate, refreshments",
-    maxLength: 75,
+    maxLength: 65,
     required: true,
   },
   {
@@ -336,6 +336,20 @@ const AddCategory = ({ setCategoryData ,type,category}: AddCategoryProps) => {
             Select Age Category<span className="text-red-500">*</span>
           </label>
           <div className="flex justify-start lg:justify-between lg:items-center flex-col lg:flex-row space-y-2 p-2">
+            <div className="flex items-center space-x-4">
+              <input
+                type="radio"
+                id="open"
+                name="ageRange"
+                value="open"
+                checked={categoryData.ageRangeOption === "open"}
+                onChange={() => handleAgeRangeChange("open")}
+                className="h-4 w-4 text-[#17202A] border-gray-300 focus:ring-[#17202A]"
+              />
+              <Label htmlFor="open" className="text-sm text-gray-700">
+                Open
+              </Label>
+            </div>
             <div className="flex items-center space-x-4">
               <input
                 type="radio"
