@@ -1,5 +1,5 @@
-import React, { useEffect, useState } from 'react';
-import { FaDollarSign, FaUser, FaHeart, FaEye, FaTimes, FaRupeeSign, FaRegEye, FaRegThumbsUp } from 'react-icons/fa';
+import React, { useEffect } from 'react';
+import { FaDollarSign, FaUser, FaHeart, FaEye, FaTimes, FaRupeeSign, FaRegEye, } from 'react-icons/fa';
 import { Bar } from 'react-chartjs-2';
 import {
   Card,
@@ -52,53 +52,30 @@ const data = [
 ];
 
 const Report = ({ handleNext }: ReportProps) => {
-  const [data, setData] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
-
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const response = await fetch('/api/event/categories/d262e530-8109-4d6f-9c9d-e74f92a28806');
-        if (!response.ok) {
-          throw new Error('Network response was not ok');
-        }
-        const result = await response.json();
-        setData(result);
-      } catch (error) {
-        setError(error);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchData();
-  }, []);
-
   const metrics = [
     {
       title: "Event Sales",
       description: "Total Entry Fees Collected",
       icon: <FaRupeeSign />,
-      data: data?.totalEntryFeesCollected || 0,
+      data: 0,
     },
     {
       title: "Event Views",
       description: "Total number of users who have viewed this event",
       icon: <FaRegEye />,
-      data: data?.totalEventViews || 0,
+      data: 0,
     },
     {
       title: "Number of Registrations",
       description: "Total number of event registrations",
       icon: <FaPeopleGroup />,
-      data: data?.totalNumberOfRegistrations || 0,
+      data: 0,
     },
     {
       title: "Number of Interested People",
       description: "Total number of users interested in this event",
       icon: <BiLike />,
-      data: data?.totalInterestedPeople || 0,
+      data: 0,
     },
   ];
 
@@ -115,23 +92,35 @@ const Report = ({ handleNext }: ReportProps) => {
     "#4ec9a3",
   ];
 
-  const CdataSales = data?.sales?.map((sale, index) => {
-    const fill = colors[index % colors.length];
+  const CdataSales = data[0].value
+    .map((value, index) => {
+      const fill = colors[index % colors.length];
+      return {
+        category: `${data[0].categories[index]}`,
+        salsepercategory: value,
+        fill: fill,
+      };
+    })
+    .slice(0, 9);
+
+  if (data[0].value.length > 9) {
+    const othersValue = data[0].value
+      .slice(9)
+      .reduce((acc, curr) => acc + curr, 0);
+    CdataSales.push({
+      category: "others",
+      salsepercategory: othersValue,
+      fill: colors[9 % colors.length],
+    });
+  }
+
+  const CdataEntries = data[1].value.map((value, index) => {
     return {
-      category: sale.category,
-      salsepercategory: sale.total_sales,
-      fill: fill,
-    };
-  }) || [];
-  
-  const CdataEntries = data?.registrations?.map((registration) => {
-    const category = data.categories?.find(cat => cat.id === registration.category_id);
-    return {
-      category: category?.category_name || 'Unknown',
-      entriesPerCategory: registration.total_registrations,
+      category: `${data[1].categories[index]}`,
+      entriesPerCategory: value,
       fill: "#4186f5",
     };
-  }) || [];
+  });
 
   const SalesData =
     {
@@ -158,30 +147,30 @@ const Report = ({ handleNext }: ReportProps) => {
       description: "Shows how much each category contributed to total sales.",
     }
 
-    const EntriesData = {
-      Cdata: CdataEntries,
-      chartConfig: {
-        entriesPerCategory: {
-          label: "Registrations ",
-          color: "#17202a",
-        },
-        ...CdataEntries.reduce((acc: any, curr) => {
-          acc[curr.category] = {
-            label: curr.category,
-            color:
-              "hsl(var(--chart-" +
-              parseInt(curr.category.replace("category", "")) +
-              "))",
-          };
-          return acc;
-        }, {}),
+  const EntriesData = {
+    Cdata: CdataEntries,
+    chartConfig: {
+      entriesPerCategory: {
+        label: "Registrations ",
+        color: "#17202a",
       },
-      type: "vertical",
-      dataKey: "entriesPerCategory",
-      datakey1: "category",
-      title: "Registrations per category",
-      description: "Shows the number of participants per category. ",
-    };
+      ...CdataEntries.reduce((acc: any, curr) => {
+        acc[curr.category] = {
+          label: curr.category,
+          color:
+            "hsl(var(--chart-" +
+            parseInt(curr.category.replace("category", "")) +
+            "))",
+        };
+        return acc;
+      }, {}),
+    },
+    type: "vertical",
+    dataKey: "entriesPerCategory",
+    datakey1: "category",
+    title: "Registrations per category",
+    description: "Shows the number of participants per category. ",
+  };
 
   const participants = [
     {
@@ -335,8 +324,6 @@ const Report = ({ handleNext }: ReportProps) => {
       teamName: "Team Kappa",
     },
   ];
-
-  
 
   const noOfParticipants = Object.keys(participants[0]).length - 1;
   return (

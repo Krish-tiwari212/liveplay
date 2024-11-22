@@ -183,7 +183,7 @@ const SponsorSection = () => {
                   >
                     <Input
                       type="file"
-                      className="hidden capitalize"
+                      className="hidden"
                       ref={(el) => {
                         imageRefs.current[i] = el;
                       }}

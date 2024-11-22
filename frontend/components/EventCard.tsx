@@ -91,7 +91,7 @@ const EventCard = ({
                 </p>
                 <p className="text-gray-500 text-[12px] flex items-center gap-1 cursor-pointer hover:underline text-nowrap">
                   <VscGraph className="text-lg" />
-                  Registrations:{" "}
+                  Registrations:
                   <span className="text-blue-600">{noOfEntries}</span>
                 </p>
               </div>

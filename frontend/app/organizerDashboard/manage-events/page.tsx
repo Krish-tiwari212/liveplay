@@ -3,7 +3,7 @@
 import React, { useEffect, useState } from 'react'
 import Image from 'next/image';
 import { Card, CardContent } from "@/components/ui/card";
-import { FaCalendarAlt, FaRegEye, FaRegThumbsUp } from 'react-icons/fa';
+import { FaCalendarAlt, FaRegEye, } from 'react-icons/fa';
 import { IoShareSocialSharp, IoTicketOutline } from 'react-icons/io5';
 import { FaHandHoldingDollar, FaPeopleGroup } from 'react-icons/fa6';
 import { LiaStreetViewSolid } from 'react-icons/lia';
@@ -108,9 +108,6 @@ const page = () => {
   const [events, setEvents] = useState<EventCard[]>([]);
   const { setDashboardName,UserType } = useEventContext();
   const [isLoading, setIsLoading] = useState(true);
-  const [data, setData] = useState([]);
-  const [error, setError] = useState(null);
-  const [loading, setLoading] = useState(true);
   const { user } = useUser();
   useEffect(() => {
     setDashboardName("Event Management");
@@ -133,30 +130,6 @@ const page = () => {
         });
       });
   };
-
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const response = await fetch('/api/event/categories/d262e530-8109-4d6f-9c9d-e74f92a28806');
-        if (!response.ok) {
-          throw new Error('Network response was not ok');
-        }
-        const result = await response.json();
-        setData(result);
-      } catch (error) {
-        setError(error);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchData();
-  }, []);
-
-  useEffect(() => {
-    setDashboardName("Organizer Dashboard");
-    console.log(UserType)
-  }, []);
 
   useEffect(() => {
     const fetchEvents = async () => {
@@ -246,19 +219,19 @@ const page = () => {
                         <div className="flex flex-col justify-between">
                           <span className="flex gap-2 items-center">
                             <p className="font-semibold ">Sales:</p>{" "}
-                            {data.totalEntryFeesCollected || "0"}
+                            {event.revenue || "7800"}
                           </span>
                           <span className="flex gap-2 items-center">
                             <p className="font-semibold ">Views:</p>{" "}
-                            {data.totalEventViews || "0"}
+                            {event.event_views || "20000"}
                           </span>
                           <span className="flex gap-2 items-center">
                             <p className="font-semibold ">Registrations:</p>{" "}
-                            {data.totalNumberOfRegistrations || "0"}
+                            {event.entries || "200"}
                           </span>
                           <span className="flex gap-2 items-center">
                             <p className="font-semibold ">Interested:</p>{" "}
-                            {data.totalInterestedPeople || "0"}
+                            {event.interested_people || "891"}
                           </span>
                           {/* <TooltipProvider>
                           <Tooltip>
@@ -297,7 +270,7 @@ const page = () => {
                           <Tooltip>
                             <TooltipTrigger>
                               <span className="flex gap-2 items-center">
-                                <FaRegThumbsUp />{" "}
+                                <BiLike />{" "}
                                 {event.interested_people || "20"}
                               </span>
                             </TooltipTrigger>

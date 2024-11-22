@@ -19,6 +19,7 @@ interface Category {
   isTeamGame: boolean;
   details: string;
   sport?:string
+  quantity?:number
 }
 
 interface CategoryCardProps {

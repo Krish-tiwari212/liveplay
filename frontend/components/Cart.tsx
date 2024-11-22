@@ -41,11 +41,8 @@ const BillingSummary: React.FC = () => {
 
   // Handler to clear cart after payment
   const handlePay = () => {
-    // Implement payment logic here
-    // After successful payment, clear the cart
     clearCart();
     setWithdrawalFee(true);
-    alert("Payment Successful!");
   };
 
   return (
@@ -80,10 +77,8 @@ const BillingSummary: React.FC = () => {
           )}
         </div>
 
-        {/* Additional Fees and Charges */}
         {items.length > 0 && (
           <div className="flex flex-col gap-2">
-            {/* Withdrawal Fee */}
             <div className="flex justify-between items-center rounded-md">
               <div className="flex flex-col">
                 <div className="flex">
@@ -134,14 +129,7 @@ const BillingSummary: React.FC = () => {
           </div>
         )}
 
-        {/* Responsive Design Notes */}
-        <style jsx>{`
-          @media (max-width: 768px) {
-            .billing-summary {
-              flex-direction: column;
-            }
-          }
-        `}</style>
+        
       </div>
     </div>
   );
