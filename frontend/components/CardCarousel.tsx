@@ -110,14 +110,14 @@ const CardCarousel = () => {
       {
         breakpoint: 1024,
         settings: {
-          slidesToShow: 3,
+          slidesToShow: 2,
           slidesToScroll: 1,
         },
       },
       {
         breakpoint: 640,
         settings: {
-          slidesToShow: 3,
+          slidesToShow: 1,
           slidesToScroll: 1,
         },
       },
@@ -176,7 +176,7 @@ const CardCarousel = () => {
       </div>
       <Slider {...settings} className="mx-10">
         {events.map((e, i) => (
-          <div className="px-16 pb-6" key={i}>
+          <div className=" px-2 lg:px-16 pb-6" key={i}>
             <EventCard
               image={e.image}
               date={e.date}

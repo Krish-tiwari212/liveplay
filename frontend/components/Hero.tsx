@@ -166,7 +166,7 @@ const EmblaCarousel: React.FC<PropType> = () => {
             />
           </div>
 
-          <div className="embla__dots">
+          {/* <div className="embla__dots">
             {scrollSnaps.map((_, index) => (
               <DotButton
                 key={index}
@@ -176,7 +176,7 @@ const EmblaCarousel: React.FC<PropType> = () => {
                 )}
               />
             ))}
-          </div>
+          </div> */}
         </div>
       </div>
     </section>
