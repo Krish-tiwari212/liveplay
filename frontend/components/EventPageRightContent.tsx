@@ -1,7 +1,7 @@
 import Image from 'next/image';
 import React from 'react'
 import { FaBasketballBall, FaStar } from 'react-icons/fa';
-import { GiShuttlecock, GiWhistle } from 'react-icons/gi';
+import { GiEntryDoor, GiShuttlecock, GiWhistle } from 'react-icons/gi';
 import { GrTrophy } from 'react-icons/gr';
 import { MdCategory } from 'react-icons/md';
 import { RiDiscountPercentLine, RiStarSmileFill } from 'react-icons/ri';
@@ -15,6 +15,7 @@ import { useRouter } from 'next/navigation';
 import QnaSectionEventpage from './QnaSectionEventpage';
 import EventCategoryCard from './EventCategoryCard';
 import { BiLike } from 'react-icons/bi';
+import { PiHandWithdraw } from "react-icons/pi";;
 
 const EventPageRightContent = ({ eventDetails }: any) => {
   const router = useRouter();
@@ -39,6 +40,18 @@ const EventPageRightContent = ({ eventDetails }: any) => {
         </div>
 
         <div className="space-y-3 mb-6">
+          <div className="flex items-center">
+            <GiEntryDoor className="w-4 h-4 sm:w-5 sm:h-5 mr-2" />
+            <span className="text-sm sm:text-base">
+              Last Date to Register: 20 December 2024
+            </span>
+          </div>
+          <div className="flex items-center">
+            <PiHandWithdraw className="w-4 h-4 sm:w-5 sm:h-5 mr-2" />
+            <span className="text-sm sm:text-base">
+              Last Date to Withdraw: 23 December 2024
+            </span>
+          </div>
           <div className="flex items-center">
             <CalendarIcon className="w-4 h-4 sm:w-5 sm:h-5 mr-2" />
             <span className="text-sm sm:text-base">
@@ -327,7 +340,7 @@ const EventPageRightContent = ({ eventDetails }: any) => {
           </div>
         </div>
       </div>
-      <QnaSectionEventpage isright={false}/>
+      <QnaSectionEventpage isright={false} />
     </div>
   );
 };

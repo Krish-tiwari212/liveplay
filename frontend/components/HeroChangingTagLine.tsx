@@ -2,10 +2,14 @@ import React, { useState, useEffect } from 'react';
 import Image from 'next/image';
 
 interface HeroChangingTagLineprops {
-  ishero?:boolean
+  ishero?: boolean;
+  extraclass?:string
 }
 
-const HeroChangingTagLine = ({ ishero }: HeroChangingTagLineprops) => {
+const HeroChangingTagLine = ({
+  ishero,
+  extraclass,
+}: HeroChangingTagLineprops) => {
   const icons = [
     "/icons/confetti (1) 1.svg",
     "/icons/confetti (1) 1.svg",
@@ -40,7 +44,7 @@ const HeroChangingTagLine = ({ ishero }: HeroChangingTagLineprops) => {
 
   return (
     <div
-      className={`${
+      className={`${extraclass} ${
         ishero ? "bg-[#cddc29]" : "bg-[#7F1CFF]"
       } w-full flex justify-center items-center p-3 gap-2`}
     >
@@ -64,10 +68,11 @@ const HeroChangingTagLine = ({ ishero }: HeroChangingTagLineprops) => {
           </p>
         </>
       ) : (
-        <h1 className="text-lg sm:text-xl text-center sm:text-left text-white">
-          Summer Basketball Tournament Pro League Men Champ 2.0 2024 | 25
-          December, 2024
-        </h1>
+        <>
+          <h1 className="text-lg sm:text-xl text-center sm:text-left text-white line-clamp-1 md:line-clamp-none">
+            Summer Basketball Tournament Pro League Men Champ 2.0
+          </h1>
+        </>
       )}
     </div>
   );

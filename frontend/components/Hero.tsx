@@ -15,6 +15,7 @@ import { DotButton, useDotButton } from "./EmblaCarouselDotButton";
 import data from "@/data";
 import Image from "next/image";
 import { Button } from "./ui/button";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "./ui/card";
 
 const TWEEN_FACTOR_BASE = 0.32;
 
@@ -115,30 +116,37 @@ const EmblaCarousel: React.FC<PropType> = () => {
             {eventsArray.map((e, index) => (
               <div className="embla__slide relative" key={index}>
                 <div className="embla__slide__number flex flex-col items-center w-full">
-                  <div className="relative w-full min-h-[520px]">
-                    <Image
-                      src={e.image}
-                      alt={e.title}
-                      fill
-                      priority
-                      className="object-contain"
-                    />
-                  </div>
-                  <div className="flex items-center justify-between w-full px-4 py-2 border-4 border-[#cddc29] ">
-                    <h1 className="text-lg text-white font-semibold">
-                      {e.title}
-                    </h1>
-                    <Button
-                      variant="tertiary"
-                      className={`${
-                        e.buttoncolor === "purple" && "bg-[#7f1cff]"
-                      }`}
-                    >
-                      {e.buttontext}
-                    </Button>
-                  </div>
+                  <Card className=" bg-[#141f29] border-none">
+                    <CardHeader className="p-0">
+                      <Image
+                        src={e.image}
+                        alt={e.title}
+                        width={400}
+                        height={300}
+                        className="object-cover w-full h-80"
+                      />
+                    </CardHeader>
+                    <CardContent className="flex items-center justify-between pt-4 border-4 border-[#cddc29]">
+                      <div>
+                        <CardTitle className="text-base sm:text-lg md:text-xl text-white">
+                          {e.title}
+                        </CardTitle>
+                      </div>
+                      <Button
+                        variant="tertiary"
+                        className={`ml-4 text-sm sm:text-base md:text-lg ${
+                          e.buttoncolor === "purple" && "bg-purple-600 text-white"
+                        }`}
+                      >
+                        {e.buttontext}
+                      </Button>
+                    </CardContent>
+                    {index !== selectedIndex && (
+                      <div className="absolute top-0 left-0 w-full h-full bg-black opacity-70 transition-opacity duration-1000"></div>
+                    )}
+                  </Card>
                   {index !== selectedIndex && (
-                    <div className="absolute top-0 left-0 w-full h-full bg-black opacity-80 transition-opacity duration-1000 "></div>
+                    <div className="absolute top-0 left-0 w-full h-full bg-black opacity-70 transition-opacity duration-1000 "></div>
                   )}
                 </div>
               </div>

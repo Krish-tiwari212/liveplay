@@ -20,9 +20,11 @@ const Footer = () => {
               </h4>
             </div>
             <p className="text-gray-400 my-2 text-md">
-              liveplay.in is a platform that helps you discover and participate
-              in the best <br className="hidden sm:block" />
-              sporting events
+              <span className="font-semibold hover:underline text-[#cad927]">
+                liveplay.in
+              </span>{" "}
+              helps organizers in hosting sports events and players to discover
+              and join them across 10+ sports
             </p>
             <div className="md:hidden flex flex-col py-2 mb-2">
               <h4 className="text-lg font-semibold text-white mb-2">

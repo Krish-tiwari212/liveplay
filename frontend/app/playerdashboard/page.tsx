@@ -15,7 +15,7 @@ import {
   FaPeopleGroup,
 } from "react-icons/fa6";
 import { LiaStreetViewSolid } from "react-icons/lia";
-import { IoTicketOutline } from "react-icons/io5";
+import { IoEnterOutline, IoTicketOutline } from "react-icons/io5";
 import EventCard from "@/components/EventCard";
 import data from "@/data";
 import { Button } from "@/components/ui/button";
@@ -147,6 +147,7 @@ export default function Home() {
   const [EventManagement,setEventManagement]=useState(0)
   const [isThankYouOpen, setIsThankYouOpen] = useState(false);
   const [averageRating, setAverageRating] = useState<number | null>(null);
+  const [isEventPassOpen, setIsEventPassOpen] = useState(false);
 
 
 
@@ -412,30 +413,21 @@ export default function Home() {
             </DialogTrigger>
             <DialogContent className="sm:max-w-md h-auto">
               <AlertDialogHeader>
-                <DialogTitle>Share link</DialogTitle>
+                <DialogTitle>Enter Code</DialogTitle>
                 <DialogDescription>
-                  Anyone who has this link will be able to view this.
+                  Please Enter Team Code to Join the Team
                 </DialogDescription>
               </AlertDialogHeader>
               <div className="flex items-center space-x-2">
                 <div className="grid flex-1 gap-2">
                   <Label htmlFor="link" className="sr-only">
-                    Link
+                    Enter Code
                   </Label>
-                  <Input
-                    id="link"
-                    defaultValue={`/event/1/share-link`}
-                    readOnly
-                  />
+                  <Input id="team_code" readOnly />
                 </div>
-                <Button
-                  type="button"
-                  size="sm"
-                  className="px-3"
-                  // onClick={() => handleCopy(`/event/1/share-link`)}
-                >
-                  <span className="sr-only">Copy</span>
-                  <Copy />
+                <Button type="button" size="sm" className="px-3">
+                  <span className="sr-only">Proceed</span>
+                  <IoEnterOutline />
                 </Button>
               </div>
               <DialogFooter className="sm:justify-start">
@@ -697,7 +689,7 @@ export default function Home() {
           ) : (
             events.map((event, i) => (
               <React.Fragment key={event.id}>
-                <Card className="shadow-md cursor-pointer hover:shadow-2xl flex-none min-w-[240px] max-w-[270px] sm:min-w-[600px] border-2 border-gray-800">
+                <Card className="shadow-md cursor-pointer hover:shadow-2xl flex-none min-w-[240px] max-w-[270px] sm:min-w-[550px] border-2 border-gray-800">
                   <CardContent className="py-4 flex flex-col sm:flex-row gap-4 h-full">
                     <div className="flex-[1]">
                       <Image
@@ -832,8 +824,11 @@ export default function Home() {
           <DialogContent className="w-[90%] sm:max-w-2xl p-4 flex flex-col justify-between h-auto">
             <DialogHeader>
               <EventDetails />
-              <DialogTitle className="text-lg font-semibold">
-                My Registered Categories
+              <DialogTitle className="text-lg font-semibold flex justify-between">
+                <h1>My Registered Categories</h1>
+                <Button size="xs" onClick={() => setIsEventPassOpen(true)}>
+                  Event Pass
+                </Button>
               </DialogTitle>
               <DialogDescription className="text-sm text-gray-500">
                 Below are the categories you have registered for this event.
@@ -959,6 +954,76 @@ export default function Home() {
               variant="default"
               className="mt-6"
               onClick={() => setIsThankYouOpen(false)}
+            >
+              Close
+            </Button>
+          </DialogContent>
+        </Dialog>
+      )}
+      {isEventPassOpen && (
+        <Dialog open={isEventPassOpen} onOpenChange={setIsEventPassOpen}>
+          // Updated code within the Home component's isEventPassOpen
+          DialogContent
+          <DialogContent className="w-full sm:w-[90%] max-w-md flex flex-col items-center h-auto p-4">
+            <div
+              className="w-full h-96 bg-cover bg-center rounded-lg shadow-xl flex items-center justify-center relative"
+              style={{
+                backgroundImage: "url(/images/Asset_Background_VenuePass.svg)",
+              }}
+            >
+              <img
+                src="/images/Card_VenuePass.svg"
+                alt="Event Ticket"
+                className="absolute  w-[90%] h-[55%] rounded-lg  bottom-0"
+              />
+              <div className="absolute bottom-0 w-[90%] h-[55%] px-4 flex flex-col gap-1 py-4">
+                <div className=" leading-tight">
+                  <p className="text-[12px] font-semibold text-[#64758B]">
+                    Event Name
+                  </p>
+                  <h1 className="text-[14px]">
+                    Summer Basketball Tournament Pro League
+                  </h1>
+                </div>
+                <div className=" leading-tight">
+                  <p className="text-[12px] font-semibold text-[#64758B]">
+                    Category Name
+                  </p>
+                  <h1 className="text-[14px]">Mens Singles (Open)</h1>
+                </div>
+                <div className=" leading-tight">
+                  <p className="text-[12px] font-semibold text-[#64758B]">
+                    Player
+                  </p>
+                  <h1 className="text-[14px]">MOHIT BHATE</h1>
+                </div>
+                <div className=" leading-tight">
+                  <p className="text-[12px] font-semibold text-[#64758B]">
+                    Team Name
+                  </p>
+                  <h1 className="text-[14px]">N/A</h1>
+                </div>
+                <div className=" leading-tight">
+                  <p className="text-[12px] font-semibold text-[#64758B]">
+                    Venue
+                  </p>
+                  <h1 className="text-[14px]">Major Chand Lal Stadium</h1>
+                </div>
+              </div>
+              <div className="absolute bottom-0 w-[90%] h-[55%] ">
+                <div className="leading-tight -rotate-90 absolute -right-10 bottom-20 ">
+                  <p className="text-[12px] font-semibold text-[#64758B]">
+                    Event Date
+                  </p>
+                  <h1 className="text-[14px]">20-22 December, 2024</h1>
+                </div>
+              </div>
+            </div>
+
+            <Button
+              variant="default"
+              className="mt-6"
+              onClick={() => setIsEventPassOpen(false)}
             >
               Close
             </Button>

@@ -35,6 +35,8 @@ import {
   AlertDialogCancel,
   AlertDialogAction,
 } from "@/components/ui/alert-dialog";
+import { Checkbox } from "./ui/checkbox";
+import { Label } from "./ui/label";
 
 // Validation schema for form fields
 const formSchema = z.object({
@@ -54,6 +56,10 @@ const CompleteDetailsForm = () => {
   const [prevDob, setPrevDob] = useState("");
   const [newDob, setNewDob] = useState("");
   const [isAlertOpen, setIsAlertOpen] = useState(false);
+  const [isCheckboxChecked, setIsCheckboxChecked] = useState(false);
+  const handleCheckboxChange = () => {
+    setIsCheckboxChecked(!isCheckboxChecked);
+  };
 
   const form = useForm({
     resolver: zodResolver(formSchema),
@@ -238,7 +244,24 @@ const CompleteDetailsForm = () => {
                 </FormItem>
               )}
             />
-            <Button type="submit" disabled={loading} className="w-full">
+            <h1 className="mt-4 text-gray-800 flex justify-center items-center gap-2">
+              <Checkbox
+                id="terms2"
+                onCheckedChange={() => setIsCheckboxChecked(!isCheckboxChecked)}
+              />
+              <Label htmlFor="terms2">
+                Agree with the
+                <span className="hover:underline cursor-pointer font-extrabold mx-1 text-sm">
+                  Terms & Conditions
+                </span>
+                for hosting events on liveplay.in
+              </Label>
+            </h1>
+            <Button
+              type="submit"
+              disabled={loading || !isCheckboxChecked}
+              className="w-full"
+            >
               {loading ? "Updating..." : "Update Details"}
             </Button>
           </form>
@@ -249,14 +272,17 @@ const CompleteDetailsForm = () => {
             <AlertDialogHeader>
               <AlertDialogTitle>Underage Confirmation</AlertDialogTitle>
               <AlertDialogDescription>
-                You are under 18 years old. Do you want to proceed with this date of birth?
+                You are under 18 years old. Do you want to proceed with this
+                date of birth?
               </AlertDialogDescription>
             </AlertDialogHeader>
             <AlertDialogFooter>
               <AlertDialogCancel onClick={() => cancelDobChange(form.setValue)}>
                 Cancel
               </AlertDialogCancel>
-              <AlertDialogAction onClick={() => confirmDobChange(form.setValue)}>
+              <AlertDialogAction
+                onClick={() => confirmDobChange(form.setValue)}
+              >
                 Confirm
               </AlertDialogAction>
             </AlertDialogFooter>
