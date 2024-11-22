@@ -1,6 +1,15 @@
-import React, { useEffect } from 'react';
-import { FaDollarSign, FaUser, FaHeart, FaEye, FaTimes, FaRupeeSign, FaRegEye, } from 'react-icons/fa';
-import { Bar } from 'react-chartjs-2';
+import React, { useEffect, useState } from "react";
+import {
+  FaDollarSign,
+  FaUser,
+  FaHeart,
+  FaEye,
+  FaTimes,
+  FaRupeeSign,
+  FaRegEye,
+  FaRegThumbsUp,
+} from "react-icons/fa";
+import { Bar } from "react-chartjs-2";
 import {
   Card,
   CardContent,
@@ -9,7 +18,7 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { ChartBar } from './ChartBar';
+import { ChartBar } from "./ChartBar";
 import { LineChartDemo } from "./LineChart";
 import {
   Dialog,
@@ -29,53 +38,78 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { Button } from './ui/button';
-import { FaPeopleGroup } from 'react-icons/fa6';
-import { PieChartDemo } from './PieChart';
-import { BiLike } from 'react-icons/bi';
+import { Button } from "./ui/button";
+import { FaPeopleGroup } from "react-icons/fa6";
+import { PieChartDemo } from "./PieChart";
+import { BiLike } from "react-icons/bi";
 
-interface ReportProps{
-    handleNext:()=>void
+interface ReportProps {
+  handleNext: () => void;
 }
 
 const data = [
   {
     title: "salespercategory",
     categories: ["Men's Singles", "Women's Singles"],
-    value: [0,0],
+    value: [0, 0],
   },
   {
     title: "entriesPerCategory",
     categories: ["Men's Singles", "Women's Singles"],
-    value: [0,0],
+    value: [0, 0],
   },
 ];
 
 const Report = ({ handleNext }: ReportProps) => {
+  const [data, setData] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const response = await fetch(
+          "/api/event/categories/d262e530-8109-4d6f-9c9d-e74f92a28806"
+        );
+        if (!response.ok) {
+          throw new Error("Network response was not ok");
+        }
+        const result = await response.json();
+        setData(result);
+      } catch (error) {
+        setError(error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchData();
+  }, []);
+
   const metrics = [
     {
       title: "Event Sales",
       description: "Total Entry Fees Collected",
       icon: <FaRupeeSign />,
-      data: 0,
+      data: data?.totalEntryFeesCollected || 0,
     },
     {
       title: "Event Views",
       description: "Total number of users who have viewed this event",
       icon: <FaRegEye />,
-      data: 0,
+      data: data?.totalEventViews || 0,
     },
     {
       title: "Number of Registrations",
       description: "Total number of event registrations",
       icon: <FaPeopleGroup />,
-      data: 0,
+      data: data?.totalNumberOfRegistrations || 0,
     },
     {
       title: "Number of Interested People",
       description: "Total number of users interested in this event",
       icon: <BiLike />,
-      data: 0,
+      data: data?.totalInterestedPeople || 0,
     },
   ];
 
@@ -92,60 +126,51 @@ const Report = ({ handleNext }: ReportProps) => {
     "#4ec9a3",
   ];
 
-  const CdataSales = data[0].value
-    .map((value, index) => {
+  const CdataSales =
+    data?.sales?.map((sale, index) => {
       const fill = colors[index % colors.length];
       return {
-        category: `${data[0].categories[index]}`,
-        salsepercategory: value,
+        category: sale.category,
+        salsepercategory: sale.total_sales,
         fill: fill,
       };
-    })
-    .slice(0, 9);
+    }) || [];
 
-  if (data[0].value.length > 9) {
-    const othersValue = data[0].value
-      .slice(9)
-      .reduce((acc, curr) => acc + curr, 0);
-    CdataSales.push({
-      category: "others",
-      salsepercategory: othersValue,
-      fill: colors[9 % colors.length],
-    });
-  }
+  const CdataEntries =
+    data?.registrations?.map((registration) => {
+      const category = data.categories?.find(
+        (cat) => cat.id === registration.category_id
+      );
+      return {
+        category: category?.category_name || "Unknown",
+        entriesPerCategory: registration.total_registrations,
+        fill: "#4186f5",
+      };
+    }) || [];
 
-  const CdataEntries = data[1].value.map((value, index) => {
-    return {
-      category: `${data[1].categories[index]}`,
-      entriesPerCategory: value,
-      fill: "#4186f5",
-    };
-  });
-
-  const SalesData =
-    {
-      Cdata: CdataSales,
-      chartConfig: {
-        salsepercategory: {
-          label: "Sales : Rs ",
-        },
-        ...CdataSales.reduce((acc: any, curr) => {
-          acc[curr.category] = {
-            label: curr.category,
-            color:
-              "hsl(var(--chart-" +
-              parseInt(curr.category.replace("category", "")) +
-              "))",
-          };
-          return acc;
-        }, {}),
+  const SalesData = {
+    Cdata: CdataSales,
+    chartConfig: {
+      salsepercategory: {
+        label: "Sales : Rs ",
       },
-      type: "horizontal",
-      dataKey: "salsepercategory",
-      datakey1: "category",
-      title: "Sales per category",
-      description: "Shows how much each category contributed to total sales.",
-    }
+      ...CdataSales.reduce((acc: any, curr) => {
+        acc[curr.category] = {
+          label: curr.category,
+          color:
+            "hsl(var(--chart-" +
+            parseInt(curr.category.replace("category", "")) +
+            "))",
+        };
+        return acc;
+      }, {}),
+    },
+    type: "horizontal",
+    dataKey: "salsepercategory",
+    datakey1: "category",
+    title: "Sales per category",
+    description: "Shows how much each category contributed to total sales.",
+  };
 
   const EntriesData = {
     Cdata: CdataEntries,
@@ -352,26 +377,26 @@ const Report = ({ handleNext }: ReportProps) => {
       </div>
       <div className="charts flex flex-col xl:flex-row gap-5 text-white h-auto">
         <div className="w-full xl:w-[50%] h-full">
-            <PieChartDemo
-              chartData={SalesData.Cdata}
-              processCategory={(value: any) => value}
-              dataKey={SalesData.dataKey}
-              chartConfig={SalesData.chartConfig}
-              title={SalesData.title}
-              description={SalesData.description}
-              type={SalesData.type}
-            />
+          <PieChartDemo
+            chartData={SalesData.Cdata}
+            processCategory={(value: any) => value}
+            dataKey={SalesData.dataKey}
+            chartConfig={SalesData.chartConfig}
+            title={SalesData.title}
+            description={SalesData.description}
+            type={SalesData.type}
+          />
         </div>
         <div className="w-full xl:w-[50%] h-full">
-            <LineChartDemo
-              chartData={EntriesData.Cdata}
-              processCategory={(value: any) => value}
-              dataKey={EntriesData.dataKey}
-              chartConfig={EntriesData.chartConfig}
-              title={EntriesData.title}
-              description={EntriesData.description}
-              type={EntriesData.type}
-            />
+          <LineChartDemo
+            chartData={EntriesData.Cdata}
+            processCategory={(value: any) => value}
+            dataKey={EntriesData.dataKey}
+            chartConfig={EntriesData.chartConfig}
+            title={EntriesData.title}
+            description={EntriesData.description}
+            type={EntriesData.type}
+          />
         </div>
       </div>
 

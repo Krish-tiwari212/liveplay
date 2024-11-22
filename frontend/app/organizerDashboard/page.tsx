@@ -5,9 +5,20 @@ import { useAppContext } from "@/lib/context/AppContext";
 import Image from "next/image";
 import Link from "next/link";
 import React, { useEffect, useState } from "react";
-import { FaCalendarAlt, FaCalendarCheck, FaPlus, FaRegEye, FaUnlockAlt } from "react-icons/fa";
+import {
+  FaCalendarAlt,
+  FaCalendarCheck,
+  FaPlus,
+  FaRegEye,
+  FaRegThumbsUp,
+  FaUnlockAlt,
+} from "react-icons/fa";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { FaHandHoldingDollar, FaIndianRupeeSign, FaPeopleGroup } from "react-icons/fa6";
+import {
+  FaHandHoldingDollar,
+  FaIndianRupeeSign,
+  FaPeopleGroup,
+} from "react-icons/fa6";
 import { LiaStreetViewSolid } from "react-icons/lia";
 import { IoShareSocialSharp, IoTicketOutline } from "react-icons/io5";
 import EventCard from "@/components/EventCard";
@@ -19,7 +30,7 @@ import { useEventContext } from "@/context/EventDataContext";
 const { events } = data;
 import { Skeleton } from "@/components/ui/skeleton";
 import { TbCoinRupeeFilled } from "react-icons/tb";
-import { useUser } from '@/context/UserContext';
+import { useUser } from "@/context/UserContext";
 import {
   Tooltip,
   TooltipContent,
@@ -41,8 +52,6 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { toast } from "@/hooks/use-toast";
 
-
-
 interface EventCard {
   id: number;
   desktop_cover_image_url: string;
@@ -51,14 +60,12 @@ interface EventCard {
   revenue: string;
   event_views: string;
   interested_people: string;
-  organizer_name:string;
+  organizer_name: string;
 }
-
-
 
 export default function Home() {
   const { setTheme } = useAppContext();
-  const { setDashboardName,UserType,setNotification } = useEventContext();
+  const { setDashboardName, UserType, setNotification } = useEventContext();
   const [events, setEvents] = useState<EventCard[]>([]);
   const router = useRouter();
   const [isLoading, setIsLoading] = useState(true);
@@ -108,9 +115,11 @@ export default function Home() {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await fetch('/api/event/categories/d262e530-8109-4d6f-9c9d-e74f92a28806');
+        const response = await fetch(
+          "/api/event/categories/d262e530-8109-4d6f-9c9d-e74f92a28806"
+        );
         if (!response.ok) {
-          throw new Error('Network response was not ok');
+          throw new Error("Network response was not ok");
         }
         const result = await response.json();
         setData(result);
@@ -126,15 +135,17 @@ export default function Home() {
 
   useEffect(() => {
     setDashboardName("Organizer Dashboard");
-    console.log(UserType)
+    console.log(UserType);
   }, []);
 
   useEffect(() => {
     const fetchEvents = async () => {
       try {
         const userId = user?.id;
-        const url = userId ? `/api/event/all_events?organizer_id=${userId}` : "/api/event/all_events";
-        
+        const url = userId
+          ? `/api/event/all_events?organizer_id=${userId}`
+          : "/api/event/all_events";
+
         const response = await fetch(url);
         if (!response.ok) {
           throw new Error("Network response was not ok");
@@ -144,16 +155,17 @@ export default function Home() {
       } catch (error) {
         console.error("Error fetching events:", error);
         toast({
-          title: "Failed to fetch events. Please check your network connection.",
+          title:
+            "Failed to fetch events. Please check your network connection.",
           variant: "destructive",
         });
       } finally {
         setIsLoading(false);
       }
     };
-  
+
     fetchEvents();
-  }, [user?.id]); 
+  }, [user?.id]);
   return (
     <div className="flex flex-col m-3">
       <section className="mt-4 bg-[#17202A] sm:h-[9rem] shadow-xl rounded-lg p-4 relative mb-4 flex sm:gap-8 flex-col sm:flex-row ">
@@ -376,7 +388,7 @@ export default function Home() {
                           <Tooltip>
                             <TooltipTrigger>
                               <span className="flex gap-2 items-center">
-                                <<BiLike />{" "}
+                                <FaRegThumbsUp />{" "}
                                 {event.interested_people || "20"}
                               </span>
                             </TooltipTrigger>
@@ -399,7 +411,7 @@ export default function Home() {
                             onClick={(e) => {
                               e.stopPropagation();
                             }}
-                            className="w-full bg-[#17202a] text-[#cddc29] hover:text-white flex gap-2 mt-2 py-1 rounded-lg hover:shadow-xl justify-center items-center"
+                            className="z-10 w-full bg-[#17202a] text-[#cddc29] hover:text-white flex gap-2 mt-2 py-1 rounded-lg hover:shadow-xl justify-center items-center"
                           >
                             <h1>Share</h1>
                             <IoShareSocialSharp />
