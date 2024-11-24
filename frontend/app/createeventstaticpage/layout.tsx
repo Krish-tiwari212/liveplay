@@ -23,6 +23,7 @@ export default function RootLayout({
     <UserProvider>
       <UserProvider>
         {children}
+        <Footer/>
       </UserProvider>
     </UserProvider>
   );

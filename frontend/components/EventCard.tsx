@@ -60,12 +60,23 @@ const EventCard = ({
   return (
     <>
       <div className="max-w-[500px] cursor-pointer h border border-black w-full group/card rounded-lg overflow-hidden shadow-lg bg-white">
-        <div
-          className={cn("relative h-52 w-full bg-cover bg-center rounded-t-lg")}
-          style={{
-            backgroundImage: `url(${image})`,
-          }}
-        ></div>
+        <Link href="/eventspage">
+          <div
+            className={cn(
+              "relative h-52 w-full bg-cover bg-center rounded-t-lg "
+            )}
+            style={{
+              backgroundImage: `url(${image})`,
+            }}
+          >
+            <div className="group hover:bg-[#141f29] hover:opacity-80 h-full w-full flex justify-center items-center transition duration-300 ease-in-out">
+              <h1 className="text-white text-xl opacity-0 group-hover:opacity-100 transition duration-300 ease-in-out">
+                Event Details
+              </h1>
+            </div>
+          </div>
+        </Link>
+
         <div className="bg-white px-4 py-1 flex flex-col justify-between">
           <div>
             <div className="bg-[#E6EAC5] text-black text-xs px-2 py-1 rounded inline-block">
@@ -124,7 +135,7 @@ const EventCard = ({
               </Button>
             </div>
             <Button
-              onClick={()=>router.push("/choosecategory")}
+              onClick={() => router.push("/choosecategory")}
               variant="tertiary"
               size="xs"
               className="border border-black text-[12px]"
