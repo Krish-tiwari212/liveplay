@@ -13,7 +13,9 @@ interface Category {
   type: string;
   details: string;
   sport?: string;
+  discount_code?: string;
 }
+
 
 const categories: Category[] = [
   {
@@ -26,10 +28,11 @@ const categories: Category[] = [
   {
     id: "2",
     name: "Mens Doubles (30+)",
-    price: 599,
+    price: 499,
     discountedPrice: 559,
     type: "Doubles",
     details: "Includes participation, e-certificate, refreshments",
+    discount_code: "Badminton24",
   },
   {
     id: "3",
@@ -46,6 +49,7 @@ const categories: Category[] = [
     type: "Singles",
     details: "Includes participation, e-certificate, refreshments",
     sport: "marathon",
+    discount_code: "Mar24",
   },
 ];
 
@@ -59,19 +63,23 @@ const ChooseCategoryRegister: React.FC = () => {
   const { addItem, items } = useCartContext();
 
   const handleAddToCart = (category: Category) => {
-    addItem(category);
-    console.log(`Category with ID ${category.id} added to cart.`);
+    if (!items.some(item => item.id === category.id)) {
+      addItem(category);
+      console.log(`Category with ID ${category.id} added to cart.`);
+    } else {
+      console.log(`Category with ID ${category.id} is already in the cart.`);
+    }
   };
 
   return (
-    <div className="w-full lg:w-1/2 relative h-full space-y-4">
-      <h1 className='text-2xl text-gray-800 font-semibold'>Choose Category</h1>
+    <div className="w-full lg:w-1/2 relative h-full space-y-4 px-5 sm:px-12">
+      <h1 className="text-2xl text-gray-800 font-semibold">Choose Category</h1>
       {categories.map((category) => (
         <CategoryCard
           key={category.id}
           category={category}
           participantsData={participantsData}
-          isAdded={items.some(item => item.id === category.id)}
+          isAdded={items.some((item) => item.id === category.id)}
           onAdd={() => handleAddToCart(category)}
         />
       ))}

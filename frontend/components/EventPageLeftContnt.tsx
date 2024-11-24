@@ -13,8 +13,10 @@ import { HiCurrencyRupee } from 'react-icons/hi2'
 import { FaBasketballBall, FaStar } from 'react-icons/fa'
 import { MdCategory } from 'react-icons/md'
 import { GrTrophy } from 'react-icons/gr'
-import { GiShuttlecock, GiWhistle } from 'react-icons/gi'
+import { GiEntryDoor, GiShuttlecock, GiWhistle } from 'react-icons/gi'
 import { useRouter } from 'next/navigation'
+import { PiHandWithdraw } from 'react-icons/pi'
+import Link from 'next/link'
 
 const EventPageLeftContnt = ({eventDetails}:any) => {
   const router=useRouter()
@@ -29,7 +31,7 @@ const EventPageLeftContnt = ({eventDetails}:any) => {
           height={200}
         />
       </div>
-      <div className="w-full flex flex-col md:flex-row justify-between items-center my-4 space-y-4 md:space-y-0">
+      <div className="flex w-full  flex-col md:flex-row justify-between items-center my-4 space-y-4 md:space-y-0">
         <h1
           className="text-xl font-semibold text-center lg:text-left"
           style={{ textShadow: "0 3px 0 #cddc29" }}
@@ -105,16 +107,30 @@ const EventPageLeftContnt = ({eventDetails}:any) => {
             </span>
           </div>
           <div className="flex items-center">
+            <GiEntryDoor className="w-4 h-4 sm:w-5 sm:h-5 mr-2" />
+            <span className="text-sm sm:text-base">
+              Last Date to Register: 20 December 2024
+            </span>
+          </div>
+          <div className="flex items-center">
+            <PiHandWithdraw className="w-4 h-4 sm:w-5 sm:h-5 mr-2" />
+            <span className="text-sm sm:text-base">
+              Last Date to Withdraw: 23 December 2024
+            </span>
+          </div>
+          <div className="flex items-center">
             <IoLocationSharp className="w-4 h-4 sm:w-5 sm:h-5 mr-2" />
             <span className="text-sm sm:text-base">
               Major Dhyan Chand Stadium
             </span>
           </div>
-          <div className="flex items-center gap-1 cursor-pointer hover:underline text-nowrap">
-            <VscGraph className="w-4 h-4 sm:w-5 sm:h-5  mr-1" />
-            <span className="text-sm sm:text-base">Registrations:</span>
-            <span className="text-blue-600 text-sm sm:text-base">5173</span>
-          </div>
+          <Link href={`/eventspage/${"1"}`}>
+            <div className="flex items-center gap-1 cursor-pointer hover:underline text-nowrap">
+              <VscGraph className="w-4 h-4 sm:w-5 sm:h-5  mr-1" />
+              <span className="text-sm sm:text-base">Registrations:</span>
+              <span className="text-blue-600 text-sm sm:text-base">5173</span>
+            </div>
+          </Link>
           <div className="flex items-center">
             <HiCurrencyRupee className="w-4 h-4 sm:w-5 sm:h-5 mr-2" />
             <span className="text-sm sm:text-base  mr-2">Starting From:</span>
@@ -124,13 +140,18 @@ const EventPageLeftContnt = ({eventDetails}:any) => {
           </div>
         </div>
 
-        <Button
-          onClick={() => router.push("/eventspage/1234")}
-          variant="tertiary"
-          className="w-full border-2 border-black py-8 text-sm sm:text-xl"
-        >
-          Register Now
-        </Button>
+        <div>
+          <Button
+            onClick={() => router.push("/eventspage/1234")}
+            variant="tertiary"
+            className="w-full border-2 border-black py-8 text-xl"
+          >
+            Register Now
+          </Button>
+          <p className="text-xl hover:underline text-blue-400 text-center mt-2">
+            Already Registered ?
+          </p>
+        </div>
       </div>
 
       {/* Event Features */}
@@ -157,11 +178,11 @@ const EventPageLeftContnt = ({eventDetails}:any) => {
           <span className="text-base sm:text-lg md:text-xl font-bold flex items-center gap-2">
             <MdCategory className="h-4 w-4 sm:h-5 sm:w-5" />
             Number of Categories:
-            <strong className="font-normal">10+</strong>
+            <strong className="font-normal">10</strong>
           </span>
           <a
             href="#"
-            className="text-xs sm:text-sm text-blue-500 hover:underline mb-1 md:mb-0 md:mt-1"
+            className="text-md text-blue-500 hover:underline ml-6 sm:ml-0 mb-1 md:mb-0 md:mt-1 "
           >
             (View Categories)
           </a>
@@ -175,7 +196,7 @@ const EventPageLeftContnt = ({eventDetails}:any) => {
         </div>
         <div className="my-4">
           <h3 className="text-base sm:text-lg md:text-xl font-bold flex items-center mb-2">
-            <FaStar className="mr-2 text-2xl" /> Event USP
+            <FaStar className="h-4 w-4 sm:h-5 sm:w-5 mr-2" /> Event USP
           </h3>
           <ul className="space-y-2 ml-6">
             <li className="flex items-center text-sm sm:text-base">
@@ -190,7 +211,8 @@ const EventPageLeftContnt = ({eventDetails}:any) => {
         </div>
         <div className="my-4">
           <h3 className="text-base sm:text-lg md:text-xl font-bold flex items-center mb-2">
-            <RiStarSmileFill className="mr-2 text-2xl" /> Sponsored By
+            <RiStarSmileFill className="h-4 w-4 sm:h-5 sm:w-5 mr-2" /> Sponsored
+            By
           </h3>
           <div className="grid grid-cols-3 gap-4 ml-6">
             <div className="rounded-lg flex flex-col p-4">
@@ -259,7 +281,7 @@ const EventPageLeftContnt = ({eventDetails}:any) => {
           </div>
         </div>
 
-        <div className="space-y-1">
+        <div className="lg:hidden space-y-1">
           <div className="flex items-center gap-1 cursor-pointer hover:underline text-nowrap font-bold text-sm sm:text-base">
             Ratings:
             <span className="font-normal">5173</span>
@@ -297,19 +319,30 @@ const EventPageLeftContnt = ({eventDetails}:any) => {
         </div>
       </div>
 
-      <div className="w-full relative h-auto sm:h-auto lg:h-auto">
-        <div>
-          <h1 className="text-2xl font-semibold mb-2">Event Information</h1>
-          <h2 className="mb-4">
-            Total Registrations: {eventDetails.totalRegistrations}
-            <a href="#" className="text-blue-600 ml-2 hover:underline">
-              View player names
-            </a>
-          </h2>
+      <div className="hidden lg:block w-full relative h-auto sm:h-auto lg:h-auto">
+        <div className="flex justify-between items-center">
+          <div>
+            <h1 className="text-2xl font-semibold mb-2">Event Information</h1>
+            <h2 className="mb-4">
+              Total Registrations: {eventDetails.totalRegistrations}
+              <a href="#" className="text-blue-600 ml-2 hover:underline">
+                View player names
+              </a>
+            </h2>
+          </div>
+          <div className="mr-5">
+            <h1 className="text-blue-400 hover:underline text-2xl cursor-pointer ">
+              Already Registered ?
+            </h1>
+          </div>
         </div>
         <div className="mb-6">
           <h3 className="text-xl font-bold mb-2">Location</h3>
-          <p>{eventDetails.location}</p>
+          <Link href="/location">
+            <p className="hover:underline hover:to-blue-400">
+              {eventDetails.location}
+            </p>
+          </Link>
         </div>
         <div className="mb-6">
           <h3 className="text-xl font-bold mb-2">Description</h3>

@@ -28,7 +28,7 @@ import { toast } from "@/hooks/use-toast";
 
 
 const Navbar = () => {
-  const {DashboardName, notification,isNavberCollapsed,setIsNavbarCollapsed} = useEventContext();
+  const {DashboardName, notification,isNavbarCollapsed,setIsNavbarCollapsed} = useEventContext();
   const unreadNotifications = notification.filter(notif => !notif.read);
   const [userStatus, setUserStatus] = useState("organizer");
   const { user, loading,setUser } = useUser();
@@ -80,7 +80,7 @@ const Navbar = () => {
       <div className="flex items-center">
         <button
           className="mr-4 lg:hidden"
-          onClick={() => setIsNavbarCollapsed(!isNavberCollapsed)}
+          onClick={() => setIsNavbarCollapsed(!isNavbarCollapsed)}
         >
           <FaBars className="text-2xl" />
         </button>

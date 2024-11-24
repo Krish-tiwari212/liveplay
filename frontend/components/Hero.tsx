@@ -1,186 +1,73 @@
-import React, { useCallback, useEffect, useRef } from "react";
-import "../app/globals.css"
+import React from 'react'
 import {
-  EmblaCarouselType,
-  EmblaEventType,
-  EmblaOptionsType,
-} from "embla-carousel";
-import useEmblaCarousel from "embla-carousel-react";
-import {
-  NextButton,
-  PrevButton,
-  usePrevNextButtons,
-} from "./EmbalaCarouselArroButtons";
-import { DotButton, useDotButton } from "./EmblaCarouselDotButton";
+  Carousel,
+  CarouselContent,
+  CarouselItem,
+  CarouselNext,
+  CarouselPrevious,
+} from "@/components/ui/carousel";
 import data from "@/data";
-import Image from "next/image";
-import { Button } from "./ui/button";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "./ui/card";
+import Image from 'next/image';
+import { Card, CardContent, CardHeader, CardTitle } from './ui/card';
+import { Button } from './ui/button';
 
-const TWEEN_FACTOR_BASE = 0.32;
+import Autoplay from "embla-carousel-autoplay";
 
-const numberWithinRange = (number: number, min: number, max: number): number =>
-  Math.min(Math.max(number, min), max);
-
-
-const EmblaCarousel: React.FC<PropType> = () => {
-  const {eventsArray} = data;
-  const options: EmblaOptionsType = { loop: true };
-  const SLIDE_COUNT = 5;
-  const slides = Array.from(Array(SLIDE_COUNT).keys());
-  const [emblaRef, emblaApi] = useEmblaCarousel(options);
-  const tweenFactor = useRef(0);
-  const tweenNodes = useRef<HTMLElement[]>([]);
-
-  const { selectedIndex, scrollSnaps, onDotButtonClick } =
-    useDotButton(emblaApi);
-
-  const {
-    prevBtnDisabled,
-    nextBtnDisabled,
-    onPrevButtonClick,
-    onNextButtonClick,
-  } = usePrevNextButtons(emblaApi);
-
-  const setTweenNodes = useCallback((emblaApi: EmblaCarouselType): void => {
-    tweenNodes.current = emblaApi.slideNodes().map((slideNode) => {
-      return slideNode.querySelector(".embla__slide__number") as HTMLElement;
-    });
-  }, []);
-
-  const setTweenFactor = useCallback((emblaApi: EmblaCarouselType) => {
-    tweenFactor.current = TWEEN_FACTOR_BASE * emblaApi.scrollSnapList().length;
-  }, []);
-
-  const tweenScale = useCallback(
-    (emblaApi: EmblaCarouselType, eventName?: EmblaEventType) => {
-      const engine = emblaApi.internalEngine();
-      const scrollProgress = emblaApi.scrollProgress();
-      const slidesInView = emblaApi.slidesInView();
-      const isScrollEvent = eventName === "scroll";
-
-      emblaApi.scrollSnapList().forEach((scrollSnap, snapIndex) => {
-        let diffToTarget = scrollSnap - scrollProgress;
-        const slidesInSnap = engine.slideRegistry[snapIndex];
-
-        slidesInSnap.forEach((slideIndex) => {
-          if (isScrollEvent && !slidesInView.includes(slideIndex)) return;
-
-          if (engine.options.loop) {
-            engine.slideLooper.loopPoints.forEach((loopItem) => {
-              const target = loopItem.target();
-
-              if (slideIndex === loopItem.index && target !== 0) {
-                const sign = Math.sign(target);
-
-                if (sign === -1) {
-                  diffToTarget = scrollSnap - (1 + scrollProgress);
-                }
-                if (sign === 1) {
-                  diffToTarget = scrollSnap + (1 - scrollProgress);
-                }
-              }
-            });
-          }
-
-          const tweenValue = 1 - Math.abs(diffToTarget * tweenFactor.current);
-          const scale = numberWithinRange(tweenValue, 0, 1).toString();
-          const tweenNode = tweenNodes.current[slideIndex];
-          tweenNode.style.transform = `scale(${scale})`;
-        });
-      });
-    },
-    []
-  );
-
-  useEffect(() => {
-    if (!emblaApi) return;
-
-    setTweenNodes(emblaApi);
-    setTweenFactor(emblaApi);
-    tweenScale(emblaApi);
-
-    emblaApi
-      .on("reInit", setTweenNodes)
-      .on("reInit", setTweenFactor)
-      .on("reInit", tweenScale)
-      .on("scroll", tweenScale)
-      .on("slideFocus", tweenScale);
-  }, [emblaApi, tweenScale]);
-
+const Hero = () => {
+  const { eventsArray } = data;
   return (
-    <section className="bg-[#121e28]">
-      <div className="embla relative">
-        <div className="embla__viewport w-full " ref={emblaRef}>
-          <div className="embla__container mt-10">
-            {eventsArray.map((e, index) => (
-              <div className="embla__slide relative" key={index}>
-                <div className="embla__slide__number flex flex-col items-center w-full">
-                  <Card className=" bg-[#141f29] border-none">
-                    <CardHeader className="p-0">
-                      <Image
-                        src={e.image}
-                        alt={e.title}
-                        width={400}
-                        height={300}
-                        className="object-cover w-full h-80"
-                      />
-                    </CardHeader>
-                    <CardContent className="flex items-center justify-between pt-4 border-4 border-[#cddc29]">
-                      <div>
-                        <CardTitle className="text-base sm:text-lg md:text-xl text-white">
-                          {e.title}
-                        </CardTitle>
-                      </div>
-                      <Button
-                        variant="tertiary"
-                        className={`ml-4 text-sm sm:text-base md:text-lg ${
-                          e.buttoncolor === "purple" && "bg-purple-600 text-white"
-                        }`}
-                      >
-                        {e.buttontext}
-                      </Button>
-                    </CardContent>
-                    {index !== selectedIndex && (
-                      <div className="absolute top-0 left-0 w-full h-full bg-black opacity-70 transition-opacity duration-1000"></div>
-                    )}
-                  </Card>
-                  {index !== selectedIndex && (
-                    <div className="absolute top-0 left-0 w-full h-full bg-black opacity-70 transition-opacity duration-1000 "></div>
-                  )}
-                </div>
+    <div className="w-full px-4 py-6 md:px-6 lg:px-12 bg-[#141f29]">
+      <Carousel
+        plugins={[
+          Autoplay({
+            delay: 4000,
+          }),
+        ]}
+      >
+        <CarouselContent className="bg-[#141f29]">
+          {eventsArray.map((e, i) => (
+            <CarouselItem key={i} className="py-3 bg-[#141f29] rounded-sm">
+              <div className="bg-[#141f29] flex flex-col items-center w-full max-w-3xl mx-auto ">
+                <Card className="border-none w-full relative">
+                  <CardHeader className="p-0 relative  border-6 border-[#cddc29]">
+                    <Image
+                      src={e.image}
+                      alt={e.title}
+                      layout="responsive"
+                      width={400}
+                      height={250}
+                      className="object-cover w-full h-60 sm:h-72 md:h-56 lg:h-64 xl:h-72"
+                    />
+                    <div className="absolute top-0 left-0 w-full h-full bg-gradient-to-t from-black via-transparent to-transparent pointer-events-none z-10"></div>
+                  </CardHeader>
+                  <CardContent className="absolute bottom-0 flex flex-row items-center justify-between pt-3 p-3 sm:p-4 lg:p-6 w-full z-20">
+                    <div className="w-full sm:w-auto">
+                      <CardTitle className="text-sm sm:text-lg md:text-xl lg:text-2xl text-white">
+                        {e.title}
+                      </CardTitle>
+                    </div>
+                    <Button
+                      variant="tertiary"
+                      size="xs"
+                      className={`ml-2 sm:ml-4 w-auto text-xs sm:text-sm md:text-base lg:text-lg ${
+                        e.buttoncolor === "purple"
+                          ? "bg-purple-600 text-white"
+                          : ""
+                      }`}
+                    >
+                      {e.buttontext}
+                    </Button>
+                  </CardContent>
+                </Card>
               </div>
-            ))}
-          </div>
-        </div>
-
-        <div className="embla__controls">
-          <div className="embla__buttons">
-            <PrevButton
-              onClick={onPrevButtonClick}
-              disabled={prevBtnDisabled}
-            />
-            <NextButton
-              onClick={onNextButtonClick}
-              disabled={nextBtnDisabled}
-            />
-          </div>
-
-          {/* <div className="embla__dots">
-            {scrollSnaps.map((_, index) => (
-              <DotButton
-                key={index}
-                onClick={() => onDotButtonClick(index)}
-                className={"embla__dot".concat(
-                  index === selectedIndex ? " embla__dot--selected" : ""
-                )}
-              />
-            ))}
-          </div> */}
-        </div>
-      </div>
-    </section>
+            </CarouselItem>
+          ))}
+        </CarouselContent>
+        <CarouselPrevious className="hidden md:flex bg-[#cddc29] text-[#141f29] border-none w-8 h-8" />
+        <CarouselNext className="hidden md:flex bg-[#cddc29] text-[#141f29] border-none w-8 h-8" />
+      </Carousel>
+    </div>
   );
-};
+}
 
-export default EmblaCarousel;
+export default Hero

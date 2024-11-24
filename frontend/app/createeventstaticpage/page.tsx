@@ -14,6 +14,17 @@ import { useRouter } from 'next/navigation';
 import { createClient } from "@/utils/supabase/client";
 import { Sheet, SheetTrigger, SheetContent } from '@/components/ui/sheet';
 
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover";
+import { RiLoginCircleFill } from 'react-icons/ri';
+import Link from 'next/link';
+import { toast } from '@/hooks/use-toast';
+import { useUser } from '@/context/UserContext';
+
 const cardData = [
   {
     title: "10+ Sports",
@@ -55,6 +66,30 @@ const page = () => {
   const supabase = createClient();
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [isSheetOpen, setIsSheetOpen] = useState(false);
+  const { user, loading, setUser } = useUser();
+  const [isPopoverOpen, setIsPopoverOpen] = useState(false);
+  const handleLogout = async () => {
+    const response = await fetch("/api/auth/logout", {
+      method: "POST",
+    });
+
+    if (response.ok) {
+      setIsLoggedIn(false);
+      toast({
+        title: "Logout Successful",
+        description: "Successfully Logged Out!",
+        variant: "default",
+      });
+      setIsSheetOpen(false); // Close the Sheet on logout
+    } else {
+      const result = await response.json();
+      toast({
+        title: "Logout Failed",
+        description: result.error || "An error occurred. Please try again.",
+        variant: "destructive",
+      });
+    }
+  };
 
   useEffect(() => {
     const checkLoginStatus = async () => {
@@ -85,60 +120,105 @@ const page = () => {
   return (
     <div>
       <nav className="bg-[#141f29] p-4 flex justify-between items-center fixed w-full z-20 ">
-        <Sheet open={isSheetOpen} onOpenChange={setIsSheetOpen}>
-          <SheetTrigger asChild>
-            <button className="mr-4 lg:hidden">
-              <FaBars className="text-2xl text-[#ccdb28]" />
-            </button>
-          </SheetTrigger>
-          <SheetContent className="bg-[#141f29] pt-16 border-none" side="top">
-            <div className="px-2 py-4">
-              <Button
-                onClick={() => scrollToSection("hero")}
-                className="w-full mb-4 bg-[#141f29] text-[#ccdb28] border border-[#ccdb28] text-2xl py-8"
-              >
-                Home
-              </Button>
-              <Button
-                onClick={() => scrollToSection("pricing")}
-                className="w-full mb-4 bg-[#141f29] text-[#ccdb28] border border-[#ccdb28] text-2xl py-8"
-              >
-                Pricing
-              </Button>
-              <Button
-                onClick={() => scrollToSection("features")}
-                className="w-full mb-4 bg-[#141f29] text-[#ccdb28] border border-[#ccdb28] text-2xl py-8"
-              >
-                Features
-              </Button>
-              <Button
-                onClick={() => scrollToSection("freeMatchGenerator")}
-                className="w-full mb-4 bg-[#141f29] text-[#ccdb28] border border-[#ccdb28] text-2xl py-8"
-              >
-                Free Match Generator
-              </Button>
-              <Button
-                onClick={() => {
-                  router.push(
-                    `${isLoggedIn ? "/organizerDashboard" : "/auth/login"}`
-                  );
-                  setIsSheetOpen(false);
-                }}
-                className="w-full text-2xl py-8"
-                variant="tertiary"
-              >
-                Create Events
-              </Button>
+        <div className='flex items-center'>
+          <Sheet open={isSheetOpen} onOpenChange={setIsSheetOpen}>
+            <SheetTrigger asChild>
+              <button className="mr-4 lg:hidden">
+                <FaBars className="text-2xl text-[#ccdb28]" />
+              </button>
+            </SheetTrigger>
+            <SheetContent className="bg-[#141f29] pt-16 border-none" side="top">
+              <div className="px-2 py-4">
+                <Button
+                  onClick={() => scrollToSection("hero")}
+                  className="w-full mb-4 bg-[#141f29] text-[#ccdb28] border border-[#ccdb28] text-2xl py-8"
+                >
+                  Home
+                </Button>
+                <Button
+                  onClick={() => scrollToSection("pricing")}
+                  className="w-full mb-4 bg-[#141f29] text-[#ccdb28] border border-[#ccdb28] text-2xl py-8"
+                >
+                  Pricing
+                </Button>
+                <Button
+                  onClick={() => scrollToSection("features")}
+                  className="w-full mb-4 bg-[#141f29] text-[#ccdb28] border border-[#ccdb28] text-2xl py-8"
+                >
+                  Features
+                </Button>
+                <Button
+                  onClick={() => scrollToSection("freeMatchGenerator")}
+                  className="w-full mb-4 bg-[#141f29] text-[#ccdb28] border border-[#ccdb28] text-2xl py-8"
+                >
+                  Free Match Generator
+                </Button>
+                <Button
+                  onClick={() => {
+                    router.push(
+                      `${isLoggedIn ? "/organizerDashboard" : "/auth/login"}`
+                    );
+                    setIsSheetOpen(false);
+                  }}
+                  className="w-full text-2xl py-8"
+                  variant="tertiary"
+                >
+                  Create Events
+                </Button>
+              </div>
+            </SheetContent>
+          </Sheet>
+          <Image
+            src="/images/Logo.png"
+            alt="Liveplay Logo"
+            className="h-8"
+            width={200}
+            height={200}
+          />
+        </div>
+        <Popover open={isPopoverOpen} onOpenChange={setIsPopoverOpen}>
+          <PopoverTrigger
+            className="lg:hidden"
+            onClick={() => setIsPopoverOpen(!isPopoverOpen)}
+          >
+            <Avatar>
+              <AvatarImage src={user?.user_metadata.picture} />
+              <AvatarFallback>CN</AvatarFallback>
+            </Avatar>
+          </PopoverTrigger>
+          <PopoverContent className="mr-10 w-40 p-1 bg-[#17202A] focus:ring-offset-none border-none z-10">
+            <div className="mt-auto">
+              <ul>
+                <li>
+                  {isLoggedIn ? (
+                    <Link href={"/"}>
+                      <Button
+                        onClick={handleLogout}
+                        variant="tertiary"
+                        className="flex justify-center items-center w-full"
+                        size="xs"
+                      >
+                        <RiLoginCircleFill className="inline" />
+                        <h1 className="">Log Out</h1>
+                      </Button>
+                    </Link>
+                  ) : (
+                    <Link href={"/auth/login"}>
+                      <Button
+                        variant="tertiary"
+                        className=" flex justify-center items-center w-full"
+                        size="xs"
+                      >
+                        <RiLoginCircleFill className="inline" />
+                        <h1 className="">Sign Up/Login</h1>
+                      </Button>
+                    </Link>
+                  )}
+                </li>
+              </ul>
             </div>
-          </SheetContent>
-        </Sheet>
-        <Image
-          src="/images/Logo.png"
-          alt="Liveplay Logo"
-          className="h-8"
-          width={200}
-          height={200}
-        />
+          </PopoverContent>
+        </Popover>
         <div className="lg:flex space-x-4 hidden">
           <Button
             onClick={() => scrollToSection("hero")}

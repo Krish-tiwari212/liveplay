@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
-import { MdOutlineEvent } from "react-icons/md";
+import { MdLocationOn, MdOutlineEvent } from "react-icons/md";
 import { FaBars, FaSignOutAlt, FaUserCircle } from "react-icons/fa";
 import { IoMdList } from "react-icons/io";
 import Link from "next/link";
@@ -13,6 +13,7 @@ import { RiLoginCircleFill } from "react-icons/ri";
 import { Avatar, AvatarFallback, AvatarImage } from "./ui/avatar";
 import { Popover, PopoverContent, PopoverTrigger } from "./ui/popover";
 import { useUser } from "@/context/UserContext";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "./ui/select";
 
 const MNavbar = () => {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
@@ -70,12 +71,25 @@ const MNavbar = () => {
   return (
     <div className="lg:hidden flex w-full items-center justify-between p-4 bg-[#17202A] text-white shadow-lg z-20">
       <div className="flex items-center gap-4">
-        <Sheet open={isSheetOpen} onOpenChange={setIsSheetOpen}>
+        <Sheet open={isSheetOpen} onOpenChange={setIsSheetOpen} >
           <SheetTrigger>
             <FaBars className="text-3xl text-[#ccdb28]" />
           </SheetTrigger>
-          <SheetContent className="bg-[#141f29] pt-16 border-none" side="top">
+          <SheetContent className="bg-[#141f29] pt-16 border-none lg:hidden" side="top">
             <div className="flex flex-col pt-10">
+              <Select>
+                <SelectTrigger className="w-full h-[30px] text-2xl bg-[#141f29] font-semibold text-[#ccdb28] border border-[#ccdb28] flex justify-center items-center py-8 mb-4">
+                  <div className="flex justify-center items-center mr-2">
+                    <MdLocationOn className="mr-2 text-2xl" />
+                    <SelectValue placeholder="Location" className="text-2xl" />
+                  </div>
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="light">Pune</SelectItem>
+                  <SelectItem value="dark">Delhi</SelectItem>
+                  <SelectItem value="system">Chennai</SelectItem>
+                </SelectContent>
+              </Select>
               <Button
                 onClick={() =>
                   handleButtonClick(() => router.push("/eventspage"))
@@ -106,7 +120,10 @@ const MNavbar = () => {
           </SheetContent>
         </Sheet>
         <div className="flex items-center gap-10">
-          <div onClick={() => router.push("/")} className="tracking-wider cursor-pointer">
+          <div
+            onClick={() => router.push("/")}
+            className="tracking-wider cursor-pointer"
+          >
             <Image
               src="/images/Logo.png"
               alt="/images/Logo.png"

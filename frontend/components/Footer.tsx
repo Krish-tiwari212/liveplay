@@ -84,7 +84,7 @@ const Footer = () => {
                 href="mailto:liveplayindia@gmail.com"
                 className="text-[#cad927] hover:underline"
               >
-                liveplayindia@gmail.com
+                teamsupport@liveplay.in
               </a>
             </p>
           </div>
@@ -108,21 +108,33 @@ const Footer = () => {
         <hr className="my-4 mx-auto border-gray-600 w-[80%] md:w-[90%]" />
         <div className="flex flex-col md:flex-row justify-between text-center text-wrap sm:text-sm w-[90%] mx-auto">
           <div className="flex flex-col md:flex-row space-y-2 md:space-y-0 md:space-x-4">
-            <Link href="/policies/termsandcondition" className="text-[#cad927] hover:underline">
+            <Link
+              href="/policies/termsandcondition"
+              className="text-[#cad927] hover:underline"
+            >
               Terms & Conditions
             </Link>
-            <Link href="/policies/privacypolicy" className="text-[#cad927] hover:underline">
+            <Link
+              href="/policies/privacypolicy"
+              className="text-[#cad927] hover:underline"
+            >
               Privacy Policy
             </Link>
-            <Link href="/policies/refund" className="text-[#cad927] hover:underline">
+            <Link
+              href="/policies/refund"
+              className="text-[#cad927] hover:underline"
+            >
               Refund Policy
             </Link>
-            <Link href="/policies/cancelation" className="text-[#cad927] hover:underline">
+            <Link
+              href="/policies/cancelation"
+              className="text-[#cad927] hover:underline"
+            >
               Cancellation Policy
             </Link>
           </div>
           <div className="mt-4 md:mt-0">
-            &copy; 2024 Impact Stream Ventures. liveplay.in™ All rights reserved
+            &copy; 2024 Impact Stream Ventures. <br className='md:hidden'/>liveplay.in™ All rights reserved
           </div>
         </div>
       </footer>

@@ -314,6 +314,8 @@ const EventDetailsForm: React.FC<EventDetailsFormProps> = ({
       organizer_name: prefillData?.organizer_name || "",
       organizer_contact_number: prefillData?.organizer_contact_number || "",
       organizer_email: prefillData?.organizer_email || "",
+      website_link: prefillData?.website_link || "",
+      insta_link: prefillData?.insta_link || "",
     });
   }, [EventData, EventEditData, editPage]);
 

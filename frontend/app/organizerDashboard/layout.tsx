@@ -23,7 +23,7 @@ export default function RootLayout({
     <UserProvider>
       <AppContextProvider>
         <EventProvider>
-          {/* <KYCWrapper> */}
+          <KYCWrapper>
             <Sidebar setnavexpanded={setnavexpanded} />
             <div
               className={`flex h-screen ${
@@ -40,7 +40,7 @@ export default function RootLayout({
                 {children}
               </div>
             </div>
-          {/* </KYCWrapper> */}
+          </KYCWrapper>
         </EventProvider>
       </AppContextProvider>
     </UserProvider>
@@ -78,7 +78,7 @@ function KYCWrapper({ children }: { children: React.ReactNode }) {
     <>
       {showKYCPopup && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-          <div className="bg-white p-6 rounded-lg shadow-lg w-[90%] sm:w-[35%]">
+          <div className="bg-white p-6 rounded-lg shadow-lg w-[90%] lg:w-[35%]">
             <h2 className="text-xl font-bold mb-4">KYC Required</h2>
             <p className="mb-4">
               Please complete your KYC verification to continue using all

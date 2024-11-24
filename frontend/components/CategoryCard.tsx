@@ -1,14 +1,20 @@
 "use client"
 
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import SearchDialog, { Participant } from './SearchDialog';
 import { HiCurrencyRupee } from 'react-icons/hi2';
 import { Button } from './ui/button';
 import { Input } from './ui/input';
-import { RxCross2 } from "react-icons/rx";
 import { IoIosDoneAll } from 'react-icons/io';
 import { FaPlus, FaMinus } from 'react-icons/fa';
 import { useCartContext } from '../context/CartContext';
+import { RiCheckDoubleFill, RiCheckDoubleLine, RiDiscountPercentFill } from 'react-icons/ri';
+import { Checkbox } from './ui/checkbox';
+import { Label } from './ui/label';
+import { Dialog, DialogClose, DialogContent, DialogDescription, DialogFooter, DialogTitle } from './ui/dialog';
+import { AlertDialog, AlertDialogAction, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from './ui/alert-dialog';
+import { Copy } from 'lucide-react';
+import { toast } from '@/hooks/use-toast';
 
 interface Category {
   id: string;
@@ -19,6 +25,8 @@ interface Category {
   details: string;
   sport?: string;
   quantity?: number;
+  discount_code?: string;
+  teamName?:string
 }
 
 interface CategoryCardProps {
@@ -32,9 +40,15 @@ const CategoryCard: React.FC<CategoryCardProps> = ({ category, participantsData,
   const [searchOpen, setSearchOpen] = useState(false);
   const [selectedParticipant, setSelectedParticipant] = useState<Participant | null>(null);
   const [teamCode, setTeamCode] = useState('');
+  const [teamName, setTeamName] = useState('');
+  const [partner, setPartner] = useState('');
   const [ticketQuantity, setTicketQuantity] = useState(1);
+  const [isCheckboxChecked, setIsCheckboxChecked] = useState(false);
+  const [disablecheckbox,setdisablecheckbox]=useState(false)
+  const [isAlertOpen, setIsAlertOpen] = useState(false);
+  const [isDialogOpen, setIsDialogOpen] = useState(false);
 
-  const { addItem, items } = useCartContext();
+  const { addItem, items, addMultipleItem, totalQuantity, reduceItem } = useCartContext();
 
   const cartItem = items.find(item => item.id === category.id);
   const currentQuantity = cartItem ? cartItem.quantity : 0;
@@ -49,9 +63,34 @@ const CategoryCard: React.FC<CategoryCardProps> = ({ category, participantsData,
   };
 
   const handleGenerateTeamCode = () => {
-    const code = generateTeamCode();
-    setTeamCode(code);
+    if (!teamName.trim()) {
+      setIsAlertOpen(true);
+      return;
+    }
+
+    if (!teamCode) {
+      const code = generateTeamCode();
+      setTeamCode(code);
+    }
+
+    setIsDialogOpen(true);
   };
+
+  const handleGeneratePartnerCode = () => {
+    if (!partner.trim()) {
+      setIsAlertOpen(true);
+      return;
+    }
+
+    if (!teamCode) {
+      const code = generateTeamCode();
+      setTeamCode(code);
+    }
+
+    setIsDialogOpen(true);
+  };
+
+
 
   const handleBuyTickets = () => {
     console.log('Purchased tickets:', category, ticketQuantity);
@@ -60,24 +99,76 @@ const CategoryCard: React.FC<CategoryCardProps> = ({ category, participantsData,
   };
 
   const handleAddToCart = () => {
-    if (category.type==="t" && !selectedParticipant) {
-      alert("Please select a participant before adding to cart.");
+    if (
+      category.type === "Doubles" &&
+      !partner.trim()
+    ) {
+      setIsAlertOpen(true);
       return;
     }
-    console.log('Added to cart:', category, selectedParticipant, teamCode);
+
+    if (category.type === "Team" && !teamName.trim()) {
+      setIsAlertOpen(true);
+      return
+    }
+
+    
+    setdisablecheckbox(true);
+    const finalPrice = isCheckboxChecked && category.discountedPrice
+      ? category.discountedPrice
+      : category.price;
+
+    let finalCategory: Category = {
+      ...category,
+      price: finalPrice,
+      teamName: teamName,
+    };
+    if (!isCheckboxChecked) {
+      const {  discount_code, ...rest } = finalCategory;
+      finalCategory = rest;
+    }
     onAdd();
-    addItem(category);
+    
+    category.sport === "marathon"
+      ? addMultipleItem(finalCategory)
+      : addItem(finalCategory);
   };
+
+  const handleRemoveFromCart = () => {
+    reduceItem(category.id);
+    onAdd();
+  };
+
+  useEffect(() => {
+    console.log(items);
+  }, [items]);
 
   const handleAddQuantity = () => {
-    addItem(category);
+    addMultipleItem(category);
   };
-
 
   const handleSelectParticipant = (participant: Participant | null) => {
     if (participant) {
       setSelectedParticipant(participant);
     }
+  };
+
+  const handleCopy = (text: string) => {
+    navigator.clipboard
+      .writeText(text)
+      .then(() => {
+        toast({
+          title: "Link copied to clipboard!",
+          variant: "default",
+        });
+      })
+      .catch((error) => {
+        console.error("Error copying text: ", error);
+        toast({
+          title: "Failed to copy link. Please try again.",
+          variant: "destructive",
+        });
+      });
   };
 
   return (
@@ -97,49 +188,112 @@ const CategoryCard: React.FC<CategoryCardProps> = ({ category, participantsData,
               Category Type:
               <span className="font-normal ml-1">{category.type}</span>
             </div>
-            {category.discountedPrice ? (
-              <div className="flex gap-2 items-center text-2xl">
-                <HiCurrencyRupee />
-                <div>
-                  <span className="text-[#141f29] font-semibold">
-                    ${category.discountedPrice}
-                  </span>
-                  <span className="line-through text-gray-500 ml-2">
-                    ${category.price}
-                  </span>
+            {category.discount_code ? (
+              <>
+                <div className="flex gap-2 items-center text-2xl mb-2">
+                  <RiDiscountPercentFill />
+                  <div className="text-sm md:text-lg flex gap-2 justify-center items-center">
+                    <span className="text-[#141f29] font-semibold">
+                      Apply
+                      <span className="text-blue-500 mx-1">
+                        {category.discount_code}
+                      </span>
+                      Discount
+                    </span>
+                    <h1 className="text-gray-800">
+                      <Checkbox
+                        disabled={disablecheckbox}
+                        id="terms2"
+                        onCheckedChange={() =>
+                          setIsCheckboxChecked(!isCheckboxChecked)
+                        }
+                      />
+                    </h1>
+                  </div>
                 </div>
-              </div>
+                <div className="flex gap-2 items-center text-2xl">
+                  <div>
+                    {isCheckboxChecked ? (
+                      <>
+                        <span className="text-[#141f29] font-semibold">
+                          ₹{category.discountedPrice}
+                        </span>
+                        <span className="line-through text-gray-500 ml-2">
+                          ₹{category.price}
+                        </span>
+                      </>
+                    ) : (
+                      <span className="text-[#141f29] font-semibold">
+                        ₹{category.price}
+                      </span>
+                    )}
+                  </div>
+                </div>
+              </>
             ) : (
               <div className="flex gap-2 items-center text-2xl">
-                <HiCurrencyRupee />
                 <div>
                   <span className="text-[#141f29] font-semibold">
-                    ${category.price}
+                    ₹{category.price}
                   </span>
                 </div>
               </div>
             )}
           </div>
           {category.sport === "marathon" ? (
-             <div className="mt-4 flex items-center absolute bottom-0 right-0">
+            currentQuantity === 0 ? (
+              <div className="mt-4 flex items-center absolute bottom-0 right-0">
+                <Button
+                  variant="tertiary"
+                  className="ml-4 rounded text-lg font-bold flex gap-2 border-2 border-[#141f29]"
+                  onClick={handleAddToCart}
+                >
+                  <FaPlus />
+                  Add
+                </Button>
+              </div>
+            ) : (
               <Button
                 variant="tertiary"
-                className="ml-4 rounded text-lg font-bold flex gap-2 border-2 border-[#141f29]"
-                onClick={handleAddToCart}
+                className="mt-4 flex justify-between px-0 rounded absolute bottom-0 right-0 border-2 border-[#141f29]"
               >
-                <FaPlus />
-                Add
+                <div
+                  className="flex justify-center items-center px-2 border-r border-[#141f29]"
+                  onClick={handleRemoveFromCart}
+                >
+                  <FaMinus />
+                </div>
+                <div className="flex justify-center items-center px-1">
+                  <h1 className="text-lg font-bold text-center ">
+                    {currentQuantity}
+                  </h1>
+                </div>
+                <div
+                  className="flex justify-center items-center px-2 border-l border-[#141f29]"
+                  onClick={handleAddToCart}
+                >
+                  <FaPlus />
+                </div>
               </Button>
-            </div>
+            )
           ) : (
-            <div className="mt-4 flex items-center absolute bottom-0 right-0">
+            <div className="mt-4 flex items-center absolute -bottom-2 right-0">
               <Button
                 variant="tertiary"
                 className="ml-4 rounded text-lg font-bold flex gap-2 border-2 border-[#141f29]"
                 onClick={handleAddToCart}
               >
-                <FaPlus />
-                Add
+                {currentQuantity === 0 ? (
+                  <div className="flex justify-center items-center gap-2">
+                    <FaPlus />
+                    <h1>Add</h1>
+                  </div>
+                ) : (
+                  <div className="flex justify-center items-center gap-2">
+                    <RiCheckDoubleFill />
+                    <h1>Added</h1>
+                  </div>
+                )}
               </Button>
             </div>
           )}
@@ -147,11 +301,11 @@ const CategoryCard: React.FC<CategoryCardProps> = ({ category, participantsData,
       </div>
 
       <div
-        className={` w-full pt-4  ${
+        className={`w-full pt-4 ${
           category.type !== "Singles" && "border-t-2 border-gray-300 mt-4"
         }`}
       >
-        {category.type === "Doubles" && (
+        {/* {category.type === "Doubles" && (
           <div className="mb-4 rounded">
             <label className="block mb-2 text-nowrap">
               Search your partner or share the Pair Code
@@ -176,62 +330,141 @@ const CategoryCard: React.FC<CategoryCardProps> = ({ category, participantsData,
               </Button>
             </div>
           </div>
-        )}
+        )} */}
 
         {category.type === "Team" ? (
-          <>
+          <div className="flex flex-col">
+            <h1 className="text-sm md:text-lg font-semibold">
+              Enter Team Name, Generate & Share Code
+            </h1>
             <div className="my-4 flex items-center relative bg-[#ccdb28] rounded">
-              <label className="block pl-2 text-nowrap">Team Code:</label>
+              <label className="block pl-2 text-nowrap">Team Name:</label>
               <Input
                 type="text"
-                readOnly
-                value={teamCode}
-                className="py-2 border-none rounded relative w-full bg-[#ccdb28] focus-visible:outline-none focus-visible:ring-0 focus-visible:ring-ring focus-visible:ring-offset-0 font-bold text-lg"
-                placeholder=""
+                value={teamName}
+                onChange={(e) => setTeamName(e.target.value)}
+                className="py-2  border-none rounded relative w-full bg-[#ccdb28] focus-visible:outline-none focus-visible:ring-0 focus-visible:ring-ring focus-visible:ring-offset-0"
+                placeholder="Enter Team Name"
               />
               <Button
                 size="sm"
-                className="ml-2 h-full text-white absolute right-0"
+                className="ml-2 hidden sm:block h-full text-white absolute right-0"
                 onClick={handleGenerateTeamCode}
+                title={
+                  !teamName.trim() ? "Enter Team Name to generate code" : ""
+                }
               >
-                Generate Team Code
+                {teamCode ? "View Team Code" : "Generate Team Code"}
+              </Button>
+              <Button
+                size="sm"
+                className="ml-2 sm:hidden h-full text-white absolute right-0"
+                onClick={handleGenerateTeamCode}
+                title={
+                  !teamName.trim() ? "Enter Team Name to generate code" : ""
+                }
+              >
+                {teamCode ? "Code" : "Code"}
               </Button>
             </div>
-          </>
+          </div>
         ) : (
           category.type === "Doubles" && (
-            <div className="my-4 flex items-center relative bg-[#ccdb28] rounded">
-              <label className="block pl-2 text-nowrap">Pair Code:</label>
-              <Input
-                type="text"
-                readOnly
-                value={teamCode}
-                className="py-2 border-none rounded relative w-full bg-[#ccdb28] focus-visible:outline-none focus-visible:ring-0 focus-visible:ring-ring focus-visible:ring-offset-0 font-bold text-lg"
-                placeholder=""
-              />
-              <Button
-                size="sm"
-                className="ml-2 h-full text-white absolute right-0"
-                onClick={handleGenerateTeamCode}
-              >
-                Generate Pair Code
-              </Button>
+            <div className="flex flex-col">
+              <h1 className="text-sm md:text-lg font-semibold">
+                Enter Partner Name, Generate & Share Code
+              </h1>
+              <div className="my-4 flex items-center relative bg-[#ccdb28] rounded">
+                <label className="block pl-2 text-nowrap">Partner Name:</label>
+                <Input
+                  type="text"
+                  value={partner}
+                  onChange={(e) => setPartner(e.target.value)}
+                  className="py-2 border-none rounded relative w-full bg-[#ccdb28] focus-visible:outline-none focus-visible:ring-0 focus-visible:ring-ring focus-visible:ring-offset-0"
+                  placeholder="Enter Partner Name"
+                />
+                <Button
+                  size="sm"
+                  className="ml-2 hidden sm:block h-full text-white absolute right-0"
+                  onClick={handleGeneratePartnerCode}
+                  title={
+                    !partner.trim() ? "Enter Team Name to generate code" : ""
+                  }
+                >
+                  {teamCode ? "View Pair Code" : "Generate Pair Code"}
+                </Button>
+                <Button
+                  size="sm"
+                  className="ml-2 sm:hidden h-full text-white absolute right-0"
+                  onClick={handleGeneratePartnerCode}
+                  title={
+                    !partner.trim() ? "Enter Team Name to generate code" : ""
+                  }
+                >
+                  {teamCode ? "Code" : "Code"}
+                </Button>
+              </div>
             </div>
           )
         )}
-
-        {/* <div className="mt-4 flex justify-end">
-            <Button
-              variant="tertiary"
-              className="rounded text-lg font-bold flex gap-2 border-2 border-[#141f29]"
-              onClick={handleAddToCart}
-              disabled={isAdded}
-            >
-              {!isAdded ? <FaPlus /> : <IoIosDoneAll />}
-              {isAdded ? "Added" : "Add"}
-            </Button>
-          </div> */}
       </div>
+
+      <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
+        <DialogContent className="sm:max-w-md h-auto">
+          <AlertDialogHeader>
+            <DialogTitle>Share Code</DialogTitle>
+            <DialogDescription>
+              {category.type === "Team" ? (
+                <div className="fle flex-col">
+                  <h1>1. Share code with your Team Members.</h1>
+                  <h1>
+                    2. Members need to sign up / login and access player
+                    dashboard.
+                  </h1>
+                  <h1>
+                    3. Enter pair code within "Enter Pair / Team Code" field.
+                  </h1>
+                </div>
+              ) : (
+                <div className="fle flex-col">
+                  <h1>1. Share code with your Partner.</h1>
+                  <h1>
+                    2. Partner needs to sign up / login and access player
+                    dashboard.
+                  </h1>
+                  <h1>
+                    3. Enter pair code within "Enter Pair / Team Code" field.
+                  </h1>
+                </div>
+              )}
+            </DialogDescription>
+          </AlertDialogHeader>
+          <div className="flex items-center space-x-2">
+            <div className="grid flex-1 gap-2">
+              <Label htmlFor="link" className="sr-only">
+                Code
+              </Label>
+              <Input id="link" value={teamCode} readOnly />
+            </div>
+            <Button
+              type="button"
+              size="sm"
+              className="px-3"
+              onClick={() => handleCopy(teamCode)}
+            >
+              <span className="sr-only">Copy</span>
+              <Copy />
+            </Button>
+          </div>
+          <DialogFooter className="sm:justify-start">
+            <DialogClose asChild>
+              <Button type="button" variant="secondary">
+                Close
+              </Button>
+            </DialogClose>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
 
       <SearchDialog
         open={searchOpen}
@@ -239,6 +472,25 @@ const CategoryCard: React.FC<CategoryCardProps> = ({ category, participantsData,
         data={participantsData}
         onSelect={handleSelectParticipant}
       />
+      {isAlertOpen && (
+        <AlertDialog open={isAlertOpen} onOpenChange={setIsAlertOpen}>
+          <AlertDialogContent className="w-[90%] rounded">
+            <AlertDialogHeader>
+              <AlertDialogTitle>Incomplete Information</AlertDialogTitle>
+              <AlertDialogDescription>
+                {category.type === "Team"
+                  ? "Please enter the team name before generating the team code."
+                  : "Please enter the Partner name before generating the Partner code."}
+              </AlertDialogDescription>
+            </AlertDialogHeader>
+            <AlertDialogFooter>
+              <AlertDialogAction onClick={() => setIsAlertOpen(false)}>
+                Ok
+              </AlertDialogAction>
+            </AlertDialogFooter>
+          </AlertDialogContent>
+        </AlertDialog>
+      )}
     </div>
   );
 };

@@ -44,6 +44,7 @@ interface Category {
   age_from?: string;
   age_to?: string;
   ageRangeOption?: string;
+  max_teams_size?:number
 }
 
 const inputFields = [
@@ -88,7 +89,6 @@ const inputFields = [
     label: "Maximum Team Size",
     type: "number",
     placeholder: "Enter Max Team Size",
-    required: true,
   },
 ];
 
@@ -272,12 +272,21 @@ const AddCategory = ({ setCategoryData ,type,category}: AddCategoryProps) => {
   };
 
   const areRequiredFieldsFilled = () => {
-    const requiredFieldsFilled = fields.every((field) => {
-      if (field.required) {
-        return categoryData[field.id as keyof typeof categoryData];
-      }
-      return true;
-    }) && categoryData.category_type;
+    const requiredFieldsFilled = isTeam
+      ? fields.every((field) => {
+          if (field.required) {
+            return categoryData[field.id as keyof typeof categoryData];
+          }
+          return true;
+        }) &&
+        categoryData.category_type &&
+        categoryData.max_teams_size
+      : fields.every((field) => {
+          if (field.required) {
+            return categoryData[field.id as keyof typeof categoryData];
+          }
+          return true;
+        }) && categoryData.category_type; ;
 
     const ageRangeValid =
       categoryData.ageRangeOption !== "custom" ||
@@ -610,7 +619,7 @@ const AddCategory = ({ setCategoryData ,type,category}: AddCategoryProps) => {
           className={`w-full p-2 mx-2 rounded-md ${
             areRequiredFieldsFilled()
               ? "bg-[#17202A] text-white cursor-pointer"
-              : "bg-gray-600 text-white cursor-not-allowed"
+              : "bg-gray-400 text-white cursor-not-allowed"
           }`}
           onClick={handleSubmit}
           disabled={!areRequiredFieldsFilled()}

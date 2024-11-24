@@ -7,13 +7,13 @@ import { Button } from './ui/button';
 
 const Contactus = () => {
   return (
-    <div className="flex flex-col items-center justify-center bg-gradient-to-b from-[#fff] to-[#ccdb28] px-4 py-10">
+    <div className="flex flex-col items-center justify-center bg-gradient-to-b from-[#fff] to-[#ccdb28] px-4 pt-10 pb-5">
       <div className="w-full max-w-4xl bg-white rounded-2xl shadow-2xl p-8 transition-shadow duration-300">
-        <h1 className="text-4xl font-extrabold text-[#141f29] mb-4 text-center leading-tight">
+        <h1 className="text-4xl font-bold text-[#141f29] mb-4 text-center leading-tight">
           Contact Us
         </h1>
-        <p className="text-sm md:text-md text-gray-700 mb-8 text-center">
-          Whether you’re here to host, join, cheer, or just say "Hi," we’d love
+        <p className="text-md md:text-lg text-gray-700 mb-8 text-center">
+          Whether you’re here to host, join or just say "Hi," we’d love
           to hear from you!
         </p>
         <div className="grid gap-2 md:grid-cols-2 mb-8 w-full md:w-[80%] md:mx-auto">
@@ -34,7 +34,7 @@ const Contactus = () => {
             <FaEnvelope className="w-8 h-8  flex-shrink-0" />
             <div>
               <h2 className="text-xl font-semibold text-[#141f29]">Email</h2>
-              <p className="text-gray-600">liveplayindia@gmail.com</p>
+              <p className="text-gray-600">teamsupport@liveplay.in</p>
             </div>
           </div>
         </div>
@@ -44,8 +44,8 @@ const Contactus = () => {
             <div>
               <h2 className="text-xl font-semibold text-[#141f29]">Company</h2>
               <p className="text-gray-600">
-                Impact Stream Ventures (PAN: AALFI0173P) proudly brings you
-                liveplay.in™
+                Impact Stream Ventures proudly brings you
+                liveplay.in™ ❤
               </p>
             </div>
           </div>

@@ -93,7 +93,7 @@ const page = () => {
         For any questions or concerns regarding these terms, please contact us
         at
         <span className="font-bold hover:underline mx-1 cursor-pointer">
-          liveplayindia@gmail.com
+          teamsupport@liveplay.in
         </span>
       </p>
     </div>

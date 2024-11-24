@@ -1,7 +1,7 @@
 "use client"
 
 import { Checkbox } from '@/components/ui/checkbox';
-import React, { useRef, useState } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Currency, Loader } from 'lucide-react';
@@ -15,6 +15,8 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
+import { toast } from '@/hooks/use-toast';
+import { useEventContext } from '@/context/EventDataContext';
 
 
 const banks = [
@@ -298,7 +300,10 @@ const banks = [
   { name: "YES Bank", image: "/Indian Banks SVG Logos/Bank Name=YES Bank.svg" },
 ];
 
-
+interface UnlockCircle {
+  fieldid: number;
+  fieldstatus: boolean;
+}
 
 interface FormField {
   id: string;
@@ -309,6 +314,7 @@ interface FormField {
   required?: boolean;
   checkbox?: CheckboxField;
   filecontnet?: filecontent;
+  fieldid:number;
 }
 
 interface CheckboxField {
@@ -341,12 +347,47 @@ const Kycforms: React.FC<KycFormsProps> = ({
   prevDisabled,
   nextDisabled
 }) => {
+  const {setUnlockEventCircle}=useEventContext()
   const imageRefs = useRef<(HTMLInputElement | null)[]>([]);
   const [isImageLoading, setIsImageLoading] = useState(false);
   const [userType, setUserType] = useState<"business" | "individual">(
     "business"
   );
 
+  const [formData, setFormData] = useState<{ [key: string]: string }>({});
+
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const { name, value } = e.target;
+    setFormData((prevData) => ({
+      ...prevData,
+      [name]: value,
+    }));
+  };
+
+  const isFormValid = () => {
+    return fields.every((field) => {
+      if (field.required) {
+        return formData[field.name] && formData[field.name].trim() !== "";
+      }
+      return true;
+    });
+  };
+  const handlenext=(e:any)=>{
+    e.preventDefault();
+    if (!isFormValid()){
+      toast({
+        title:"Please Enter The required fields",
+        variant:"default"
+      })
+    }else{
+      onButtonClick();
+    } 
+  }
+  useEffect(()=>{
+    setUnlockEventCircle({
+      fieldid:fields[0].fieldid,
+    })
+  },[])
   return (
     <form className="bg-white shadow-2xl p-5 rounded-lg w-full relative mt-20">
       {!prevDisabled && (
@@ -369,7 +410,9 @@ const Kycforms: React.FC<KycFormsProps> = ({
           <RadioGroup
             defaultValue="business"
             className="flex flex-col sm:flex-row gap-2"
-            onValueChange={(value) => setUserType(value as 'business' | 'individual')}
+            onValueChange={(value) =>
+              setUserType(value as "business" | "individual")
+            }
           >
             <Label>Are you a business or an individual</Label>
             <div className="flex items-center space-x-2">
@@ -387,7 +430,9 @@ const Kycforms: React.FC<KycFormsProps> = ({
             {field.type !== "file" && field.type !== "select" && (
               <>
                 <label htmlFor={field.id}>
-                  {userType === 'business' && field.label === 'Full Name' ? 'Business Name' : field.label}
+                  {userType === "business" && field.label === "Full Name"
+                    ? "Business Name"
+                    : field.label}
                 </label>
                 <input
                   id={field.id}
@@ -395,6 +440,8 @@ const Kycforms: React.FC<KycFormsProps> = ({
                   name={field.name}
                   placeholder={field.placeholder}
                   required={field.required}
+                  value={formData[field.name] || ""}
+                  onChange={handleInputChange}
                   className="h-10 p-2 bg-white border rounded-md text-sm shadow-2xl text-[#17202A] focus:border-[#17202A] focus:outline-none focus:shadow-lg"
                 />
               </>
@@ -486,11 +533,7 @@ const Kycforms: React.FC<KycFormsProps> = ({
       </div>
       {buttonLabel && (
         <Button
-          onClick={(e) => {
-            e.preventDefault();
-            onButtonClick();
-          }}
-          disabled={nextDisabled}
+          onClick={(e)=>handlenext(e)}
           className="mt-3 w-full"
         >
           {buttonLabel}

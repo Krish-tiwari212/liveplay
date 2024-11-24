@@ -111,6 +111,7 @@ const EventInsights: React.FC<EventInsights> = ({
         rewards_for_participants: EventEditData.rewards_for_participants || "",
         event_usp: EventEditData.event_usp || "",
         playing_rules: EventEditData.playing_rules || "",
+        cash_price_pool: EventEditData.cash_price_pool || "",
       }));
     } else if (editPage === "createEvent" && EventData) {
       setFormData((previousEventDate: any) => ({
@@ -119,6 +120,7 @@ const EventInsights: React.FC<EventInsights> = ({
         rewards_for_participants: EventData.rewards_for_participants || "",
         event_usp: EventData.event_usp || "",
         playing_rules: EventData.playing_rules || "",
+        cash_price_pool: EventData.cash_price_pool ||""
       }));
     }
   }, [EventData, EventEditData]);

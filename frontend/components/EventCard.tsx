@@ -15,8 +15,10 @@ import {
 } from "@/components/ui/dialog";
 import { VscGraph } from "react-icons/vsc";
 import { BiLike } from "react-icons/bi";
+import Link from "next/link";
 
 interface EventCardProps {
+  id:string,
   image: string;
   date: string;
   name: string;
@@ -29,6 +31,7 @@ interface EventCardProps {
 }
 
 const EventCard = ({
+  id,
   image = "",
   date,
   name,
@@ -56,7 +59,7 @@ const EventCard = ({
 
   return (
     <>
-      <div className="max-w-[500px] h border border-black w-full group/card rounded-lg overflow-hidden shadow-lg bg-white">
+      <div className="max-w-[500px] cursor-pointer h border border-black w-full group/card rounded-lg overflow-hidden shadow-lg bg-white">
         <div
           className={cn("relative h-52 w-full bg-cover bg-center rounded-t-lg")}
           style={{
@@ -89,11 +92,13 @@ const EventCard = ({
                   <HiCurrencyRupee className="text-lg" />
                   STARTING FROM: ₹{price}
                 </p>
-                <p className="text-gray-500 text-[12px] flex items-center gap-1 cursor-pointer hover:underline text-nowrap">
-                  <VscGraph className="text-lg" />
-                  Registrations:
-                  <span className="text-blue-600">{noOfEntries}</span>
-                </p>
+                <Link href={`/eventspage/${id}`}>
+                  <p className="text-gray-500 text-[12px] flex items-center gap-1 cursor-pointer hover:underline text-nowrap">
+                    <VscGraph className="text-lg" />
+                    Registrations:
+                    <span className="text-blue-600">{noOfEntries}</span>
+                  </p>
+                </Link>
               </div>
             </div>
           </div>
@@ -114,11 +119,12 @@ const EventCard = ({
                 }`}
                 onClick={() => setIsLiked(!isLiked)}
               >
-                {isLiked?"Liked":"Like"}
+                {isLiked ? "Liked" : "Like"}
                 <BiLike className="" />
               </Button>
             </div>
             <Button
+              onClick={()=>router.push("/choosecategory")}
               variant="tertiary"
               size="xs"
               className="border border-black text-[12px]"

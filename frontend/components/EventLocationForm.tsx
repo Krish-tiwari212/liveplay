@@ -129,6 +129,7 @@ const EventLocationForm: React.FC<EventLocationFormData> = ({
         city: EventEditData.city || "",
         pincode: EventEditData.pincode || "",
         venue_link: EventEditData.venue_link || "",
+        state: EventEditData.state||""
       }));
     } else if (editPage === "createEvent" && EventData) {
       setFormData((previousEventDate: any) => ({
@@ -138,6 +139,7 @@ const EventLocationForm: React.FC<EventLocationFormData> = ({
         city: EventData.city || "",
         pincode: EventData.pincode || "",
         venue_link: EventData.venue_link || "",
+        state: EventData.state || "",
       }));
     }
   }, [EventData, EventEditData]);

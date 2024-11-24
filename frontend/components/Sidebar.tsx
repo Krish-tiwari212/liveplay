@@ -24,7 +24,7 @@ import { useUser } from "@/context/UserContext";
 const Sidebar = ({ setnavexpanded }: { setnavexpanded :Dispatch<SetStateAction<boolean>>}) => {
   const [activePage, setActivePage] = useState("Dashboard");
   const { user, setUser } = useUser();
-  const { setUserType, isNavberCollapsed, setIsNavbarCollapsed } = useEventContext();
+  const { setUserType, isNavbarCollapsed, setIsNavbarCollapsed } = useEventContext();
   const [openEvents, setOpenEvents] = useState(false);
   const [openTeams, setOpenTeams] = useState(false);
   const [openMatches, setOpenMatches] = useState(false);
@@ -60,7 +60,7 @@ const Sidebar = ({ setnavexpanded }: { setnavexpanded :Dispatch<SetStateAction<b
   };
 
   const handleCollapse = () => {
-    setIsNavbarCollapsed(!isNavberCollapsed);
+    setIsNavbarCollapsed(!isNavbarCollapsed);
     setOpenEvents(false);
     setOpenTeams(false);
     setOpenMatches(false);
@@ -102,11 +102,11 @@ const Sidebar = ({ setnavexpanded }: { setnavexpanded :Dispatch<SetStateAction<b
   return (
     <div
       className={`lg:hidden ${
-        isNavberCollapsed ? "w-0 p-0" : "w-[70%] p-4"
+        isNavbarCollapsed ? "w-0 p-0" : "w-[70%] p-4"
       } bg-[#17202A] text-white shadow-lg transition-width duration-300 ease-in-out flex flex-col h-full z-40 fixed`}
     >
       <div className="flex items-center mt-8 border-b border-gray-700 pb-8">
-        {!isNavberCollapsed && (
+        {!isNavbarCollapsed && (
           <Link href={"/"}>
             <div className="text-3xl font-bold text-gray-500 ml-2">
               <Image
@@ -118,7 +118,7 @@ const Sidebar = ({ setnavexpanded }: { setnavexpanded :Dispatch<SetStateAction<b
             </div>
           </Link>
         )}
-        {!isNavberCollapsed && (
+        {!isNavbarCollapsed && (
           <button
             onClick={handleCollapse}
             className="ml-auto text-white hover:text-red-400 transition-colors duration-200"
@@ -127,7 +127,7 @@ const Sidebar = ({ setnavexpanded }: { setnavexpanded :Dispatch<SetStateAction<b
           </button>
         )}
       </div>
-      {!isNavberCollapsed && (
+      {!isNavbarCollapsed && (
         <>
           <ul className="space-y-2 flex-grow relative">
             <Select

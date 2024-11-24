@@ -8,6 +8,11 @@ interface NotificationData {
   [key: string]: any;
 }
 
+interface UnlockCircle {
+  fieldid: number;
+  fieldstatus: boolean;
+}
+
 interface EventContextType {
   EventData: EventData;
   setEventData: React.Dispatch<React.SetStateAction<EventData>>;
@@ -35,8 +40,10 @@ interface EventContextType {
   setProfileCompleted: React.Dispatch<React.SetStateAction<boolean>>;
   completeprofileDialog: boolean;
   setCompleteprofileDialog: React.Dispatch<React.SetStateAction<boolean>>;
-  isNavberCollapsed:boolean
+  isNavbarCollapsed: boolean;
   setIsNavbarCollapsed: React.Dispatch<React.SetStateAction<boolean>>;
+  unlockEventCircle: number;
+  setUnlockEventCircle: React.Dispatch<React.SetStateAction<number>>;
 }
 
 const EventContext = createContext<EventContextType | undefined>(undefined);
@@ -50,16 +57,17 @@ export const EventProvider: React.FC<{ children: ReactNode }> = ({
   const [editPage, setEditPage] = useState("");  
   const [DashboardName, setDashboardName] = useState(""); 
   const [nextId, setNextId] = useState(0); 
-  const [UserType,setUserType]=useState("organizer")
+  const [UserType, setUserType] = useState("organizer");
   const [notification, setNotification] = useState<NotificationData[]>([]);
   const [
     fetchedEventdatafromManagemeEvent,
     setFetchedEventdatafromManagemeEvent,
-  ]=useState({})
-  const [kycCompleted,setKycCompleted]=useState(false)
+  ] = useState<EventData>({});
+  const [kycCompleted, setKycCompleted] = useState(false);
   const [profileCompleted, setProfileCompleted] = useState(false);
-  const [completeprofileDialog, setCompleteprofileDialog]=useState(false)
-  const [isNavberCollapsed, setIsNavbarCollapsed] = useState(true);
+  const [completeprofileDialog, setCompleteprofileDialog] = useState(false);
+  const [isNavbarCollapsed, setIsNavbarCollapsed] = useState(true);
+  const [unlockEventCircle, setUnlockEventCircle] = useState(0);
 
   return (
     <EventContext.Provider
@@ -88,8 +96,10 @@ export const EventProvider: React.FC<{ children: ReactNode }> = ({
         setProfileCompleted,
         completeprofileDialog,
         setCompleteprofileDialog,
-        isNavberCollapsed,
-        setIsNavbarCollapsed
+        isNavbarCollapsed,
+        setIsNavbarCollapsed,
+        unlockEventCircle,
+        setUnlockEventCircle
       }}
     >
       {children}

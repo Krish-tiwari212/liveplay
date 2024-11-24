@@ -9,6 +9,7 @@ import Image from 'next/image';
 import { Button } from './ui/button';
 import { useRouter } from 'next/navigation';
 import Contactus from './Contactus';
+import Link from 'next/link';
 
 const feature1 = [
   { icon: "/icons/Vector.svg", text: "FREE for Players" },
@@ -89,7 +90,7 @@ const HeroFeatures = () => {
           ))}
         </div> */}
       </div>
-      <Contactus/>
+      <Contactus />
       <div className="text-center bg-[#ccdb28] p-6 border-none">
         <h2 className="text-lg sm:text-4xl font-bold mb-4 sm:mb-6">
           Create, manage, participate and win!!
@@ -121,12 +122,13 @@ const HeroFeatures = () => {
               View My Dashboard
             </Button>
           ) : (
-            <Button
-              onClick={() => router.push("/organizerDashboard")}
-              className="bg-purple-600 text-white py-2 px-4 rounded"
-            >
-              Create Event
-            </Button>
+            <Link href="/createeventstaticpage">
+              <Button
+                className="bg-purple-600 text-white py-2 px-4 rounded"
+              >
+                Create Event
+              </Button>
+            </Link>
           )}
         </div>
       </div>

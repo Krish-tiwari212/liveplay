@@ -84,7 +84,7 @@ const page = () => {
         the following terms:
       </p>
       {termsdata.map((e, i) => (
-        <div key={i} className='mb-4'>
+        <div key={i} className="mb-4">
           <h1 className="font-bold text-md md:text-xl mb-1">
             {i + 1}. {e.title}
           </h1>
@@ -98,7 +98,7 @@ const page = () => {
         For any questions or concerns regarding these terms, please contact us
         at
         <span className="font-bold hover:underline mx-1 cursor-pointer">
-          liveplayindia@gmail.com
+          teamsupport@liveplay.in
         </span>
       </p>
     </div>

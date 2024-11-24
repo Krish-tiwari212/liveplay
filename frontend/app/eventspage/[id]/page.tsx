@@ -10,10 +10,13 @@ import { Label } from '@/components/ui/label';
 import { toast } from '@/hooks/use-toast';
 import { CalendarIcon, Copy } from 'lucide-react';
 import Image from 'next/image';
+import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import React from 'react'
+import { GiEntryDoor } from 'react-icons/gi';
 import { HiCurrencyRupee } from 'react-icons/hi2';
 import { IoLocationSharp, IoShareSocialSharp } from 'react-icons/io5';
+import { PiHandWithdraw } from 'react-icons/pi';
 import { RiDiscountPercentLine } from 'react-icons/ri';
 import { VscGraph } from 'react-icons/vsc';
 
@@ -135,6 +138,18 @@ const page = ({}) => {
                 </span>
               </div>
               <div className="flex items-center">
+                <GiEntryDoor className="w-4 h-4 sm:w-5 sm:h-5 mr-2" />
+                <span className="text-sm sm:text-base">
+                  Last Date to Register: 20 December 2024
+                </span>
+              </div>
+              <div className="flex items-center">
+                <PiHandWithdraw className="w-4 h-4 sm:w-5 sm:h-5 mr-2" />
+                <span className="text-sm sm:text-base">
+                  Last Date to Withdraw: 23 December 2024
+                </span>
+              </div>
+              <div className="flex items-center">
                 <IoLocationSharp className="w-4 h-4 sm:w-5 sm:h-5 mr-2" />
                 <span className="text-sm sm:text-base">
                   Major Dhyan Chand Stadium
@@ -156,13 +171,17 @@ const page = ({}) => {
               </div>
             </div>
 
-            <Button
-              onClick={() => router.push("/eventspage/1234")}
-              variant="tertiary"
-              className="w-full border-2 border-black text-sm py-8 text-md sm:text-xl"
-            >
-              Register Now
-            </Button>
+            <Link href="/choosecategory">
+              <Button
+                variant="tertiary"
+                className="w-full border-2 border-black py-8 text-xl"
+              >
+                Register Now
+              </Button>
+              <p className="text-blue-400 underline text-xl mt-2 text-center">
+                Already Registered ?
+              </p>
+            </Link>
           </div>
         </div>
       </div>

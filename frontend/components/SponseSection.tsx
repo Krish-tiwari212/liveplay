@@ -143,21 +143,24 @@ const SponsorSection = () => {
     <div className="sponsor-section mt-8 p-2 bg-gray-100 rounded-lg shadow-md">
       <div className="sponsor-form flex gap-4 mb-2 relative">
         <div className="w-full mx-2 mt-2 flex flex-wrap mb-6">
-          <Label className="font-bold text-lg" htmlFor="registrationdetails">
-            Sponsor Details
-          </Label>
-          <Button
-            onClick={addSponsor}
-            disabled={isAdding || !areFieldsFilled()}
-            className="md:hidden my-2"
-            title={!areFieldsFilled() ? "Fill the input field first" : ""}
-          >
-            {isAdding
-              ? "Adding..."
-              : editIndex !== null
-              ? "Update Sponsor"
-              : "Add Sponsor"}
-          </Button>
+          <div className="flex justify-between items-center w-full">
+            <Label className="font-bold text-lg" htmlFor="registrationdetails">
+              Sponsor Details
+            </Label>
+            <Button
+              onClick={addSponsor}
+              disabled={isAdding || !areFieldsFilled()}
+              className="md:hidden my-2"
+              title={!areFieldsFilled() ? "Fill the input field first" : ""}
+            >
+              {isAdding
+                ? "Adding..."
+                : editIndex !== null
+                ? "Update Sponsor"
+                : "Add Sponsor"}
+            </Button>
+          </div>
+
           <div className="flex flex-col xl:flex-row w-full gap-3">
             {formfields.map((field, i) =>
               field.type !== "file" ? (
@@ -236,7 +239,7 @@ const SponsorSection = () => {
             : "Add Sponsor"}
         </Button>
       </div>
-      <div className="sponsor-preview grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+      <div className="sponsor-preview grid grid-cols-3 gap-6">
         {sponsors.map((sponsor, index) => (
           <div
             key={index}

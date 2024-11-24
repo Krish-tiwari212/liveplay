@@ -135,13 +135,8 @@ const requiredFields = [
   "rewards_for_participants",
   "playing_rules",
   "sport",
-  "selected_plan",
   "mobileBanner",
-  "desktopBanner",
   "categories",
-  "category_name",
-  "price",
-  "ticket_description",
 ];
 
 interface EventBoostersProps {
@@ -171,19 +166,45 @@ const EventBoosters = ({
         )
       : requiredFields;
 
-    const allFieldsPresent = fieldsToCheck.every(
-      (field) => EventData[field] !== undefined && EventData[field] !== ""
+    const missingFields = fieldsToCheck.filter(
+      (field) => EventData[field] === undefined || EventData[field] === ""
     );
 
-    if (!allFieldsPresent) {
+    if (missingFields.length > 0) {
       toast({
         title: "Please fill out the necessary details",
+        description: `The following fields are missing: ${missingFields.join(
+          ", "
+        )}`,
       });
     } else {
-      setSelectedPlan("standard");
+      const fieldsToUpdate = {
+        selected_plan: "standard",
+        Gst_Compliance: false,
+        showqna: false,
+        enable_fixtures: false,
+        want_Tshirts: false,
+        countdown: false,
+      };
+
+      const updatedFields = Object.keys(fieldsToUpdate).reduce((acc, key) => {
+        if (!(key in EventData)) {
+          acc[key] = fieldsToUpdate[key];
+        }
+        return acc;
+      }, {});
+
+      setEventData({
+        ...EventData,
+        ...updatedFields,
+      });
+
       handleNext();
     }
   };
+
+
+
 
   useEffect(()=>{
     console.log(EventData)

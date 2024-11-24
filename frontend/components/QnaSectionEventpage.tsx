@@ -10,6 +10,8 @@ import {
   PaginationNext,
   PaginationPrevious,
 } from "@/components/ui/pagination";
+import { Dialog, DialogContent, DialogDescription, DialogTitle } from './ui/dialog';
+import { FaSmile } from 'react-icons/fa';
 
 interface QA {
   id: number;
@@ -120,6 +122,7 @@ const QnaSectionEventpage = ({ isright }: QnaSectionEventpageProps) => {
   const [questions, setQuestions] = useState<QA[]>(initialQAs);
   const [currentPage, setCurrentPage] = useState(1);
   const questionsPerPage = 4;
+  const [isThankYouOpen, setIsThankYouOpen] = useState(false);
 
   // Handle input change
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -130,12 +133,12 @@ const QnaSectionEventpage = ({ isright }: QnaSectionEventpageProps) => {
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     if (question.trim() === "") return;
-    const newQA: QA = {
-      id: questions.length + 1,
-      name: "pell",
-      question: question.trim(),
-      answer: "This is a placeholder answer.",
-    };
+    // const newQA: QA = {
+    //   id: questions.length + 1,
+    //   name: "pell",
+    //   question: question.trim(),
+    //   answer: "This is a placeholder answer.",
+    // };
     setQuestions([newQA, ...questions]);
     setQuestion("");
     setCurrentPage(1); // Reset to first page on new submission
@@ -161,9 +164,7 @@ const QnaSectionEventpage = ({ isright }: QnaSectionEventpageProps) => {
   };
 
   return (
-    <div
-      className={`qna-section ${!isright ? "lg:hidden " : "hidden lg:block"}`}
-    >
+    <div className={`qna-section ${isright ? "lg:hidden" : "hidden lg:block"}`}>
       <div className="flex gap-2 items-center text-xl">
         <RiQuestionnaireFill />
         <h1>Ask your question to the organizer!</h1>
@@ -177,7 +178,9 @@ const QnaSectionEventpage = ({ isright }: QnaSectionEventpageProps) => {
             onChange={handleChange}
           />
           <div className="flex flex-col gap-4 absolute right-2 bottom-4">
-            <Button type="submit">Submit</Button>
+            <Button type="submit" onClick={() => setIsThankYouOpen(true)}>
+              Submit
+            </Button>
           </div>
         </div>
       </form>
@@ -239,8 +242,29 @@ const QnaSectionEventpage = ({ isright }: QnaSectionEventpageProps) => {
           </PaginationContent>
         </Pagination>
       )}
+      {isThankYouOpen && (
+        <Dialog open={isThankYouOpen} onOpenChange={setIsThankYouOpen}>
+          <DialogContent className="w-[90%] sm:max-w-md p-6 flex flex-col items-center h-auto">
+            <FaSmile className="text-4xl mb-4" />
+            <DialogTitle className="text-2xl mb-2">Thank You!</DialogTitle>
+            <DialogDescription className="text-center text-gray-700">
+              Organizers normally reply 
+              <span className="italic ml-1">within 24-28 hours</span>. Your Question
+              & their answer shall be visible below once they reply.
+            </DialogDescription>
+            <Button
+              variant="default"
+              className="mt-6"
+              onClick={() => setIsThankYouOpen(false)}
+            >
+              Close
+            </Button>
+          </DialogContent>
+        </Dialog>
+      )}
     </div>
   );
+  
 };
 
 export default QnaSectionEventpage;

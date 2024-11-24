@@ -19,16 +19,10 @@ export default function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  const [navexpanded, setnavexpanded] = useState(true);
   return (
     <UserProvider>
       <UserProvider>
-        <MNavbar />
-        <Navbar />
-        <HeroChangingTagLine ishero={true} />
-        <HeroChangingTagLine extraclass="md:hidden" />
         {children}
-        <Footer />
       </UserProvider>
     </UserProvider>
   );

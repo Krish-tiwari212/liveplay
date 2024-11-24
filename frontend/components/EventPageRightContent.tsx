@@ -15,7 +15,8 @@ import { useRouter } from 'next/navigation';
 import QnaSectionEventpage from './QnaSectionEventpage';
 import EventCategoryCard from './EventCategoryCard';
 import { BiLike } from 'react-icons/bi';
-import { PiHandWithdraw } from "react-icons/pi";;
+import { PiHandWithdraw } from "react-icons/pi";import Link from 'next/link';
+;
 
 const EventPageRightContent = ({ eventDetails }: any) => {
   const router = useRouter();
@@ -41,6 +42,12 @@ const EventPageRightContent = ({ eventDetails }: any) => {
 
         <div className="space-y-3 mb-6">
           <div className="flex items-center">
+            <CalendarIcon className="w-4 h-4 sm:w-5 sm:h-5 mr-2" />
+            <span className="text-sm sm:text-base">
+              25 December 2024 | 8 PM onwards
+            </span>
+          </div>
+          <div className="flex items-center">
             <GiEntryDoor className="w-4 h-4 sm:w-5 sm:h-5 mr-2" />
             <span className="text-sm sm:text-base">
               Last Date to Register: 20 December 2024
@@ -53,22 +60,21 @@ const EventPageRightContent = ({ eventDetails }: any) => {
             </span>
           </div>
           <div className="flex items-center">
-            <CalendarIcon className="w-4 h-4 sm:w-5 sm:h-5 mr-2" />
-            <span className="text-sm sm:text-base">
-              25 December 2024 | 8 PM onwards
-            </span>
-          </div>
-          <div className="flex items-center">
             <IoLocationSharp className="w-4 h-4 sm:w-5 sm:h-5 mr-2" />
             <span className="text-sm sm:text-base">
               Major Dhyan Chand Stadium
             </span>
           </div>
-          <div className="flex items-center gap-1 cursor-pointer hover:underline text-nowrap">
-            <VscGraph className="w-4 h-4 sm:w-5 sm:h-5  mr-1" />
-            <span className="text-sm sm:text-base">Registrations:</span>
-            <span className="text-blue-600 text-sm sm:text-base">5173</span>
-          </div>
+          <Link
+            href={`/eventspage/${"1"}`}
+            className="flex items-center gap-1 cursor-pointer"
+          >
+            <div className="flex items-center gap-1 cursor-pointer hover:underline text-nowrap">
+              <VscGraph className="w-4 h-4 sm:w-5 sm:h-5  mr-1" />
+              <span className="text-sm sm:text-base">Registrations:</span>
+              <span className="text-blue-600 text-sm sm:text-base">5173</span>
+            </div>
+          </Link>
           <div className="flex items-center">
             <HiCurrencyRupee className="w-4 h-4 sm:w-5 sm:h-5 mr-2" />
             <span className="text-sm sm:text-base  mr-2">Starting From:</span>
@@ -77,11 +83,10 @@ const EventPageRightContent = ({ eventDetails }: any) => {
             </span>
           </div>
         </div>
-
         <Button
-          onClick={() => router.push("/eventspage/1234")}
+          onClick={() => router.push("/choosecategory")}
           variant="tertiary"
-          className="w-full border-2 border-black py-8 text-sm sm:text-xl"
+          className="w-full border-2 border-black py-8 text-xl"
         >
           Register Now
         </Button>
@@ -250,56 +255,6 @@ const EventPageRightContent = ({ eventDetails }: any) => {
           </div>
         </div>
       </div>
-      <div className="w-full flex lg:hidden flex-col md:flex-row justify-between items-center my-4 space-y-4 md:space-y-0">
-        <h1
-          className="text-xl font-semibold text-center lg:text-left"
-          style={{ textShadow: "0 3px 0 #cddc29" }}
-        >
-          Liked By 1983 Players
-        </h1>
-
-        <div className="flex justify-center md:justify-between gap-2 xl:gap-12">
-          <Button
-            size="sm"
-            variant="outline"
-            className="border-2 shadow-lg border-black flex items-center"
-          >
-            <h1 className=" mr-1">Like</h1> <BiLike />
-          </Button>
-          <Button
-            size="sm"
-            variant="outline"
-            className="border-2 shadow-lg border-black flex items-center"
-          >
-            <h1 className=" mr-1">Share</h1> <IoShareSocialSharp />
-          </Button>
-          <Button
-            size="sm"
-            variant="outline"
-            className="border-2 shadow-lg border-black"
-          >
-            View Matches
-          </Button>
-        </div>
-
-        <div className="flex justify-center items-center gap-4 bg-[#E6EAC5] px-4 rounded py-2 w-full md:w-auto">
-          <h1 className="font-semibold text-center">Countdown</h1>
-          <div className="flex gap-2 sm:gap-4">
-            <div className="flex flex-col items-center justify-center leading-tight">
-              <h1 className="font-semibold">12</h1>
-              <p className="text-[10px]">Days</p>
-            </div>
-            <div className="flex flex-col items-center justify-center leading-tight">
-              <h1 className="font-semibold">10</h1>
-              <p className="text-[10px]">Hours</p>
-            </div>
-            <div className="flex flex-col items-center justify-center leading-tight">
-              <h1 className="font-semibold">20</h1>
-              <p className="text-[10px]">Minutes</p>
-            </div>
-          </div>
-        </div>
-      </div>
       <div className="w-full lg:hidden relative h-auto sm:h-auto lg:h-auto">
         <div>
           <h1 className="text-2xl font-semibold mb-2">Event Information</h1>
@@ -312,7 +267,12 @@ const EventPageRightContent = ({ eventDetails }: any) => {
         </div>
         <div className="mb-6">
           <h3 className="text-xl font-bold mb-2">Location</h3>
-          <p>{eventDetails.location}</p>
+          <p>
+            {eventDetails.location}{" "}
+            <Link href="/location">
+              <span className="text-blue-400">(Click here)</span>
+            </Link>
+          </p>
         </div>
         <div className="mb-6">
           <h3 className="text-xl font-bold mb-2">Description</h3>
@@ -340,7 +300,7 @@ const EventPageRightContent = ({ eventDetails }: any) => {
           </div>
         </div>
       </div>
-      <QnaSectionEventpage isright={false} />
+      <QnaSectionEventpage isright={true} />
     </div>
   );
 };

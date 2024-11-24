@@ -41,7 +41,8 @@ const ProgressBarCheckpoints = [
 ];
 
 const fields = [
-  {
+  [{
+    fieldid:1,
     id: "fullName",
     label: "Full Name",
     type: "text",
@@ -50,6 +51,7 @@ const fields = [
     required: true,
   },
   {
+    fieldid:1,
     id: "contactNumber",
     label: "Contact Number",
     type: "text",
@@ -58,6 +60,7 @@ const fields = [
     required: true,
   },
   {
+    fieldid:1,
     id: "fullAddress",
     label: "Full Address",
     type: "text",
@@ -66,6 +69,7 @@ const fields = [
     required: true,
   },
   {
+    fieldid:1,
     id: "city",
     label: "City",
     type: "text",
@@ -74,6 +78,7 @@ const fields = [
     required: true,
   },
   {
+    fieldid:1,
     id: "pincode",
     label: "Pincode",
     type: "text",
@@ -81,61 +86,9 @@ const fields = [
     placeholder: "Enter Pincode",
     required: true,
   },
-  // {
-  //   id: "pan",
-  //   label: "PAN (Citizen Identity No)",
-  //   type: "text",
-  //   name: "pan",
-  //   placeholder: "Enter PAN",
-  //   required: true,
-  // },
-];
-
-const thirdfields = [
+],[
   {
-    id: "accountName",
-    label: "Name as per Account",
-    type: "text",
-    name: "accountName",
-    placeholder: "Enter Name as per Account",
-    required: true,
-  },
-  {
-    id: "accountNumber",
-    label: "Account Number",
-    type: "text",
-    name: "accountNumber",
-    placeholder: "Enter Account Number",
-    required: true,
-  },
-  {
-    id: "reAccountNumber",
-    label: "Re-enter Account Number",
-    type: "text",
-    name: "reAccountNumber",
-    placeholder: "Re-enter Account Number",
-    required: true,
-  },
-  {
-    id: "ifscCode",
-    label: "IFSC Code",
-    type: "text",
-    name: "ifscCode",
-    placeholder: "Enter IFSC Code",
-    required: true,
-  },
-  {
-    id: "bankName",
-    label: "Bank Name",
-    type: "select",
-    name: "bankName",
-    placeholder: "Enter Bank Name",
-    required: true,
-  },
-];
-
-const additionalFields = [
-  {
+    fieldid: 2,
     id: "aadharFront",
     label: "Upload Document (Addhar)",
     type: "file",
@@ -147,6 +100,7 @@ const additionalFields = [
     },
   },
   {
+    fieldid: 2,
     id: "aadharBack",
     label: "Upload Document (Pan)",
     type: "file",
@@ -158,6 +112,7 @@ const additionalFields = [
     },
   },
   {
+    fieldid: 2,
     id: "aadharBack",
     label: "Upload Document (Pan)",
     type: "file",
@@ -168,10 +123,58 @@ const additionalFields = [
       label: "Upload PAN",
     },
   },
+],
+   [
+  {
+    fieldid: 3,
+    id: "accountName",
+    label: "Name as per Account",
+    type: "text",
+    name: "accountName",
+    placeholder: "Enter Name as per Account",
+    required: true,
+  },
+  {
+    fieldid: 3,
+    id: "accountNumber",
+    label: "Account Number",
+    type: "text",
+    name: "accountNumber",
+    placeholder: "Enter Account Number",
+    required: true,
+  },
+  {
+    fieldid: 3,
+    id: "reAccountNumber",
+    label: "Re-enter Account Number",
+    type: "text",
+    name: "reAccountNumber",
+    placeholder: "Re-enter Account Number",
+    required: true,
+  },
+  {
+    fieldid: 3,
+    id: "ifscCode",
+    label: "IFSC Code",
+    type: "text",
+    name: "ifscCode",
+    placeholder: "Enter IFSC Code",
+    required: true,
+  },
+  {
+    fieldid: 3,
+    id: "bankName",
+    label: "Bank Name",
+    type: "select",
+    name: "bankName",
+    placeholder: "Enter Bank Name",
+    required: true,
+  },
+],
 ];
 
 const Page = ({ params: kycID }: { params: { kycID: string } }) => {
-  const { setDashboardName} = useEventContext();
+  const { setDashboardName,setEditPage} = useEventContext();
   const [currentPage, setCurrentPage] = useState(1);
   const totalPages = 4;
 
@@ -189,6 +192,7 @@ const Page = ({ params: kycID }: { params: { kycID: string } }) => {
 
   useEffect(() => {
     setDashboardName("Unlock Event Earnings");
+    setEditPage("KYC")
   }, [setDashboardName]);
 
   return (
@@ -233,7 +237,7 @@ const FirstPage = ({
 }: Pages) => (
   <form className="mx-auto w-full lg:w-[60%]">
     <Kycforms
-      fields={fields}
+      fields={fields[0]}
       buttonLabel="Next"
       onButtonClick={() => handleNext()}
       handlePrev={handlePrev}
@@ -250,7 +254,7 @@ const SecondPage = ({
 }: Pages) => (
   <form className="mx-auto w-full lg:w-[60%]">
     <Kycforms
-      fields={additionalFields}
+      fields={fields[1]}
       buttonLabel="Next"
       onButtonClick={() => handleNext()}
       handlePrev={handlePrev}
@@ -266,7 +270,7 @@ const ThirdPage = ({
 }: Pages) => (
   <form className="mx-auto w-full lg:w-[60%]">
     <Kycforms
-      fields={thirdfields}
+      fields={fields[2]}
       buttonLabel="Unlock Event Earnings"
       onButtonClick={() => handleNext()}
       handlePrev={handlePrev}

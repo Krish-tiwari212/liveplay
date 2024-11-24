@@ -52,7 +52,7 @@ const ProgressBar: React.FC<ProgressBarProps> = ({
   totalPages,
   forpage,
 }) => {
-  const { EventData, setEventData, isVenueNotDecided, setIsVenueNotDecided } =
+  const { EventData, setEventData, isVenueNotDecided, setIsVenueNotDecided,unlockEventCircle,editPage } =
     useEventContext();
 
   const fieldsToCheck = isVenueNotDecided
@@ -85,15 +85,18 @@ const ProgressBar: React.FC<ProgressBarProps> = ({
     } else {
       setCurrentPage(checkpoint.placement);
     } 
+
   };
-
-
+  useEffect(()=>{
+  },[])
   return (
     <div
       className={`relative ${checkpoints.length >= 7 && "w-full"} ${
         checkpoints.length === 5 && "w-full lg:w-[80%]"
       } ${checkpoints.length === 3 && "w-[95%] lg:w-[50%]"} mx-auto mt-6 ${
-        forpage !== "manageEvent" ? "mb-20 sm:mb-12" : "h-1 sm:h-12 lg:h-20 mb-5 "
+        forpage !== "manageEvent"
+          ? "mb-20 sm:mb-12"
+          : "h-1 sm:h-12 lg:h-20 mb-5 "
       } `}
     >
       {forpage !== "manageEvent" && (
@@ -119,7 +122,7 @@ const ProgressBar: React.FC<ProgressBarProps> = ({
             className={`flex flex-col relative items-center justify-center cursor-pointer`}
           >
             <div
-              onClick={() => handlecircel(checkpoint)}
+              onClick={()=>handlecircel(checkpoint)}
               className={`w-7 h-7 sm:w-8 sm:h-8  rounded-full bg-gray-800 text-white flex items-center justify-center`}
             >
               {checkpoint.icon}
