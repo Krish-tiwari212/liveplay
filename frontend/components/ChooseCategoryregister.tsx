@@ -28,8 +28,8 @@ const categories: Category[] = [
   {
     id: "2",
     name: "Mens Doubles (30+)",
-    price: 499,
-    discountedPrice: 559,
+    price: 599,
+    discountedPrice: 499,
     type: "Doubles",
     details: "Includes participation, e-certificate, refreshments",
     discount_code: "Badminton24",
