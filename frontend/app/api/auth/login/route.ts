@@ -13,22 +13,24 @@ export async function POST(request: Request) {
   try {
     const { email, password, provider, 'cf-turnstile-response': turnstileToken }: LoginRequest = await request.json();
 
-    // Verify Turnstile token
-    const turnstileSecretKey = process.env.TURNSTILE_SECRET_KEY;
-    const turnstileVerificationUrl = `https://challenges.cloudflare.com/turnstile/v0/siteverify`;
+    if (provider !== 'google') {
+      // Verify Turnstile token
+      const turnstileSecretKey = process.env.TURNSTILE_SECRET_KEY;
+      const turnstileVerificationUrl = `https://challenges.cloudflare.com/turnstile/v0/siteverify`;
 
-    const turnstileResponse = await fetch(turnstileVerificationUrl, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/x-www-form-urlencoded',
-      },
-      body: `secret=${turnstileSecretKey}&response=${turnstileToken}`,
-    });
+      const turnstileResponse = await fetch(turnstileVerificationUrl, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/x-www-form-urlencoded',
+        },
+        body: `secret=${turnstileSecretKey}&response=${turnstileToken}`,
+      });
 
-    const turnstileResult = await turnstileResponse.json();
+      const turnstileResult = await turnstileResponse.json();
 
-    if (!turnstileResult.success) {
-      return NextResponse.json({ error: 'CAPTCHA verification failed' }, { status: 400 });
+      if (!turnstileResult.success) {
+        return NextResponse.json({ error: 'CAPTCHA verification failed' }, { status: 400 });
+      }
     }
 
     if (provider === 'google') {

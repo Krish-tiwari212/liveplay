@@ -71,7 +71,7 @@ const ForgetPasswordForm = () => {
         height={350}
       />
       <div className="w-full max-w-md p-8 bg-white rounded shadow-md">
-        <h2 className="text-2xl font-bold text-center mb-6">Forget Password</h2>
+        <h2 className="text-2xl font-bold text-center mb-6">Forgot Password</h2>
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
             <FormField control={form.control} name="email" render={({ field }) => (
