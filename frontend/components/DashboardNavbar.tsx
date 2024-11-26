@@ -25,6 +25,7 @@ import { useRouter } from "next/navigation";
 import Image from "next/image";
 import Link from "next/link";
 import { toast } from "@/hooks/use-toast";
+import { Button } from "./ui/button";
 
 
 const Navbar = () => {
@@ -84,11 +85,19 @@ const Navbar = () => {
         >
           <FaBars className="text-2xl" />
         </button>
-        <div className="text-sm sm:text-2xl text-[#CDDC29] font-bold">
+        <div className="text-sm sm:text-2xl text-[#CDDC29] font-bold mr-2">
           {DashboardName || defaultname}
         </div>
       </div>
       <div className="flex items-center">
+        <Link href="/">
+          <Button
+            className="w-full bg-[#141f29] text-[#ccdb28] border border-[#ccdb28] hover:bg-[#ccdb28] hover:text-[#141f29]"
+            size="xs"
+          >
+            Home
+          </Button>
+        </Link>
         <div className="flex space-x-4 ml-4 items-center">
           {!isplayerdashboard && (
             <button
