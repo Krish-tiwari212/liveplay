@@ -961,58 +961,67 @@ export default function Home() {
       )}
       {isEventPassOpen && (
         <Dialog open={isEventPassOpen} onOpenChange={setIsEventPassOpen}>
-          <DialogContent className="w-full sm:w-[90%] max-w-md flex flex-col items-center h-auto p-4">
+          <DialogContent className="w-[90%] max-w-md flex flex-col items-center h-auto p-4 rounded-md">
             <div
               className="w-full h-96 bg-cover bg-center rounded-lg shadow-xl flex items-center justify-center relative"
               style={{
                 backgroundImage: "url(/images/Asset_Background_VenuePass.svg)",
               }}
             >
-              <img
+              <Image
                 src="/images/Card_VenuePass.svg"
+                priority
+                width={600}
+                height={600}
                 alt="Event Ticket"
-                className="absolute  w-[90%] h-[55%] rounded-lg  bottom-0"
+                className="absolute w-[95%] sm:w-[90%] h-[50%] sm:h-[55%] rounded-lg  bottom-0"
               />
-              <div className="absolute bottom-0 w-[90%] h-[55%] px-4 flex flex-col gap-1 py-4">
+              <div className="absolute -bottom-6 sm:bottom-0 w-[90%] h-[55%] px-4 flex flex-col gap-1 py-4">
                 <div className=" leading-tight">
-                  <p className="text-[12px] font-semibold text-[#64758B]">
+                  <p className="text-[10px] sm:text-[12px] font-semibold text-[#64758B]">
                     Event Name
                   </p>
-                  <h1 className="text-[14px]">
+                  <h1 className="text-[11px] sm:text-[14px]">
                     Summer Basketball Tournament Pro League
                   </h1>
                 </div>
                 <div className=" leading-tight">
-                  <p className="text-[12px] font-semibold text-[#64758B]">
+                  <p className="text-[10px] sm:text-[12px] font-semibold text-[#64758B]">
                     Category Name
                   </p>
-                  <h1 className="text-[14px]">Mens Singles (Open)</h1>
+                  <h1 className="text-[11px] sm:text-[14px]">
+                    Mens Singles (Open)
+                  </h1>
                 </div>
                 <div className=" leading-tight">
-                  <p className="text-[12px] font-semibold text-[#64758B]">
+                  <p className="text-[10px] sm:text-[12px] font-semibold text-[#64758B]">
                     Player
                   </p>
-                  <h1 className="text-[14px]">Roshan</h1>
+                  <h1 className="text-[11px] sm:text-[14px]">Roshan</h1>
                 </div>
                 <div className=" leading-tight">
-                  <p className="text-[12px] font-semibold text-[#64758B]">
+                  <p className="text-[10px] sm:text-[12px] font-semibold text-[#64758B]">
                     Team Name
                   </p>
-                  <h1 className="text-[14px]">N/A</h1>
+                  <h1 className="text-[11px] sm:text-[14px]">N/A</h1>
                 </div>
                 <div className=" leading-tight">
-                  <p className="text-[12px] font-semibold text-[#64758B]">
+                  <p className="text-[10px] sm:text-[12px] font-semibold text-[#64758B]">
                     Venue
                   </p>
-                  <h1 className="text-[14px]">Major Chand Lal Stadium</h1>
+                  <h1 className="text-[11px] sm:text-[14px]">
+                    Major Chand Lal Stadium
+                  </h1>
                 </div>
               </div>
               <div className="absolute bottom-0 w-[90%] h-[55%] ">
                 <div className="leading-tight -rotate-90 absolute -right-10 bottom-20 ">
-                  <p className="text-[12px] font-semibold text-[#64758B]">
+                  <p className="text-[10px] sm:text-[12px] font-semibold text-[#64758B]">
                     Event Date
                   </p>
-                  <h1 className="text-[14px]">20-22 December, 2024</h1>
+                  <h1 className="text-[11px] sm:text-[14px]">
+                    20-22 December, 2024
+                  </h1>
                 </div>
               </div>
             </div>

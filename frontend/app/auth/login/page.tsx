@@ -94,23 +94,27 @@ const LoginForm = () => {
   };
 
   return (
-    <div
-      className="flex flex-col gap-4 items-center justify-center min-h-screen bg-gray-50"
-      style={{
-        backgroundImage: "url('/images/background.svg')",
-        backgroundSize: "cover",
-        backgroundPosition: "center",
-        backgroundRepeat: "no-repeat",
-      }}
-    >
+    <div className="relative flex flex-col gap-4 items-center justify-center min-h-screen bg-gray-50">
+      <Image
+        src="/images/background.svg"
+        alt="Background"
+        layout="fill"
+        objectFit="cover"
+        quality={100}
+        priority
+        className="z-0"
+      />
+      
+
       <Script src="https://challenges.cloudflare.com/turnstile/v0/api.js" async defer />
       <Image
         src="/images/Logo.png"
-        alt="/images/Logo.png"
+        alt="Logo"
         width={300}
         height={300}
+        className="z-20"
       />
-      <div className="w-[90%] mx-auto sm:w-full max-w-md p-8 bg-white rounded shadow-md">
+      <div className="relative z-20 w-[90%] mx-auto sm:w-full max-w-md p-8 bg-white rounded shadow-md">
         <h2 className="text-2xl font-bold text-center mb-6">
           Login to Your Account
         </h2>
@@ -122,7 +126,7 @@ const LoginForm = () => {
           >
             <Image
               src="/images/google.svg"
-              alt="/images/google.svg"
+              alt="Google Logo"
               width="20"
               height="20"
               className="text-xl"

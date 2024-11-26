@@ -120,7 +120,7 @@ const page = () => {
   return (
     <div>
       <nav className="bg-[#141f29] p-4 flex justify-between items-center fixed w-full z-20 ">
-        <div className='flex items-center'>
+        <div className="flex items-center">
           <Sheet open={isSheetOpen} onOpenChange={setIsSheetOpen}>
             <SheetTrigger asChild>
               <button className="mr-4 lg:hidden">
@@ -168,13 +168,16 @@ const page = () => {
               </div>
             </SheetContent>
           </Sheet>
-          <Image
-            src="/images/Logo.png"
-            alt="Liveplay Logo"
-            className="h-8"
-            width={200}
-            height={200}
-          />
+          <Link href="/">
+            <Image
+              src="/images/Logo.png"
+              alt="Liveplay Logo"
+              className="h-8"
+              width={200}
+              height={200}
+              priority
+            />
+          </Link>
         </div>
         <Popover open={isPopoverOpen} onOpenChange={setIsPopoverOpen}>
           <PopoverTrigger
@@ -182,7 +185,11 @@ const page = () => {
             onClick={() => setIsPopoverOpen(!isPopoverOpen)}
           >
             <Avatar>
-              <AvatarImage src={user?.user_metadata.picture} />
+              <AvatarImage
+                src={
+                  user?.user_metadata.picture || "/images/default-avatar.png"
+                }
+              />
               <AvatarFallback>CN</AvatarFallback>
             </Avatar>
           </PopoverTrigger>
@@ -453,18 +460,21 @@ const page = () => {
               alt="PayU"
               width={200}
               height={90}
+              priority
             />
             <Image
               src="/images/payment1 (2).svg"
               alt="Cashfree Payments"
               width={200}
               height={90}
+              priority
             />
             <Image
               src="/images/payment1 (3).svg"
               alt="Razorpay"
               width={200}
               height={90}
+              priority
             />
           </div>
         </div>
@@ -500,17 +510,16 @@ const page = () => {
           </ul>
         </div>
       </div>
-      <div
-        style={{
-          backgroundImage: "url('/images/createeventbanner2.svg')",
-          backgroundSize: "cover",
-          backgroundPosition: "center",
-          minHeight: "624px",
-        }}
-        className="flex flex-col justify-center items-center text-center  w-full relative"
-      >
-        <div className="absolute bg-[#141f29] opacity-60 w-full min-h-[300px]"></div>
-        <div className=" z-10">
+      <div className="relative flex flex-col justify-center items-center text-center w-full min-h-[624px]">
+        <Image
+          src="/images/createeventbanner2.svg"
+          alt="Create Event Banner"
+          fill
+          style={{ objectFit: 'cover' }}
+          className="absolute top-0 left-0 z-0"
+        />
+        <div className="absolute bg-[#141f29] opacity-60 w-full min-h-[300px] z-10"></div>
+        <div className="z-20">
           <h2 className="text-3xl sm:text-5xl font-bold mb-8 text-[#ccdb28]">
             Ready to Take Your Event to the Next Level?
           </h2>
@@ -525,7 +534,7 @@ const page = () => {
                 `${isLoggedIn ? "/organizerDashboard" : "/auth/login"}`
               );
             }}
-            className=" text-lg sm:text-xl"
+            className="text-lg sm:text-xl"
             variant="tertiary"
           >
             Create your Event
