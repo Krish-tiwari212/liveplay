@@ -14,7 +14,13 @@ import { Label } from './ui/label';
 import { Dialog, DialogClose, DialogContent, DialogDescription, DialogFooter, DialogTitle } from './ui/dialog';
 import { AlertDialog, AlertDialogAction, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from './ui/alert-dialog';
 import { Copy } from 'lucide-react';
-import { toast } from '@/hooks/use-toast';
+import { toast } from '@/hooks/use-toast';import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
+
 
 interface Category {
   id: string;
@@ -114,7 +120,7 @@ const CategoryCard: React.FC<CategoryCardProps> = ({ category, participantsData,
 
     
     setdisablecheckbox(true);
-    const finalPrice = isCheckboxChecked && category.discountedPrice
+    const finalPrice = !isCheckboxChecked && category.discountedPrice
       ? category.discountedPrice
       : category.price;
 
@@ -123,6 +129,7 @@ const CategoryCard: React.FC<CategoryCardProps> = ({ category, participantsData,
       price: finalPrice,
       teamName: teamName,
     };
+    console.log(finalPrice)
     if (!isCheckboxChecked) {
       const {  discount_code, ...rest } = finalCategory;
       finalCategory = rest;
@@ -139,9 +146,6 @@ const CategoryCard: React.FC<CategoryCardProps> = ({ category, participantsData,
     onAdd();
   };
 
-  useEffect(() => {
-    console.log(items);
-  }, [items]);
 
   const handleAddQuantity = () => {
     addMultipleItem(category);
@@ -170,6 +174,9 @@ const CategoryCard: React.FC<CategoryCardProps> = ({ category, participantsData,
         });
       });
   };
+  useEffect(()=>{
+    console.log()
+  },[])
 
   return (
     <div className="border-2 border-[#141f29] p-4 rounded-lg shadow-lg w-full">
@@ -201,13 +208,36 @@ const CategoryCard: React.FC<CategoryCardProps> = ({ category, participantsData,
                       Discount
                     </span>
                     <h1 className="text-gray-800">
-                      <Checkbox
-                        disabled={disablecheckbox}
-                        id="terms2"
-                        onCheckedChange={() =>
-                          setIsCheckboxChecked(!isCheckboxChecked)
-                        }
-                      />
+                      {currentQuantity > 0 ? (
+                        <TooltipProvider>
+                          <Tooltip>
+                            <TooltipTrigger>
+                              <Checkbox
+                                disabled={currentQuantity > 0}
+                                id="terms2"
+                                checked={isCheckboxChecked}
+                                onCheckedChange={() =>
+                                  setIsCheckboxChecked(!isCheckboxChecked)
+                                }
+                              />
+                            </TooltipTrigger>
+                            <TooltipContent className="bg-[#141f29] text-[#ccdb28]">
+                              <p>
+                                Remove Category From Cart to access this
+                              </p>
+                            </TooltipContent>
+                          </Tooltip>
+                        </TooltipProvider>
+                      ) : (
+                        <Checkbox
+                          disabled={currentQuantity > 0}
+                          id="terms2"
+                          checked={isCheckboxChecked}
+                          onCheckedChange={() =>
+                            setIsCheckboxChecked(!isCheckboxChecked)
+                          }
+                        />
+                      )}
                     </h1>
                   </div>
                 </div>

@@ -67,7 +67,7 @@ export const CartProvider: React.FC<CartProviderProps> = ({ children }) => {
 
         return updatedItems;
       } else {
-        return [...prevItems, { ...category, quantity: 1 }];
+        return [...prevItems, { ...category, quantity: 0 }];
       }
     });
   };
@@ -87,8 +87,8 @@ export const CartProvider: React.FC<CartProviderProps> = ({ children }) => {
           price: category.price,
           discountedPrice: category.discountedPrice,
           discount_code: category.discount_code,
-          teamName:category.teamName,
-          quantity:  existingItem.quantity+1,
+          teamName: category.teamName,
+          quantity: existingItem.quantity + 1,
         };
 
         return updatedItems;
