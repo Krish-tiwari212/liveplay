@@ -5,8 +5,8 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import { useRouter } from "next/navigation";
+import Link from "next/link";
 import { Button } from "@/components/ui/button";
-import { useUser } from '@/context/UserContext';
 import {
   Form,
   FormField,
@@ -17,6 +17,23 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { useToast } from "@/hooks/use-toast";
+import { FaGoogle, FaWhatsapp } from "react-icons/fa";
+import Image from "next/image";
+import { useUser } from '@/context/UserContext';
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
+import {
+  InputOTP,
+  InputOTPGroup,
+  InputOTPSlot,
+} from "@/components/ui/input-otp";
 
 // Validation schema for form fields
 const formSchema = z.object({
@@ -32,8 +49,10 @@ const CompleteDetailsForm = () => {
   const router = useRouter();
   const { toast } = useToast();
   const [loading, setLoading] = useState(false);
-  const {user} = useUser();
-  // console.log(user);
+  const { user } = useUser();
+  const [otpVisible, setOtpVisible] = useState(false);
+  const [otpValue, setOtpValue] = useState("");
+  const [otpVerified, setOtpVerified] = useState(false);
 
   const form = useForm({
     resolver: zodResolver(formSchema),
@@ -48,22 +67,26 @@ const CompleteDetailsForm = () => {
   });
 
   const onSubmit = async (data: any) => {
+    if (!otpVerified) {
+      toast({ title: "OTP Verification Required", description: "Please verify the OTP before submitting the form.", variant: "destructive" });
+      return;
+    }
+
     setLoading(true);
-    console.log(user)
     const requestData = {
       ...data,
       user_id: user?.id,
     };
-  
+
     const response = await fetch("/api/auth/details", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(requestData),
     });
-  
+
     const result = await response.json();
     setLoading(false);
-  
+
     if (response.ok) {
       toast({ title: "Details Updated", description: "Your details have been updated successfully!" });
       router.push("/");
@@ -72,58 +95,149 @@ const CompleteDetailsForm = () => {
     }
   };
 
+  const handleSendOtp = async () => {
+    const contactNumber = form.getValues("contact_number");
+    if (!contactNumber) {
+      toast({ title: "Contact Number Required", description: "Please enter your contact number to receive the OTP.", variant: "destructive" });
+      return;
+    }
+
+    const response = await fetch("/api/auth/send-otp", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ contact_number: contactNumber, user_id: user?.id }),
+    });
+
+    const result = await response.json();
+
+    if (response.ok) {
+      toast({ title: "OTP Sent", description: "An OTP has been sent to your contact number." });
+      setOtpVisible(true);
+    } else {
+      toast({ title: "OTP Sending Failed", description: result.error || "An error occurred. Please try again.", variant: "destructive" });
+    }
+  };
+
+  const handleVerifyOtp = async () => {
+    const contactNumber = form.getValues("contact_number");
+
+    const response = await fetch("/api/auth/verify-otp", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ contact_number: contactNumber, otp: otpValue, user_id: user?.id }),
+    });
+
+    const result = await response.json();
+
+    if (response.ok) {
+      setOtpVerified(true);
+      toast({ title: "OTP Verified", description: "Your OTP has been verified successfully!" });
+      setOtpVisible(false);
+    } else {
+      toast({ title: "Invalid OTP", description: result.error || "The OTP you entered is incorrect. Please try again.", variant: "destructive" });
+    }
+  };
+
   return (
-    <div className="flex items-center justify-center min-h-screen bg-gray-50">
-      <div className="w-full max-w-lg p-8 bg-white rounded shadow-md">
+    <div
+      className="flex flex-col gap-4 items-center justify-center min-h-screen bg-gray-50"
+      style={{
+        backgroundImage: "url('/images/background.svg')",
+        backgroundSize: "cover",
+        backgroundPosition: "center",
+      }}
+    >
+      <Image
+        src="/images/Logo.png"
+        alt="/images/Logo.png"
+        width={300}
+        height={300}
+      />
+      <div className="w-[90%] mx-auto sm:w-full max-w-lg p-8 bg-white rounded shadow-md">
         <h2 className="text-2xl font-bold text-center mb-6">Complete Your Details</h2>
         <Form {...form}>
-          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
+          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-2">
             <FormField control={form.control} name="contact_number" render={({ field }) => (
               <FormItem>
-                <FormLabel>Contact Number</FormLabel>
-                <FormControl><Input placeholder="Enter your contact number" {...field} /></FormControl>
+                <FormLabel>Whatsapp Number <span className="text-red-500">*</span></FormLabel>
+                <FormControl>
+                  <div className="flex gap-2">
+                    <Input placeholder="Enter your whatsapp number" {...field} />
+                    <Button type="button" onClick={handleSendOtp}><FaWhatsapp />Verify</Button>
+                  </div>
+                </FormControl>
                 <FormMessage />
               </FormItem>
             )} />
             <FormField control={form.control} name="gender" render={({ field }) => (
               <FormItem>
-                <FormLabel>Gender</FormLabel>
+                <FormLabel>Gender <span className="text-red-500">*</span></FormLabel>
                 <FormControl><Input placeholder="Enter your gender" {...field} /></FormControl>
                 <FormMessage />
               </FormItem>
             )} />
             <FormField control={form.control} name="date_of_birth" render={({ field }) => (
               <FormItem>
-                <FormLabel>Date of Birth</FormLabel>
+                <FormLabel>Date of Birth <span className="text-red-500">*</span></FormLabel>
                 <FormControl><Input type="date" placeholder="Enter your date of birth" {...field} /></FormControl>
                 <FormMessage />
               </FormItem>
             )} />
             <FormField control={form.control} name="city" render={({ field }) => (
               <FormItem>
-                <FormLabel>City</FormLabel>
+                <FormLabel>City <span className="text-red-500">*</span></FormLabel>
                 <FormControl><Input placeholder="Enter your city" {...field} /></FormControl>
                 <FormMessage />
               </FormItem>
             )} />
             <FormField control={form.control} name="pincode" render={({ field }) => (
               <FormItem>
-                <FormLabel>Pincode</FormLabel>
+                <FormLabel>Pincode <span className="text-red-500">*</span></FormLabel>
                 <FormControl><Input placeholder="Enter your pincode" {...field} /></FormControl>
                 <FormMessage />
               </FormItem>
             )} />
             <FormField control={form.control} name="blood_group" render={({ field }) => (
               <FormItem>
-                <FormLabel>Blood Group</FormLabel>
+                <FormLabel>Blood Group <span className="text-red-500">*</span></FormLabel>
                 <FormControl><Input placeholder="Enter your blood group" {...field} /></FormControl>
                 <FormMessage />
               </FormItem>
             )} />
-            <Button type="submit" disabled={loading} className="w-full">{loading ? "Updating..." : "Update Details"}</Button>
+            <Button type="submit" disabled={loading || !otpVerified} className="w-full">{loading ? "Updating..." : "Update Details"}</Button>
           </form>
         </Form>
       </div>
+
+      <Dialog open={otpVisible} onOpenChange={setOtpVisible}>
+        <DialogContent className="sm:max-w-[425px] h-[15rem]">
+          <DialogHeader>
+            <DialogTitle>Verify OTP</DialogTitle>
+            <DialogDescription>
+              Enter the OTP sent to your whatsapp number.
+            </DialogDescription>
+          </DialogHeader>
+          <div className="grid gap-4 py-4">
+            <InputOTP
+              maxLength={6}
+              value={otpValue}
+              onChange={(value) => setOtpValue(value)}
+            >
+              <InputOTPGroup>
+                <InputOTPSlot index={0} />
+                <InputOTPSlot index={1} />
+                <InputOTPSlot index={2} />
+                <InputOTPSlot index={3} />
+                <InputOTPSlot index={4} />
+                <InputOTPSlot index={5} />
+              </InputOTPGroup>
+            </InputOTP>
+          </div>
+          <DialogFooter>
+            <Button type="button" onClick={handleVerifyOtp}>Verify OTP</Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 };
