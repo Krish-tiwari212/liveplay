@@ -5,8 +5,8 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import { useRouter } from "next/navigation";
+import Link from "next/link";
 import { Button } from "@/components/ui/button";
-import { useUser } from '@/context/UserContext';
 import {
   Form,
   FormField,
@@ -15,28 +15,25 @@ import {
   FormControl,
   FormMessage,
 } from "@/components/ui/form";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
 import { Input } from "@/components/ui/input";
 import { useToast } from "@/hooks/use-toast";
+import { FaGoogle, FaWhatsapp } from "react-icons/fa";
+import Image from "next/image";
+import { useUser } from '@/context/UserContext';
 import {
-  AlertDialog,
-  AlertDialogTrigger,
-  AlertDialogContent,
-  AlertDialogHeader,
-  AlertDialogTitle,
-  AlertDialogDescription,
-  AlertDialogFooter,
-  AlertDialogCancel,
-  AlertDialogAction,
-} from "@/components/ui/alert-dialog";
-import { Checkbox } from "./ui/checkbox";
-import { Label } from "./ui/label";
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
+import {
+  InputOTP,
+  InputOTPGroup,
+  InputOTPSlot,
+} from "@/components/ui/input-otp";
 
 // Validation schema for form fields
 const formSchema = z.object({
@@ -53,13 +50,9 @@ const CompleteDetailsForm = () => {
   const { toast } = useToast();
   const [loading, setLoading] = useState(false);
   const { user } = useUser();
-  const [prevDob, setPrevDob] = useState("");
-  const [newDob, setNewDob] = useState("");
-  const [isAlertOpen, setIsAlertOpen] = useState(false);
-  const [isCheckboxChecked, setIsCheckboxChecked] = useState(false);
-  const handleCheckboxChange = () => {
-    setIsCheckboxChecked(!isCheckboxChecked);
-  };
+  const [otpVisible, setOtpVisible] = useState(false);
+  const [otpValue, setOtpValue] = useState("");
+  const [otpVerified, setOtpVerified] = useState(false);
 
   const form = useForm({
     resolver: zodResolver(formSchema),
@@ -73,29 +66,13 @@ const CompleteDetailsForm = () => {
     },
   });
 
-  useState(() => {
-    const existingDob = form.getValues("date_of_birth");
-    if (existingDob) {
-      setPrevDob(existingDob);
-    }
-  }, [form]);
-
-  const calculateAge = (dob: string): number => {
-    const birthDate = new Date(dob);
-    const today = new Date();
-    let age = today.getFullYear() - birthDate.getFullYear();
-    const m = today.getMonth() - birthDate.getMonth();
-
-    if (m < 0 || (m === 0 && today.getDate() < birthDate.getDate())) {
-      age--;
-    }
-
-    return age;
-  };
-
   const onSubmit = async (data: any) => {
+    if (!otpVerified) {
+      toast({ title: "OTP Verification Required", description: "Please verify the OTP before submitting the form.", variant: "destructive" });
+      return;
+    }
+
     setLoading(true);
-    console.log(user);
     const requestData = {
       ...data,
       user_id: user?.id,
@@ -118,178 +95,149 @@ const CompleteDetailsForm = () => {
     }
   };
 
-  const handleDobChange = (e: React.ChangeEvent<HTMLInputElement>, fieldOnChange: (...event: any[]) => void) => {
-    const selectedDob = e.target.value;
-    const age = calculateAge(selectedDob);
+  const handleSendOtp = async () => {
+    const contactNumber = form.getValues("contact_number");
+    if (!contactNumber) {
+      toast({ title: "Contact Number Required", description: "Please enter your contact number to receive the OTP.", variant: "destructive" });
+      return;
+    }
 
-    if (age < 18) {
-      setNewDob(selectedDob);
-      setIsAlertOpen(true);
+    const response = await fetch("/api/auth/send-otp", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ contact_number: contactNumber, user_id: user?.id }),
+    });
+
+    const result = await response.json();
+
+    if (response.ok) {
+      toast({ title: "OTP Sent", description: "An OTP has been sent to your contact number." });
+      setOtpVisible(true);
     } else {
-      setPrevDob(selectedDob);
-      fieldOnChange(selectedDob);
+      toast({ title: "OTP Sending Failed", description: result.error || "An error occurred. Please try again.", variant: "destructive" });
     }
   };
 
-  const confirmDobChange = (fieldOnChange: (...event: any[]) => void) => {
-    setPrevDob(newDob);
-    fieldOnChange(newDob);
-    setIsAlertOpen(false);
-  };
+  const handleVerifyOtp = async () => {
+    const contactNumber = form.getValues("contact_number");
 
-  const cancelDobChange = (fieldOnChange: (...event: any[]) => void) => {
-    fieldOnChange(prevDob);
-    setIsAlertOpen(false);
+    const response = await fetch("/api/auth/verify-otp", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ contact_number: contactNumber, otp: otpValue, user_id: user?.id }),
+    });
+
+    const result = await response.json();
+
+    if (response.ok) {
+      setOtpVerified(true);
+      toast({ title: "OTP Verified", description: "Your OTP has been verified successfully!" });
+      setOtpVisible(false);
+    } else {
+      toast({ title: "Invalid OTP", description: result.error || "The OTP you entered is incorrect. Please try again.", variant: "destructive" });
+    }
   };
 
   return (
-    <div className="flex items-center justify-center">
-      <div className="w-full max-w-lg p-8 bg-white rounded">
-        <h2 className="text-2xl font-bold text-center mb-6">
-          Complete Your Details
-        </h2>
+    <div
+      className="flex flex-col gap-4 items-center justify-center min-h-screen bg-gray-50"
+      style={{
+        backgroundImage: "url('/images/background.svg')",
+        backgroundSize: "cover",
+        backgroundPosition: "center",
+      }}
+    >
+      <Image
+        src="/images/Logo.png"
+        alt="/images/Logo.png"
+        width={300}
+        height={300}
+      />
+      <div className="w-[90%] mx-auto sm:w-full max-w-lg p-8 bg-white rounded shadow-md">
+        <h2 className="text-2xl font-bold text-center mb-6">Complete Your Details</h2>
         <Form {...form}>
-          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
-            <FormField
-              control={form.control}
-              name="contact_number"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Contact Number</FormLabel>
-                  <FormControl>
-                    <Input placeholder="Enter your contact number" {...field} />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-            <FormField
-              control={form.control}
-              name="gender"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Gender</FormLabel>
-                  <FormControl>
-                    <Select
-                      onValueChange={field.onChange}
-                      defaultValue={field.value}
-                    >
-                      <SelectTrigger className="w-full">
-                        <SelectValue placeholder="Select Gender" />
-                      </SelectTrigger>
-                      <SelectContent>
-                        <SelectItem value="male">Male</SelectItem>
-                        <SelectItem value="female">Female</SelectItem>
-                      </SelectContent>
-                    </Select>
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-            <FormField
-              control={form.control}
-              name="date_of_birth"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Date of Birth</FormLabel>
-                  <FormControl>
-                    <Input
-                      type="date"
-                      placeholder="Enter your date of birth"
-                      value={field.value}
-                      onChange={(e) => handleDobChange(e, field.onChange)}
-                    />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-            <FormField
-              control={form.control}
-              name="city"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>City</FormLabel>
-                  <FormControl>
-                    <Input placeholder="Enter your city" {...field} />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-            <FormField
-              control={form.control}
-              name="pincode"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Pincode</FormLabel>
-                  <FormControl>
-                    <Input placeholder="Enter your pincode" {...field} />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-            <FormField
-              control={form.control}
-              name="blood_group"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Blood Group</FormLabel>
-                  <FormControl>
-                    <Input placeholder="Enter your blood group" {...field} />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-            <h1 className="mt-4 text-gray-800 flex justify-center items-center gap-2">
-              <Checkbox
-                id="terms2"
-                onCheckedChange={() => setIsCheckboxChecked(!isCheckboxChecked)}
-              />
-              <Label htmlFor="terms2">
-                Agree with the
-                <span className="hover:underline cursor-pointer font-extrabold mx-1 text-sm">
-                  Terms & Conditions
-                </span>
-                for hosting events on liveplay.in
-              </Label>
-            </h1>
-            <Button
-              type="submit"
-              disabled={loading || !isCheckboxChecked}
-              className="w-full"
-            >
-              {loading ? "Updating..." : "Update Details"}
-            </Button>
+          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-2">
+            <FormField control={form.control} name="contact_number" render={({ field }) => (
+              <FormItem>
+                <FormLabel>Whatsapp Number <span className="text-red-500">*</span></FormLabel>
+                <FormControl>
+                  <div className="flex gap-2">
+                    <Input placeholder="Enter your whatsapp number" {...field} />
+                    <Button type="button" onClick={handleSendOtp}><FaWhatsapp />Verify</Button>
+                  </div>
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )} />
+            <FormField control={form.control} name="gender" render={({ field }) => (
+              <FormItem>
+                <FormLabel>Gender <span className="text-red-500">*</span></FormLabel>
+                <FormControl><Input placeholder="Enter your gender" {...field} /></FormControl>
+                <FormMessage />
+              </FormItem>
+            )} />
+            <FormField control={form.control} name="date_of_birth" render={({ field }) => (
+              <FormItem>
+                <FormLabel>Date of Birth <span className="text-red-500">*</span></FormLabel>
+                <FormControl><Input type="date" placeholder="Enter your date of birth" {...field} /></FormControl>
+                <FormMessage />
+              </FormItem>
+            )} />
+            <FormField control={form.control} name="city" render={({ field }) => (
+              <FormItem>
+                <FormLabel>City <span className="text-red-500">*</span></FormLabel>
+                <FormControl><Input placeholder="Enter your city" {...field} /></FormControl>
+                <FormMessage />
+              </FormItem>
+            )} />
+            <FormField control={form.control} name="pincode" render={({ field }) => (
+              <FormItem>
+                <FormLabel>Pincode <span className="text-red-500">*</span></FormLabel>
+                <FormControl><Input placeholder="Enter your pincode" {...field} /></FormControl>
+                <FormMessage />
+              </FormItem>
+            )} />
+            <FormField control={form.control} name="blood_group" render={({ field }) => (
+              <FormItem>
+                <FormLabel>Blood Group <span className="text-red-500">*</span></FormLabel>
+                <FormControl><Input placeholder="Enter your blood group" {...field} /></FormControl>
+                <FormMessage />
+              </FormItem>
+            )} />
+            <Button type="submit" disabled={loading || !otpVerified} className="w-full">{loading ? "Updating..." : "Update Details"}</Button>
           </form>
         </Form>
-
-        <AlertDialog open={isAlertOpen} onOpenChange={setIsAlertOpen}>
-          <AlertDialogContent>
-            <AlertDialogHeader>
-              <AlertDialogTitle>Underage Confirmation</AlertDialogTitle>
-              <AlertDialogDescription>
-                Please confirm that you are under the legal age of 18 and have
-                obtained consent from your parent or legal guardian to use
-                liveplay.in.
-              </AlertDialogDescription>
-            </AlertDialogHeader>
-            <AlertDialogFooter>
-              <AlertDialogCancel onClick={() => cancelDobChange(form.setValue)}>
-                Cancel
-              </AlertDialogCancel>
-              <AlertDialogAction
-                onClick={() => confirmDobChange(form.setValue)}
-              >
-                Confirm
-              </AlertDialogAction>
-            </AlertDialogFooter>
-          </AlertDialogContent>
-        </AlertDialog>
       </div>
+
+      <Dialog open={otpVisible} onOpenChange={setOtpVisible}>
+        <DialogContent className="sm:max-w-[425px] h-[15rem]">
+          <DialogHeader>
+            <DialogTitle>Verify OTP</DialogTitle>
+            <DialogDescription>
+              Enter the OTP sent to your whatsapp number.
+            </DialogDescription>
+          </DialogHeader>
+          <div className="grid gap-4 py-4">
+            <InputOTP
+              maxLength={6}
+              value={otpValue}
+              onChange={(value) => setOtpValue(value)}
+            >
+              <InputOTPGroup>
+                <InputOTPSlot index={0} />
+                <InputOTPSlot index={1} />
+                <InputOTPSlot index={2} />
+                <InputOTPSlot index={3} />
+                <InputOTPSlot index={4} />
+                <InputOTPSlot index={5} />
+              </InputOTPGroup>
+            </InputOTP>
+          </div>
+          <DialogFooter>
+            <Button type="button" onClick={handleVerifyOtp}>Verify OTP</Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 };
