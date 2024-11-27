@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useRef } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
@@ -32,6 +32,7 @@ const LoginForm = () => {
   const router = useRouter();
   const { toast } = useToast();
   const [loading, setLoading] = useState(false);
+  const turnstileRef = useRef<HTMLDivElement>(null);
 
   const form = useForm({
     resolver: zodResolver(loginSchema),
@@ -44,7 +45,19 @@ const LoginForm = () => {
   const onSubmit = async (data: any) => {
     setLoading(true);
 
-    const token = (document.getElementById("cf-turnstile") as HTMLInputElement).value;
+    let token = '';
+    const turnstileInput = turnstileRef.current?.querySelector('input[type="hidden"]') as HTMLInputElement;
+    if (turnstileInput) {
+      token = turnstileInput.value;
+    } else {
+      toast({
+        title: "Verification Required",
+        description: "Please complete the verification challenge",
+        variant: "destructive",
+      });
+      setLoading(false);
+      return;
+    }
 
     const response = await fetch("/api/auth/login", {
       method: "POST",
@@ -192,7 +205,7 @@ const LoginForm = () => {
                 Forgot Password?
               </Link>
             </div>
-            <div className="cf-turnstile" data-sitekey="0x4AAAAAAA0kQ69J4ryUn-__"></div>
+            <div ref={turnstileRef} className="cf-turnstile" data-sitekey="0x4AAAAAAA0kQ69J4ryUn-__"></div>
             <Button type="submit" disabled={loading} className="w-full">
               {loading ? "Logging in..." : "Login"}
             </Button>
