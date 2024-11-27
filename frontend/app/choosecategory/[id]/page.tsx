@@ -1,19 +1,24 @@
 import Cart from '@/components/Cart';
 import ChooseCategoryregister from '@/components/ChooseCategoryregister';
+import HeroChangingTagLine from '@/components/HeroChangingTagLine';
 import StickyCart from '@/components/StickyCart';
 import React from 'react'
 
 const page = ({ params }: any) => {
   const {id}=params
+  
   return (
-    <div className="mx-auto pt-6 md:pb-6">
-      <div className="flex flex-col lg:flex-row gap-10">
-        <ChooseCategoryregister eventid={id}/>
-        <Cart />
-        <StickyCart />
+    <>
+      {/* <HeroChangingTagLine tagline="" /> */}
+      <div className="mx-auto pt-6 md:pb-6">
+        <div className="flex flex-col lg:flex-row gap-10">
+          <ChooseCategoryregister eventid={id} />
+          <Cart />
+          <StickyCart />
+        </div>
       </div>
-    </div>
-  );
+    </>
+  );  
 };
 
 export default page

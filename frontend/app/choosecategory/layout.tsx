@@ -27,7 +27,6 @@ export default function RootLayout({
         <MNavbar />
         <Navbar />
         <HeroChangingTagLine ishero={true} />
-        <HeroChangingTagLine />
         {children}
         <Footer />
       </CartProvider>

@@ -3,12 +3,14 @@ import Image from 'next/image';
 
 interface HeroChangingTagLineprops {
   ishero?: boolean;
-  extraclass?:string
+  extraclass?: string;
+  tagline?:string;
 }
 
 const HeroChangingTagLine = ({
   ishero,
   extraclass,
+  tagline,
 }: HeroChangingTagLineprops) => {
   const icons = [
     "/icons/confetti (1) 1.svg",
@@ -70,7 +72,7 @@ const HeroChangingTagLine = ({
       ) : (
         <>
           <h1 className="text-lg sm:text-xl text-center sm:text-left text-white line-clamp-1 md:line-clamp-none">
-            Summer Basketball Tournament Pro League Men Champ 2.0
+            {tagline}
           </h1>
         </>
       )}

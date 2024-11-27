@@ -39,7 +39,7 @@ const participantsData: Participant[] = [
   { id: "3", name: "Team Alpha", contact: "alpha@team.com" },
 ];
 
-const ChooseCategoryRegister: React.FC = ({ eventid }:any) => {
+const ChooseCategoryRegister: React.FC = ({ eventid }: IntrinsicAttributes) => {
   const { addItem, items } = useCartContext();
   const [registeredCategories, setRegisteredCategories] = useState<Category[]>(
     []
@@ -55,7 +55,7 @@ const ChooseCategoryRegister: React.FC = ({ eventid }:any) => {
   };
 
   useEffect(() => {
-    const fetchcategory=async()=>{
+    const fetchcategory = async () => {
       try {
         const response = await fetch(`/api/event/categories/${eventid}`);
         if (!response.ok) {
@@ -72,8 +72,8 @@ const ChooseCategoryRegister: React.FC = ({ eventid }:any) => {
           variant: "destructive",
         });
       }
-    }
-    fetchcategory()
+    };
+    fetchcategory();
   }, []);
 
   return (

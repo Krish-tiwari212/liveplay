@@ -126,8 +126,8 @@ const CategoryCard: React.FC<CategoryCardProps> = ({ category, participantsData,
     
     setdisablecheckbox(true);
     const finalPrice =
-      !isCheckboxChecked && category.discountValue
-        ? category.discountValue
+      !isCheckboxChecked && category.discount_value
+        ? category.discount_value
         : category.price;
 
     let finalCategory: Category = {
@@ -514,8 +514,8 @@ const CategoryCard: React.FC<CategoryCardProps> = ({ category, participantsData,
               <AlertDialogTitle>Incomplete Information</AlertDialogTitle>
               <AlertDialogDescription>
                 {category.category_type === "Team"
-                  ? "Please enter the team name before generating the team code."
-                  : "Please enter the Partner name before generating the Partner code."}
+                  ? "Enter team name & generate team code before adding category to cart"
+                  : "Enter partner name & generate partner code before adding category to cart"}
               </AlertDialogDescription>
             </AlertDialogHeader>
             <AlertDialogFooter>
