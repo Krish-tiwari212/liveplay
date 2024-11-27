@@ -7,53 +7,31 @@ import { useCartContext } from '@/context/CartContext';
 import { toast } from '@/hooks/use-toast';
 
 interface Category {
-  id: string;
-  name: string;
-  price: number;
-  discountedPrice?: number;
-  type: string;
-  details: string;
-  sport?: string;
+  id?: number;
+  category_name?: string;
+  total_quantity?: string;
+  max_ticket_quantity?: string;
+  price?: number;
+  ticket_description?: string;
   discount_code?: string;
+  discount?: boolean;
+  category_type?: string;
+  discountType?: string;
+  number_of_discounts?: string;
+  from_date?: string;
+  till_date?: string;
+  discountValue: number;
+  percentage_input?: string;
+  amount_input?: string;
+  gender?: string;
+  age_from?: string;
+  age_to?: string;
+  ageRangeOption?: string;
+  max_teams_size?: number;
+  sport?: string;
+  teamName?: string;
+  pairname?: string;
 }
-
-
-
-const categories: Category[] = [
-  {
-    id: "1",
-    name: "Mens Singles (Open)",
-    price: 699,
-    type: "Singles",
-    details: "Includes participation, e-certificate, refreshments",
-  },
-  {
-    id: "2",
-    name: "Mens Doubles (30+)",
-    price: 599,
-    discountedPrice: 499,
-    type: "Doubles",
-    details: "Includes participation, e-certificate, refreshments",
-    discount_code: "Badminton24",
-  },
-  {
-    id: "3",
-    name: "Couple 100m Race - Team Event",
-    price: 699,
-    type: "Team",
-    details: "Each team of 2 married couples only. Certificate included.",
-  },
-  {
-    id: "4",
-    name: "Womens Marathon 10KM (30+)",
-    price: 1099,
-    discountedPrice: 999,
-    type: "Singles",
-    details: "Includes participation, e-certificate, refreshments",
-    sport: "marathon",
-    discount_code: "Mar24",
-  },
-];
 
 const participantsData: Participant[] = [
   { id: "1", name: "Mohit", contact: "900-000-5001" },
@@ -84,6 +62,7 @@ const ChooseCategoryRegister: React.FC = ({ eventid }:any) => {
           throw new Error("Network response was not ok");
         }
         const data = await response.json();
+        // console.log(data.categories);
         setRegisteredCategories(data.categories);
       } catch (error) {
         console.error("Error fetching registered categories:", error);
@@ -100,13 +79,13 @@ const ChooseCategoryRegister: React.FC = ({ eventid }:any) => {
   return (
     <div className="w-full lg:w-1/2 relative h-full space-y-4 px-5 sm:px-12">
       <h1 className="text-2xl text-gray-800 font-semibold">Choose Category</h1>
-      {categories.map((category) => (
+      {registeredCategories.map((category) => (
         <CategoryCard
-          key={registeredCategories.id}
-          category={registeredCategories}
+          key={category.id}
+          category={category}
           participantsData={participantsData}
-          isAdded={items.some((item) => item.id === registeredCategories.id)}
-          onAdd={() => handleAddToCart(registeredCategories)}
+          isAdded={items.some((item) => item.id === category.id)}
+          onAdd={() => handleAddToCart(category)}
         />
       ))}
     </div>

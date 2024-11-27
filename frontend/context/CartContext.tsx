@@ -1,17 +1,30 @@
 import React, { createContext, useContext, useState, ReactNode } from "react";
 
 export interface Category {
-  id: string;
-  name: string;
-  price: number;
-  discountedPrice?: number;
-  type: string;
-  details: string;
-  quantity?: number;
+  id?: number;
+  category_name?: string;
+  total_quantity?: string;
+  max_ticket_quantity?: string;
+  price?: number;
+  ticket_description?: string;
   discount_code?: string;
+  discount?: boolean;
+  category_type?: string;
+  discountType?: string;
+  number_of_discounts?: string;
+  from_date?: string;
+  till_date?: string;
+  discountValue: number;
+  percentage_input?: string;
+  amount_input?: string;
+  gender?: string;
+  age_from?: string;
+  age_to?: string;
+  ageRangeOption?: string;
+  max_teams_size?: number;
   sport?: string;
-  teamName?:string
-  pairname?:string
+  teamName?: string;
+  pairname?: string;
 }
 
 export interface CartItem extends Category {
@@ -22,12 +35,12 @@ interface CartContextType {
   items: CartItem[];
   addItem: (category: Category) => void;
   addMultipleItem: (category: Category) => void;
-  removeItem: (categoryId: string) => void;
-  reduceItem: (categoryId: string) => void;
+  removeItem: (categoryId: number) => void;
+  reduceItem: (categoryId: number) => void;
   clearCart: () => void;
   total: number;
   totalQuantity: number;
-  getItemQuantity: (categoryId: string) => number;
+  getItemQuantity: (categoryId: number) => number;
 }
 
 const CartContext = createContext<CartContextType | undefined>(undefined);
@@ -60,14 +73,14 @@ export const CartProvider: React.FC<CartProviderProps> = ({ children }) => {
         updatedItems[existingItemIndex] = {
           ...existingItem,
           price: category.price,
-          discountedPrice: category.discountedPrice,
+          amount_input: category.amount_input,
           discount_code: category.discount_code,
-          teamName:category.teamName
+          teamName: category.teamName,
         };
 
         return updatedItems;
       } else {
-        return [...prevItems, { ...category, quantity: 0 }];
+        return [...prevItems, { ...category, quantity: 1 }];
       }
     });
   };
@@ -85,7 +98,7 @@ export const CartProvider: React.FC<CartProviderProps> = ({ children }) => {
         updatedItems[existingItemIndex] = {
           ...existingItem,
           price: category.price,
-          discountedPrice: category.discountedPrice,
+          amount_input: category.amount_input,
           discount_code: category.discount_code,
           teamName: category.teamName,
           quantity: existingItem.quantity + 1,
@@ -93,18 +106,18 @@ export const CartProvider: React.FC<CartProviderProps> = ({ children }) => {
 
         return updatedItems;
       } else {
-        return [...prevItems, { ...category, quantity: 1 }];
+        return [...prevItems, { ...category, quantity: 0 }];
       }
     });
   };
 
-  const removeItem = (categoryId: string) => {
+  const removeItem = (categoryId: number) => {
     setItems((prevItems) =>
       prevItems.filter((item) => item.id !== categoryId)
     );
   };
 
-  const reduceItem = (categoryId: string) => {
+  const reduceItem = (categoryId: number) => {
     setItems((prevItems) =>
       prevItems
         .map((item) =>
@@ -121,13 +134,13 @@ export const CartProvider: React.FC<CartProviderProps> = ({ children }) => {
   };
 
   const total = items.reduce((acc, item) => {
-    const price = item.discountedPrice ?? item.price;
+    const price = item.discountValue ?? item.price;
     return acc + price * item.quantity;
   }, 0);
 
   const totalQuantity = items.reduce((acc, item) => acc + item.quantity, 0);
 
-  const getItemQuantity = (categoryId: string): number => {
+  const getItemQuantity = (categoryId: number): number => {
     const item = items.find((item) => item.id === categoryId);
     return item ? item.quantity : 0;
   };

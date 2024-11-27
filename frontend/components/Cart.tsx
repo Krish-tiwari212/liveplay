@@ -19,7 +19,7 @@ const BillingSummary: React.FC = () => {
       0
     );
     const discounted = items.reduce(
-      (acc, item) => acc + (item.discountedPrice ?? item.price) * item.quantity,
+      (acc, item) => acc + (item.discountValue ?? item.price) * item.quantity,
       0
     );
     setSavings(original - discounted);
@@ -44,6 +44,9 @@ const BillingSummary: React.FC = () => {
     setWithdrawalFee(true);
   };
 
+  useEffect(()=>{
+    console.log(items);
+  },[])
   return (
     <div
       id="cart_section"
@@ -62,12 +65,12 @@ const BillingSummary: React.FC = () => {
               >
                 <div className="flex gap-1 sm:items-center">
                   <p className="font-medium">
-                    {item.name}
+                    {item.category_name}
                     <span className="text-sm text-gray-600 ml-1">x{item.quantity}</span>
                   </p>
                 </div>
                 <div className="text-right flex flex-col sm:flex-row sm:gap-2 items-center">
-                  {item.discountedPrice ? (
+                  {item.discountValue ? (
                     <>
                       <p className="text-sm line-through text-gray-500">
                         ₹{(item.price * item.quantity).toFixed(2)}
@@ -75,7 +78,7 @@ const BillingSummary: React.FC = () => {
                       <p className="text-green-600 font-semibold">
                         ₹
                         {(
-                          (item.discountedPrice ?? item.price) * item.quantity
+                          (item.discountValue ?? item.price) * item.quantity
                         ).toFixed(2)}
                       </p>
                     </>

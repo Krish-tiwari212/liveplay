@@ -23,16 +23,30 @@ import { toast } from '@/hooks/use-toast';import {
 
 
 interface Category {
-  id: string;
-  name: string;
-  price: number;
-  discountedPrice?: number;
-  type: string;
-  details: string;
-  sport?: string;
-  quantity?: number;
+  id?: number;
+  category_name?: string;
+  total_quantity?: string;
+  max_ticket_quantity?: string;
+  price?: number;
+  ticket_description?: string;
   discount_code?: string;
-  teamName?:string
+  discount?: boolean;
+  category_type?: string;
+  discountType?: string;
+  number_of_discounts?: string;
+  from_date?: string;
+  till_date?: string;
+  discountValue: number;
+  percentage_input?: string;
+  amount_input?: string;
+  gender?: string;
+  age_from?: string;
+  age_to?: string;
+  ageRangeOption?: string;
+  max_teams_size?: number;
+  sport?: string;
+  teamName?: string;
+  pairname?: string;
 }
 
 interface CategoryCardProps {
@@ -48,7 +62,6 @@ const CategoryCard: React.FC<CategoryCardProps> = ({ category, participantsData,
   const [teamCode, setTeamCode] = useState('');
   const [teamName, setTeamName] = useState('');
   const [partner, setPartner] = useState('');
-  const [ticketQuantity, setTicketQuantity] = useState(1);
   const [isCheckboxChecked, setIsCheckboxChecked] = useState(false);
   const [disablecheckbox,setdisablecheckbox]=useState(false)
   const [isAlertOpen, setIsAlertOpen] = useState(false);
@@ -96,33 +109,26 @@ const CategoryCard: React.FC<CategoryCardProps> = ({ category, participantsData,
     setIsDialogOpen(true);
   };
 
-
-
-  const handleBuyTickets = () => {
-    console.log('Purchased tickets:', category, ticketQuantity);
-    onAdd();
-    addItem(category);
-  };
-
   const handleAddToCart = () => {
     if (
-      category.type === "Doubles" &&
+      category.category_type === "Doubles" &&
       !partner.trim()
     ) {
       setIsAlertOpen(true);
       return;
     }
 
-    if (category.type === "Team" && !teamName.trim()) {
+    if (category.category_type === "Team" && !teamName.trim()) {
       setIsAlertOpen(true);
       return
     }
 
     
     setdisablecheckbox(true);
-    const finalPrice = !isCheckboxChecked && category.discountedPrice
-      ? category.discountedPrice
-      : category.price;
+    const finalPrice =
+      !isCheckboxChecked && category.discountValue
+        ? category.discountValue
+        : category.price;
 
     let finalCategory: Category = {
       ...category,
@@ -135,10 +141,10 @@ const CategoryCard: React.FC<CategoryCardProps> = ({ category, participantsData,
       finalCategory = rest;
     }
     onAdd();
-    
-    category.sport === "marathon"
-      ? addMultipleItem(finalCategory)
-      : addItem(finalCategory);
+    addItem(finalCategory);
+    // category.sport === "marathon"
+    //   ? addMultipleItem(finalCategory)
+    //   : addItem(finalCategory);
   };
 
   const handleRemoveFromCart = () => {
@@ -174,26 +180,26 @@ const CategoryCard: React.FC<CategoryCardProps> = ({ category, participantsData,
         });
       });
   };
-  useEffect(()=>{
-    console.log()
-  },[])
 
+  useEffect(()=>{
+    console.log(category)
+  },[])
   return (
     <div className="border-2 border-[#141f29] p-4 rounded-lg shadow-lg w-full">
       <div
         className={`flex justify-between cursor-pointer relative ${
-          category.type === "Team"
+          category.category_type === "Team"
             ? "flex-col items-start"
             : "flex-row items-center"
         }`}
       >
         <div className="">
-          <h2 className="text-xl font-semibold">{category.name}</h2>
-          <p className="text-gray-600">{category.details}</p>
+          <h2 className="text-xl font-semibold">{category.category_name}</h2>
+          <p className="text-gray-600">{category.ticket_description}</p>
           <div className="mt-2">
             <div className="my-2 text-sm font-semibold">
               Category Type:
-              <span className="font-normal ml-1">{category.type}</span>
+              <span className="font-normal ml-1">{category.category_type}</span>
             </div>
             {category.discount_code ? (
               <>
@@ -246,7 +252,7 @@ const CategoryCard: React.FC<CategoryCardProps> = ({ category, participantsData,
                     {isCheckboxChecked ? (
                       <>
                         <span className="text-[#141f29] font-semibold">
-                          ₹{category.discountedPrice}
+                          ₹{category.discountValue}
                         </span>
                         <span className="line-through text-gray-500 ml-2">
                           ₹{category.price}
@@ -332,7 +338,7 @@ const CategoryCard: React.FC<CategoryCardProps> = ({ category, participantsData,
 
       <div
         className={`w-full pt-4 ${
-          category.type !== "Singles" && "border-t-2 border-gray-300 mt-4"
+          category.category_type !== "Singles" && "border-t-2 border-gray-300 mt-4"
         }`}
       >
         {/* {category.type === "Doubles" && (
@@ -362,7 +368,7 @@ const CategoryCard: React.FC<CategoryCardProps> = ({ category, participantsData,
           </div>
         )} */}
 
-        {category.type === "Team" ? (
+        {category.category_type === "Team" ? (
           <div className="flex flex-col">
             <h1 className="text-sm md:text-lg font-semibold">
               Enter Team Name, Generate & Share Code
@@ -399,7 +405,7 @@ const CategoryCard: React.FC<CategoryCardProps> = ({ category, participantsData,
             </div>
           </div>
         ) : (
-          category.type === "Doubles" && (
+          category.category_type === "Doubles" && (
             <div className="flex flex-col">
               <h1 className="text-sm md:text-lg font-semibold">
                 Enter Partner Name, Generate & Share Code
@@ -444,7 +450,7 @@ const CategoryCard: React.FC<CategoryCardProps> = ({ category, participantsData,
           <AlertDialogHeader>
             <DialogTitle>Share Code</DialogTitle>
             <DialogDescription>
-              {category.type === "Team" ? (
+              {category.category_type === "Team" ? (
                 <div className="fle flex-col">
                   <h1>1. Share code with your Team Members.</h1>
                   <h1>
@@ -508,7 +514,7 @@ const CategoryCard: React.FC<CategoryCardProps> = ({ category, participantsData,
             <AlertDialogHeader>
               <AlertDialogTitle>Incomplete Information</AlertDialogTitle>
               <AlertDialogDescription>
-                {category.type === "Team"
+                {category.category_type === "Team"
                   ? "Please enter the team name before generating the team code."
                   : "Please enter the Partner name before generating the Partner code."}
               </AlertDialogDescription>
