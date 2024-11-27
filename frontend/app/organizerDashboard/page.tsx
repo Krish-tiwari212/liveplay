@@ -142,23 +142,22 @@ export default function Home() {
     const fetchEvents = async () => {
       try {
         const userId = user?.id;
-        const url = userId
-          ? `/api/event/all_events?organizer_id=${userId}`
-          : "/api/event/all_events";
+        if (!userId) {
+          setIsLoading(false);
+          return;
+        }
 
+        const url = `/api/event/all_events?organizer_id=${userId}`;
         const response = await fetch(url);
+        
         if (!response.ok) {
           throw new Error("Network response was not ok");
         }
+        
         const data = await response.json();
-        setEvents(data.events);
+        setEvents(data.events || []);
       } catch (error) {
         console.error("Error fetching events:", error);
-        toast({
-          title:
-            "Failed to fetch events. Please check your network connection.",
-          variant: "destructive",
-        });
       } finally {
         setIsLoading(false);
       }
@@ -299,6 +298,29 @@ export default function Home() {
                 </div>
               ))}
             </div>
+          ) : events.length === 0 ? (
+            <div className="w-full flex flex-col items-center justify-center py-8">
+              <div className="text-gray-500 text-center">
+                <Image
+                  src="/images/no-events.svg" // Add this image to your public folder
+                  alt="No events"
+                  width={200}
+                  height={200}
+                  className="mb-4"
+                />
+                <h3 className="text-xl font-semibold mb-2">No Events Yet</h3>
+                <p className="mb-4">You haven't created any events yet.</p>
+                <Button
+                  onClick={() => router.push("/organizerDashboard/create_event")}
+                  variant="tertiary"
+                  size="lg"
+                  className="text-sm sm:text-md shadow-md shadow-gray-500"
+                >
+                  <FaPlus className="mr-2" />
+                  Create Your First Event
+                </Button>
+              </div>
+            </div>
           ) : (
             events.map((event) => (
               <React.Fragment key={event.id}>
@@ -332,7 +354,7 @@ export default function Home() {
                     <div className="flex-[1] flex flex-col justify-between">
                       <div className="flex flex-col">
                         <h3 className="font-bold line-clamp-2 overflow-hidden text-ellipsis">
-                          {event.event_name} Badminton Pro Sports 2024
+                          {event.event_name}
                         </h3>
                         <div className="flex flex-col justify-between">
                           <span className="flex gap-2 items-center">
