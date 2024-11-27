@@ -30,9 +30,76 @@ const GoLive = () => {
   
       const formData = new FormData();
       
-      try {
-        // ... existing FormData setup code ...
+      // Add all basic event details
+      formData.append("sport", EventData.sport);
+      formData.append("event_name", EventData.event_name);
+      formData.append("last_registration_date", EventData.last_registration_date);
+      formData.append("last_withdrawal_date", EventData.last_withdrawal_date);
+      formData.append("start_date", EventData.start_date);
+      formData.append("end_date", EventData.end_date);
+      formData.append("start_time", EventData.start_time);
+      formData.append("organizer_name", EventData.organizer_name);
+      formData.append("organizer_contact_number", EventData.organizer_contact_number);
+      formData.append("organizer_email", EventData.organizer_email);
+      formData.append("website_link", EventData.website_link || '');
+      formData.append("insta_link", EventData.insta_link || '');
+      formData.append("venue_name", EventData.venue_name);
+      formData.append("street_address", EventData.street_address);
+      formData.append("city", EventData.city);
+      formData.append("state", EventData.state);
+      formData.append("pincode", EventData.pincode);
+      formData.append("venue_link", EventData.venue_link || '');
+      formData.append("event_description", EventData.event_description);
+      formData.append("event_usp", EventData.event_usp);
+      formData.append("rewards_for_participants", EventData.rewards_for_participants || '');
+      formData.append("playing_rules", EventData.playing_rules || '');
+      formData.append("cash_price_pool", EventData.cash_price_pool || '');
+
+      // Add boolean values
+      formData.append("countdown", EventData.countdown?.toString() || 'false');
+      formData.append("want_Tshirts", EventData.want_Tshirts?.toString() || 'false');
+      formData.append("enable_fixtures", EventData.enable_fixtures?.toString() || 'false');
+      formData.append("showqna", EventData.showqna?.toString() || 'false');
+      formData.append("Gst_Compliance", EventData.Gst_Compliance?.toString() || 'false');
+
+      // Add plan selection
+      formData.append("selected_plan", EventData.selected_plan || 'standard');
+
+      // Add mobile banner if it exists
+      if (EventData.mobileBanner) {
+        formData.append("mobileBanner", EventData.mobileBanner);
+      }
+
+      // Add categories as JSON string
+      formData.append(
+        "eventData",
+        JSON.stringify({
+          ...EventData,
+          categories: EventData.categories.map((category: any) => ({
+            category_name: category.category_name,
+            ticket_description: category.ticket_description,
+            price: category.price,
+            total_quantity: category.total_quantity,
+            max_ticket_quantity: category.max_ticket_quantity,
+            category_type: category.category_type,
+            discount: category.discount || false,
+            discount_code: category.discount_code,
+            discountType: category.discountType,
+            number_of_discounts: category.number_of_discounts,
+            from_date: category.from_date,
+            till_date: category.till_date,
+            discountValue: category.discountValue,
+            percentage_input: category.percentage_input,
+            amount_input: category.amount_input,
+            gender: category.gender,
+            age_from: category.age_from,
+            age_to: category.age_to,
+            ageRangeOption: category.ageRangeOption
+          }))
+        })
+      );
   
+      try {
         const response = await fetch('/api/event/create', {
           method: 'POST',
           body: formData,
@@ -66,12 +133,6 @@ const GoLive = () => {
         })
         console.error('Error creating event:', error);
       }
-    } else if (!isCheckboxChecked) {
-      toast({
-        title: "Terms & Conditions",
-        description: "Please accept the terms and conditions to continue",
-        variant: "destructive",
-      })
     }
   };
 
