@@ -83,8 +83,7 @@ const EventCard = ({
               {sport}
             </div>
             <h1 className="font-bold text-xl text-gray-900  line-clamp-2 h-[60px]">
-              {eventname} Summer Basketball Tournament Pro League Delhi Champion
-              Smart City New Event Pro
+              {eventname}
             </h1>
             <p className="text-[#64758B] text-nowrap">
               By Tiruvalayavudayarthiraaksaksnakns
