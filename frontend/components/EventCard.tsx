@@ -135,7 +135,7 @@ const EventCard = ({
               </Button>
             </div>
             <Button
-              onClick={() => router.push("/choosecategory")}
+              onClick={() => router.push(`/choosecategory/${id}`)}
               variant="tertiary"
               size="xs"
               className="border border-black text-[12px]"

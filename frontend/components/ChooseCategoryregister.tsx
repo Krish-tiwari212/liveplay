@@ -1,9 +1,10 @@
 "use client";
 
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import CategoryCard from './CategoryCard';
 import { Participant } from './SearchDialog';
 import { useCartContext } from '@/context/CartContext';
+import { toast } from '@/hooks/use-toast';
 
 interface Category {
   id: string;
@@ -15,6 +16,7 @@ interface Category {
   sport?: string;
   discount_code?: string;
 }
+
 
 
 const categories: Category[] = [
@@ -59,11 +61,14 @@ const participantsData: Participant[] = [
   { id: "3", name: "Team Alpha", contact: "alpha@team.com" },
 ];
 
-const ChooseCategoryRegister: React.FC = () => {
+const ChooseCategoryRegister: React.FC = ({ eventid }:any) => {
   const { addItem, items } = useCartContext();
+  const [registeredCategories, setRegisteredCategories] = useState<Category[]>(
+    []
+  );
 
   const handleAddToCart = (category: Category) => {
-    if (!items.some(item => item.id === category.id)) {
+    if (!items.some((item) => item.id === category.id)) {
       addItem(category);
       console.log(`Category with ID ${category.id} added to cart.`);
     } else {
@@ -71,16 +76,37 @@ const ChooseCategoryRegister: React.FC = () => {
     }
   };
 
+  useEffect(() => {
+    const fetchcategory=async()=>{
+      try {
+        const response = await fetch(`/api/event/categories/${eventid}`);
+        if (!response.ok) {
+          throw new Error("Network response was not ok");
+        }
+        const data = await response.json();
+        setRegisteredCategories(data.categories);
+      } catch (error) {
+        console.error("Error fetching registered categories:", error);
+        toast({
+          title:
+            "Failed to fetch registered categories. Please check your network connection.",
+          variant: "destructive",
+        });
+      }
+    }
+    fetchcategory()
+  }, []);
+
   return (
     <div className="w-full lg:w-1/2 relative h-full space-y-4 px-5 sm:px-12">
       <h1 className="text-2xl text-gray-800 font-semibold">Choose Category</h1>
       {categories.map((category) => (
         <CategoryCard
-          key={category.id}
-          category={category}
+          key={registeredCategories.id}
+          category={registeredCategories}
           participantsData={participantsData}
-          isAdded={items.some((item) => item.id === category.id)}
-          onAdd={() => handleAddToCart(category)}
+          isAdded={items.some((item) => item.id === registeredCategories.id)}
+          onAdd={() => handleAddToCart(registeredCategories)}
         />
       ))}
     </div>
