@@ -1,135 +1,91 @@
 import { NextResponse } from 'next/server';
 import { createClient } from '@/utils/supabase/server'
 
-interface EventRequest {
-  event_name: string;
-  organizer_contact_number: string;
-  organizer_email: string;
-  start_date: string;  // ISO string for start date
-  end_date: string;    // ISO string for end date
-  last_registration_date: string;  // ISO string
-  last_withdrawal_date: string;    // ISO string
-  start_time: string;  // ISO string for time only
-  venue_name: string;
-  street_address: string;
-  additional_details?: string;
-  city: string;
-  pincode: string;
-  venue_not_decided: boolean;
-  map_view?: string;
-  event_description: string;
-  event_usp: string;
-  rewards_for_participants?: string;
-  playing_rules?: string;
-  countdown: boolean;
-  enable_fixtures: boolean;
-  venue_link?: string;
-  sport: string;
-  selected_plan: string;
-  categories: Array<{
-    category_name: string;
-    total_quantity: number;
-    max_ticket_quantity: number;
-    price: number;
-    ticket_description?: string;
-    discount_code?: string;
-    category_type?: string;
-    number_of_discounts?: number;
-    percentage_input?: number;
-    from_date?: string;  // ISO string
-    till_date?: string;  // ISO string
-    amount_input?: number;
-    discount_value?: number;
-  }>;
-}
-
 export async function POST(request: Request) {
   try {
     // Create a Supabase client
     const supabase = await createClient();
+    const session = await supabase.auth.getSession();
+    const organizerId = session.data.session?.user.id;
+    
     // Parse the incoming request and files
     const formData = await request.formData();
     console.log('Form data:', formData);
 
-    // Extract event details from formData
-    const eventData: EventRequest = JSON.parse(formData.get('eventData') as string);
-
-    // Extract mobile and desktop banner files
+    // Extract event details and mobile banner
+    const eventData = JSON.parse(formData.get('eventData') as string);
     const mobileBanner = formData.get('mobileBanner') as File;
-    const desktopBanner = formData.get('desktopBanner') as File;
 
     // Required field check
     if (
-      !formData.get('event_name') ||
-      !formData.get('organizer_contact_number') ||
-      !formData.get('organizer_email') ||
-      !formData.get('start_date') ||
-      !formData.get('end_date') ||
-      !formData.get('venue_name') ||
-      !formData.get('city') ||
-      !formData.get('pincode') ||
-      !formData.get('event_description') ||
-      !formData.get('event_usp')
+      !eventData.event_name ||
+      !eventData.organizer_contact_number ||
+      !eventData.organizer_email ||
+      !eventData.start_date ||
+      !eventData.end_date ||
+      !eventData.venue_name ||
+      !eventData.city ||
+      !eventData.pincode ||
+      !eventData.event_description ||
+      !eventData.event_usp
     ) {
       return NextResponse.json({ error: 'Missing required fields' }, { status: 400 });
     }
 
     // Upload mobile banner to Supabase storage
-    const { data: mobileBannerData, error: mobileBannerError } = await supabase.storage
-      .from('banners')
-      .upload(`mobile/${mobileBanner.name}`, mobileBanner);
+    let mobileBannerUrl = '';
+    if (mobileBanner && mobileBanner.size > 0) {
+      const { data: mobileBannerData, error: mobileBannerError } = await supabase.storage
+        .from('banners')
+        .upload(`mobile/${Date.now()}-${mobileBanner.name}`, mobileBanner);
 
-    if (mobileBannerError) {
-      console.error('Mobile banner upload error:', mobileBannerError);
-      return NextResponse.json({ error: `Mobile banner upload failed: ${mobileBannerError.message}` }, { status: 400 });
+      if (mobileBannerError) {
+        console.error('Mobile banner upload error:', mobileBannerError);
+        return NextResponse.json({ error: `Mobile banner upload failed: ${mobileBannerError.message}` }, { status: 400 });
+      }
+
+      // Get mobile banner URL
+      mobileBannerUrl = supabase.storage.from('banners').getPublicUrl(mobileBannerData.path).data.publicUrl;
     }
 
-    // Get mobile banner URL
-    const mobileBannerUrl = supabase.storage.from('banners').getPublicUrl(mobileBannerData.path);
-
-    // Upload desktop banner to Supabase storage
-    const { data: desktopBannerData, error: desktopBannerError } = await supabase.storage
-      .from('banners')
-      .upload(`desktop/${desktopBanner.name}`, desktopBanner);
-
-    if (desktopBannerError) {
-      console.error('Desktop banner upload error:', desktopBannerError);
-      return NextResponse.json({ error: `Desktop banner upload failed: ${desktopBannerError.message}` }, { status: 400 });
-    }
-
-    // Get desktop banner URL
-    const desktopBannerUrl = supabase.storage.from('banners').getPublicUrl(desktopBannerData.path);
-
-    // Insert event data
+    // Insert event data using formData values
     const { data: event, error: eventError } = await supabase
       .from('events')
       .insert({
+        organizer_id: organizerId,
+        sport: formData.get('sport'),
         event_name: formData.get('event_name'),
-        organizer_contact_number: formData.get('organizer_contact_number'),
-        organizer_email: formData.get('organizer_email'),
-        start_date: formData.get('start_date'),
-        end_date: formData.get('end_date'),
         last_registration_date: formData.get('last_registration_date'),
         last_withdrawal_date: formData.get('last_withdrawal_date'),
+        start_date: formData.get('start_date'),
+        end_date: formData.get('end_date'),
         start_time: formData.get('start_time'),
+        organizer_name: formData.get('organizer_name'),
+        organizer_contact_number: formData.get('organizer_contact_number'),
+        organizer_email: formData.get('organizer_email'),
+        website_link: formData.get('website_link'),
+        insta_link: formData.get('insta_link'),
         venue_name: formData.get('venue_name'),
         street_address: formData.get('street_address'),
-        additional_details: formData.get('additional_details'),
         city: formData.get('city'),
+        state: formData.get('state'),
         pincode: formData.get('pincode'),
-        venue_not_decided: formData.get('venue_not_decided'),
-        map_view: formData.get('map_view'),
+        venue_link: formData.get('venue_link'),
         event_description: formData.get('event_description'),
         event_usp: formData.get('event_usp'),
         rewards_for_participants: formData.get('rewards_for_participants'),
         playing_rules: formData.get('playing_rules'),
-        countdown: formData.get('countdown'),
-        enable_fixtures: formData.get('enable_fixtures'),
-        venue_link: formData.get('venue_link'),
-        sport: formData.get('sport'),
+        cash_price_pool: formData.get('cash_price_pool'),
+        mobile_cover_image_url: mobileBannerUrl,
+        desktop_cover_image_url: mobileBannerUrl,
+        countdown: formData.get('countdown') === 'true',
+        want_tshirts: formData.get('want_Tshirts') === 'true',
+        enable_fixtures: formData.get('enable_fixtures') === 'true',
+        show_qna: formData.get('showqna') === 'true',
         selected_plan: formData.get('selected_plan'),
-        desktop_cover_image_url: desktopBannerUrl.data.publicUrl,
-        mobile_cover_image_url: mobileBannerUrl.data.publicUrl,
+        gst_compliance: formData.get('Gst_Compliance') === 'true',
+        status: 'active',
+        created_at: new Date().toISOString()
       })
       .select('id')
       .single();
@@ -139,24 +95,31 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: eventError.message }, { status: 400 });
     }
 
+    // Insert categories from eventData
     for (const category of eventData.categories) {
       const { error: categoryError } = await supabase
         .from('event_categories')
         .insert({
           event_id: event.id,
           category_name: category.category_name,
-          total_quantity: category.total_quantity,
-          discount_value: category.discount_value,
-          amount_input: category.amount_input,
-          max_ticket_quantity: category.max_ticket_quantity,
-          price: category.price,
           ticket_description: category.ticket_description,
-          discount_code: category.discount_code,
+          price: parseFloat(category.price),
+          total_quantity: category.total_quantity ? parseInt(category.total_quantity) : null,
+          max_ticket_quantity: category.max_ticket_quantity ? parseInt(category.max_ticket_quantity) : null,
           category_type: category.category_type,
-          number_of_discounts: category.number_of_discounts,
-          percentage_input: category.percentage_input,
-          from_date: category.from_date,
-          till_date: category.till_date,
+          has_discount: category.discount,
+          discount_code: category.discount_code,
+          discount_type: category.discountType,
+          number_of_discounts: category.number_of_discounts ? parseInt(category.number_of_discounts) : null,
+          discount_start_date: category.from_date,
+          discount_end_date: category.till_date,
+          discount_value: category.discountValue ? parseFloat(category.discountValue) : null,
+          percentage_input: category.percentage_input ? parseFloat(category.percentage_input) : null,
+          amount_input: category.amount_input ? parseFloat(category.amount_input) : null,
+          gender: category.gender,
+          min_age: category.age_from ? parseInt(category.age_from) : null,
+          max_age: category.age_to ? parseInt(category.age_to) : null,
+          age_range_option: category.ageRangeOption
         });
 
       if (categoryError) {
@@ -165,9 +128,13 @@ export async function POST(request: Request) {
       }
     }
 
-    return NextResponse.json({ message: 'Event created successfully', event }, { status: 201 });
+    return NextResponse.json({ 
+      message: 'Event created successfully', 
+      event 
+    }, { status: 201 });
+
   } catch (error) {
-    console.error('Unexpected error:', error);  // Log unexpected errors
+    console.error('Unexpected error:', error);
     return NextResponse.json({ error: 'Server error' }, { status: 500 });
   }
 }
