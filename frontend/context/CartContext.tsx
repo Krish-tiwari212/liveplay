@@ -14,7 +14,7 @@ export interface Category {
   number_of_discounts?: string;
   from_date?: string;
   till_date?: string;
-  discountValue: number;
+  discount_value: number;
   percentage_input?: string;
   amount_input?: string;
   gender?: string;
@@ -134,7 +134,7 @@ export const CartProvider: React.FC<CartProviderProps> = ({ children }) => {
   };
 
   const total = items.reduce((acc, item) => {
-    const price = item.discountValue ?? item.price;
+    const price = item.discount_value ?? item.price;
     return acc + price * item.quantity;
   }, 0);
 

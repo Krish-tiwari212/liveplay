@@ -19,7 +19,7 @@ const BillingSummary: React.FC = () => {
       0
     );
     const discounted = items.reduce(
-      (acc, item) => acc + (item.discountValue ?? item.price) * item.quantity,
+      (acc, item) => acc + (item.discount_value ?? item.price) * item.quantity,
       0
     );
     setSavings(original - discounted);
@@ -44,9 +44,6 @@ const BillingSummary: React.FC = () => {
     setWithdrawalFee(true);
   };
 
-  useEffect(()=>{
-    console.log(items);
-  },[])
   return (
     <div
       id="cart_section"
@@ -66,11 +63,13 @@ const BillingSummary: React.FC = () => {
                 <div className="flex gap-1 sm:items-center">
                   <p className="font-medium">
                     {item.category_name}
-                    <span className="text-sm text-gray-600 ml-1">x{item.quantity}</span>
+                    <span className="text-sm text-gray-600 ml-1">
+                      x{item.quantity}
+                    </span>
                   </p>
                 </div>
                 <div className="text-right flex flex-col sm:flex-row sm:gap-2 items-center">
-                  {item.discountValue ? (
+                  {item.discount_value ? (
                     <>
                       <p className="text-sm line-through text-gray-500">
                         ₹{(item.price * item.quantity).toFixed(2)}
@@ -78,7 +77,7 @@ const BillingSummary: React.FC = () => {
                       <p className="text-green-600 font-semibold">
                         ₹
                         {(
-                          (item.discountValue ?? item.price) * item.quantity
+                          (item.discount_value ?? item.price) * item.quantity
                         ).toFixed(2)}
                       </p>
                     </>
@@ -147,7 +146,7 @@ const BillingSummary: React.FC = () => {
           <div className="py-2 rounded-md flex justify-center items-center">
             <p className="flex justify-center items-center gap-2">
               <RiDiscountPercentFill className="text-2xl" />
-              Wohooo! You’ve saved{" "}
+              Wohooo! You’ve saved
               <span className="font-semibold">₹{savings.toFixed(2)}</span>
             </p>
           </div>

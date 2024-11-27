@@ -37,9 +37,9 @@ interface Category {
   number_of_discounts?: string;
   from_date?: string;
   till_date?: string;
-  discountValue?: string;
-  percentage_input?: string;
-  amount_input?: string;
+  discountValue: number;
+  percentage_input?: number;
+  amount_input?: number;
   gender?:string;
   age_from?: string;
   age_to?: string;
@@ -183,9 +183,9 @@ const AddCategory = ({ setCategoryData ,type,category}: AddCategoryProps) => {
     number_of_discounts: "",
     from_date: "",
     till_date: "",
-    discountValue: "",
-    percentage_input: "",
-    amount_input: "",
+    discountValue: 0,
+    percentage_input: 0,
+    amount_input: 0,
     gender:"",
     age_from: "",
     age_to: "",
@@ -228,7 +228,7 @@ const AddCategory = ({ setCategoryData ,type,category}: AddCategoryProps) => {
           fromDate: categoryData.from_date,
           tillDate: categoryData.till_date,
           discountValue: showPercentageInput
-            ? categoryData.percentage_input
+            ? (categoryData?.percentage_input/100)*categoryData.price
             : categoryData.amount_input,
         }
       : {};
@@ -247,9 +247,9 @@ const AddCategory = ({ setCategoryData ,type,category}: AddCategoryProps) => {
       number_of_discounts: "",
       from_date: "",
       till_date: "",
-      discountValue: "",
-      percentage_input: "",
-      amount_input: "",
+      discountValue: 0,
+      percentage_input: 0,
+      amount_input: 0,
       gender:"",
       age_from: "",
       age_to: "",

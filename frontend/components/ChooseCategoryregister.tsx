@@ -20,7 +20,7 @@ interface Category {
   number_of_discounts?: string;
   from_date?: string;
   till_date?: string;
-  discountValue: number;
+  discount_value: number;
   percentage_input?: string;
   amount_input?: string;
   gender?: string;

@@ -36,7 +36,7 @@ interface Category {
   number_of_discounts?: string;
   from_date?: string;
   till_date?: string;
-  discountValue: number;
+  discount_value: number;
   percentage_input?: string;
   amount_input?: string;
   gender?: string;
@@ -228,9 +228,7 @@ const CategoryCard: React.FC<CategoryCardProps> = ({ category, participantsData,
                               />
                             </TooltipTrigger>
                             <TooltipContent className="bg-[#141f29] text-[#ccdb28]">
-                              <p>
-                                Remove Category From Cart to access this
-                              </p>
+                              <p>Remove Category From Cart to access this</p>
                             </TooltipContent>
                           </Tooltip>
                         </TooltipProvider>
@@ -252,7 +250,7 @@ const CategoryCard: React.FC<CategoryCardProps> = ({ category, participantsData,
                     {isCheckboxChecked ? (
                       <>
                         <span className="text-[#141f29] font-semibold">
-                          ₹{category.discountValue}
+                          ₹{category.discount_value}
                         </span>
                         <span className="line-through text-gray-500 ml-2">
                           ₹{category.price}
@@ -338,7 +336,8 @@ const CategoryCard: React.FC<CategoryCardProps> = ({ category, participantsData,
 
       <div
         className={`w-full pt-4 ${
-          category.category_type !== "Singles" && "border-t-2 border-gray-300 mt-4"
+          category.category_type !== "Singles" &&
+          "border-t-2 border-gray-300 mt-4"
         }`}
       >
         {/* {category.type === "Doubles" && (
