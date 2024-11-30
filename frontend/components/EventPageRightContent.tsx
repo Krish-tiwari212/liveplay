@@ -2,89 +2,99 @@ import Image from 'next/image';
 import React from 'react'
 import { FaBasketballBall, FaStar } from 'react-icons/fa';
 import { GiEntryDoor, GiShuttlecock, GiWhistle } from 'react-icons/gi';
-import { GrTrophy } from 'react-icons/gr';
 import { MdCategory } from 'react-icons/md';
 import { RiDiscountPercentLine, RiStarSmileFill } from 'react-icons/ri';
 import { Badge } from './ui/badge';
 import { Button } from './ui/button';
 import { HiCurrencyRupee } from 'react-icons/hi2';
 import { VscGraph } from 'react-icons/vsc';
-import { IoLocationSharp, IoShareSocialSharp } from 'react-icons/io5';
+import { IoLocationSharp } from 'react-icons/io5';
 import { CalendarIcon } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 import QnaSectionEventpage from './QnaSectionEventpage';
-import EventCategoryCard from './EventCategoryCard';
-import { BiLike } from 'react-icons/bi';
-import { PiHandWithdraw } from "react-icons/pi";import Link from 'next/link';
-;
+import Link from 'next/link';
 
-const EventPageRightContent = ({ eventDetails }: any) => {
+interface EventCategory {
+  id: number;
+  category_name: string;
+  price: number;
+  category_type: string;
+  has_discount: boolean;
+  discount_type: string;
+  discount_value: number;
+}
+
+interface EventDetails {
+  id: string;
+  event_name: string;
+  sport: string;
+  start_date: string;
+  end_date: string;
+  start_time: string;
+  last_registration_date: string;
+  last_withdrawal_date: string;
+  venue_name: string;
+  city: string;
+  cash_price_pool: string;
+  event_usp: string;
+  categories: EventCategory[];
+  show_qna: boolean;
+  organizer_name: string;
+}
+
+const EventPageRightContent = ({ eventDetails }: { eventDetails: EventDetails }) => {
   const router = useRouter();
+  
   return (
     <div className="w-full lg:w-1/3 flex flex-col gap-4">
+      {/* Main Event Info */}
       <div className="hidden lg:block border-2 border-[#141F29] p-4 rounded-lg text-[#141F29]">
         <h1 className="text-xl sm:text-2xl md:text-3xl font-bold mb-4 line-clamp-2">
-          Summer Basketball Tournament Pro League Men Champ 2.0 2024
+          {eventDetails.event_name}
         </h1>
 
         <div className="flex flex-wrap gap-2 mb-4">
           <Badge className="bg-[#E6EAC5] text-[#141F29] text-sm sm:text-base">
-            Badminton
+            {eventDetails.sport}
           </Badge>
-          <Badge className="bg-[#E6EAC5] text-[#141F29] text-sm sm:text-base">
-            Elite
-          </Badge>
-          <Badge className="bg-[#E6EAC5] text-[#F3524F] text-sm sm:text-base flex items-center">
-            <RiDiscountPercentLine className="mr-2" />
-            Early Bird Discount
-          </Badge>
+          {eventDetails.categories.some(cat => cat.has_discount) && (
+            <Badge className="bg-[#E6EAC5] text-[#F3524F] text-sm sm:text-base flex items-center">
+              <RiDiscountPercentLine className="mr-2" />
+              Early Bird Discount
+            </Badge>
+          )}
         </div>
 
         <div className="space-y-3 mb-6">
           <div className="flex items-center">
             <CalendarIcon className="w-4 h-4 sm:w-5 sm:h-5 mr-2" />
             <span className="text-sm sm:text-base">
-              25 December 2024 | 8 PM onwards
+              {new Date(eventDetails.start_date).toLocaleDateString()} | {eventDetails.start_time}
             </span>
           </div>
           <div className="flex items-center">
             <GiEntryDoor className="w-4 h-4 sm:w-5 sm:h-5 mr-2" />
             <span className="text-sm sm:text-base">
-              Last Date to Register: 20 December 2024
-            </span>
-          </div>
-          <div className="flex items-center">
-            <PiHandWithdraw className="w-4 h-4 sm:w-5 sm:h-5 mr-2" />
-            <span className="text-sm sm:text-base">
-              Last Date to Withdraw: 23 December 2024
+              Last Date to Register: {new Date(eventDetails.last_registration_date).toLocaleDateString()}
             </span>
           </div>
           <div className="flex items-center">
             <IoLocationSharp className="w-4 h-4 sm:w-5 sm:h-5 mr-2" />
             <span className="text-sm sm:text-base">
-              Major Dhyan Chand Stadium
+              {eventDetails.venue_name}, {eventDetails.city}
             </span>
           </div>
-          <Link
-            href={`/eventspage/${"1"}`}
-            className="flex items-center gap-1 cursor-pointer"
-          >
-            <div className="flex items-center gap-1 cursor-pointer hover:underline text-nowrap">
-              <VscGraph className="w-4 h-4 sm:w-5 sm:h-5  mr-1" />
-              <span className="text-sm sm:text-base">Registrations:</span>
-              <span className="text-blue-600 text-sm sm:text-base">5173</span>
-            </div>
-          </Link>
           <div className="flex items-center">
             <HiCurrencyRupee className="w-4 h-4 sm:w-5 sm:h-5 mr-2" />
-            <span className="text-sm sm:text-base  mr-2">Starting From:</span>
+            <span className="text-sm sm:text-base mr-2">Starting From:</span>
             <span className="text-lg sm:text-xl md:text-2xl font-bold">
-              ₹699
+              ₹{Math.min(...eventDetails.categories.map(cat => cat.price))}
             </span>
           </div>
         </div>
+
         <Button
-          onClick={() => router.push("/choosecategory")}
+          onClick={() => router.push(`/choosecategory/${eventDetails.id}`)}
           variant="tertiary"
           className="w-full border-2 border-black py-8 text-xl"
         >
@@ -99,97 +109,40 @@ const EventPageRightContent = ({ eventDetails }: any) => {
         </h1>
 
         <div className="flex flex-wrap gap-2 mb-4">
-          <Badge className="bg-[#E6EAC5] text-[#141F29] text-sm sm:text-base flex items-center">
-            <FaBasketballBall className="mr-2" />
-            Single
-          </Badge>
-          <Badge className="bg-[#E6EAC5] text-[#141F29] text-sm sm:text-base flex items-center">
-            <FaBasketballBall className="mr-2" />
-            Double
-          </Badge>
-          <Badge className="bg-[#E6EAC5] text-[#141F29] text-sm sm:text-base flex items-center">
-            <FaBasketballBall className="mr-2" />
-            Team
-          </Badge>
+          {Array.from(new Set(eventDetails.categories.map(cat => cat.category_type))).map((type) => (
+            <Badge key={type} className="bg-[#E6EAC5] text-[#141F29] text-sm sm:text-base flex items-center">
+              <FaBasketballBall className="mr-2" />
+              {type}
+            </Badge>
+          ))}
         </div>
+
         <div className="flex flex-col md:flex-row my-4">
           <span className="text-base sm:text-lg md:text-xl font-bold flex items-center gap-2">
             <MdCategory className="h-4 w-4 sm:h-5 sm:w-5" />
             Number of Categories:
-            <strong className="font-normal">10+</strong>
-          </span>
-          <a
-            href="#"
-            className="text-xs sm:text-sm text-blue-500 hover:underline mb-1 md:mb-0 md:mt-1"
-          >
-            (View Categories)
-          </a>
-        </div>
-        <div className="flex flex-col md:flex-row my-4">
-          <span className="text-base sm:text-lg md:text-xl font-bold flex items-center gap-2">
-            <GrTrophy className="h-4 w-4 sm:h-5 sm:w-5" />
-            Cash Prize Pool:
-            <strong className="font-normal">₹100,000</strong>
+            <strong className="font-normal">{eventDetails.categories.length}</strong>
           </span>
         </div>
-        <div className="my-4">
-          <h3 className="text-base sm:text-lg md:text-xl font-bold flex items-center mb-2">
-            <FaStar className="mr-2 text-2xl" /> Event USP
-          </h3>
-          <ul className="space-y-2 ml-6">
-            <li className="flex items-center text-sm sm:text-base">
-              <GiShuttlecock className="mr-2 flex-none h-4 w-4 sm:h-5 sm:w-5" />
-              Yonex AS 2 Feather Shuttles for premium gameplay.
-            </li>
-            <li className="flex items-center text-sm sm:text-base">
-              <GiWhistle className="mr-2 h-4 w-4 sm:h-5 sm:w-5 flex-none" />
-              External Umpires ensuring fair and professional matches.
-            </li>
-          </ul>
-        </div>
-        <div className="my-4">
-          <h3 className="text-base sm:text-lg md:text-xl font-bold flex items-center mb-2">
-            <RiStarSmileFill className="mr-2 text-2xl" /> Sponsored By
-          </h3>
-          <div className="grid grid-cols-3 gap-4 ml-6">
-            <div className="rounded-lg flex flex-col p-4">
-              <Image
-                src="/images/sponsor (1).svg"
-                alt="Nexus Global Ventures"
-                width={60}
-                height={60}
-                className="mb-2 object-contain"
-              />
-              <span className="text-[11px]  md:text-sm leading-none">
-                Nexus Global Ventures
-              </span>
-            </div>
-            <div className="rounded-lg flex flex-col p-4">
-              <Image
-                src="/images/sponsor (2).svg"
-                alt="Summit Crest Corporation"
-                width={60}
-                height={60}
-                className="mb-2 object-contain"
-              />
-              <span className="text-[11px]  md:text-sm leading-none">
-                Summit Crest Corporation
-              </span>
-            </div>
-            <div className="rounded-lg flex flex-col p-4 text-sm">
-              <Image
-                src="/images/sponsor (1).svg"
-                alt="Titan Edge Enterprises"
-                width={60}
-                height={60}
-                className="mb-2 object-contain"
-              />
-              <span className="text-[11px] md:text-sm leading-none">
-                Titan Edge Enterprises
-              </span>
-            </div>
+
+        {eventDetails.cash_price_pool && (
+          <div className="flex flex-col md:flex-row my-4">
+            <span className="text-base sm:text-lg md:text-xl font-bold flex items-center gap-2">
+              <FaStar className="h-4 w-4 sm:h-5 sm:w-5" />
+              Cash Prize Pool:
+              <strong className="font-normal">₹{eventDetails.cash_price_pool}</strong>
+            </span>
           </div>
-        </div>
+        )}
+
+        {eventDetails.event_usp && (
+          <div className="my-4">
+            <h3 className="text-base sm:text-lg md:text-xl font-bold flex items-center mb-2">
+              <FaStar className="mr-2 text-2xl" /> Event USP
+            </h3>
+            <p className="text-sm sm:text-base ml-6">{eventDetails.event_usp}</p>
+          </div>
+        )}
       </div>
 
       {/* Event Organizer */}
@@ -207,7 +160,7 @@ const EventPageRightContent = ({ eventDetails }: any) => {
           />
           <div>
             <h1 className="text-base sm:text-lg md:text-xl font-bold mb-2">
-              Siri Fort Board Sports Trust Committee Delhi
+              {eventDetails.organizer_name}
             </h1>
             <Image
               src="/images/EliteBadgeDark.svg"
@@ -217,92 +170,11 @@ const EventPageRightContent = ({ eventDetails }: any) => {
             />
           </div>
         </div>
-
-        <div className="space-y-1">
-          <div className="flex items-center gap-1 cursor-pointer hover:underline text-nowrap font-bold text-sm sm:text-base">
-            Ratings:
-            <span className="font-normal">5173</span>
-          </div>
-          <div className="flex items-center gap-1 cursor-pointer hover:underline text-nowrap font-bold text-sm sm:text-base">
-            Events Hosted:
-            <span className="font-normal">5173</span>
-          </div>
-          <div className="flex items-center gap-1 cursor-pointer hover:underline text-nowrap font-bold text-sm sm:text-base">
-            Hosting Since:
-            <span className="text-blue-600 font-normal">5173</span>
-          </div>
-          <div className="flex items-center gap-1 cursor-pointer hover:underline text-nowrap font-bold text-sm sm:text-base">
-            Phone:
-            <span className="text-blue-600 font-normal">5173</span>
-          </div>
-          <div className="flex items-center gap-1 cursor-pointer hover:underline text-nowrap font-bold text-sm sm:text-base">
-            Email:
-            <span className="text-blue-600 font-normal">5173</span>
-          </div>
-          <div className="flex items-center gap-1 cursor-pointer hover:underline text-nowrap font-bold text-sm sm:text-base">
-            Website:
-            <span className="text-blue-600 font-normal">5173</span>
-          </div>
-          <div className="flex items-center gap-1 cursor-pointer hover:underline text-nowrap font-bold text-sm sm:text-base">
-            <Image
-              src="/icons/image 60.svg"
-              alt="Instagram Icon"
-              width={16}
-              height={16}
-              className="sm:w-5 sm:h-5"
-            />
-            <span className="text-blue-600 font-normal">Instagram</span>
-          </div>
-        </div>
       </div>
-      <div className="w-full lg:hidden relative h-auto sm:h-auto lg:h-auto">
-        <div>
-          <h1 className="text-2xl font-semibold mb-2">Event Information</h1>
-          <h2 className="mb-4">
-            Total Registrations: {eventDetails.totalRegistrations}
-            <a href="#" className="text-blue-600 ml-2 hover:underline">
-              View player names
-            </a>
-          </h2>
-        </div>
-        <div className="mb-6">
-          <h3 className="text-xl font-bold mb-2">Location</h3>
-          <p>
-            {eventDetails.location}{" "}
-            <Link href="/location">
-              <span className="text-blue-400">(Click here)</span>
-            </Link>
-          </p>
-        </div>
-        <div className="mb-6">
-          <h3 className="text-xl font-bold mb-2">Description</h3>
-          <p>{eventDetails.description}</p>
-        </div>
-        <div className="mb-6">
-          <h3 className="text-xl font-bold mb-2">Event Categories</h3>
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-            {eventDetails.events.map((event: any, index: number) => (
-              <EventCategoryCard key={index} event={event} />
-            ))}
-          </div>
-        </div>
-        <div className="mb-6">
-          <h3 className="text-xl font-bold mb-2">Rewards</h3>
-          <div className="mb-4">
-            <p className="whitespace-pre-line">{eventDetails.rewards}</p>
-          </div>
-        </div>
 
-        <div className="mb-6">
-          <h3 className="text-xl font-bold mb-2">Rules</h3>
-          <div className="mb-4">
-            <p className="whitespace-pre-line">{eventDetails.rules}</p>
-          </div>
-        </div>
-      </div>
-      <QnaSectionEventpage isright={true} />
+      {eventDetails.show_qna && <QnaSectionEventpage isright={true} eventId={eventDetails.id} />}
     </div>
   );
 };
 
-export default EventPageRightContent
+export default EventPageRightContent;

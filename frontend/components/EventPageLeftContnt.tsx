@@ -1,378 +1,306 @@
-import Image from 'next/image'
-import React from 'react'
-import { Button } from './ui/button'
-import { BiLike } from 'react-icons/bi'
-import { IoLocationSharp, IoShareSocialSharp } from 'react-icons/io5'
-import EventCategoryCard from './EventCategoryCard'
-import QnaSectionEventpage from './QnaSectionEventpage'
-import { Badge } from './ui/badge'
-import { RiDiscountPercentLine, RiStarSmileFill } from 'react-icons/ri'
-import { CalendarIcon } from 'lucide-react'
-import { VscGraph } from 'react-icons/vsc'
-import { HiCurrencyRupee } from 'react-icons/hi2'
-import { FaBasketballBall, FaStar } from 'react-icons/fa'
-import { MdCategory } from 'react-icons/md'
-import { GrTrophy } from 'react-icons/gr'
-import { GiEntryDoor, GiShuttlecock, GiWhistle } from 'react-icons/gi'
-import { useRouter } from 'next/navigation'
-import { PiHandWithdraw } from 'react-icons/pi'
-import Link from 'next/link'
+import Image from 'next/image';
+import React, { useEffect } from 'react';
+import { Button } from './ui/button';
+import { BiLike } from 'react-icons/bi';
+import { IoLocationSharp, IoShareSocialSharp } from 'react-icons/io5';
+import { Badge } from './ui/badge';
+import { RiDiscountPercentLine } from 'react-icons/ri';
+import { CalendarIcon } from 'lucide-react';
+import { VscGraph } from 'react-icons/vsc';
+import { HiCurrencyRupee } from 'react-icons/hi2';
+import { GiEntryDoor } from 'react-icons/gi';
+import { PiHandWithdraw } from 'react-icons/pi';
+import Link from 'next/link';
+import { useRouter } from 'next/navigation';
+import QnaSectionEventpage from './QnaSectionEventpage';
+import { useToast } from '@/hooks/use-toast';
 
-const EventPageLeftContnt = ({eventDetails}:any) => {
-  const router=useRouter()
+interface EventCategory {
+  id: number;
+  category_name: string;
+  price: number;
+  ticket_description: string;
+  has_discount: boolean;
+  discount_type: string;
+  discount_value: number;
+  gender: string;
+  min_age: number;
+  max_age: number;
+}
+
+interface EventDetails {
+  id: string;
+  event_name: string;
+  organizer_name: string;
+  desktop_cover_image_url: string;
+  mobile_cover_image_url: string;
+  start_date: string;
+  end_date: string;
+  start_time: string;
+  last_registration_date: string;
+  last_withdrawal_date: string;
+  venue_name: string;
+  city: string;
+  street_address: string;
+  event_description: string;
+  event_usp: string;
+  playing_rules: string;
+  rewards_for_participants: string;
+  sport: string;
+  countdown: boolean;
+  show_qna: boolean;
+  categories: EventCategory[];
+}
+
+const EventPageLeftContnt = ({ eventDetails }: { eventDetails: EventDetails }) => {
+  const router = useRouter();
+  const { toast } = useToast();
+  const lowestPrice = Math.min(...eventDetails.categories.map(cat => cat.price));
+
+  const handleShare = async () => {
+    try {
+      await navigator.share({
+        title: eventDetails.event_name,
+        text: eventDetails.event_description,
+        url: window.location.href,
+      });
+    } catch (error) {
+      // Fallback to copying to clipboard
+      navigator.clipboard.writeText(window.location.href);
+      toast({
+        title: "Link copied to clipboard!",
+        description: "You can now share it with others",
+      });
+    }
+  };
+
   return (
     <div className="w-full lg:w-2/3 relative h-full">
+      {/* Event Image */}
       <div className="w-full h-full">
         <Image
-          src="/images/img2.jpeg"
-          alt="Event Poster"
+          src={eventDetails.desktop_cover_image_url || '/images/default-event.jpg'}
+          alt={eventDetails.event_name}
           className="object-cover w-full h-64 sm:h-96 lg:h-[500px] rounded-lg"
-          width={200}
-          height={200}
+          width={1200}
+          height={800}
+          priority
         />
       </div>
-      <div className="flex w-full  flex-col md:flex-row justify-between items-center my-4 space-y-4 md:space-y-0">
-        <h1
-          className="text-xl font-semibold text-center lg:text-left"
-          style={{ textShadow: "0 3px 0 #cddc29" }}
-        >
-          Liked By 1983 Players
-        </h1>
 
+      {/* Like and Share Section */}
+      <div className="flex w-full flex-col md:flex-row justify-between items-center my-4 space-y-4 md:space-y-0">
         <div className="flex justify-center md:justify-between gap-2 xl:gap-12">
           <Button
             size="sm"
             variant="outline"
             className="border-2 shadow-lg border-black flex items-center"
+            onClick={handleShare}
           >
-            <h1 className=" mr-1">Like</h1> <BiLike />
-          </Button>
-          <Button
-            size="sm"
-            variant="outline"
-            className="border-2 shadow-lg border-black flex items-center"
-          >
-            <h1 className=" mr-1">Share</h1> <IoShareSocialSharp />
+            <h1 className="mr-1">Share</h1> <IoShareSocialSharp />
           </Button>
           <Button
             size="sm"
             variant="outline"
             className="border-2 shadow-lg border-black"
+            onClick={() => router.push(`/event/${eventDetails.id}/matches`)}
           >
             View Matches
           </Button>
         </div>
 
-        <div className="flex justify-center items-center gap-4 bg-[#E6EAC5] px-4 rounded py-2 w-full md:w-auto">
-          <h1 className="font-semibold text-center">Countdown</h1>
-          <div className="flex gap-2 sm:gap-4">
-            <div className="flex flex-col items-center justify-center leading-tight">
-              <h1 className="font-semibold">12</h1>
-              <p className="text-[10px]">Days</p>
-            </div>
-            <div className="flex flex-col items-center justify-center leading-tight">
-              <h1 className="font-semibold">10</h1>
-              <p className="text-[10px]">Hours</p>
-            </div>
-            <div className="flex flex-col items-center justify-center leading-tight">
-              <h1 className="font-semibold">20</h1>
-              <p className="text-[10px]">Minutes</p>
-            </div>
+        {eventDetails.countdown && (
+          <div className="flex justify-center items-center gap-4 bg-[#E6EAC5] px-4 rounded py-2 w-full md:w-auto">
+            <h1 className="font-semibold text-center">Countdown</h1>
+            <CountdownTimer targetDate={new Date(eventDetails.start_date)} />
           </div>
-        </div>
+        )}
       </div>
-      <div className="lg:hidden border-2 border-[#141F29] p-4 rounded-lg text-[#141F29] my-4">
-        <h1 className="text-xl sm:text-2xl md:text-3xl font-bold mb-4 line-clamp-2">
-          Summer Basketball Tournament Pro League Men Champ 2.0 2024
+
+      {/* Event Details */}
+      <div className="border-2 border-[#141F29] p-4 rounded-lg text-[#141F29] my-4">
+        <h1 className="text-xl sm:text-2xl md:text-3xl font-bold mb-4">
+          {eventDetails.event_name}
         </h1>
 
         <div className="flex flex-wrap gap-2 mb-4">
           <Badge className="bg-[#E6EAC5] text-[#141F29] text-sm sm:text-base">
-            Badminton
+            {eventDetails.sport}
           </Badge>
-          <Badge className="bg-[#E6EAC5] text-[#141F29] text-sm sm:text-base">
-            Elite
-          </Badge>
-          <Badge className="bg-[#E6EAC5] text-[#F3524F] text-sm sm:text-base flex items-center">
-            <RiDiscountPercentLine className="mr-2" />
-            Early Bird Discount
-          </Badge>
+          {eventDetails.categories.some(cat => cat.has_discount) && (
+            <Badge className="bg-[#E6EAC5] text-[#F3524F] text-sm sm:text-base flex items-center">
+              <RiDiscountPercentLine className="mr-2" />
+              Early Bird Discount
+            </Badge>
+          )}
         </div>
 
         <div className="space-y-3 mb-6">
           <div className="flex items-center">
             <CalendarIcon className="w-4 h-4 sm:w-5 sm:h-5 mr-2" />
             <span className="text-sm sm:text-base">
-              25 December 2024 | 8 PM onwards
+              {new Date(eventDetails.start_date).toLocaleDateString()} | {eventDetails.start_time}
             </span>
           </div>
           <div className="flex items-center">
             <GiEntryDoor className="w-4 h-4 sm:w-5 sm:h-5 mr-2" />
             <span className="text-sm sm:text-base">
-              Last Date to Register: 20 December 2024
+              Last Date to Register: {new Date(eventDetails.last_registration_date).toLocaleDateString()}
             </span>
           </div>
           <div className="flex items-center">
             <PiHandWithdraw className="w-4 h-4 sm:w-5 sm:h-5 mr-2" />
             <span className="text-sm sm:text-base">
-              Last Date to Withdraw: 23 December 2024
+              Last Date to Withdraw: {new Date(eventDetails.last_withdrawal_date).toLocaleDateString()}
             </span>
           </div>
           <div className="flex items-center">
             <IoLocationSharp className="w-4 h-4 sm:w-5 sm:h-5 mr-2" />
             <span className="text-sm sm:text-base">
-              Major Dhyan Chand Stadium
+              {eventDetails.venue_name}, {eventDetails.street_address}, {eventDetails.city}
             </span>
           </div>
-          <Link href={`/eventspage/${"1"}`}>
-            <div className="flex items-center gap-1 cursor-pointer hover:underline text-nowrap">
-              <VscGraph className="w-4 h-4 sm:w-5 sm:h-5  mr-1" />
-              <span className="text-sm sm:text-base">Registrations:</span>
-              <span className="text-blue-600 text-sm sm:text-base">5173</span>
-            </div>
-          </Link>
           <div className="flex items-center">
             <HiCurrencyRupee className="w-4 h-4 sm:w-5 sm:h-5 mr-2" />
-            <span className="text-sm sm:text-base  mr-2">Starting From:</span>
+            <span className="text-sm sm:text-base mr-2">Starting From:</span>
             <span className="text-lg sm:text-xl md:text-2xl font-bold">
-              ₹699
+              ₹{lowestPrice}
             </span>
           </div>
         </div>
 
         <div>
-          <Button
-            onClick={() => router.push("/eventspage/1234")}
-            variant="tertiary"
-            className="w-full border-2 border-black py-8 text-xl"
-          >
-            Register Now
-          </Button>
-          <p className="text-xl hover:underline text-blue-400 text-center mt-2">
-            Already Registered ?
-          </p>
-        </div>
-      </div>
-
-      {/* Event Features */}
-      <div className="lg:hidden border-2 border-[#141F29] p-4 rounded-lg text-[#141F29] my-4">
-        <h1 className="text-xl sm:text-2xl md:text-3xl font-bold mb-4">
-          Event Features
-        </h1>
-
-        <div className="flex flex-wrap gap-2 mb-4">
-          <Badge className="bg-[#E6EAC5] text-[#141F29] text-sm sm:text-base flex items-center">
-            <FaBasketballBall className="mr-2" />
-            Single
-          </Badge>
-          <Badge className="bg-[#E6EAC5] text-[#141F29] text-sm sm:text-base flex items-center">
-            <FaBasketballBall className="mr-2" />
-            Double
-          </Badge>
-          <Badge className="bg-[#E6EAC5] text-[#141F29] text-sm sm:text-base flex items-center">
-            <FaBasketballBall className="mr-2" />
-            Team
-          </Badge>
-        </div>
-        <div className="flex flex-col md:flex-row my-4">
-          <span className="text-base sm:text-lg md:text-xl font-bold flex items-center gap-2">
-            <MdCategory className="h-4 w-4 sm:h-5 sm:w-5" />
-            Number of Categories:
-            <strong className="font-normal">10</strong>
-          </span>
-          <a
-            href="#"
-            className="text-md text-blue-500 hover:underline ml-6 sm:ml-0 mb-1 md:mb-0 md:mt-1 "
-          >
-            (View Categories)
-          </a>
-        </div>
-        <div className="flex flex-col md:flex-row my-4">
-          <span className="text-base sm:text-lg md:text-xl font-bold flex items-center gap-2">
-            <GrTrophy className="h-4 w-4 sm:h-5 sm:w-5" />
-            Cash Prize Pool:
-            <strong className="font-normal">₹100,000</strong>
-          </span>
-        </div>
-        <div className="my-4">
-          <h3 className="text-base sm:text-lg md:text-xl font-bold flex items-center mb-2">
-            <FaStar className="h-4 w-4 sm:h-5 sm:w-5 mr-2" /> Event USP
-          </h3>
-          <ul className="space-y-2 ml-6">
-            <li className="flex items-center text-sm sm:text-base">
-              <GiShuttlecock className="mr-2 flex-none h-4 w-4 sm:h-5 sm:w-5" />
-              Yonex AS 2 Feather Shuttles for premium gameplay.
-            </li>
-            <li className="flex items-center text-sm sm:text-base">
-              <GiWhistle className="mr-2 h-4 w-4 sm:h-5 sm:w-5 flex-none" />
-              External Umpires ensuring fair and professional matches.
-            </li>
-          </ul>
-        </div>
-        <div className="my-4">
-          <h3 className="text-base sm:text-lg md:text-xl font-bold flex items-center mb-2">
-            <RiStarSmileFill className="h-4 w-4 sm:h-5 sm:w-5 mr-2" /> Sponsored
-            By
-          </h3>
-          <div className="grid grid-cols-3 gap-4 ml-6">
-            <div className="rounded-lg flex flex-col p-4">
-              <Image
-                src="/images/sponsor (1).svg"
-                alt="Nexus Global Ventures"
-                width={60}
-                height={60}
-                className="mb-2 object-contain"
-              />
-              <span className="text-[11px]  md:text-sm leading-none">
-                Nexus Global Ventures
-              </span>
-            </div>
-            <div className="rounded-lg flex flex-col p-4">
-              <Image
-                src="/images/sponsor (2).svg"
-                alt="Summit Crest Corporation"
-                width={60}
-                height={60}
-                className="mb-2 object-contain"
-              />
-              <span className="text-[11px]  md:text-sm leading-none">
-                Summit Crest Corporation
-              </span>
-            </div>
-            <div className="rounded-lg flex flex-col p-4 text-sm">
-              <Image
-                src="/images/sponsor (1).svg"
-                alt="Titan Edge Enterprises"
-                width={60}
-                height={60}
-                className="mb-2 object-contain"
-              />
-              <span className="text-[11px] md:text-sm leading-none">
-                Titan Edge Enterprises
-              </span>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      {/* Event Organizer */}
-      <div className="lg:hidden border-2 border-[#141F29] p-4 rounded-lg text-[#141F29] my-4">
-        <h1 className="text-xl sm:text-2xl md:text-3xl font-bold mb-4">
-          Event Organizer
-        </h1>
-        <div className="flex flex-row items-center md:items-start gap-4 mb-4">
-          <Image
-            src="/images/EventPoster.svg"
-            alt="Organizer Image"
-            width={150}
-            height={150}
-            className="rounded-full w-20 sm:w-24 h-20 sm:h-24 object-cover"
-          />
-          <div>
-            <h1 className="text-base sm:text-lg md:text-xl font-bold mb-2">
-              Siri Fort Board Sports Trust Committee Delhi
-            </h1>
-            <Image
-              src="/images/EliteBadgeDark.svg"
-              alt="Elite Badge"
-              width={100}
-              height={100}
-            />
-          </div>
-        </div>
-
-        <div className="lg:hidden space-y-1">
-          <div className="flex items-center gap-1 cursor-pointer hover:underline text-nowrap font-bold text-sm sm:text-base">
-            Ratings:
-            <span className="font-normal">5173</span>
-          </div>
-          <div className="flex items-center gap-1 cursor-pointer hover:underline text-nowrap font-bold text-sm sm:text-base">
-            Events Hosted:
-            <span className="font-normal">5173</span>
-          </div>
-          <div className="flex items-center gap-1 cursor-pointer hover:underline text-nowrap font-bold text-sm sm:text-base">
-            Hosting Since:
-            <span className="text-blue-600 font-normal">5173</span>
-          </div>
-          <div className="flex items-center gap-1 cursor-pointer hover:underline text-nowrap font-bold text-sm sm:text-base">
-            Phone:
-            <span className="text-blue-600 font-normal">5173</span>
-          </div>
-          <div className="flex items-center gap-1 cursor-pointer hover:underline text-nowrap font-bold text-sm sm:text-base">
-            Email:
-            <span className="text-blue-600 font-normal">5173</span>
-          </div>
-          <div className="flex items-center gap-1 cursor-pointer hover:underline text-nowrap font-bold text-sm sm:text-base">
-            Website:
-            <span className="text-blue-600 font-normal">5173</span>
-          </div>
-          <div className="flex items-center gap-1 cursor-pointer hover:underline text-nowrap font-bold text-sm sm:text-base">
-            <Image
-              src="/icons/image 60.svg"
-              alt="Instagram Icon"
-              width={16}
-              height={16}
-              className="sm:w-5 sm:h-5"
-            />
-            <span className="text-blue-600 font-normal">Instagram</span>
-          </div>
-        </div>
-      </div>
-
-      <div className="hidden lg:block w-full relative h-auto sm:h-auto lg:h-auto">
-        <div className="flex justify-between items-center">
-          <div>
-            <h1 className="text-2xl font-semibold mb-2">Event Information</h1>
-            <h2 className="mb-4">
-              Total Registrations: {eventDetails.totalRegistrations}
-              <a href="#" className="text-blue-600 ml-2 hover:underline">
-                View player names
-              </a>
-            </h2>
-          </div>
-          <div className="mr-5">
-            <h1 className="text-blue-400 hover:underline text-2xl cursor-pointer ">
-              Already Registered ?
-            </h1>
-          </div>
-        </div>
-        <div className="mb-6">
-          <h3 className="text-xl font-bold mb-2">Location</h3>
-          <Link href="/location">
-            <p className="hover:underline hover:to-blue-400">
-              {eventDetails.location}
+          <Link href={`/choosecategory/${eventDetails.id}`}>
+            <Button
+              variant="tertiary"
+              className="w-full border-2 border-black py-8 text-xl"
+            >
+              Register Now
+            </Button>
+          </Link>
+          <Link href={`/event/${eventDetails.id}/registration-status`}>
+            <p className="text-xl hover:underline text-blue-400 text-center mt-2">
+              Already Registered?
             </p>
           </Link>
         </div>
-        <div className="mb-6">
-          <h3 className="text-xl font-bold mb-2">Description</h3>
-          <p>{eventDetails.description}</p>
-        </div>
-        <div className="mb-6">
-          <h3 className="text-xl font-bold mb-2">Event Categories</h3>
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-            {eventDetails.events.map((event: any, index: number) => (
-              <EventCategoryCard key={index} event={event} />
+      </div>
+
+      {/* Event Description Section */}
+      <div className="hidden lg:block space-y-6 mt-8">
+        <section>
+          <h2 className="text-xl font-bold mb-2">Event Description</h2>
+          <p className="text-gray-700">{eventDetails.event_description}</p>
+        </section>
+
+        <section>
+          <h2 className="text-xl font-bold mb-2">Event Categories</h2>
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            {eventDetails.categories.map((category) => (
+              <div key={category.id} className="border p-4 rounded-lg">
+                <h3 className="font-bold">{category.category_name}</h3>
+                <p className="text-sm text-gray-600">{category.ticket_description}</p>
+                <div className="mt-2">
+                  <span className="font-bold">₹{category.price}</span>
+                  {category.has_discount && (
+                    <span className="text-green-600 ml-2">
+                      {category.discount_type === 'percentage' 
+                        ? `${category.discount_value}% off`
+                        : `₹${category.discount_value} off`}
+                    </span>
+                  )}
+                </div>
+                {category.gender && (
+                  <p className="text-sm mt-1">Gender: {category.gender}</p>
+                )}
+                {(category.min_age || category.max_age) && (
+                  <p className="text-sm">
+                    Age: {category.min_age} - {category.max_age} years
+                  </p>
+                )}
+              </div>
             ))}
           </div>
-        </div>
-        <div className="mb-6">
-          <h3 className="text-xl font-bold mb-2">Rewards</h3>
-          <div className="mb-4">
-            <p className="whitespace-pre-line">{eventDetails.rewards}</p>
-          </div>
-        </div>
+        </section>
 
-        <div className="mb-6">
-          <h3 className="text-xl font-bold mb-2">Rules</h3>
-          <div className="mb-4">
-            <p className="whitespace-pre-line">{eventDetails.rules}</p>
-          </div>
-        </div>
+        <section>
+          <h2 className="text-xl font-bold mb-2">Playing Rules</h2>
+          <p className="text-gray-700">{eventDetails.playing_rules}</p>
+        </section>
+
+        <section>
+          <h2 className="text-xl font-bold mb-2">Rewards & Participation</h2>
+          <p className="text-gray-700">{eventDetails.rewards_for_participants}</p>
+        </section>
       </div>
-      <QnaSectionEventpage isright={false} />
+
+      {eventDetails.show_qna && <QnaSectionEventpage isright={false} eventId={eventDetails.id} />}
     </div>
   );
-}
+};
 
-export default EventPageLeftContnt
+const CountdownTimer = ({ targetDate }: { targetDate: string }) => {
+  const [timeLeft, setTimeLeft] = React.useState<{
+    days: number;
+    hours: number;
+    minutes: number;
+    seconds: number;
+  }>({ days: 0, hours: 0, minutes: 0, seconds: 0 });
+
+  useEffect(() => {
+    const calculateTimeLeft = () => {
+      const difference = new Date(targetDate).getTime() - new Date().getTime();
+      
+      if (difference <= 0) {
+        return { days: 0, hours: 0, minutes: 0, seconds: 0 };
+      }
+
+      return {
+        days: Math.floor(difference / (1000 * 60 * 60 * 24)),
+        hours: Math.floor((difference / (1000 * 60 * 60)) % 24),
+        minutes: Math.floor((difference / 1000 / 60) % 60),
+        seconds: Math.floor((difference / 1000) % 60)
+      };
+    };
+
+    // Initial calculation
+    setTimeLeft(calculateTimeLeft());
+
+    // Update every second
+    const timer = setInterval(() => {
+      const timeLeft = calculateTimeLeft();
+      setTimeLeft(timeLeft);
+
+      // Clear interval if we've reached the target date
+      if (Object.values(timeLeft).every(v => v === 0)) {
+        clearInterval(timer);
+      }
+    }, 1000);
+
+    // Cleanup on unmount
+    return () => clearInterval(timer);
+  }, [targetDate]);
+
+  return (
+    <div className="flex gap-2 sm:gap-4">
+      <div className="flex flex-col items-center justify-center leading-tight bg-white px-2 py-1 rounded">
+        <span className="font-semibold text-lg">{timeLeft.days}</span>
+        <span className="text-xs">Days</span>
+      </div>
+      <div className="flex flex-col items-center justify-center leading-tight bg-white px-2 py-1 rounded">
+        <span className="font-semibold text-lg">{timeLeft.hours}</span>
+        <span className="text-xs">Hours</span>
+      </div>
+      <div className="flex flex-col items-center justify-center leading-tight bg-white px-2 py-1 rounded">
+        <span className="font-semibold text-lg">{timeLeft.minutes}</span>
+        <span className="text-xs">Mins</span>
+      </div>
+      <div className="flex flex-col items-center justify-center leading-tight bg-white px-2 py-1 rounded">
+        <span className="font-semibold text-lg">{timeLeft.seconds}</span>
+        <span className="text-xs">Secs</span>
+      </div>
+    </div>
+  );
+};
+
+export default EventPageLeftContnt;

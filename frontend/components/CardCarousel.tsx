@@ -12,6 +12,34 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 
+interface Event {
+  id: string;
+  event_name: string;
+  organizer_contact_number: string;
+  organizer_email: string;
+  start_date: string;
+  end_date: string;
+  last_registration_date: string;
+  last_withdrawal_date: string;
+  venue_name: string;
+  street_address: string;
+  city: string;
+  pincode: string;
+  event_description: string;
+  event_usp: string;
+  desktop_cover_image_url: string;
+  mobile_cover_image_url: string;
+  start_time: string;
+  sport: string;
+  cash_price_pool: string;
+  organizer_name: string;
+  categories: {
+    id: number;
+    price: number;
+  }[];
+}
+
+
 const SportsType = [
   {
     name: "Tennis",
@@ -66,8 +94,7 @@ const SportsType = [
 ];
 
 const CardCarousel = () => {
-  const scrollRef = useRef<HTMLDivElement>(null);
-  const [events, setEvents] = useState([]);
+  const [events, setEvents] = useState<Event[]>([]);
 
   const NextArrow = (props: any) => {
     const { className, onClick } = props;
@@ -129,19 +156,8 @@ const CardCarousel = () => {
       try {
         const response = await fetch("/api/event/all_events");
         const data = await response.json();
-        const formattedEvents = data.events.map((event: any) => ({
-          id:event.id,
-          image: event.desktop_cover_image_url,
-          date: event.start_date,
-          name: event.event_name,
-          eventname: event.event_name,
-          location: `${event.venue_name}, ${event.city}`,
-          time: event.start_time,
-          noOfEntries: 100,
-          sport: event.sport,
-          price: 500,
-        }));
-        setEvents(formattedEvents);
+        
+        setEvents(data.events);
       } catch (error) {
         console.error("Error fetching events:", error);
       }
@@ -180,15 +196,7 @@ const CardCarousel = () => {
           <div className="px-2 xl:px-10 pb-6" key={i}>
             <EventCard
               id={e.id}
-              image={e.image}
-              date={e.date}
-              name={e.name}
-              eventname={e.eventname}
-              location={e.location}
-              time={e.time}
-              noOfEntries={e.noOfEntries}
-              sport={e.sport}
-              price={e.price}
+              eventDetails={e}
             />
           </div>
         ))}
