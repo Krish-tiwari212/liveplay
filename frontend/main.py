@@ -1,6 +1,6 @@
 import requests
 
-url = "https://api.msg91.com/api/v5/whatsapp/whatsapp-outbound-message/bulk/"
+# url = "https://api.msg91.com/api/v5/whatsapp/whatsapp-outbound-message/bulk/"
 
 # payload = {
 #   "integrated_number": "919359059696",
