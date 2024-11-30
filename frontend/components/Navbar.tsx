@@ -17,12 +17,18 @@ import {
 import { Button } from './ui/button';
 import { RiLoginCircleFill } from 'react-icons/ri';
 
+interface location {
+  latitude: number|null;
+  longitude: number|null;
+}
 
-const Navbar = () => {
+interface NavbarProps {
+  location?: location;
+}
+
+const Navbar = ({ location }: NavbarProps) => {
   const supabase = createClient();
   const [isLoggedIn, setIsLoggedIn] = useState(false);
-
-  
 
   useEffect(() => {
     const checkLoginStatus = async () => {
@@ -64,7 +70,7 @@ const Navbar = () => {
   const scrollToSection = (sectionId: string) => {
     const section = document.getElementById(sectionId);
     if (section) {
-      section.scrollIntoView({ behavior: 'smooth' });
+      section.scrollIntoView({ behavior: "smooth" });
     }
   };
 
@@ -149,6 +155,6 @@ const Navbar = () => {
       </div>
     </div>
   );
-}
+};
 
 export default Navbar;

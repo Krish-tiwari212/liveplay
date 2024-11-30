@@ -46,9 +46,9 @@ const HeroChangingTagLine = ({
 
   return (
     <div
-      className={`${extraclass} ${
+      className={`${
         ishero ? "bg-[#cddc29]" : "bg-[#7F1CFF]"
-      } w-full flex justify-center items-center p-3 gap-2`}
+      } w-full flex justify-center items-center p-3 gap-2 ${extraclass}`}
     >
       {ishero ? (
         <>

@@ -123,6 +123,7 @@ const QnaSectionEventpage = ({ isright }: QnaSectionEventpageProps) => {
   const [currentPage, setCurrentPage] = useState(1);
   const questionsPerPage = 4;
   const [isThankYouOpen, setIsThankYouOpen] = useState(false);
+  const [error, setError] = useState<string | null>(null); 
 
   // Handle input change
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -139,9 +140,17 @@ const QnaSectionEventpage = ({ isright }: QnaSectionEventpageProps) => {
     //   question: question.trim(),
     //   answer: "This is a placeholder answer.",
     // };
+    const trimmedQuestion = question.trim();
+
+    // Validation for character length
+    if (trimmedQuestion.length < 25 || trimmedQuestion.length > 75) {
+      setError("Your question must be between 25 and 75 characters.");
+      return;
+    }
     setQuestions([newQA, ...questions]);
     setQuestion("");
-    setCurrentPage(1); // Reset to first page on new submission
+    setCurrentPage(1);
+    setIsThankYouOpen(true); // Reset to first page on new submission
   };
 
   // Calculate pagination
@@ -172,13 +181,14 @@ const QnaSectionEventpage = ({ isright }: QnaSectionEventpageProps) => {
       <form onSubmit={handleSubmit} className="question-form">
         <div className="my-2 flex gap-2 relative h-24 rounded border border-gray-800 px-2 py-1">
           <Input
-            placeholder="Type your reply..."
+            placeholder="Type your question... (25-75 characters)"
             className="w-full focus-visible:ring-0 focus-visible:ring-offset-0 border-none"
             value={question}
             onChange={handleChange}
           />
+          {error && <span className="text-red-600 text-sm mt-1">{error}</span>}
           <div className="flex flex-col gap-4 absolute right-2 bottom-4">
-            <Button type="submit" onClick={() => setIsThankYouOpen(true)}>
+            <Button type="submit">
               Submit
             </Button>
           </div>
@@ -248,9 +258,9 @@ const QnaSectionEventpage = ({ isright }: QnaSectionEventpageProps) => {
             <FaSmile className="text-4xl mb-4" />
             <DialogTitle className="text-2xl mb-2">Thank You!</DialogTitle>
             <DialogDescription className="text-center text-gray-700">
-              Organizers normally reply 
-              <span className="italic ml-1">within 24-28 hours</span>. Your Question
-              & their answer shall be visible below once they reply.
+              Organizers normally reply
+              <span className="italic ml-1">within 24-28 hours</span>. Your
+              Question & their answer shall be visible below once they reply.
             </DialogDescription>
             <Button
               variant="default"

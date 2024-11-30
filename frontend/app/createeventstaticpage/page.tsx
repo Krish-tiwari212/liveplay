@@ -455,7 +455,7 @@ const page = () => {
             Payments powered by
           </p>
           <div className="flex flex-col sm:flex-row justify-center items-center xl:space-x-4 mt-2">
-            <Image
+            {/* <Image
               src="/images/payment1 (1).svg"
               alt="PayU"
               width={200}
@@ -468,7 +468,7 @@ const page = () => {
               width={200}
               height={90}
               priority
-            />
+            /> */}
             <Image
               src="/images/payment1 (3).svg"
               alt="Razorpay"

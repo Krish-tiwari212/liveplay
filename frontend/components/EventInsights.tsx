@@ -11,6 +11,7 @@ interface FormField {
   name: string;
   placeholder?: string;
   required?: boolean;
+  maxlength?:number
 }
 
 interface EventInsights {
@@ -47,6 +48,7 @@ const Insightfields = [
     label: "Event Description",
     name: "event_description",
     type: "textarea",
+    maxlength: 250,
     placeholder:
       "Briefly describe your event, including the theme, key activities, and what makes it exciting for participants.",
   },
@@ -54,13 +56,15 @@ const Insightfields = [
     label: "Event USP",
     name: "event_usp",
     type: "textarea",
+    maxlength: 100,
     placeholder:
-      "Please describe what makes your event truly unique. (50 Charecters Only)",
+      "Please describe what makes your event truly unique. (50 Characters Only)",
   },
   {
     label: "Rewards And Prizes",
     name: "rewards_for_participants",
     type: "textarea",
+    maxlength: 500,
     placeholder:
       "List the prizes for participants, eligibility criteria, and how winners will be chosen.",
   },
@@ -68,15 +72,15 @@ const Insightfields = [
     label: "Playing Rules",
     name: "playing_rules",
     type: "textarea",
+    maxlength: 1000,
     placeholder:
       "Summarize the main rules for the event, including guidelines and scoring methods to ensure fair play.",
   },
   {
-    label: "Cash Price Pool",
+    label: "Cash Prize Pool",
     name: "cash_price_pool",
     type: "number",
-    placeholder:
-      "Enter Cash Price Pool",
+    placeholder: "Enter Cash Prize Pool",
   },
 ];
 
@@ -208,7 +212,7 @@ const EventInsights: React.FC<EventInsights> = ({
                 value={formData[field.name as keyof typeof formData] || ""}
                 onChange={handleChange}
                 className="w-full p-2 bg-white border rounded-md text-sm shadow-2xl text-[#17202A] focus:border-[#17202A] focus:outline-none focus:shadow-lg"
-                maxLength={field.name === "event_usp" ? 50 : undefined}
+                maxLength={field.maxlength}
               />
             )}
           </div>

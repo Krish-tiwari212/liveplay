@@ -348,11 +348,32 @@ const Kycforms: React.FC<KycFormsProps> = ({
   nextDisabled
 }) => {
   const {setUnlockEventCircle}=useEventContext()
-  const imageRefs = useRef<(HTMLInputElement | null)[]>([]);
   const [isImageLoading, setIsImageLoading] = useState(false);
   const [userType, setUserType] = useState<"business" | "individual">(
     "business"
   );
+  const [imagePreviews, setImagePreviews] = useState({});
+
+  const imageRefs = useRef({
+    mobileBanner: null,
+  });
+
+  const handleFileChange =
+    (type: keyof typeof imagePreviews) =>
+    (event: React.ChangeEvent<HTMLInputElement>) => {
+      const file = event.target.files?.[0];
+      if (file) {
+        const reader = new FileReader();
+        setIsImageLoading(true);
+        reader.onloadend = () => {
+          const base64Data = reader.result as string;
+          setImagePreviews((prev) => ({ ...prev, [type]: base64Data }));
+          
+          setIsImageLoading(false);
+        };
+        reader.readAsDataURL(file);
+      }
+    };
 
   const [formData, setFormData] = useState<{ [key: string]: string }>({});
 
@@ -372,6 +393,7 @@ const Kycforms: React.FC<KycFormsProps> = ({
       return true;
     });
   };
+  
   const handlenext=(e:any)=>{
     e.preventDefault();
     if (!isFormValid()){
@@ -383,11 +405,7 @@ const Kycforms: React.FC<KycFormsProps> = ({
       onButtonClick();
     } 
   }
-  useEffect(()=>{
-    setUnlockEventCircle({
-      fieldid:fields[0].fieldid,
-    })
-  },[])
+  
   return (
     <form className="bg-white shadow-2xl p-5 rounded-lg w-full relative mt-20">
       {!prevDisabled && (
@@ -425,7 +443,7 @@ const Kycforms: React.FC<KycFormsProps> = ({
             </div>
           </RadioGroup>
         )}
-        {fields.map((field, index) => (
+        {fields.map((field, i) => (
           <div key={field.id} className="w-full m-2 flex flex-col">
             {field.type !== "file" && field.type !== "select" && (
               <>
@@ -447,20 +465,22 @@ const Kycforms: React.FC<KycFormsProps> = ({
               </>
             )}
             {field.type === "file" && (
-              <div className="flex flex-col w-full mt-5">
+              <div className="flex flex-col w-full mt-5" key={field.id}>
                 <Label className="font-bold text-lg">
                   {field.filecontnet?.label}
+                  <span className="text-red-500">*</span>
                 </Label>
                 <div
                   className="flex items-center justify-center mt-1 h-[142px] w-full cursor-pointer flex-col gap-3 rounded-xl border-[3.2px] border-dashed border-gray-600  bg-white "
-                  onClick={() => imageRefs.current[index]?.click()}
+                  onClick={() => imageRefs.current[field.name]?.click()}
                 >
                   <Input
                     type="file"
                     className="hidden"
-                    ref={(el) => {
-                      imageRefs.current[index] = el;
-                    }}
+                    ref={(el) => (imageRefs.current[field.name] = el)}
+                    onChange={handleFileChange(
+                      field.name as keyof typeof imagePreviews
+                    )}
                   />
                   {!isImageLoading ? (
                     <Image
@@ -472,7 +492,7 @@ const Kycforms: React.FC<KycFormsProps> = ({
                     />
                   ) : (
                     <div className="text-16 flex items-center justify-center  font-medium text-gray-700 ">
-                      Uplaoding
+                      Uploading
                       <Loader size={20} className="animate-spin ml-2" />
                     </div>
                   )}
@@ -480,11 +500,24 @@ const Kycforms: React.FC<KycFormsProps> = ({
                     <h2 className="text-12 font-bold text-gray-400 ">
                       Click to upload
                     </h2>
-                    <p className="text-12 font-bold text-gray-500 text-center">
+                    <p className="text-12 text-center font-bold text-gray-500 ">
                       {field.filecontnet?.size}
                     </p>
                   </div>
                 </div>
+                {imagePreviews[field.name as keyof typeof imagePreviews] && (
+                  <div className="flex justify-center items-center py-2">
+                    <Image
+                      src={
+                        imagePreviews[field.name as keyof typeof imagePreviews]!
+                      }
+                      alt={`${field.name} preview`}
+                      width={400}
+                      height={400}
+                      className="rounded-md border-2"
+                    />
+                  </div>
+                )}
               </div>
             )}
             {field.type === "select" && (
@@ -532,10 +565,7 @@ const Kycforms: React.FC<KycFormsProps> = ({
         ))}
       </div>
       {buttonLabel && (
-        <Button
-          onClick={(e)=>handlenext(e)}
-          className="mt-3 w-full"
-        >
+        <Button onClick={(e) => handlenext(e)} className="mt-3 w-full">
           {buttonLabel}
         </Button>
       )}

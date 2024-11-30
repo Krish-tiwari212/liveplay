@@ -20,6 +20,7 @@ import Image from "next/image";
 import { useEventContext } from "@/context/EventDataContext";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "./ui/select";
 import { useUser } from "@/context/UserContext";
+import { Button } from "./ui/button";
 
 const Sidebar = ({ setnavexpanded }: { setnavexpanded :Dispatch<SetStateAction<boolean>>}) => {
   const [activePage, setActivePage] = useState("Dashboard");
@@ -107,7 +108,6 @@ const Sidebar = ({ setnavexpanded }: { setnavexpanded :Dispatch<SetStateAction<b
     >
       <div className="flex items-center mt-8 border-b border-gray-700 pb-8">
         {!isNavbarCollapsed && (
-          <Link href={"/"}>
             <div className="text-3xl font-bold text-gray-500 ml-2">
               <Image
                 src="/images/Logo.png"
@@ -116,7 +116,6 @@ const Sidebar = ({ setnavexpanded }: { setnavexpanded :Dispatch<SetStateAction<b
                 height={150}
               />
             </div>
-          </Link>
         )}
         {!isNavbarCollapsed && (
           <button
@@ -127,6 +126,16 @@ const Sidebar = ({ setnavexpanded }: { setnavexpanded :Dispatch<SetStateAction<b
           </button>
         )}
       </div>
+      {!isNavbarCollapsed && (
+      <Link href="/">
+        <Button
+          className="w-full bg-[#141f29] text-[#ccdb28] border border-[#ccdb28] hover:bg-[#ccdb28] hover:text-[#141f29] md:hidden mb-2"
+          size="xs"
+        >
+          Home
+        </Button>
+      </Link>
+      )}
       {!isNavbarCollapsed && (
         <>
           <ul className="space-y-2 flex-grow relative">

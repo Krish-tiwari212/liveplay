@@ -196,11 +196,11 @@ const EventMatrics = ({ handleNext }: EventMatricsProps) => {
   };
   return (
     <div className={`text-gray-800 px-2 sm:px-5 pb-5`}>
-      <div className="flex flex-col sm:flex-row gap-2 sm:gap-0 justify-between items-start sm:items-center mb-4 sm:mb-8">
+      <div className="flex after:flex-row gap-2 sm:gap-0 justify-between items-start sm:items-center mb-4 sm:mb-8">
         <h1 className="text-3xl text-gray-800 font-bold">Event Overview</h1>
         <Button
           onClick={() => handleCancelClick("Cancel Event")}
-          className="w-full sm:w-[20%]"
+          className=" sm:w-[20%]"
         >
           Cancel Event
         </Button>

@@ -14,6 +14,7 @@ import {
   FormLabel,
   FormControl,
   FormMessage,
+  FormDescription,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { useToast } from "@/hooks/use-toast";
@@ -34,6 +35,7 @@ import {
   InputOTPGroup,
   InputOTPSlot,
 } from "@/components/ui/input-otp";
+import { Checkbox } from "./ui/checkbox";
 
 // Validation schema for form fields
 const formSchema = z.object({
@@ -43,6 +45,7 @@ const formSchema = z.object({
   city: z.string().optional(),
   pincode: z.string().optional(),
   blood_group: z.string().optional(),
+  terms_and_condition:z.boolean()
 });
 
 const CompleteDetailsForm = () => {
@@ -53,6 +56,7 @@ const CompleteDetailsForm = () => {
   const [otpVisible, setOtpVisible] = useState(false);
   const [otpValue, setOtpValue] = useState("");
   const [otpVerified, setOtpVerified] = useState(false);
+  const [under18, setUnder18] = useState(false);
 
   const form = useForm({
     resolver: zodResolver(formSchema),
@@ -63,8 +67,23 @@ const CompleteDetailsForm = () => {
       city: "",
       pincode: "",
       blood_group: "",
+      terms_and_condition:false
     },
   });
+
+  const calculateAge = (dob: string) => {
+    const birthDate = new Date(dob);
+    const today = new Date();
+    let age = today.getFullYear() - birthDate.getFullYear();
+    const monthDiff = today.getMonth() - birthDate.getMonth();
+    if (
+      monthDiff < 0 ||
+      (monthDiff === 0 && today.getDate() < birthDate.getDate())
+    ) {
+      age--;
+    }
+    return age;
+  };
 
   const onSubmit = async (data: any) => {
     if (!otpVerified) {
@@ -141,70 +160,166 @@ const CompleteDetailsForm = () => {
   return (
     <div
       className="flex flex-col gap-4 items-center justify-center min-h-screen bg-gray-50"
-      style={{
-        backgroundImage: "url('/images/background.svg')",
-        backgroundSize: "cover",
-        backgroundPosition: "center",
-      }}
+      // style={{
+      //   backgroundImage: "url('/images/background.svg')",
+      //   backgroundSize: "cover",
+      //   backgroundPosition: "center",
+      // }}
     >
-      <Image
+      {/* <Image
         src="/images/Logo.png"
         alt="/images/Logo.png"
         width={300}
         height={300}
-      />
+      /> */}
       <div className="w-[90%] mx-auto sm:w-full max-w-lg p-8 bg-white rounded shadow-md">
-        <h2 className="text-2xl font-bold text-center mb-6">Complete Your Details</h2>
+        <h2 className="text-2xl font-bold text-center mb-6">
+          Complete Your Details
+        </h2>
         <Form {...form}>
-          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-2">
-            <FormField control={form.control} name="contact_number" render={({ field }) => (
-              <FormItem>
-                <FormLabel>Whatsapp Number <span className="text-red-500">*</span></FormLabel>
-                <FormControl>
-                  <div className="flex gap-2">
-                    <Input placeholder="Enter your whatsapp number" {...field} />
-                    <Button type="button" onClick={handleSendOtp}><FaWhatsapp />Verify</Button>
+          <form
+            onSubmit={form.handleSubmit((data) => {
+              const age = calculateAge(data.date_of_birth);
+              if (age < 18) {
+                setUnder18(true);
+              } else {
+                onSubmit(data);
+              }
+            })}
+            className="space-y-2"
+          >
+            <FormField
+              control={form.control}
+              name="contact_number"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>
+                    Whatsapp Number <span className="text-red-500">*</span>
+                  </FormLabel>
+                  <FormControl>
+                    <div className="flex gap-2">
+                      <Input
+                        placeholder="Enter your whatsapp number"
+                        {...field}
+                      />
+                      <Button type="button" onClick={handleSendOtp}>
+                        <FaWhatsapp />
+                        Verify
+                      </Button>
+                    </div>
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
+              name="gender"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>
+                    Gender <span className="text-red-500">*</span>
+                  </FormLabel>
+                  <FormControl>
+                    <Input placeholder="Enter your gender" {...field} />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
+              name="date_of_birth"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>
+                    Date of Birth <span className="text-red-500">*</span>
+                  </FormLabel>
+                  <FormControl>
+                    <Input
+                      type="date"
+                      placeholder="Enter your date of birth"
+                      {...field}
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
+              name="city"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>
+                    City <span className="text-red-500">*</span>
+                  </FormLabel>
+                  <FormControl>
+                    <Input placeholder="Enter your city" {...field} />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
+              name="pincode"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>
+                    Pincode <span className="text-red-500">*</span>
+                  </FormLabel>
+                  <FormControl>
+                    <Input placeholder="Enter your pincode" {...field} />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
+              name="blood_group"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>
+                    Blood Group <span className="text-red-500">*</span>
+                  </FormLabel>
+                  <FormControl>
+                    <Input placeholder="Enter your blood group" {...field} />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
+              name="terms_and_condition"
+              render={({ field }) => (
+                <FormItem className="flex flex-row items-start space-x-3 space-y-0 py-2 ">
+                  <FormControl>
+                    <Checkbox
+                      checked={field.value}
+                      onCheckedChange={field.onChange}
+                    />
+                  </FormControl>
+                  <div className="space-y-1 leading-none">
+                    <Link href="/policies/termsandcondition">
+                      <FormLabel className="hover:underline hover:text-blue-400 cursor-pointer ">
+                        Terms And Conditions
+                      </FormLabel>
+                    </Link>
                   </div>
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )} />
-            <FormField control={form.control} name="gender" render={({ field }) => (
-              <FormItem>
-                <FormLabel>Gender <span className="text-red-500">*</span></FormLabel>
-                <FormControl><Input placeholder="Enter your gender" {...field} /></FormControl>
-                <FormMessage />
-              </FormItem>
-            )} />
-            <FormField control={form.control} name="date_of_birth" render={({ field }) => (
-              <FormItem>
-                <FormLabel>Date of Birth <span className="text-red-500">*</span></FormLabel>
-                <FormControl><Input type="date" placeholder="Enter your date of birth" {...field} /></FormControl>
-                <FormMessage />
-              </FormItem>
-            )} />
-            <FormField control={form.control} name="city" render={({ field }) => (
-              <FormItem>
-                <FormLabel>City <span className="text-red-500">*</span></FormLabel>
-                <FormControl><Input placeholder="Enter your city" {...field} /></FormControl>
-                <FormMessage />
-              </FormItem>
-            )} />
-            <FormField control={form.control} name="pincode" render={({ field }) => (
-              <FormItem>
-                <FormLabel>Pincode <span className="text-red-500">*</span></FormLabel>
-                <FormControl><Input placeholder="Enter your pincode" {...field} /></FormControl>
-                <FormMessage />
-              </FormItem>
-            )} />
-            <FormField control={form.control} name="blood_group" render={({ field }) => (
-              <FormItem>
-                <FormLabel>Blood Group <span className="text-red-500">*</span></FormLabel>
-                <FormControl><Input placeholder="Enter your blood group" {...field} /></FormControl>
-                <FormMessage />
-              </FormItem>
-            )} />
-            <Button type="submit" disabled={loading || !otpVerified} className="w-full">{loading ? "Updating..." : "Update Details"}</Button>
+                </FormItem>
+              )}
+            />
+
+            <Button
+              type="submit"
+              disabled={loading || !otpVerified}
+              className="w-full"
+            >
+              {loading ? "Updating..." : "Update Details"}
+            </Button>
           </form>
         </Form>
       </div>
@@ -234,7 +349,32 @@ const CompleteDetailsForm = () => {
             </InputOTP>
           </div>
           <DialogFooter>
-            <Button type="button" onClick={handleVerifyOtp}>Verify OTP</Button>
+            <Button type="button" onClick={handleVerifyOtp}>
+              Verify OTP
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+      <Dialog open={under18} onOpenChange={setUnder18}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Under 18 Confirmation</DialogTitle>
+            <DialogDescription>
+              You are under 18. Please confirm to proceed.
+            </DialogDescription>
+          </DialogHeader>
+          <DialogFooter>
+            <Button
+              onClick={() => {
+                setUnder18(false);
+                form.handleSubmit(onSubmit)();
+              }}
+            >
+              Confirm
+            </Button>
+            <Button variant="secondary" onClick={() => setUnder18(false)}>
+              Cancel
+            </Button>
           </DialogFooter>
         </DialogContent>
       </Dialog>

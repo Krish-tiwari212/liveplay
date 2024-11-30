@@ -13,8 +13,8 @@ const Contactus = () => {
           Contact Us
         </h1>
         <p className="text-md md:text-lg text-gray-700 mb-8 text-center">
-          Whether you’re here to host, join or just say "Hi," we’d love
-          to hear from you!
+          Whether you’re here to host, join or just say "Hi," we’d love to hear
+          from you!
         </p>
         <div className="grid gap-2 md:grid-cols-2 mb-8 w-full md:w-[80%] md:mx-auto">
           <div className="flex items-start justify-center space-x-4">
@@ -38,14 +38,13 @@ const Contactus = () => {
             </div>
           </div>
         </div>
-        <div className="grid gap-6 grid-cols-1 w-[80%] mx-auto justify-center items-center">
-          <div className="flex  space-x-4 justify-center ">
+        <div className="grid gap-6 grid-cols-1 justify-center items-center md:w-[70%] md:mx-auto">
+          <div className="flex  space-x-4 ">
             <FaBuilding className="w-8 h-8 flex-shrink-0" />
             <div>
               <h2 className="text-xl font-semibold text-[#141f29]">Company</h2>
               <p className="text-gray-600">
-                Impact Stream Ventures proudly brings you
-                liveplay.in™ ❤
+                Impact Stream Ventures proudly brings you liveplay.in™ ❤
               </p>
             </div>
           </div>

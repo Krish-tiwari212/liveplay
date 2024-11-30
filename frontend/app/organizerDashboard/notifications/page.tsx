@@ -222,8 +222,8 @@ const page = () => {
       <main className="flex-1 p-4 overflow-y-auto">
         <Tabs defaultValue="unread" className="w-full">
           <TabsList className="mb-2">
-            <TabsTrigger value="read">Read</TabsTrigger>
             <TabsTrigger value="unread">Unread</TabsTrigger>
+            <TabsTrigger value="read">Read</TabsTrigger>
           </TabsList>
           <TabsContent value="read">
             {filteredNotifications

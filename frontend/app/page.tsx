@@ -21,11 +21,35 @@ import { IoArrowForwardCircle } from "react-icons/io5";
 import { Button } from "@/components/ui/button";
 import HeroFeatures from "@/components/HeroFeatures";
 
+interface location {
+  latitude: number | null;
+  longitude: number | null;
+}
 export default function Home() {
+   const [location, setLocation] = useState<location>({
+     latitude: null,
+     longitude: null,
+   });
+
+   useEffect(() => {
+     if (navigator.geolocation) {
+       navigator.geolocation.getCurrentPosition(
+         (position) => {
+           const { latitude, longitude } = position.coords;
+           setLocation({ latitude, longitude });
+         },
+         (error) => {
+           console.error("Error fetching location:", error.message);
+         }
+       );
+     } else {
+       console.warn("Geolocation is not supported by this browser.");
+     }
+   }, []);
   return (
     <UserProvider>
-      <MNavbar />
-      <Navbar />
+      <MNavbar location={location} />
+      <Navbar location={location} />
       <HeroChangingTagLine ishero={true} />
       <Hero />
       <CardCarousel />

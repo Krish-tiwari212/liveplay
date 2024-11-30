@@ -150,7 +150,7 @@ const SponsorSection = () => {
             <Button
               onClick={addSponsor}
               disabled={isAdding || !areFieldsFilled()}
-              className="md:hidden my-2"
+              className="hidden md:block my-2"
               title={!areFieldsFilled() ? "Fill the input field first" : ""}
             >
               {isAdding
@@ -174,6 +174,7 @@ const SponsorSection = () => {
                     value={newSponsor[field.name] || ""}
                     placeholder={field.placeholder}
                     onChange={handleSponsorChange}
+                    maxLength={50}
                     className="h-10 p-2 bg-white border rounded-md text-[0.8rem] md:text-sm shadow-2xl text-[#17202A] focus:border-[#17202A] focus:outline-none focus:shadow-lg"
                   />
                 </div>
@@ -229,7 +230,7 @@ const SponsorSection = () => {
         <Button
           onClick={addSponsor}
           disabled={isAdding || !areFieldsFilled()}
-          className="hidden md:absolute right-2 top-1"
+          className="absolute md:hidden right-2 top-1"
           title={!areFieldsFilled() ? "Fill the input field first" : ""}
         >
           {isAdding
@@ -239,7 +240,7 @@ const SponsorSection = () => {
             : "Add Sponsor"}
         </Button>
       </div>
-      <div className="sponsor-preview grid grid-cols-3 gap-6">
+      <div className="sponsor-preview grid grid-cols-1 lg:grid-flow-col-3 gap-6">
         {sponsors.map((sponsor, index) => (
           <div
             key={index}

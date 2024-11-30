@@ -1,5 +1,5 @@
 import Image from 'next/image'
-import React from 'react'
+import React, { useState } from 'react'
 import { Button } from './ui/button'
 import { BiLike } from 'react-icons/bi'
 import { IoLocationSharp, IoShareSocialSharp } from 'react-icons/io5'
@@ -7,19 +7,43 @@ import EventCategoryCard from './EventCategoryCard'
 import QnaSectionEventpage from './QnaSectionEventpage'
 import { Badge } from './ui/badge'
 import { RiDiscountPercentLine, RiStarSmileFill } from 'react-icons/ri'
-import { CalendarIcon } from 'lucide-react'
+import { CalendarIcon, Copy } from 'lucide-react'
 import { VscGraph } from 'react-icons/vsc'
 import { HiCurrencyRupee } from 'react-icons/hi2'
 import { FaBasketballBall, FaStar } from 'react-icons/fa'
 import { MdCategory } from 'react-icons/md'
 import { GrTrophy } from 'react-icons/gr'
 import { GiEntryDoor, GiShuttlecock, GiWhistle } from 'react-icons/gi'
-import { useRouter } from 'next/navigation'
+import { usePathname, useRouter } from 'next/navigation'
 import { PiHandWithdraw } from 'react-icons/pi'
 import Link from 'next/link'
+import { Dialog, DialogClose, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from './ui/dialog'
+import { Label } from './ui/label'
+import { Input } from './ui/input'
+import { toast } from '@/hooks/use-toast'
 
 const EventPageLeftContnt = ({eventDetails}:any) => {
+  const path=usePathname()
+  const id=path.split("/")[2]
   const router=useRouter()
+  const [isLiked, setIsLiked] = useState(false);
+  const handleCopy = (text: string) => {
+    navigator.clipboard
+      .writeText(text)
+      .then(() => {
+        toast({
+          title: "Link copied to clipboard!",
+          variant: "default",
+        });
+      })
+      .catch((error) => {
+        console.error("Error copying text: ", error);
+        toast({
+          title: "Failed to copy link. Please try again.",
+          variant: "destructive",
+        });
+      });
+  };
   return (
     <div className="w-full lg:w-2/3 relative h-full">
       <div className="w-full h-full">
@@ -43,17 +67,61 @@ const EventPageLeftContnt = ({eventDetails}:any) => {
           <Button
             size="sm"
             variant="outline"
-            className="border-2 shadow-lg border-black flex items-center"
+            onClick={() => setIsLiked(!isLiked)}
+            className={`border-2 shadow-lg border-black flex items-center ${
+              isLiked ? "bg-[#ccdb28] text-black" : ""
+            }`}
           >
-            <h1 className=" mr-1">Like</h1> <BiLike />
+            <h1 className=" mr-1">{isLiked ? "Liked" : "Like"}</h1> <BiLike />
           </Button>
-          <Button
-            size="sm"
-            variant="outline"
-            className="border-2 shadow-lg border-black flex items-center"
-          >
-            <h1 className=" mr-1">Share</h1> <IoShareSocialSharp />
-          </Button>
+          <Dialog>
+            <DialogTrigger asChild>
+              <Button
+                size="sm"
+                variant="outline"
+                className="border-2 shadow-lg border-black flex items-center"
+              >
+                <h1 className=" mr-1">Share</h1> <IoShareSocialSharp />
+              </Button>
+            </DialogTrigger>
+            <DialogContent className="sm:max-w-md h-auto">
+              <DialogHeader>
+                <DialogTitle>Share link</DialogTitle>
+                <DialogDescription>
+                  Anyone who has this link will be able to view this.
+                </DialogDescription>
+              </DialogHeader>
+              <div className="flex items-center space-x-2">
+                <div className="grid flex-1 gap-2">
+                  <Label htmlFor="link" className="sr-only">
+                    Link
+                  </Label>
+                  <Input
+                    id="link"
+                    defaultValue={`https://www.liveplay.in${path}`}
+                    readOnly
+                  />
+                </div>
+                <Button
+                  type="button"
+                  size="sm"
+                  className="px-3"
+                  onClick={() => handleCopy(`https://www.liveplay.in${path}`)}
+                >
+                  <span className="sr-only">Copy</span>
+                  <Copy />
+                </Button>
+              </div>
+              <DialogFooter className="sm:justify-start">
+                <DialogClose asChild>
+                  <Button type="button" variant="secondary">
+                    Close
+                  </Button>
+                </DialogClose>
+              </DialogFooter>
+            </DialogContent>
+          </Dialog>
+
           <Button
             size="sm"
             variant="outline"
@@ -124,7 +192,7 @@ const EventPageLeftContnt = ({eventDetails}:any) => {
               Major Dhyan Chand Stadium
             </span>
           </div>
-          <Link href={`/eventspage/${"1"}`}>
+          <Link href={`/eventregistrationpage/${id}`}>
             <div className="flex items-center gap-1 cursor-pointer hover:underline text-nowrap">
               <VscGraph className="w-4 h-4 sm:w-5 sm:h-5  mr-1" />
               <span className="text-sm sm:text-base">Registrations:</span>
@@ -148,9 +216,11 @@ const EventPageLeftContnt = ({eventDetails}:any) => {
           >
             Register Now
           </Button>
-          <p className="text-xl hover:underline text-blue-400 text-center mt-2">
-            Already Registered ?
-          </p>
+          <Link href={`/playerdashboard`}>
+            <p className="text-xl hover:underline text-blue-400 text-center mt-2">
+              Already Registered ?
+            </p>
+          </Link>
         </div>
       </div>
 

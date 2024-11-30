@@ -12,8 +12,8 @@ Information collected is also used to enhance the user experience and provide pe
   },
   {
     title: "How We Use Your Information",
-    data: `We use your IP address to help diagnose problems with our server and to administer our Website. Your IP address is also used to help identify you and to gather broad demographic information. We may use your IP address to help protect our partners and ourselves from fraud. We use your contact information to send alerts and updates through WhatsApp, text messages and email regarding event participation, hosting and other platform updates. We share user data with event organizers to facilitate event management, which is a standard practice in the event hosting industry. User data is also shared with third-party analytics and advertisers to improve platform performance and provide relevant content and ads.
-    Personal information is never sold or shared with third parties without your consent for any unethical purposes. 
+    data: `We use your IP address to help diagnose problems with our server and to administer our Website. Your IP address is also used to help identify you and to gather broad demographic information. We may use your IP address to help protect our partners and ourselves from fraud. We use your contact information to send alerts and updates through WhatsApp, text messages and email regarding event participation, hosting and other platform updates. We share user data with event organizers to facilitate event management, which is a standard practice in the event hosting industry. User data is also shared with third-party analytics and advertisers to improve platform performance and provide relevant content and ads. 
+Personal information is never sold or shared with third parties without your consent for any unethical purposes.
 `,
   },
   {

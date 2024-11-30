@@ -15,14 +15,23 @@ import { Popover, PopoverContent, PopoverTrigger } from "./ui/popover";
 import { useUser } from "@/context/UserContext";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "./ui/select";
 
-const MNavbar = () => {
+interface location {
+  latitude:number |null;
+  longitude: number|null
+}
+
+interface Mnavbar{
+  location?:location
+}
+
+const MNavbar = ({ location }: Mnavbar) => {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const { toast } = useToast();
   const router = useRouter();
   const supabase = createClient();
   const { user, loading, setUser } = useUser();
   const [isPopoverOpen, setIsPopoverOpen] = useState(false);
-  
+
   // State to control the Sheet (Navbar) open state
   const [isSheetOpen, setIsSheetOpen] = useState(false);
 
@@ -65,17 +74,20 @@ const MNavbar = () => {
 
   const handleButtonClick = (action: () => void) => {
     action();
-    setIsSheetOpen(false); 
+    setIsSheetOpen(false);
   };
 
   return (
     <div className="lg:hidden flex w-full items-center justify-between p-4 bg-[#17202A] text-white shadow-lg z-20">
       <div className="flex items-center gap-4">
-        <Sheet open={isSheetOpen} onOpenChange={setIsSheetOpen} >
+        <Sheet open={isSheetOpen} onOpenChange={setIsSheetOpen}>
           <SheetTrigger>
             <FaBars className="text-3xl text-[#ccdb28]" />
           </SheetTrigger>
-          <SheetContent className="bg-[#141f29] pt-16 border-none lg:hidden" side="top">
+          <SheetContent
+            className="bg-[#141f29] pt-16 border-none lg:hidden"
+            side="top"
+          >
             <div className="flex flex-col pt-10">
               <Select>
                 <SelectTrigger className="w-full h-[30px] text-2xl bg-[#141f29] font-semibold text-[#ccdb28] border border-[#ccdb28] flex justify-center items-center py-8 mb-4">

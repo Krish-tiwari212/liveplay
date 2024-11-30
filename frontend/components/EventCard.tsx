@@ -60,7 +60,7 @@ const EventCard = ({
   return (
     <>
       <div className="max-w-[500px] cursor-pointer h border border-black w-full group/card rounded-lg overflow-hidden shadow-lg bg-white">
-        <Link href="/eventspage">
+        <Link href={`/eventspage/${id}`}>
           <div
             className={cn(
               "relative h-52 w-full bg-cover bg-center rounded-t-lg "
@@ -82,9 +82,8 @@ const EventCard = ({
             <div className="bg-[#E6EAC5] text-black text-xs px-2 py-1 rounded inline-block">
               {sport}
             </div>
-            <h1 className="font-bold text-xl text-gray-900  line-clamp-2 h-[60px]">
-              {eventname} Summer Basketball Tournament Pro League Delhi Champion
-              Smart City New Event Pro
+            <h1 className="font-bold text-xl text-gray-900  line-clamp-2">
+              {eventname}
             </h1>
             <p className="text-[#64758B] text-nowrap">
               By Tiruvalayavudayarthiraaksaksnakns
@@ -103,11 +102,11 @@ const EventCard = ({
                   <HiCurrencyRupee className="text-lg" />
                   STARTING FROM: ₹{price}
                 </p>
-                <Link href={`/eventspage/${id}`}>
+                <Link href={`/eventregistrationpage/${id}`}>
                   <p className="text-gray-500 text-[12px] flex items-center gap-1 cursor-pointer hover:underline text-nowrap">
                     <VscGraph className="text-lg" />
                     Registrations:
-                    <span className="text-blue-600">{noOfEntries}</span>
+                    <span className="text-blue-600 font-semibold text-[14px]">{noOfEntries}</span>
                   </p>
                 </Link>
               </div>
@@ -138,7 +137,7 @@ const EventCard = ({
               onClick={() => router.push(`/choosecategory/${id}`)}
               variant="tertiary"
               size="xs"
-              className="border border-black text-[12px]"
+              className="border border-black text-[12px] md:text-[14px] font-bold"
             >
               Register Now
             </Button>

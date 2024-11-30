@@ -141,6 +141,7 @@ const fields = [
         name: "event_name",
         placeholder: "Enter Event Title",
         required: true,
+        maxlength:100
       },
     ],
   },
@@ -219,7 +220,6 @@ const fields = [
         type: "text",
         name: "website_link",
         placeholder: "Enter Website Link",
-        required: true,
       },
       {
         id: "insta_link",
@@ -227,7 +227,6 @@ const fields = [
         type: "text",
         name: "insta_link",
         placeholder: "Enter Link",
-        required: true,
       },
     ],
   },
@@ -245,6 +244,7 @@ const EventDetailsForm: React.FC<EventDetailsFormProps> = ({
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
+    const today=new Date()
     if (
       name === "start_date" ||
       name === "end_date" ||
@@ -263,10 +263,20 @@ const EventDetailsForm: React.FC<EventDetailsFormProps> = ({
       const lastWithdrawalDate = new Date(
         name === "last_withdrawal_date" ? value : formData.last_withdrawal_date
       );
+      if (
+        startDate < today ||
+        endDate < today ||
+        lastRegistrationDate < today ||
+        lastWithdrawalDate < today
+      ) {
+        setShowDialog(true);
+        setDialogType("Pastdate");
+        return;
+      }
 
       if (startDate > endDate) {
         setShowDialog(true);
-        setDialogType("Eventdate")
+        setDialogType("Eventdate");
         return;
       }
       if (
@@ -399,6 +409,18 @@ const EventDetailsForm: React.FC<EventDetailsFormProps> = ({
             <AlertDialogTitle>Error</AlertDialogTitle>
             <AlertDialogDescription>
               Start date has to be on or after last day to register.
+            </AlertDialogDescription>
+            <AlertDialogAction onClick={() => setShowDialog(false)}>
+              OK
+            </AlertDialogAction>
+          </AlertDialogContent>
+        </AlertDialog>
+      ) : dialogType === "Pastdate" ? (
+        <AlertDialog open={showDialog} onOpenChange={setShowDialog}>
+          <AlertDialogContent>
+            <AlertDialogTitle>Error</AlertDialogTitle>
+            <AlertDialogDescription>
+              Please Enter Valid Dates
             </AlertDialogDescription>
             <AlertDialogAction onClick={() => setShowDialog(false)}>
               OK
@@ -559,8 +581,9 @@ const EventDetailsForm: React.FC<EventDetailsFormProps> = ({
               <div className="w-full xl:w-[32%] flex flex-col" key={i}>
                 <Label className="text-[0.8rem]">
                   {field.label}
-                  <span className="text-red-500">*</span>
+                  {field.required && <span className="text-red-500">*</span>}
                 </Label>
+
                 <input
                   id={field.id}
                   type={field.type}

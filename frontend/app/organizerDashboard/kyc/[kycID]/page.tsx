@@ -113,10 +113,10 @@ const fields = [
   },
   {
     fieldid: 2,
-    id: "aadharBack",
+    id: "pan",
     label: "Upload Document (Pan)",
     type: "file",
-    name: "aadharBack",
+    name: "pan",
     required: true,
     filecontnet: {
       size: "JPG,PNG",

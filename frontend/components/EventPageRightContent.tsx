@@ -11,7 +11,7 @@ import { HiCurrencyRupee } from 'react-icons/hi2';
 import { VscGraph } from 'react-icons/vsc';
 import { IoLocationSharp, IoShareSocialSharp } from 'react-icons/io5';
 import { CalendarIcon } from 'lucide-react';
-import { useRouter } from 'next/navigation';
+import { usePathname, useRouter } from 'next/navigation';
 import QnaSectionEventpage from './QnaSectionEventpage';
 import EventCategoryCard from './EventCategoryCard';
 import { BiLike } from 'react-icons/bi';
@@ -19,6 +19,8 @@ import { PiHandWithdraw } from "react-icons/pi";import Link from 'next/link';
 ;
 
 const EventPageRightContent = ({ eventDetails }: any) => {
+  const path = usePathname();
+  const id = path.split("/")[2];
   const router = useRouter();
   return (
     <div className="w-full lg:w-1/3 flex flex-col gap-4">
@@ -66,7 +68,7 @@ const EventPageRightContent = ({ eventDetails }: any) => {
             </span>
           </div>
           <Link
-            href={`/eventspage/${"1"}`}
+            href={`/eventregistrationpage/${id}`}
             className="flex items-center gap-1 cursor-pointer"
           >
             <div className="flex items-center gap-1 cursor-pointer hover:underline text-nowrap">
@@ -83,13 +85,14 @@ const EventPageRightContent = ({ eventDetails }: any) => {
             </span>
           </div>
         </div>
-        <Button
-          onClick={() => router.push("/choosecategory")}
-          variant="tertiary"
-          className="w-full border-2 border-black py-8 text-xl"
-        >
-          Register Now
-        </Button>
+        <Link href={`/choosecategory/${id}`}>
+          <Button
+            variant="tertiary"
+            className="w-full border-2 border-black py-8 text-xl"
+          >
+            Register Now
+          </Button>
+        </Link>
       </div>
 
       {/* Event Features */}
@@ -260,9 +263,12 @@ const EventPageRightContent = ({ eventDetails }: any) => {
           <h1 className="text-2xl font-semibold mb-2">Event Information</h1>
           <h2 className="mb-4">
             Total Registrations: {eventDetails.totalRegistrations}
-            <a href="#" className="text-blue-600 ml-2 hover:underline">
+            <Link
+              href={`/eventregistrationpage/${id}`}
+              className="text-blue-600 ml-2 hover:underline"
+            >
               View player names
-            </a>
+            </Link>
           </h2>
         </div>
         <div className="mb-6">

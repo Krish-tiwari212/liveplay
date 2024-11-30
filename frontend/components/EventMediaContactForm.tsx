@@ -61,43 +61,88 @@ const EventMediaContactForm: React.FC<EventMediaProps> = ({
     useEventContext();
 
   const [isImageLoading, setIsImageLoading] = useState(false);
-  const [imagePreviews, setImagePreviews] = useState<string[]>([]);
-  const imageRefs = useRef<(HTMLInputElement | null)[]>([]);
+  const [media, setMedia] = useState<{
+    mobileBanner?: string;
+    desktopBanner?: string;
+  }>({});
+  const [imagePreviews, setImagePreviews] = useState<{
+    mobileBanner?: string;
+  }>({});
 
-  const handleFileChange =
-    (index: number) => (event: React.ChangeEvent<HTMLInputElement>) => {
-      const file = event.target.files?.[0];
-      if (file) {
-        const reader = new FileReader();
-        reader.onloadend = () => {
-          const base64Data = reader.result as string;
-          setImagePreviews((prev) => {
-            const newPreviews = [...prev];
-            newPreviews[index] = base64Data;
-            const fieldName = index === 0 ? "mobileBanner" : "desktopBanner";
-            setFormData((prevData: any) => ({
-              ...prevData,
-              [fieldName]: file,
-            }));
-            if (editPage === "manageEvent") {
-              setEventEditData((prevData: any) => ({
-                ...prevData,
-                [fieldName]: file,
-              }));
-            } else {
-              setEventData((prevData: any) => ({
-                ...prevData,
-                [fieldName]: file,
-              }));
-            }
+  const imageRefs = useRef<{ mobileBanner?: HTMLInputElement | null }>({
+    mobileBanner: null,
+  });
 
-            return newPreviews;
-          });
-        };
-        reader.readAsDataURL(file);
-        setIsImageLoading(false);
-      }
-    };
+  // const handleFileChange =
+  //   (index: number) => (event: React.ChangeEvent<HTMLInputElement>) => {
+  //     const file = event.target.files?.[0];
+  //     if (file) {
+  //       const reader = new FileReader();
+  //       reader.onloadend = () => {
+  //         const base64Data = reader.result as string;
+  //         setImagePreviews((prev) => {
+  //           const newPreviews = [...prev];
+  //           newPreviews[index] = base64Data;
+  //           const fieldName = index === 0 ? "mobileBanner" : "desktopBanner";
+  //           setFormData((prevData: any) => ({
+  //             ...prevData,
+  //             [fieldName]: base64Data,
+  //           }));
+  //           if (editPage === "manageEvent") {
+  //             setEventEditData((prevData: any) => ({
+  //               ...prevData,
+  //               [fieldName]: base64Data,
+  //             }));
+  //           } else {
+  //             setEventData((prevData: any) => ({
+  //               ...prevData,
+  //               [fieldName]: base64Data,
+  //             }));
+  //           }
+  //           return newPreviews;
+  //         });
+  //       };
+  //       reader.readAsDataURL(file);
+  //       setIsImageLoading(false);
+  //       const fieldName = index === 0 ? "mobileBanner" : "desktopBanner";
+  //       setFormData((prevData: any) => ({
+  //         ...prevData,
+  //         [`fileName${index}`]: file.name,
+  //       }));
+  //       // if (editPage === "manageEvent") {
+  //         setEventEditData((prevData: any) => ({
+  //           ...prevData,
+  //           [`fileName${index}`]: file.name,
+  //         }));
+  //       } else {
+  //         setEventData((prevData: any) => ({
+  //           ...prevData,
+  //           [`fileName${index}`]: file.name,
+  //         }));
+  //       }
+  //     }
+  //   };
+
+   const handleFileChange =
+     (type: keyof typeof imagePreviews) =>
+     (event: React.ChangeEvent<HTMLInputElement>) => {
+       const file = event.target.files?.[0];
+       if (file) {
+         const reader = new FileReader();
+         setIsImageLoading(true);
+         reader.onloadend = () => {
+           const base64Data = reader.result as string;
+           setImagePreviews((prev) => ({ ...prev, [type]: base64Data }));
+           if (editPage === "createEvent") {
+             setEventData((prev) => ({ ...prev, [type]: base64Data }));
+           } else if (editPage === "manageEvent") {
+             setEventEditData((prev) => ({ ...prev, [type]: base64Data }));
+           }
+           setIsImageLoading(false);
+         };
+         reader.readAsDataURL(file);
+       }
+     };
 
   const handleClick = async(event: React.MouseEvent<HTMLButtonElement>) => {
     event.preventDefault();
@@ -149,79 +194,72 @@ const EventMediaContactForm: React.FC<EventMediaProps> = ({
     handleNext();
   };
 
-  useEffect(() => {
-    if (editPage === "manageEvent" && EventEditData) {
-      setFormData((prevEventData: any) => ({
-        ...prevEventData,
-        mobileBanner: EventEditData.mobileBanner || {},
-        desktopBanner: EventEditData.desktopBanner || {},
-      }));
-    } else if (editPage === "createEvent" && EventData) {
-      setFormData((prevEventData: any) => ({
-        ...prevEventData,
-        mobileBanner: EventData.mobileBanner || {},
-        desktopBanner: EventData.desktopBanner || {},
-      }));
-    }
-  }, [EventData, EventEditData]);
+   useEffect(() => {
+     const contextData = editPage === "createEvent" ? EventData : EventEditData;
+     if (contextData) {
+       setImagePreviews({
+         mobileBanner: contextData.mobileBanner,
+       });
+     }
+   }, [editPage, EventData, EventEditData]);
 
   return (
     <form className="bg-white p-5 rounded-lg">
       <div className="flex flex-wrap ">
-        {additionalFields.map((field, index) => 
-           (
-            <div className="flex flex-col w-full mt-5" key={field.id}>
-              <Label className="font-bold text-lg">
-                {field.filecontnet?.label}
-                <span className="text-red-500">*</span>
-              </Label>
-              <div
-                className="flex items-center justify-center mt-1 h-[142px] w-full cursor-pointer flex-col gap-3 rounded-xl border-[3.2px] border-dashed border-gray-600  bg-white "
-                onClick={() => imageRefs.current[index]?.click()}
-              >
-                <Input
-                  type="file"
-                  className="hidden"
-                  ref={(el) => {
-                    imageRefs.current[index] = el;
-                  }}
-                  onChange={handleFileChange(index)}
-                />
-                {!isImageLoading ? (
-                  <Image
-                    src="/icons/upload-image.svg"
-                    alt="upload"
-                    width={40}
-                    height={40}
-                    className="invert"
-                  />
-                ) : (
-                  <div className="text-16 flex items-center justify-center  font-medium text-gray-700 ">
-                    Uploading
-                    <Loader size={20} className="animate-spin ml-2" />
-                  </div>
+        {additionalFields.map((field, index) => (
+          <div className="flex flex-col w-full mt-5" key={field.id}>
+            <Label className="font-bold text-lg">
+              {field.filecontnet?.label}
+              <span className="text-red-500">*</span>
+            </Label>
+            <div
+              className="flex items-center justify-center mt-1 h-[142px] w-full cursor-pointer flex-col gap-3 rounded-xl border-[3.2px] border-dashed border-gray-600  bg-white "
+              onClick={() => imageRefs.current[field.name]?.click()}
+            >
+              <Input
+                type="file"
+                className="hidden"
+                ref={(el) => (imageRefs.current[field.name] = el)}
+                onChange={handleFileChange(
+                  field.name as keyof typeof imagePreviews
                 )}
-                <div className="flex flex-col items-center gap-1">
-                  <h2 className="text-12 font-bold text-gray-400 ">
-                    Click to upload
-                  </h2>
-                  <p className="text-12 text-center font-bold text-gray-500 ">
-                    {field.filecontnet?.size}
-                  </p>
-                </div>
-              </div>
-              {imagePreviews[index] && (
-                <div className="mt-2 items-center mx-auto">
-                  <Image
-                    src={imagePreviews[index]}
-                    alt="Preview"
-                    width={300}
-                    height={300}
-                  />
+              />
+              {!isImageLoading ? (
+                <Image
+                  src="/icons/upload-image.svg"
+                  alt="upload"
+                  width={40}
+                  height={40}
+                  className="invert"
+                />
+              ) : (
+                <div className="text-16 flex items-center justify-center  font-medium text-gray-700 ">
+                  Uploading
+                  <Loader size={20} className="animate-spin ml-2" />
                 </div>
               )}
+              <div className="flex flex-col items-center gap-1">
+                <h2 className="text-12 font-bold text-gray-400 ">
+                  Click to upload
+                </h2>
+                <p className="text-12 text-center font-bold text-gray-500 ">
+                  {field.filecontnet?.size}
+                </p>
+              </div>
             </div>
-          ))}
+            {imagePreviews[field.name as keyof typeof imagePreviews] && (
+              <div className="flex justify-center items-center py-2">
+              <Image
+                src={imagePreviews[field.name as keyof typeof imagePreviews]!}
+                alt={`${field.name} preview`}
+                width={400}
+                height={400}
+                className="rounded-md border-2"
+              />
+              </div>
+            )}
+          </div>
+        ))}
       </div>
       <SponsorSection />
       <div className="flex justify-center items-center">

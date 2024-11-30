@@ -16,6 +16,7 @@ import Image from 'next/image';
 import { IoIosNotificationsOutline } from 'react-icons/io';
 import { useUser } from '@/context/UserContext';
 import { useEventContext } from '@/context/EventDataContext';
+import { Button } from './ui/button';
 
 const MSidebar = () => {
   const { setUserType, UserType,DashboardName } = useEventContext();
@@ -89,6 +90,14 @@ const MSidebar = () => {
           </div>
         </Link>
       </div>
+      <Link href="/">
+        <Button
+          className="w-full bg-[#141f29] text-[#ccdb28] border border-[#ccdb28] hover:bg-[#ccdb28] hover:text-[#141f29] md:hidden"
+          size="xs"
+        >
+          Home
+        </Button>
+      </Link>
 
       <ul className="space-y-2 flex-grow relative">
         <Select

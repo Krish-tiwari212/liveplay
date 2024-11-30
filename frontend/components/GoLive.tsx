@@ -8,6 +8,7 @@ import { useRouter } from 'next/navigation';
 import { useEventContext } from '@/context/EventDataContext';
 import { Checkbox } from "@/components/ui/checkbox";
 import { Label } from './ui/label';
+import Link from 'next/link';
 
 
 const GoLive = () => {
@@ -130,11 +131,18 @@ const GoLive = () => {
           Awesome, Now lets get this Event Live🎉
         </h1>
         <h1 className="mt-4 text-gray-800 flex justify-center items-center gap-2 w-[90%] mx-auto">
-          <Checkbox id="terms2" onCheckedChange={()=>setIsCheckboxChecked(!isCheckboxChecked)} />
+          <Checkbox
+            id="terms2"
+            onCheckedChange={() => setIsCheckboxChecked(!isCheckboxChecked)}
+          />
           <Label htmlFor="terms2">
-            Agree with the 
-            <span className="hover:underline cursor-pointer font-extrabold mx-1 text-sm md:text-lg">Terms & Conditions</span>
-             for hosting events on liveplay.in
+            Agree with the
+            <Link href={`/policies/termsandcondition`}>
+              <span className="hover:underline cursor-pointer font-extrabold mx-1 text-sm md:text-lg">
+                Terms & Conditions
+              </span>
+            </Link>
+            for hosting events on liveplay.in
           </Label>
         </h1>
         <Button
