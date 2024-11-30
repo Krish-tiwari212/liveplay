@@ -1,6 +1,6 @@
-"use client"
+"use client";
 
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, Suspense } from 'react';
 import Image from 'next/image';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
@@ -77,11 +77,15 @@ interface EventDetails {
   categories: EventCategory[];
 }
 
-const EventPage = () => {
+const EventPageLoader = () => (
+  <div className="flex justify-center items-center min-h-screen">
+    <div className="animate-spin rounded-full h-32 w-32 border-b-2 border-gray-900"></div>
+  </div>
+);
+
+const EventPage = ({ eventId }: { eventId: string }) => {
   const [eventDetails, setEventDetails] = useState<EventDetails | null>(null);
   const [isLoading, setIsLoading] = useState(true);
-  const searchParams = useSearchParams();
-  const eventId = searchParams.get('event_id');
 
   useEffect(() => {
     const fetchEventDetails = async () => {
@@ -100,15 +104,14 @@ const EventPage = () => {
         if (!response.ok) {
           throw new Error('Failed to fetch event details');
         }
-        
+
         const data = await response.json();
-        
-        // The data is the event object directly, not nested under 'event'
+
         if (!data || !data.id) {
           console.error('Invalid API response:', data);
           throw new Error('Invalid event data received');
         }
-        
+
         setEventDetails(data); // Set the data directly
       } catch (error: any) {
         console.error('Error fetching event details:', error);
@@ -126,11 +129,7 @@ const EventPage = () => {
   }, [eventId]);
 
   if (isLoading) {
-    return (
-      <div className="flex justify-center items-center min-h-screen">
-        <div className="animate-spin rounded-full h-32 w-32 border-b-2 border-gray-900"></div>
-      </div>
-    );
+    return <EventPageLoader />;
   }
 
   if (!eventId) {
@@ -188,4 +187,17 @@ const EventPage = () => {
   );
 };
 
-export default EventPage;
+export default function EventPageWrapper() {
+  return (
+    <Suspense fallback={<EventPageLoader />}>
+      <EventPageContent />
+    </Suspense>
+  );
+}
+
+function EventPageContent() {
+  const searchParams = useSearchParams();
+  const eventId = searchParams.get('event_id');
+
+  return <EventPage eventId={eventId || ''} />;
+}
