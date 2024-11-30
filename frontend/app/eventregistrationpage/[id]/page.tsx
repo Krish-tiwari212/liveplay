@@ -20,25 +20,25 @@ import { PiHandWithdraw } from 'react-icons/pi';
 import { RiDiscountPercentLine } from 'react-icons/ri';
 import { VscGraph } from 'react-icons/vsc';
 
-const page = ({}) => {
-     const handleCopy = (text: string) => {
-       navigator.clipboard
-         .writeText(text)
-         .then(() => {
-           toast({
-             title: "Link copied to clipboard!",
-             variant: "default",
-           });
-         })
-         .catch((error) => {
-           console.error("Error copying text: ", error);
-           toast({
-             title: "Failed to copy link. Please try again.",
-             variant: "destructive",
-           });
-         });
-     };
-    const router=useRouter()
+const page = () => {
+  const handleCopy = (text: string) => {
+    navigator.clipboard
+      .writeText(text)
+      .then(() => {
+        toast({
+          title: "Link copied to clipboard!",
+          variant: "default",
+        });
+      })
+      .catch((error) => {
+        console.error("Error copying text: ", error);
+        toast({
+          title: "Failed to copy link. Please try again.",
+          variant: "destructive",
+        });
+      });
+  };
+  const router = useRouter();
   return (
     <div className="mx-auto p-8">
       <div className="flex flex-col lg:flex-row gap-4">
@@ -186,6 +186,6 @@ const page = ({}) => {
       </div>
     </div>
   );
-}
+};
 
 export default page

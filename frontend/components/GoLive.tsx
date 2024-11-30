@@ -9,6 +9,7 @@ import { useEventContext } from '@/context/EventDataContext';
 import { Checkbox } from "@/components/ui/checkbox";
 import { Label } from './ui/label';
 import Link from 'next/link';
+import { toast } from "@/hooks/use-toast";=
 
 
 const GoLive = () => {
@@ -105,16 +106,33 @@ const GoLive = () => {
           body: formData,
         });
   
+        const data = await response.json();
+
         if (response.ok) {
           setIsLoading(false);
           setIsPlaying(true);
+          toast({
+            title: "Success!",
+            description: "Event created successfully",
+            variant: "success",
+          })
         } else {
-          console.error('Error creating event:', await response.text());
           setIsLoading(false);
+          toast({
+            title: "Error creating event",
+            description: data.error || "Something went wrong",
+            variant: "destructive",
+          })
+          console.error('Error creating event:', data);
         }
       } catch (error) {
-        console.error('Error creating event:', error);
         setIsLoading(false);
+        toast({
+          title: "Error",
+          description: error.message || "Failed to create event",
+          variant: "destructive",
+        })
+        console.error('Error creating event:', error);
       }
     }
   };

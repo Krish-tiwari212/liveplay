@@ -18,7 +18,7 @@ const nextConfig = {
   typescript: {
     ignoreBuildErrors: true,
   },
-  output: "standalone",
+  output: 'standalone',
   experimental: {
     // This will allow server components to be built properly
     serverActions: true,

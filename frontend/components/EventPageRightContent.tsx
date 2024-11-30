@@ -18,9 +18,8 @@ import { BiLike } from 'react-icons/bi';
 import { PiHandWithdraw } from "react-icons/pi";import Link from 'next/link';
 ;
 
-const EventPageRightContent = ({ eventDetails }: any) => {
+const EventPageRightContent = ({ eventDetails, eventId }: any) => {
   const path = usePathname();
-  const id = path.split("/")[2];
   const router = useRouter();
   return (
     <div className="w-full lg:w-1/3 flex flex-col gap-4">
@@ -68,7 +67,7 @@ const EventPageRightContent = ({ eventDetails }: any) => {
             </span>
           </div>
           <Link
-            href={`/eventregistrationpage/${id}`}
+            href={`/eventregistrationpage/${eventId}`}
             className="flex items-center gap-1 cursor-pointer"
           >
             <div className="flex items-center gap-1 cursor-pointer hover:underline text-nowrap">
@@ -85,7 +84,7 @@ const EventPageRightContent = ({ eventDetails }: any) => {
             </span>
           </div>
         </div>
-        <Link href={`/choosecategory/${id}`}>
+        <Link href={`/choosecategory/${eventId}`}>
           <Button
             variant="tertiary"
             className="w-full border-2 border-black py-8 text-xl"
@@ -264,7 +263,7 @@ const EventPageRightContent = ({ eventDetails }: any) => {
           <h2 className="mb-4">
             Total Registrations: {eventDetails.totalRegistrations}
             <Link
-              href={`/eventregistrationpage/${id}`}
+              href={`/eventregistrationpage/${eventId}`}
               className="text-blue-600 ml-2 hover:underline"
             >
               View player names
@@ -287,7 +286,7 @@ const EventPageRightContent = ({ eventDetails }: any) => {
         <div className="mb-6">
           <h3 className="text-xl font-bold mb-2">Event Categories</h3>
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-            {eventDetails.events.map((event: any, index: number) => (
+            {eventDetails.categories.map((event: any, index: number) => (
               <EventCategoryCard key={index} event={event} />
             ))}
           </div>
