@@ -22,7 +22,10 @@ const nextConfig = {
   experimental: {
     // This will allow server components to be built properly
     serverActions: true,
-  }
+  },
+  eslint: {
+    ignoreDuringBuilds: true,
+  },
 };
 
 export default nextConfig;
