@@ -131,7 +131,7 @@ const CategoryPreview = ({
   };
 
   const duplicateCategory = (category: Category) => {
-    const duplicatedCategory = { ...category, id: nextId, category_name: `${category.category_name} (Copy)` }; 
+    const duplicatedCategory = { ...category, id: nextId, category_name: `${category.category_name}` }; 
     setCategories((prevCategories) => [...prevCategories, duplicatedCategory]);
     setNextId((prevId) => prevId + 1);
     if (editPage==="manageEvent"){

@@ -9,7 +9,7 @@ import { useEventContext } from '@/context/EventDataContext';
 import { Checkbox } from "@/components/ui/checkbox";
 import { Label } from './ui/label';
 import Link from 'next/link';
-import { toast } from "@/hooks/use-toast";=
+import { toast } from "@/hooks/use-toast";
 
 
 const GoLive = () => {

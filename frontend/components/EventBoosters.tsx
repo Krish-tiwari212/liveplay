@@ -149,6 +149,7 @@ const EventBoosters = ({
   const { EventData, setEventData,EventEditData,setEventEditData, isVenueNotDecided, setIsVenueNotDecided,editPage } =
     useEventContext();
   const [selectedPlan, setSelectedPlan] = useState<string | null>(EventData.selected_plan || "pro");
+  const [categoryName,setCategoriename]=useState([])
 
   const handlePlanClick = (plan: string) => {
     setSelectedPlan(selectedPlan === plan ? null : plan);
@@ -177,38 +178,80 @@ const EventBoosters = ({
           ", "
         )}`,
       });
-    } else {
-      const fieldsToUpdate = {
-        selected_plan: "standard",
-        Gst_Compliance: false,
-        showqna: false,
-        enable_fixtures: false,
-        want_Tshirts: false,
-        countdown: false,
-      };
-
-      const updatedFields = Object.keys(fieldsToUpdate).reduce((acc, key) => {
-        if (!(key in EventData)) {
-          acc[key] = fieldsToUpdate[key];
-        }
-        return acc;
-      }, {});
-
-      setEventData({
-        ...EventData,
-        ...updatedFields,
-      });
-
-      handleNext();
+      return;
     }
+
+     const categoryNames = EventData.categories.map((category: any) =>
+       category.category_name.trim().toLowerCase()
+     );
+
+     // Count occurrences of each category name
+     const categoryCount = categoryNames.reduce((acc: any, name: string) => {
+       acc[name] = (acc[name] || 0) + 1;
+       return acc;
+     }, {});
+
+     // Find duplicate categories
+     const duplicateCategories = Object.keys(categoryCount).filter(
+       (name) => categoryCount[name] > 1
+     );
+
+     if (duplicateCategories.length > 0) {
+       toast({
+         title: "Duplicate Categories Detected",
+         description: `The following categories are duplicated: ${duplicateCategories
+           .map((name) => name.charAt(0).toUpperCase() + name.slice(1))
+           .join(", ")}`,
+         variant: "destructive",
+       });
+       return;
+     }
+    
+
+    const fieldsToUpdate = {
+      selected_plan: "standard",
+      Gst_Compliance: false,
+      showqna: false,
+      enable_fixtures: false,
+      want_Tshirts: false,
+      countdown: false,
+    };
+
+    const updatedFields = Object.keys(fieldsToUpdate).reduce((acc, key) => {
+      if (!(key in EventData)) {
+        acc[key] = fieldsToUpdate[key];
+      }
+      return acc;
+    }, {});
+
+    setEventData({
+      ...EventData,
+      ...updatedFields,
+    });
+
+    handleNext();
   };
 
 
 
 
-  useEffect(()=>{
-    console.log(EventData)
-  },[])
+  // useEffect(() => {
+  //   if (EventData.categories) {
+  //     const categoryNames = EventData.categories.map(
+  //       (category: any) => category.category_name
+  //     );
+  //     setCategoriename(categoryNames);
+
+  //     // Check for duplicates
+  //     const duplicateCategories = categoryNames.filter(
+  //       (name, index) => categoryNames.indexOf(name) !== index
+  //     );
+
+  //     console.log("Categories:", categoryNames);
+  //     console.log("Duplicates:", duplicateCategories);
+  //   }
+  // }, [EventData.categories]);
+
 
   return (
     <div className={`w-full`}>
