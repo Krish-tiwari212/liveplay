@@ -1,8 +1,10 @@
+"use client"
+
 import Cart from '@/components/Cart';
 import ChooseCategoryregister from '@/components/ChooseCategoryregister';
 import HeroChangingTagLine from '@/components/HeroChangingTagLine';
 import StickyCart from '@/components/StickyCart';
-import React from 'react'
+import React, { useEffect } from 'react'
 
 const page = ({ params }: any) => {
   const {id}=params

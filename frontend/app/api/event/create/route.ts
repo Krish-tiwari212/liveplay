@@ -16,22 +16,6 @@ export async function POST(request: Request) {
     const eventData = JSON.parse(formData.get('eventData') as string);
     const mobileBanner = formData.get('mobileBanner') as File;
 
-    // Required field check
-    if (
-      !eventData.event_name ||
-      !eventData.organizer_contact_number ||
-      !eventData.organizer_email ||
-      !eventData.start_date ||
-      !eventData.end_date ||
-      !eventData.venue_name ||
-      !eventData.city ||
-      !eventData.pincode ||
-      !eventData.event_description ||
-      !eventData.event_usp
-    ) {
-      return NextResponse.json({ error: 'Missing required fields' }, { status: 400 });
-    }
-
     // Upload mobile banner to Supabase storage
     let mobileBannerUrl = '';
     if (mobileBanner && mobileBanner.size > 0) {

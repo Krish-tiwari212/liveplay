@@ -209,13 +209,14 @@ const EventPageLeftContnt = ({eventDetails}:any) => {
         </div>
 
         <div>
-          <Button
-            onClick={() => router.push("/eventspage/1234")}
-            variant="tertiary"
-            className="w-full border-2 border-black py-8 text-xl"
-          >
-            Register Now
-          </Button>
+          <Link href={`/choosecategory/${id}`}>
+            <Button
+              variant="tertiary"
+              className="w-full border-2 border-black py-8 text-xl"
+            >
+              Register Now
+            </Button>
+          </Link>
           <Link href={`/playerdashboard`}>
             <p className="text-xl hover:underline text-blue-400 text-center mt-2">
               Already Registered ?
@@ -395,16 +396,21 @@ const EventPageLeftContnt = ({eventDetails}:any) => {
             <h1 className="text-2xl font-semibold mb-2">Event Information</h1>
             <h2 className="mb-4">
               Total Registrations: {eventDetails.totalRegistrations}
-              <a href="#" className="text-blue-600 ml-2 hover:underline">
+              <Link
+                href={`/eventregistrationpage/${id}`}
+                className="text-blue-600 ml-2 hover:underline"
+              >
                 View player names
-              </a>
+              </Link>
             </h2>
           </div>
-          <div className="mr-5">
-            <h1 className="text-blue-400 hover:underline text-2xl cursor-pointer ">
-              Already Registered ?
-            </h1>
-          </div>
+          <Link href={`/playerdashboard`}>
+            <div className="mr-5">
+              <h1 className="text-blue-400 hover:underline text-2xl cursor-pointer ">
+                Already Registered ?
+              </h1>
+            </div>
+          </Link>
         </div>
         <div className="mb-6">
           <h3 className="text-xl font-bold mb-2">Location</h3>
