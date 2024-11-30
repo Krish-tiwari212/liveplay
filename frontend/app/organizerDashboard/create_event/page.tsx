@@ -2,18 +2,31 @@
 
 import React, { useEffect, useState } from 'react'
 import { Progress } from "@/components/ui/progress";
-import EventInformation from '@/components/EventInformation';
 import { Button } from '@/components/ui/button';
-import EnableFeatures from '@/components/EnableFeatures';
-import CategoryPreview from '@/components/CategoryPreview';
 import PreviewEventChanges from '@/components/PreviewEventChanges';
 import ProgressBar from '@/components/ProgressBar';
 import { RiContactsBookUploadFill } from 'react-icons/ri';
 import { MdOutlineCategory, MdOutlineFeaturedPlayList, MdOutlineRocketLaunch } from 'react-icons/md';
 import { IoCreate } from 'react-icons/io5';
-import EventBoosters from '@/components/EventBoosters';
-import GoLive from '@/components/GoLive';
 import { useEventContext } from '@/context/EventDataContext';
+import dynamic from 'next/dynamic'
+
+// Dynamically import components that might use document/window
+const EventInformation = dynamic(() => import('@/components/EventInformation'), {
+  ssr: false
+})
+const CategoryPreview = dynamic(() => import('@/components/CategoryPreview'), {
+  ssr: false
+})
+const EnableFeatures = dynamic(() => import('@/components/EnableFeatures'), {
+  ssr: false
+})
+const EventBoosters = dynamic(() => import('@/components/EventBoosters'), {
+  ssr: false
+})
+const GoLive = dynamic(() => import('@/components/GoLive'), {
+  ssr: false
+})
 
 const ProgressBarCheckpoints = [
   {
