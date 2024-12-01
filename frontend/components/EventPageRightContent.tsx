@@ -15,55 +15,128 @@ import { usePathname, useRouter } from 'next/navigation';
 import QnaSectionEventpage from './QnaSectionEventpage';
 import EventCategoryCard from './EventCategoryCard';
 import { BiLike } from 'react-icons/bi';
-import { PiHandWithdraw } from "react-icons/pi";import Link from 'next/link';
-;
+import { PiHandWithdraw } from "react-icons/pi";
+import Link from 'next/link';
 
-const EventPageRightContent = ({ eventDetails, eventId }: any) => {
+interface EventCategory {
+  id: number;
+  event_id: string;
+  category_name: string;
+  total_quantity: number;
+  max_ticket_quantity: number;
+  price: number;
+  ticket_description: string;
+  discount_code: string;
+  category_type: string;
+  number_of_discounts: number;
+  percentage_input: number;
+  from_date: string;
+  till_date: string;
+  discount_value: number;
+  amount_input: number;
+  max_age: number;
+  min_age: number;
+  gender: string;
+  has_discount: boolean;
+  discount_type: string;
+  discount_start_date: string;
+  discount_end_date: string;
+  age_range_option: string;
+}
+
+interface EventDetails {
+  id: string;
+  event_name: string;
+  organizer_contact_number: string;
+  organizer_email: string;
+  start_date: string;
+  end_date: string;
+  last_registration_date: string;
+  last_withdrawal_date: string;
+  venue_name: string;
+  street_address: string;
+  additional_details: string;
+  city: string;
+  pincode: string;
+  venue_not_decided: boolean;
+  map_view: string;
+  event_description: string;
+  event_usp: string;
+  rewards_for_participants: string;
+  playing_rules: string;
+  desktop_cover_image_url: string;
+  mobile_cover_image_url: string;
+  start_time: string;
+  countdown: boolean;
+  enable_fixtures: boolean;
+  sport: string;
+  venue_link: string;
+  selected_plan: string;
+  organizer_id: string;
+  website_link: string;
+  insta_link: string;
+  state: string;
+  cash_price_pool: string;
+  want_tshirts: boolean;
+  show_qna: boolean;
+  gst_compliance: boolean;
+  status: string;
+  organizer_name: string;
+  categories: EventCategory[];
+}
+
+const EventPageRightContent = ({ eventDetails, eventId }: { eventDetails: EventDetails, eventId: string }) => {
   const path = usePathname();
   const router = useRouter();
   return (
     <div className="w-full lg:w-1/3 flex flex-col gap-4">
       <div className="hidden lg:block border-2 border-[#141F29] p-4 rounded-lg text-[#141F29]">
         <h1 className="text-xl sm:text-2xl md:text-3xl font-bold mb-4 line-clamp-2">
-          Summer Basketball Tournament Pro League Men Champ 2.0 2024
+          {eventDetails.event_name}
         </h1>
 
         <div className="flex flex-wrap gap-2 mb-4">
           <Badge className="bg-[#E6EAC5] text-[#141F29] text-sm sm:text-base">
-            Badminton
+            {eventDetails.sport}
           </Badge>
           <Badge className="bg-[#E6EAC5] text-[#141F29] text-sm sm:text-base">
-            Elite
+            {eventDetails.selected_plan}
           </Badge>
-          <Badge className="bg-[#E6EAC5] text-[#F3524F] text-sm sm:text-base flex items-center">
-            <RiDiscountPercentLine className="mr-2" />
-            Early Bird Discount
-          </Badge>
+          {eventDetails.categories.some(cat => cat.has_discount) && (
+            <Badge className="bg-[#E6EAC5] text-[#F3524F] text-sm sm:text-base flex items-center">
+              <RiDiscountPercentLine className="mr-2" />
+              Early Bird Discount
+            </Badge>
+          )}
         </div>
 
         <div className="space-y-3 mb-6">
           <div className="flex items-center">
             <CalendarIcon className="w-4 h-4 sm:w-5 sm:h-5 mr-2" />
             <span className="text-sm sm:text-base">
-              25 December 2024 | 8 PM onwards
+              {new Date(eventDetails.start_date).toLocaleDateString('en-US', { 
+                day: 'numeric',
+                month: 'long',
+                year: 'numeric'
+              })} | {eventDetails.start_time} onwards
             </span>
           </div>
           <div className="flex items-center">
             <GiEntryDoor className="w-4 h-4 sm:w-5 sm:h-5 mr-2" />
             <span className="text-sm sm:text-base">
-              Last Date to Register: 20 December 2024
+              Last Date to Register: {new Date(eventDetails.last_registration_date).toLocaleDateString()}
             </span>
           </div>
           <div className="flex items-center">
             <PiHandWithdraw className="w-4 h-4 sm:w-5 sm:h-5 mr-2" />
             <span className="text-sm sm:text-base">
-              Last Date to Withdraw: 23 December 2024
+              Last Date to Withdraw: {new Date(eventDetails.last_withdrawal_date).toLocaleDateString()}
             </span>
           </div>
           <div className="flex items-center">
             <IoLocationSharp className="w-4 h-4 sm:w-5 sm:h-5 mr-2" />
             <span className="text-sm sm:text-base">
-              Major Dhyan Chand Stadium
+              {eventDetails.venue_name}
             </span>
           </div>
           <Link
@@ -73,14 +146,16 @@ const EventPageRightContent = ({ eventDetails, eventId }: any) => {
             <div className="flex items-center gap-1 cursor-pointer hover:underline text-nowrap">
               <VscGraph className="w-4 h-4 sm:w-5 sm:h-5  mr-1" />
               <span className="text-sm sm:text-base">Registrations:</span>
-              <span className="text-blue-600 text-sm sm:text-base">5173</span>
+              <span className="text-blue-600 text-sm sm:text-base">
+                {eventDetails.categories.reduce((total, cat) => total + cat.total_quantity, 0)}
+              </span>
             </div>
           </Link>
           <div className="flex items-center">
             <HiCurrencyRupee className="w-4 h-4 sm:w-5 sm:h-5 mr-2" />
             <span className="text-sm sm:text-base  mr-2">Starting From:</span>
             <span className="text-lg sm:text-xl md:text-2xl font-bold">
-              ₹699
+              ₹{Math.min(...eventDetails.categories.map(cat => cat.price))}
             </span>
           </div>
         </div>
@@ -101,24 +176,18 @@ const EventPageRightContent = ({ eventDetails, eventId }: any) => {
         </h1>
 
         <div className="flex flex-wrap gap-2 mb-4">
-          <Badge className="bg-[#E6EAC5] text-[#141F29] text-sm sm:text-base flex items-center">
-            <FaBasketballBall className="mr-2" />
-            Single
-          </Badge>
-          <Badge className="bg-[#E6EAC5] text-[#141F29] text-sm sm:text-base flex items-center">
-            <FaBasketballBall className="mr-2" />
-            Double
-          </Badge>
-          <Badge className="bg-[#E6EAC5] text-[#141F29] text-sm sm:text-base flex items-center">
-            <FaBasketballBall className="mr-2" />
-            Team
-          </Badge>
+          {eventDetails.categories.map(cat => (
+            <Badge key={cat.id} className="bg-[#E6EAC5] text-[#141F29] text-sm sm:text-base flex items-center">
+              <FaBasketballBall className="mr-2" />
+              {cat.category_type}
+            </Badge>
+          ))}
         </div>
         <div className="flex flex-col md:flex-row my-4">
           <span className="text-base sm:text-lg md:text-xl font-bold flex items-center gap-2">
             <MdCategory className="h-4 w-4 sm:h-5 sm:w-5" />
             Number of Categories:
-            <strong className="font-normal">10+</strong>
+            <strong className="font-normal">{eventDetails.categories.length}+</strong>
           </span>
           <a
             href="#"
@@ -131,7 +200,7 @@ const EventPageRightContent = ({ eventDetails, eventId }: any) => {
           <span className="text-base sm:text-lg md:text-xl font-bold flex items-center gap-2">
             <GrTrophy className="h-4 w-4 sm:h-5 sm:w-5" />
             Cash Prize Pool:
-            <strong className="font-normal">₹100,000</strong>
+            <strong className="font-normal">₹{eventDetails.cash_price_pool}</strong>
           </span>
         </div>
         <div className="my-4">
@@ -139,14 +208,12 @@ const EventPageRightContent = ({ eventDetails, eventId }: any) => {
             <FaStar className="mr-2 text-2xl" /> Event USP
           </h3>
           <ul className="space-y-2 ml-6">
-            <li className="flex items-center text-sm sm:text-base">
-              <GiShuttlecock className="mr-2 flex-none h-4 w-4 sm:h-5 sm:w-5" />
-              Yonex AS 2 Feather Shuttles for premium gameplay.
-            </li>
-            <li className="flex items-center text-sm sm:text-base">
-              <GiWhistle className="mr-2 h-4 w-4 sm:h-5 sm:w-5 flex-none" />
-              External Umpires ensuring fair and professional matches.
-            </li>
+            {eventDetails.event_usp.split('\n').map((usp, index) => (
+              <li key={index} className="flex items-center text-sm sm:text-base">
+                <GiShuttlecock className="mr-2 flex-none h-4 w-4 sm:h-5 sm:w-5" />
+                {usp}
+              </li>
+            ))}
           </ul>
         </div>
         <div className="my-4">
@@ -209,7 +276,7 @@ const EventPageRightContent = ({ eventDetails, eventId }: any) => {
           />
           <div>
             <h1 className="text-base sm:text-lg md:text-xl font-bold mb-2">
-              Siri Fort Board Sports Trust Committee Delhi
+              {eventDetails.organizer_name}
             </h1>
             <Image
               src="/images/EliteBadgeDark.svg"
@@ -235,33 +302,37 @@ const EventPageRightContent = ({ eventDetails, eventId }: any) => {
           </div>
           <div className="flex items-center gap-1 cursor-pointer hover:underline text-nowrap font-bold text-sm sm:text-base">
             Phone:
-            <span className="text-blue-600 font-normal">5173</span>
+            <span className="text-blue-600 font-normal">{eventDetails.organizer_contact_number}</span>
           </div>
           <div className="flex items-center gap-1 cursor-pointer hover:underline text-nowrap font-bold text-sm sm:text-base">
             Email:
-            <span className="text-blue-600 font-normal">5173</span>
+            <span className="text-blue-600 font-normal">{eventDetails.organizer_email}</span>
           </div>
-          <div className="flex items-center gap-1 cursor-pointer hover:underline text-nowrap font-bold text-sm sm:text-base">
-            Website:
-            <span className="text-blue-600 font-normal">5173</span>
-          </div>
-          <div className="flex items-center gap-1 cursor-pointer hover:underline text-nowrap font-bold text-sm sm:text-base">
-            <Image
-              src="/icons/image 60.svg"
-              alt="Instagram Icon"
-              width={16}
-              height={16}
-              className="sm:w-5 sm:h-5"
-            />
-            <span className="text-blue-600 font-normal">Instagram</span>
-          </div>
+          {eventDetails.website_link && (
+            <div className="flex items-center gap-1 cursor-pointer hover:underline text-nowrap font-bold text-sm sm:text-base">
+              Website:
+              <span className="text-blue-600 font-normal">{eventDetails.website_link}</span>
+            </div>
+          )}
+          {eventDetails.insta_link && (
+            <div className="flex items-center gap-1 cursor-pointer hover:underline text-nowrap font-bold text-sm sm:text-base">
+              <Image
+                src="/icons/image 60.svg"
+                alt="Instagram Icon"
+                width={16}
+                height={16}
+                className="sm:w-5 sm:h-5"
+              />
+              <span className="text-blue-600 font-normal">Instagram</span>
+            </div>
+          )}
         </div>
       </div>
       <div className="w-full lg:hidden relative h-auto sm:h-auto lg:h-auto">
         <div>
           <h1 className="text-2xl font-semibold mb-2">Event Information</h1>
           <h2 className="mb-4">
-            Total Registrations: {eventDetails.totalRegistrations}
+            Total Registrations: {eventDetails.categories.reduce((total, cat) => total + cat.total_quantity, 0)}
             <Link
               href={`/eventregistrationpage/${eventId}`}
               className="text-blue-600 ml-2 hover:underline"
@@ -273,41 +344,41 @@ const EventPageRightContent = ({ eventDetails, eventId }: any) => {
         <div className="mb-6">
           <h3 className="text-xl font-bold mb-2">Location</h3>
           <p>
-            {eventDetails.location}{" "}
-            <Link href="/location">
+            {eventDetails.venue_name}{" "}
+            <Link href={eventDetails.venue_link || "/location"}>
               <span className="text-blue-400">(Click here)</span>
             </Link>
           </p>
         </div>
         <div className="mb-6">
           <h3 className="text-xl font-bold mb-2">Description</h3>
-          <p>{eventDetails.description}</p>
+          <p>{eventDetails.event_description}</p>
         </div>
         <div className="mb-6">
           <h3 className="text-xl font-bold mb-2">Event Categories</h3>
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-            {eventDetails.categories.map((event: any, index: number) => (
-              <EventCategoryCard key={index} event={event} />
+            {eventDetails.categories.map((category, index) => (
+              <EventCategoryCard key={index} event={category} />
             ))}
           </div>
         </div>
         <div className="mb-6">
           <h3 className="text-xl font-bold mb-2">Rewards</h3>
           <div className="mb-4">
-            <p className="whitespace-pre-line">{eventDetails.rewards}</p>
+            <p className="whitespace-pre-line">{eventDetails.rewards_for_participants}</p>
           </div>
         </div>
 
         <div className="mb-6">
           <h3 className="text-xl font-bold mb-2">Rules</h3>
           <div className="mb-4">
-            <p className="whitespace-pre-line">{eventDetails.rules}</p>
+            <p className="whitespace-pre-line">{eventDetails.playing_rules}</p>
           </div>
         </div>
       </div>
-      <QnaSectionEventpage isright={true} />
+      {eventDetails.show_qna && <QnaSectionEventpage isright={true} eventId={eventId} />}
     </div>
   );
 };
 
-export default EventPageRightContent
+export default EventPageRightContent;
