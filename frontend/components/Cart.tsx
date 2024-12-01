@@ -1,9 +1,13 @@
 "use client"
 
-import React, { use, useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Button } from './ui/button';
 import { RiDiscountPercentFill } from 'react-icons/ri';
 import { useCartContext } from '@/context/CartContext';
+import { loadScript } from '@/utils/razorpay';
+import { useRouter } from 'next/navigation';
+import { useToast } from '@/hooks/use-toast';
+import { createClient } from '@/utils/supabase/client';
 
 const BillingSummary: React.FC = () => {
   const { items, clearCart, total } = useCartContext(); 
@@ -12,6 +16,113 @@ const BillingSummary: React.FC = () => {
   const [gst, setGst] = useState<number>(0);
   const [totalPayable, setTotalPayable] = useState<number>(0);
   const [savings, setSavings] = useState<number>(0);
+  const router = useRouter();
+  const { toast } = useToast();
+  const supabase = createClient();
+  const [session, setSession] = useState<any>(null);
+
+
+  useEffect(() => {
+    loadScript('https://checkout.razorpay.com/v1/checkout.js');
+  }, []);
+
+  useEffect(() => {
+    const checkSession = async () => {
+      const { data: { session: currentSession } } = await supabase.auth.getSession();
+      setSession(currentSession);
+    };
+    
+    checkSession();
+  }, []);
+
+  const handleLogin = () => {
+    // Save current cart state to localStorage before redirecting
+    localStorage.setItem('pendingCart', JSON.stringify(items));
+    router.push('/auth/login?redirect=/cart');
+  };
+
+  const handlePayment = async () => {
+    try {
+      if (!session) {
+        toast({
+          title: "Please Login",
+          description: "You need to be logged in to make a payment",
+          variant: "destructive"
+        });
+        router.push('/login');
+        return;
+      }
+  
+      // Convert amount to paise and ensure it's an integer
+      const amountInPaise = Math.round(totalPayable);
+  
+      // Create order
+      const response = await fetch('/api/payment/create-order', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          amount: amountInPaise, // Send amount in paise
+          categories: items,
+          eventId: items[0]?.event_id
+        }),
+      });
+      
+      const data = await response.json();
+      if (!data.orderId) throw new Error('Failed to create order');
+
+      const options = {
+        key: data.key,
+        amount: amountInPaise,
+        currency: data.currency,
+        name: "Liveplay Sports",
+        description: "Event Registration Payment",
+        order_id: data.orderId,
+        handler: async function (response: any) {
+          try {
+            const verifyResponse = await fetch('/api/payment/verify', {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({
+                razorpay_order_id: response.razorpay_order_id,
+                razorpay_payment_id: response.razorpay_payment_id,
+                razorpay_signature: response.razorpay_signature,
+              }),
+            });
+
+            const verifyData = await verifyResponse.json();
+            if (verifyData.success) {
+              clearCart();
+              router.push('/paymentsuccesfull');
+            } else {
+              router.push('/paymentfailed');
+            }
+          } catch (error) {
+            console.error('Payment verification failed:', error);
+            router.push('/paymentfailed');
+          }
+        },
+        prefill: {
+          name: session?.user?.user_metadata?.full_name || session?.user?.email?.split('@')[0],
+          email: session?.user?.email,
+          contact: session?.user?.phone || ''
+        },
+        theme: {
+          color: "#141F29"
+        }
+      };
+
+      const paymentObject = new (window as any).Razorpay(options);
+      paymentObject.open();
+
+    } catch (error) {
+      console.error('Payment initialization failed:', error);
+      toast({
+        variant: "destructive",
+        title: "Error",
+        description: "Failed to initialize payment"
+      });
+    }
+  };
 
   useEffect(() => {
     const original = items.reduce(
@@ -132,14 +243,26 @@ const BillingSummary: React.FC = () => {
         )}
 
         {items.length > 0 && (
-          <Button
-            variant="tertiary"
-            className="flex justify-center items-center py-8 w-full border-2 border-gray-800"
-            onClick={handlePay}
-          >
-            <p className="font-semibold text-2xl">Pay</p>
-            <p className="font-bold text-2xl">₹{totalPayable.toFixed(2)}</p>
-          </Button>
+          <>
+            {!session ? (
+              <Button
+                variant="tertiary"
+                className="flex justify-center items-center py-8 w-full border-2 border-gray-800"
+                onClick={handleLogin}
+              >
+                Login to Continue
+              </Button>
+            ) : (
+              <Button
+                variant="tertiary"
+                className="flex justify-center items-center py-8 w-full border-2 border-gray-800"
+                onClick={handlePayment}
+              >
+                <p className="font-semibold text-2xl">Pay</p>
+                <p className="font-bold text-2xl">₹{totalPayable.toFixed(2)}</p>
+              </Button>
+            )}
+          </>
         )}
 
         {items.length > 0 && (
