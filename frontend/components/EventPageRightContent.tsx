@@ -1,22 +1,22 @@
-import Image from 'next/image';
-import React from 'react'
-import { FaBasketballBall, FaStar } from 'react-icons/fa';
-import { GiEntryDoor, GiShuttlecock, GiWhistle } from 'react-icons/gi';
-import { GrTrophy } from 'react-icons/gr';
-import { MdCategory } from 'react-icons/md';
-import { RiDiscountPercentLine, RiStarSmileFill } from 'react-icons/ri';
-import { Badge } from './ui/badge';
-import { Button } from './ui/button';
-import { HiCurrencyRupee } from 'react-icons/hi2';
-import { VscGraph } from 'react-icons/vsc';
-import { IoLocationSharp, IoShareSocialSharp } from 'react-icons/io5';
-import { CalendarIcon } from 'lucide-react';
-import { usePathname, useRouter } from 'next/navigation';
-import QnaSectionEventpage from './QnaSectionEventpage';
-import EventCategoryCard from './EventCategoryCard';
-import { BiLike } from 'react-icons/bi';
+import Image from "next/image";
+import React from "react";
+import { FaBasketballBall, FaStar } from "react-icons/fa";
+import { GiEntryDoor, GiShuttlecock, GiWhistle } from "react-icons/gi";
+import { GrTrophy } from "react-icons/gr";
+import { MdCategory } from "react-icons/md";
+import { RiDiscountPercentLine, RiStarSmileFill } from "react-icons/ri";
+import { Badge } from "./ui/badge";
+import { Button } from "./ui/button";
+import { HiCurrencyRupee } from "react-icons/hi2";
+import { VscGraph } from "react-icons/vsc";
+import { IoLocationSharp, IoShareSocialSharp } from "react-icons/io5";
+import { CalendarIcon } from "lucide-react";
+import { usePathname, useRouter } from "next/navigation";
+import QnaSectionEventpage from "./QnaSectionEventpage";
+import EventCategoryCard from "./EventCategoryCard";
+import { BiLike } from "react-icons/bi";
 import { PiHandWithdraw } from "react-icons/pi";
-import Link from 'next/link';
+import Link from "next/link";
 
 interface EventCategory {
   id: number;
@@ -85,7 +85,13 @@ interface EventDetails {
   categories: EventCategory[];
 }
 
-const EventPageRightContent = ({ eventDetails, eventId }: { eventDetails: EventDetails, eventId: string }) => {
+const EventPageRightContent = ({
+  eventDetails,
+  eventId,
+}: {
+  eventDetails: EventDetails;
+  eventId: string;
+}) => {
   const path = usePathname();
   const router = useRouter();
   return (
@@ -102,7 +108,7 @@ const EventPageRightContent = ({ eventDetails, eventId }: { eventDetails: EventD
           <Badge className="bg-[#E6EAC5] text-[#141F29] text-sm sm:text-base">
             {eventDetails.selected_plan}
           </Badge>
-          {eventDetails.categories.some(cat => cat.has_discount) && (
+          {eventDetails.categories.some((cat) => cat.has_discount) && (
             <Badge className="bg-[#E6EAC5] text-[#F3524F] text-sm sm:text-base flex items-center">
               <RiDiscountPercentLine className="mr-2" />
               Early Bird Discount
@@ -114,23 +120,28 @@ const EventPageRightContent = ({ eventDetails, eventId }: { eventDetails: EventD
           <div className="flex items-center">
             <CalendarIcon className="w-4 h-4 sm:w-5 sm:h-5 mr-2" />
             <span className="text-sm sm:text-base">
-              {new Date(eventDetails.start_date).toLocaleDateString('en-US', { 
-                day: 'numeric',
-                month: 'long',
-                year: 'numeric'
-              })} | {eventDetails.start_time} onwards
+              {new Date(eventDetails.start_date).toLocaleDateString("en-US", {
+                day: "numeric",
+                month: "long",
+                year: "numeric",
+              })}{" "}
+              | {eventDetails.start_time} onwards
             </span>
           </div>
           <div className="flex items-center">
             <GiEntryDoor className="w-4 h-4 sm:w-5 sm:h-5 mr-2" />
             <span className="text-sm sm:text-base">
-              Last Date to Register: {new Date(eventDetails.last_registration_date).toLocaleDateString()}
+              Last Date to Register:{" "}
+              {new Date(
+                eventDetails.last_registration_date
+              ).toLocaleDateString()}
             </span>
           </div>
           <div className="flex items-center">
             <PiHandWithdraw className="w-4 h-4 sm:w-5 sm:h-5 mr-2" />
             <span className="text-sm sm:text-base">
-              Last Date to Withdraw: {new Date(eventDetails.last_withdrawal_date).toLocaleDateString()}
+              Last Date to Withdraw:{" "}
+              {new Date(eventDetails.last_withdrawal_date).toLocaleDateString()}
             </span>
           </div>
           <div className="flex items-center">
@@ -147,7 +158,10 @@ const EventPageRightContent = ({ eventDetails, eventId }: { eventDetails: EventD
               <VscGraph className="w-4 h-4 sm:w-5 sm:h-5  mr-1" />
               <span className="text-sm sm:text-base">Registrations:</span>
               <span className="text-blue-600 text-sm sm:text-base">
-                {eventDetails.categories.reduce((total, cat) => total + cat.total_quantity, 0)}
+                {eventDetails.categories.reduce(
+                  (total, cat) => total + cat.total_quantity,
+                  0
+                )}
               </span>
             </div>
           </Link>
@@ -155,7 +169,7 @@ const EventPageRightContent = ({ eventDetails, eventId }: { eventDetails: EventD
             <HiCurrencyRupee className="w-4 h-4 sm:w-5 sm:h-5 mr-2" />
             <span className="text-sm sm:text-base  mr-2">Starting From:</span>
             <span className="text-lg sm:text-xl md:text-2xl font-bold">
-              ₹{Math.min(...eventDetails.categories.map(cat => cat.price))}
+              ₹{Math.min(...eventDetails.categories.map((cat) => cat.price))}
             </span>
           </div>
         </div>
@@ -176,8 +190,11 @@ const EventPageRightContent = ({ eventDetails, eventId }: { eventDetails: EventD
         </h1>
 
         <div className="flex flex-wrap gap-2 mb-4">
-          {eventDetails.categories.map(cat => (
-            <Badge key={cat.id} className="bg-[#E6EAC5] text-[#141F29] text-sm sm:text-base flex items-center">
+          {eventDetails.categories.map((cat) => (
+            <Badge
+              key={cat.id}
+              className="bg-[#E6EAC5] text-[#141F29] text-sm sm:text-base flex items-center"
+            >
               <FaBasketballBall className="mr-2" />
               {cat.category_type}
             </Badge>
@@ -187,7 +204,9 @@ const EventPageRightContent = ({ eventDetails, eventId }: { eventDetails: EventD
           <span className="text-base sm:text-lg md:text-xl font-bold flex items-center gap-2">
             <MdCategory className="h-4 w-4 sm:h-5 sm:w-5" />
             Number of Categories:
-            <strong className="font-normal">{eventDetails.categories.length}+</strong>
+            <strong className="font-normal">
+              {eventDetails.categories.length}+
+            </strong>
           </span>
           <a
             href="#"
@@ -200,17 +219,21 @@ const EventPageRightContent = ({ eventDetails, eventId }: { eventDetails: EventD
           <span className="text-base sm:text-lg md:text-xl font-bold flex items-center gap-2">
             <GrTrophy className="h-4 w-4 sm:h-5 sm:w-5" />
             Cash Prize Pool:
-            <strong className="font-normal">₹{eventDetails.cash_price_pool}</strong>
+            <strong className="font-normal">
+              ₹{eventDetails.cash_price_pool}
+            </strong>
           </span>
         </div>
         <div className="my-4">
           <h3 className="text-base sm:text-lg md:text-xl font-bold flex items-center mb-2">
             <FaStar className="mr-2 text-2xl" /> Event USP
           </h3>
-          <ul className="space-y-2 ml-6">
-            {eventDetails.event_usp.split('\n').map((usp, index) => (
-              <li key={index} className="flex items-center text-sm sm:text-base">
-                <GiShuttlecock className="mr-2 flex-none h-4 w-4 sm:h-5 sm:w-5" />
+          <ul className="space-y-2 ml-8">
+            {eventDetails.event_usp.split("\n").map((usp, index) => (
+              <li
+                key={index}
+                className="flex items-center text-sm sm:text-base"
+              >
                 {usp}
               </li>
             ))}
@@ -302,16 +325,22 @@ const EventPageRightContent = ({ eventDetails, eventId }: { eventDetails: EventD
           </div>
           <div className="flex items-center gap-1 cursor-pointer hover:underline text-nowrap font-bold text-sm sm:text-base">
             Phone:
-            <span className="text-blue-600 font-normal">{eventDetails.organizer_contact_number}</span>
+            <span className="text-blue-600 font-normal">
+              {eventDetails.organizer_contact_number}
+            </span>
           </div>
           <div className="flex items-center gap-1 cursor-pointer hover:underline text-nowrap font-bold text-sm sm:text-base">
             Email:
-            <span className="text-blue-600 font-normal">{eventDetails.organizer_email}</span>
+            <span className="text-blue-600 font-normal">
+              {eventDetails.organizer_email}
+            </span>
           </div>
           {eventDetails.website_link && (
             <div className="flex items-center gap-1 cursor-pointer hover:underline text-nowrap font-bold text-sm sm:text-base">
               Website:
-              <span className="text-blue-600 font-normal">{eventDetails.website_link}</span>
+              <span className="text-blue-600 font-normal">
+                {eventDetails.website_link}
+              </span>
             </div>
           )}
           {eventDetails.insta_link && (
@@ -332,7 +361,11 @@ const EventPageRightContent = ({ eventDetails, eventId }: { eventDetails: EventD
         <div>
           <h1 className="text-2xl font-semibold mb-2">Event Information</h1>
           <h2 className="mb-4">
-            Total Registrations: {eventDetails.categories.reduce((total, cat) => total + cat.total_quantity, 0)}
+            Total Registrations:{" "}
+            {eventDetails.categories.reduce(
+              (total, cat) => total + cat.total_quantity,
+              0
+            )}
             <Link
               href={`/eventregistrationpage/${eventId}`}
               className="text-blue-600 ml-2 hover:underline"
@@ -365,7 +398,9 @@ const EventPageRightContent = ({ eventDetails, eventId }: { eventDetails: EventD
         <div className="mb-6">
           <h3 className="text-xl font-bold mb-2">Rewards</h3>
           <div className="mb-4">
-            <p className="whitespace-pre-line">{eventDetails.rewards_for_participants}</p>
+            <p className="whitespace-pre-line">
+              {eventDetails.rewards_for_participants}
+            </p>
           </div>
         </div>
 
@@ -376,7 +411,9 @@ const EventPageRightContent = ({ eventDetails, eventId }: { eventDetails: EventD
           </div>
         </div>
       </div>
-      {eventDetails.show_qna && <QnaSectionEventpage isright={true} eventId={eventId} />}
+      {eventDetails.show_qna && (
+        <QnaSectionEventpage isright={true} eventId={eventId} />
+      )}
     </div>
   );
 };
