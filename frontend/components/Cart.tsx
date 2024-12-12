@@ -79,6 +79,7 @@ const BillingSummary: React.FC = () => {
         order_id: data.orderId,
         handler: async function (response: any) {
           try {
+            console.log("Payment response:", response);
             const verifyResponse = await fetch('/api/payment/verify', {
               method: 'POST',
               headers: { 'Content-Type': 'application/json' },
