@@ -51,7 +51,7 @@ export default function RootLayout({
       >
         <noscript>
           <iframe src="https://www.googletagmanager.com/ns.html?id=GTM-K7B8B5PQ"
-          height="0" width="0" style="display:none;visibility:hidden"></iframe>
+          height="0" width="0" style={{visibility: 'hidden', display:'none'}}></iframe>
         </noscript>
         <Toaster />
         {children}
