@@ -18,11 +18,6 @@ const nextConfig = {
   typescript: {
     ignoreBuildErrors: true,
   },
-  output: 'standalone',
-  experimental: {
-    // This will allow server components to be built properly
-    serverActions: true,
-  },
   eslint: {
     ignoreDuringBuilds: true,
   },
@@ -43,3 +38,5 @@ const nextConfig = {
     return config;
   },
 };
+
+export default nextConfig;

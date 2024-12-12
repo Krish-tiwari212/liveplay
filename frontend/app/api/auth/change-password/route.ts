@@ -19,7 +19,7 @@ export async function POST(request: Request) {
     }
 
     // Verify the current password
-    const { data: user, error: userError } = await supabase.auth.api.signInWithPassword({
+    const { data: user, error: userError } = await supabase.auth.signInWithPassword({
       email: userId, // Assuming userId is the email
       password: currentPassword,
     });
@@ -29,8 +29,8 @@ export async function POST(request: Request) {
     }
 
     // Update the password
-    const { error: updateError } = await supabase.auth.api.updateUser(user.access_token, {
-      password: newPassword,
+    const { error: updateError } = await supabase.auth.updateUser({
+      data: { password: newPassword },
     });
 
     if (updateError) {

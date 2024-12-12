@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" xmlns:news="http://www.google.com/schemas/sitemap-news/0.9" xmlns:xhtml="http://www.w3.org/1999/xhtml" xmlns:mobile="http://www.google.com/schemas/sitemap-mobile/1.0" xmlns:image="http://www.google.com/schemas/sitemap-image/1.1" xmlns:video="http://www.google.com/schemas/sitemap-video/1.1">
+<url><loc>https://liveplay.in/auth/change-password</loc><lastmod>2024-12-12T16:43:22.472Z</lastmod><changefreq>daily</changefreq><priority>0.7</priority></url>
+<url><loc>https://liveplay.in/auth/sign-up</loc><lastmod>2024-12-12T16:43:22.473Z</lastmod><changefreq>daily</changefreq><priority>0.7</priority></url>
+<url><loc>https://liveplay.in/auth/forgot-password</loc><lastmod>2024-12-12T16:43:22.473Z</lastmod><changefreq>daily</changefreq><priority>0.7</priority></url>
+<url><loc>https://liveplay.in/error</loc><lastmod>2024-12-12T16:43:22.473Z</lastmod><changefreq>daily</changefreq><priority>0.7</priority></url>
+<url><loc>https://liveplay.in/auth/complete-profile</loc><lastmod>2024-12-12T16:43:22.473Z</lastmod><changefreq>daily</changefreq><priority>0.7</priority></url>
+<url><loc>https://liveplay.in/event/entries</loc><lastmod>2024-12-12T16:43:22.473Z</lastmod><changefreq>daily</changefreq><priority>0.7</priority></url>
+<url><loc>https://liveplay.in/createeventstaticpage</loc><lastmod>2024-12-12T16:43:22.473Z</lastmod><changefreq>daily</changefreq><priority>0.7</priority></url>
+<url><loc>https://liveplay.in/organizerDashboard/create_event</loc><lastmod>2024-12-12T16:43:22.473Z</lastmod><changefreq>daily</changefreq><priority>0.7</priority></url>
+<url><loc>https://liveplay.in/auth/login</loc><lastmod>2024-12-12T16:43:22.473Z</lastmod><changefreq>daily</changefreq><priority>0.7</priority></url>
+<url><loc>https://liveplay.in/organizerDashboard/notifications</loc><lastmod>2024-12-12T16:43:22.473Z</lastmod><changefreq>daily</changefreq><priority>0.7</priority></url>
+<url><loc>https://liveplay.in/eventspage</loc><lastmod>2024-12-12T16:43:22.473Z</lastmod><changefreq>daily</changefreq><priority>0.7</priority></url>
+<url><loc>https://liveplay.in/organizerDashboard</loc><lastmod>2024-12-12T16:43:22.473Z</lastmod><changefreq>daily</changefreq><priority>0.7</priority></url>
+<url><loc>https://liveplay.in/organizerDashboard/settings</loc><lastmod>2024-12-12T16:43:22.473Z</lastmod><changefreq>daily</changefreq><priority>0.7</priority></url>
+<url><loc>https://liveplay.in/organizerDashboard/profile</loc><lastmod>2024-12-12T16:43:22.473Z</lastmod><changefreq>daily</changefreq><priority>0.7</priority></url>
+<url><loc>https://liveplay.in/organizerDashboard/update_score</loc><lastmod>2024-12-12T16:43:22.473Z</lastmod><changefreq>daily</changefreq><priority>0.7</priority></url>
+<url><loc>https://liveplay.in/paymentfailed</loc><lastmod>2024-12-12T16:43:22.473Z</lastmod><changefreq>daily</changefreq><priority>0.7</priority></url>
+<url><loc>https://liveplay.in</loc><lastmod>2024-12-12T16:43:22.473Z</lastmod><changefreq>daily</changefreq><priority>0.7</priority></url>
+<url><loc>https://liveplay.in/paymentsuccesfull</loc><lastmod>2024-12-12T16:43:22.473Z</lastmod><changefreq>daily</changefreq><priority>0.7</priority></url>
+<url><loc>https://liveplay.in/playerdashboard/manage-events</loc><lastmod>2024-12-12T16:43:22.473Z</lastmod><changefreq>daily</changefreq><priority>0.7</priority></url>
+<url><loc>https://liveplay.in/playerdashboard</loc><lastmod>2024-12-12T16:43:22.473Z</lastmod><changefreq>daily</changefreq><priority>0.7</priority></url>
+<url><loc>https://liveplay.in/policies/cancelation</loc><lastmod>2024-12-12T16:43:22.473Z</lastmod><changefreq>daily</changefreq><priority>0.7</priority></url>
+<url><loc>https://liveplay.in/policies/privacypolicy</loc><lastmod>2024-12-12T16:43:22.473Z</lastmod><changefreq>daily</changefreq><priority>0.7</priority></url>
+<url><loc>https://liveplay.in/organizerDashboard/manage-events</loc><lastmod>2024-12-12T16:43:22.473Z</lastmod><changefreq>daily</changefreq><priority>0.7</priority></url>
+<url><loc>https://liveplay.in/policies/termsandcondition</loc><lastmod>2024-12-12T16:43:22.473Z</lastmod><changefreq>daily</changefreq><priority>0.7</priority></url>
+<url><loc>https://liveplay.in/policies/refund</loc><lastmod>2024-12-12T16:43:22.473Z</lastmod><changefreq>daily</changefreq><priority>0.7</priority></url>
+<url><loc>https://liveplay.in/organizerDashboard/view_events</loc><lastmod>2024-12-12T16:43:22.473Z</lastmod><changefreq>daily</changefreq><priority>0.7</priority></url>
+</urlset>

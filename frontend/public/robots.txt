@@ -1,0 +1,9 @@
+# *
+User-agent: *
+Allow: /
+
+# Host
+Host: https://liveplay.in
+
+# Sitemaps
+Sitemap: https://liveplay.in/sitemap.xml
