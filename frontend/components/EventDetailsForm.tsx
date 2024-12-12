@@ -450,7 +450,7 @@ const EventDetailsForm: React.FC<EventDetailsFormProps> = ({
                   {field.label}
                 </Label>
                 <Select
-                  defaultValue={formData.sport || ""}
+                  value={formData[field.name] || ""}
                   onValueChange={(value) => {
                     setFormData({
                       ...formData,

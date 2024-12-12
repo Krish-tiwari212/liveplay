@@ -11,6 +11,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { useRouter } from "next/navigation";
 
 interface Event {
   id: string;
@@ -95,6 +96,7 @@ const SportsType = [
 
 const CardCarousel = () => {
   const [events, setEvents] = useState<Event[]>([]);
+  const router=useRouter()
 
   const NextArrow = (props: any) => {
     const { className, onClick } = props;
@@ -156,10 +158,10 @@ const CardCarousel = () => {
       try {
         const response = await fetch("/api/event/all_events");
         const data = await response.json();
-        
-        setEvents(data.events);
+        data.events.length>0 ? setEvents(data.events) : setEvents([])
       } catch (error) {
         console.error("Error fetching events:", error);
+        router.push("/error")
       }
     };
     fetchEvents();

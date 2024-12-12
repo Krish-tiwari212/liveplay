@@ -1,12 +1,12 @@
-"use client"
+"use client";
 
-import { Checkbox } from '@/components/ui/checkbox';
-import React, { useEffect, useRef, useState } from 'react'
+import { Checkbox } from "@/components/ui/checkbox";
+import React, { useEffect, useRef, useState } from "react";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Currency, Loader } from 'lucide-react';
-import Image from 'next/image';
-import { Button } from './ui/button';
+import { Currency, Loader } from "lucide-react";
+import Image from "next/image";
+import { Button } from "./ui/button";
 import {
   Select,
   SelectContent,
@@ -15,9 +15,9 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
-import { toast } from '@/hooks/use-toast';
-import { useEventContext } from '@/context/EventDataContext';
-
+import { toast } from "@/hooks/use-toast";
+import { useEventContext } from "@/context/EventDataContext";
+import { formatDate } from "date-fns";
 
 const banks = [
   { name: "ABN AMRO", image: "/Indian Banks SVG Logos/Bank Name=ABN AMRO.svg" },
@@ -123,8 +123,7 @@ const banks = [
   },
   {
     name: "ESAF Small Finance Bank",
-    image:
-      "/Indian Banks SVG Logos/Bank Name=ESAF Small Finance Bank Ltd.svg",
+    image: "/Indian Banks SVG Logos/Bank Name=ESAF Small Finance Bank Ltd.svg",
   },
   {
     name: "Emirates NBD",
@@ -314,14 +313,13 @@ interface FormField {
   required?: boolean;
   checkbox?: CheckboxField;
   filecontnet?: filecontent;
-  fieldid:number;
+  fieldid: number;
 }
 
 interface CheckboxField {
   id: string;
   label: string;
 }
-
 
 interface filecontent {
   size: string;
@@ -334,29 +332,30 @@ interface KycFormsProps {
   buttonString?: string;
   onButtonClick?: () => void;
   handlePrev?: () => void;
-  prevDisabled?:boolean
-  nextDisabled?:boolean
+  prevDisabled?: boolean;
+  nextDisabled?: boolean;
 }
 
 const Kycforms: React.FC<KycFormsProps> = ({
   fields,
   buttonLabel,
   buttonString,
-  onButtonClick=()=>{},
-  handlePrev=()=>{},
+  onButtonClick = () => {},
+  handlePrev = () => {},
   prevDisabled,
-  nextDisabled
+  nextDisabled,
 }) => {
-  const {setUnlockEventCircle}=useEventContext()
+  const { setUnlockEventCircle } = useEventContext();
   const [isImageLoading, setIsImageLoading] = useState(false);
   const [userType, setUserType] = useState<"business" | "individual">(
     "business"
   );
   const [imagePreviews, setImagePreviews] = useState({});
-
+  const [formData, setFormData] = useState<{ [key: string]: string }>({});
   const imageRefs = useRef({
     mobileBanner: null,
   });
+  const {KYCContent,setKYCContent}=useEventContext()
 
   const handleFileChange =
     (type: keyof typeof imagePreviews) =>
@@ -368,14 +367,15 @@ const Kycforms: React.FC<KycFormsProps> = ({
         reader.onloadend = () => {
           const base64Data = reader.result as string;
           setImagePreviews((prev) => ({ ...prev, [type]: base64Data }));
-          
+          setFormData((prevData) => ({
+            ...prevData,
+            [type]: file,
+          }));
           setIsImageLoading(false);
         };
         reader.readAsDataURL(file);
       }
     };
-
-  const [formData, setFormData] = useState<{ [key: string]: string }>({});
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
@@ -388,26 +388,62 @@ const Kycforms: React.FC<KycFormsProps> = ({
   const isFormValid = () => {
     return fields.every((field) => {
       if (field.required) {
-        return formData[field.name] && formData[field.name].trim() !== "";
+        const value = formData[field.name];
+        if (field.type !== "file" && (!value || value.trim() === "")) {
+          return false;
+        }
+        if (field.type === "file" && !formData[field.name]) {
+          return false;
+        }
+        return true;
       }
       return true;
     });
   };
-  
-  const handlenext=(e:any)=>{
+
+  const handlenext = (e: any) => {
     e.preventDefault();
-    if (!isFormValid()){
+    if (!isFormValid()) {
       toast({
-        title:"Please Enter The required fields",
-        variant:"default"
-      })
-    }else{
+        title: "Please Enter The required fields",
+        variant: "default",
+      });
+    } else {
+      setKYCContent((prev) => ({ ...prev, ...formData }));
+      setFormData({});
       onButtonClick();
-    } 
-  }
-  
+    }
+  };
+
+ useEffect(() => {
+   const filteredContent = Object.keys(KYCContent).reduce((acc, key) => {
+     const field = fields.find((field) => field.name === key);
+     if (field) {
+       acc[key] = KYCContent[key];
+       if (field.type === "file" && KYCContent[key]) {
+         const file = KYCContent[key] as File;
+         if (file && file instanceof File) {
+           const reader = new FileReader();
+           reader.onloadend = () => {
+             setImagePreviews((prev) => ({
+               ...prev,
+               [field.name]: reader.result as string,
+             }));
+           };
+           reader.readAsDataURL(file); 
+         }
+       }
+     }
+     return acc;
+   }, {} as { [key: string]: string });
+   setFormData((prevData) => ({
+     ...prevData,
+     ...filteredContent,
+   }));
+ }, [KYCContent, fields]);
+
   return (
-    <form className="bg-white shadow-2xl p-5 rounded-lg w-full relative mt-20">
+    <form className="bg-white shadow-2xl p-5 rounded-lg w-full relative mt-8 lg:mt-16">
       {!prevDisabled && (
         <button
           onClick={(e) => {
@@ -522,8 +558,16 @@ const Kycforms: React.FC<KycFormsProps> = ({
             )}
             {field.type === "select" && (
               <div className="w-full flex flex-col">
-                <label htmlFor={field.id}>{field.label}</label>
-                <Select>
+                <label htmlFor="bankName">{field.label}</label>
+                <Select
+                  value={formData[field.name] || ""}
+                  onValueChange={(value) => {
+                    setFormData((prevData) => ({
+                      ...prevData,
+                      [field.name]: value,
+                    }));
+                  }}
+                >
                   <SelectTrigger className="h-10 bg-white border rounded-md text-sm shadow-2xl text-[#17202A] focus:border-[#17202A] focus:outline-none focus:shadow-lg">
                     <SelectValue placeholder={field.placeholder} />
                   </SelectTrigger>

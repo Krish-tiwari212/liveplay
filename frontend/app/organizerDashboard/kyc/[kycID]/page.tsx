@@ -14,7 +14,28 @@ import { useEventContext } from '@/context/EventDataContext';
 import { useUser } from '@/context/UserContext';
 import KYCFinalPage from '@/components/KYCFinalPage';
 
+interface CheckboxField {
+  id: string;
+  label: string;
+}
 
+
+interface filecontent {
+  size: string;
+  label: string;
+}
+
+interface FormField {
+  id: string;
+  label: string;
+  type: string;
+  name: string;
+  placeholder?: string;
+  required?: boolean;
+  checkbox?: CheckboxField;
+  filecontnet?: filecontent;
+  fieldid:number;
+}
 
 const ProgressBarCheckpoints = [
   {
@@ -173,7 +194,7 @@ const fields = [
 ],
 ];
 
-const Page = ({ params: kycID }: { params: { kycID: string } }) => {
+const Page = () => {
   const { setDashboardName,setEditPage} = useEventContext();
   const [currentPage, setCurrentPage] = useState(1);
   const totalPages = 4;
@@ -197,13 +218,13 @@ const Page = ({ params: kycID }: { params: { kycID: string } }) => {
 
   return (
     <div className="m-3 relative">
-      <ProgressBar
+      {/* <ProgressBar
         forpage="KYC"
         currentpage={currentPage}
         setCurrentPage={setCurrentPage}
         totalPages={totalPages}
         checkpoints={ProgressBarCheckpoints}
-      />
+      /> */}
       {currentPage === 1 && (
         <FirstPage
           handleNext={handleNext}
@@ -212,10 +233,16 @@ const Page = ({ params: kycID }: { params: { kycID: string } }) => {
         />
       )}
       {currentPage === 2 && (
-        <SecondPage handleNext={handleNext} handlePrev={handlePrev} />
+        <SecondPage
+          handleNext={handleNext}
+          handlePrev={handlePrev}
+        />
       )}
       {currentPage === 3 && (
-        <ThirdPage handleNext={handleNext} handlePrev={handlePrev} />
+        <ThirdPage
+          handleNext={handleNext}
+          handlePrev={handlePrev}
+        />
       )}
       {currentPage === 4 && <KYCFinalPage />}
     </div>
@@ -225,8 +252,8 @@ const Page = ({ params: kycID }: { params: { kycID: string } }) => {
 interface Pages {
   handleNext: () => void;
   handlePrev: () => void;
-  prevDisabled?:boolean
-  nextDisabled?:boolean
+  prevDisabled?: boolean;
+  nextDisabled?: boolean;
 }
 
 const FirstPage = ({
@@ -234,48 +261,53 @@ const FirstPage = ({
   handlePrev,
   prevDisabled,
   nextDisabled,
-}: Pages) => (
-  <form className="mx-auto w-full lg:w-[60%]">
-    <Kycforms
-      fields={fields[0]}
-      buttonLabel="Next"
-      onButtonClick={() => handleNext()}
-      handlePrev={handlePrev}
-      prevDisabled={prevDisabled || false}
-    />
-  </form>
-);
+}: Pages) => {
+  return (
+    <form className="mx-auto w-full lg:w-[60%]">
+      <Kycforms
+        fields={fields[0]}
+        buttonLabel="Next"
+        onButtonClick={() => handleNext()}
+        handlePrev={handlePrev}
+        prevDisabled={prevDisabled || false}
+      />
+    </form>
+  );};
 
 const SecondPage = ({
   handleNext,
   handlePrev,
   prevDisabled,
   nextDisabled,
-}: Pages) => (
-  <form className="mx-auto w-full lg:w-[60%]">
-    <Kycforms
-      fields={fields[1]}
-      buttonLabel="Next"
-      onButtonClick={() => handleNext()}
-      handlePrev={handlePrev}
-    />
-  </form>
-);
+}: Pages) => {
+  return (
+    <form className="mx-auto w-full lg:w-[60%]">
+      <Kycforms
+        fields={fields[1]}
+        buttonLabel="Next"
+        onButtonClick={() => handleNext()}
+        handlePrev={handlePrev}
+      />
+    </form>
+  );
+  
+}
 
 const ThirdPage = ({
   handleNext,
   handlePrev,
   prevDisabled,
   nextDisabled,
-}: Pages) => (
-  <form className="mx-auto w-full lg:w-[60%]">
-    <Kycforms
-      fields={fields[2]}
-      buttonLabel="Unlock Event Earnings"
-      onButtonClick={() => handleNext()}
-      handlePrev={handlePrev}
-    />
-  </form>
-);
+}: Pages) => {
+  return (
+    <form className="mx-auto w-full lg:w-[60%]">
+      <Kycforms
+        fields={fields[2]}
+        buttonLabel="Unlock Event Earnings"
+        onButtonClick={() => handleNext()}
+        handlePrev={handlePrev}
+      />
+    </form>
+  );};
 
 export default Page;

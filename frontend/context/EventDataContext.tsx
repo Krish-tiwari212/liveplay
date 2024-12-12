@@ -13,6 +13,28 @@ interface UnlockCircle {
   fieldstatus: boolean;
 }
 
+interface FormField {
+  id: string;
+  label: string;
+  type: string;
+  name: string;
+  placeholder?: string;
+  required?: boolean;
+  checkbox?: CheckboxField;
+  filecontnet?: filecontent;
+  fieldid: number;
+}
+
+interface CheckboxField {
+  id: string;
+  label: string;
+}
+
+interface filecontent {
+  size: string;
+  label: string;
+}
+
 interface EventContextType {
   EventData: EventData;
   setEventData: React.Dispatch<React.SetStateAction<EventData>>;
@@ -44,6 +66,8 @@ interface EventContextType {
   setIsNavbarCollapsed: React.Dispatch<React.SetStateAction<boolean>>;
   unlockEventCircle: number;
   setUnlockEventCircle: React.Dispatch<React.SetStateAction<number>>;
+  KYCContent: FormField;
+  setKYCContent: React.Dispatch<React.SetStateAction<FormField>>;
 }
 
 const EventContext = createContext<EventContextType | undefined>(undefined);
@@ -68,6 +92,7 @@ export const EventProvider: React.FC<{ children: ReactNode }> = ({
   const [completeprofileDialog, setCompleteprofileDialog] = useState(false);
   const [isNavbarCollapsed, setIsNavbarCollapsed] = useState(true);
   const [unlockEventCircle, setUnlockEventCircle] = useState(0);
+  const [KYCContent, setKYCContent] = useState<FormField>({});
 
   return (
     <EventContext.Provider
@@ -99,7 +124,9 @@ export const EventProvider: React.FC<{ children: ReactNode }> = ({
         isNavbarCollapsed,
         setIsNavbarCollapsed,
         unlockEventCircle,
-        setUnlockEventCircle
+        setUnlockEventCircle,
+        KYCContent,
+        setKYCContent
       }}
     >
       {children}
