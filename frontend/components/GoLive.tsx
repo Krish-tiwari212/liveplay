@@ -99,14 +99,16 @@ const GoLive = () => {
       try {
         // Upload mobile banner to Supabase if it exists
         if (EventData.mobileBanner) {
-          const validFormats = ['image/jpeg', 'image/png'];
           const base64Pattern = /^data:image\/(jpeg|png);base64,/;
+          const match = EventData.mobileBanner.match(base64Pattern);
       
-          if (!base64Pattern.test(EventData.mobileBanner)) {
+          if (!match) {
             throw new Error('Invalid mobile banner format. Please upload a JPEG or PNG image.');
           }
       
-          // Extract the base64 data
+          // Extract the MIME type and base64 data
+          const mimeType = match[1] === 'jpeg' ? 'image/jpeg' : 'image/png';
+          const extension = match[1] === 'jpeg' ? 'jpg' : 'png';
           const base64Data = EventData.mobileBanner.replace(base64Pattern, '');
           const binaryData = atob(base64Data);
           const arrayBuffer = new ArrayBuffer(binaryData.length);
@@ -116,9 +118,9 @@ const GoLive = () => {
             uint8Array[i] = binaryData.charCodeAt(i);
           }
       
-          const blob = new Blob([uint8Array], { type: 'image/png' }); // Adjust the type if needed
+          const blob = new Blob([uint8Array], { type: mimeType });
       
-          const mobileBannerName = `mobile-banner-${Date.now()}.png`; // Adjust the extension if needed
+          const mobileBannerName = `mobile-banner-${Date.now()}.${extension}`;
       
           // Upload mobile banner to Supabase
           const { data, error } = await supabase.storage
