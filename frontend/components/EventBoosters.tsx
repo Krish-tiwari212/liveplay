@@ -166,11 +166,9 @@ const EventBoosters = ({
             )
         )
       : requiredFields;
-
     const missingFields = fieldsToCheck.filter(
       (field) => EventData[field] === undefined || EventData[field] === ""
     );
-
     if (missingFields.length > 0) {
       toast({
         title: "Please fill out the necessary details",
@@ -180,22 +178,17 @@ const EventBoosters = ({
       });
       return;
     }
-
      const categoryNames = EventData.categories.map((category: any) =>
        category.category_name.trim().toLowerCase()
      );
 
-     // Count occurrences of each category name
      const categoryCount = categoryNames.reduce((acc: any, name: string) => {
        acc[name] = (acc[name] || 0) + 1;
        return acc;
      }, {});
-
-     // Find duplicate categories
      const duplicateCategories = Object.keys(categoryCount).filter(
        (name) => categoryCount[name] > 1
      );
-
      if (duplicateCategories.length > 0) {
        toast({
          title: "Duplicate Categories Detected",
@@ -207,7 +200,6 @@ const EventBoosters = ({
        return;
      }
     
-
     const fieldsToUpdate = {
       selected_plan: "standard",
       Gst_Compliance: false,
@@ -231,27 +223,6 @@ const EventBoosters = ({
 
     handleNext();
   };
-
-
-
-
-  // useEffect(() => {
-  //   if (EventData.categories) {
-  //     const categoryNames = EventData.categories.map(
-  //       (category: any) => category.category_name
-  //     );
-  //     setCategoriename(categoryNames);
-
-  //     // Check for duplicates
-  //     const duplicateCategories = categoryNames.filter(
-  //       (name, index) => categoryNames.indexOf(name) !== index
-  //     );
-
-  //     console.log("Categories:", categoryNames);
-  //     console.log("Duplicates:", duplicateCategories);
-  //   }
-  // }, [EventData.categories]);
-
 
   return (
     <div className={`w-full`}>

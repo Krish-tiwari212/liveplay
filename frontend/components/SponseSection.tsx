@@ -240,7 +240,7 @@ const SponsorSection = () => {
             : "Add Sponsor"}
         </Button>
       </div>
-      <div className="sponsor-preview grid grid-cols-1 lg:grid-flow-col-3 gap-6">
+      <div className="sponsor-preview grid grid-cols-1 lg:grid-cols-3 gap-6">
         {sponsors.map((sponsor, index) => (
           <div
             key={index}
