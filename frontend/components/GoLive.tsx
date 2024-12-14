@@ -148,7 +148,6 @@ const GoLive = () => {
           toast({
             title: "Success!",
             description: "Event created successfully",
-            variant: "success",
           });
         } else {
           setIsLoading(false);

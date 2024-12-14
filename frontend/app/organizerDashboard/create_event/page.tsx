@@ -9,11 +9,23 @@ import { RiContactsBookUploadFill } from 'react-icons/ri';
 import { MdOutlineCategory, MdOutlineFeaturedPlayList, MdOutlineRocketLaunch } from 'react-icons/md';
 import { IoCreate } from 'react-icons/io5';
 import { useEventContext } from '@/context/EventDataContext';
-import CategoryPreview from '@/components/CategoryPreview';
-import EnableFeatures from '@/components/EnableFeatures';
-import EventBoosters from '@/components/EventBoosters';
-import GoLive from '@/components/GoLive';
-import EventInformation from '@/components/EventInformation';
+import dynamic from 'next/dynamic';
+// Dynamically import components that might use document/window
+const EventInformation = dynamic(() => import('@/components/EventInformation'), {
+  ssr: false
+})
+const CategoryPreview = dynamic(() => import('@/components/CategoryPreview'), {
+  ssr: false
+})
+const EnableFeatures = dynamic(() => import('@/components/EnableFeatures'), {
+  ssr: false
+})
+const EventBoosters = dynamic(() => import('@/components/EventBoosters'), {
+  ssr: false
+})
+const GoLive = dynamic(() => import('@/components/GoLive'), {
+  ssr: false
+})
 
 const ProgressBarCheckpoints = [
   {
