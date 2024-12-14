@@ -9,8 +9,7 @@ import { RiContactsBookUploadFill } from 'react-icons/ri';
 import { MdOutlineCategory, MdOutlineFeaturedPlayList, MdOutlineRocketLaunch } from 'react-icons/md';
 import { IoCreate } from 'react-icons/io5';
 import { useEventContext } from '@/context/EventDataContext';
-import dynamic from 'next/dynamic'
-
+import dynamic from 'next/dynamic';
 // Dynamically import components that might use document/window
 const EventInformation = dynamic(() => import('@/components/EventInformation'), {
   ssr: false

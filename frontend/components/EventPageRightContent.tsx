@@ -16,6 +16,8 @@ import QnaSectionEventpage from "./QnaSectionEventpage";
 import EventCategoryCard from "./EventCategoryCard";
 import { BiLike } from "react-icons/bi";
 import { PiHandWithdraw } from "react-icons/pi";
+import { createClient } from "@/utils/supabase/client";
+import { useEffect, useState } from "react";
 import Link from "next/link";
 
 interface EventCategory {
@@ -85,6 +87,7 @@ interface EventDetails {
   categories: EventCategory[];
 }
 
+
 const EventPageRightContent = ({
   eventDetails,
   eventId,
@@ -94,6 +97,44 @@ const EventPageRightContent = ({
 }) => {
   const path = usePathname();
   const router = useRouter();
+  const [averageRating, setAverageRating] = useState(0);
+  const [eventsHosted, setEventsHosted] = useState(0);
+  const [hostingSince, setHostingSince] = useState<string | null>(null);
+  const supabase = createClient();
+
+  useEffect(() => {
+    const fetchDetails = async () => {
+      const { data: feedback, error: feedbackError } = await supabase
+        .from('feedback')
+        .select('*')
+        .eq('event_id', eventId);
+
+      if (feedbackError) {
+        console.error('Error fetching feedback:', feedbackError);
+        return;
+      }
+
+      const totalRatings = feedback.reduce((acc, curr) => acc + curr.rating, 0);
+      const avgRating = feedback.length ? totalRatings / feedback.length : 0;
+      setAverageRating(avgRating);
+
+      const { data: organizerEvents, error: organizerEventsError } = await supabase
+        .from('events')
+        .select('*')
+        .eq('organizer_id', eventDetails.organizer_id);
+
+      if (organizerEventsError) {
+        console.error('Error fetching organizer events:', organizerEventsError);
+        return;
+      }
+
+      setEventsHosted(organizerEvents.length);
+      setHostingSince(organizerEvents.length ? organizerEvents[0].created_at : null);
+    };
+
+    fetchDetails();
+  }, [eventId]);
+
   return (
     <div className="w-full lg:w-1/3 flex flex-col gap-4">
       <div className="hidden lg:block border-2 border-[#141F29] p-4 rounded-lg text-[#141F29]">
@@ -291,7 +332,7 @@ const EventPageRightContent = ({
         </h1>
         <div className="flex flex-row items-center md:items-start gap-4 mb-4">
           <Image
-            src="/images/EventPoster.svg"
+            src={`https://robohash.org/${eventDetails.organizer_id}.png`}
             alt="Organizer Image"
             width={150}
             height={150}
@@ -313,15 +354,15 @@ const EventPageRightContent = ({
         <div className="space-y-1">
           <div className="flex items-center gap-1 cursor-pointer hover:underline text-nowrap font-bold text-sm sm:text-base">
             Ratings:
-            <span className="font-normal">5173</span>
+            <span className="font-normal">{averageRating.toFixed(2)}</span>
           </div>
           <div className="flex items-center gap-1 cursor-pointer hover:underline text-nowrap font-bold text-sm sm:text-base">
             Events Hosted:
-            <span className="font-normal">5173</span>
+            <span className="font-normal">{eventsHosted}</span>
           </div>
           <div className="flex items-center gap-1 cursor-pointer hover:underline text-nowrap font-bold text-sm sm:text-base">
             Hosting Since:
-            <span className="text-blue-600 font-normal">5173</span>
+            <span className="text-blue-600 font-normal">{new Date(hostingSince).toLocaleDateString()}</span>
           </div>
           <div className="flex items-center gap-1 cursor-pointer hover:underline text-nowrap font-bold text-sm sm:text-base">
             Phone:
@@ -344,7 +385,12 @@ const EventPageRightContent = ({
             </div>
           )}
           {eventDetails.insta_link && (
-            <div className="flex items-center gap-1 cursor-pointer hover:underline text-nowrap font-bold text-sm sm:text-base">
+            <Link
+              href={`https://www.instagram.com/${eventDetails.insta_link.replace('@', '')}`}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="flex items-center gap-1 cursor-pointer hover:underline text-nowrap font-bold text-sm sm:text-base"
+            >
               <Image
                 src="/icons/image 60.svg"
                 alt="Instagram Icon"
@@ -353,7 +399,7 @@ const EventPageRightContent = ({
                 className="sm:w-5 sm:h-5"
               />
               <span className="text-blue-600 font-normal">Instagram</span>
-            </div>
+            </Link>
           )}
         </div>
       </div>
@@ -391,7 +437,10 @@ const EventPageRightContent = ({
           <h3 className="text-xl font-bold mb-2">Event Categories</h3>
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
             {eventDetails.categories.map((category, index) => (
-              <EventCategoryCard key={index} event={category} />
+              <>
+                {console.log(category)}
+                <EventCategoryCard key={index} event={category} />
+              </>
             ))}
           </div>
         </div>
