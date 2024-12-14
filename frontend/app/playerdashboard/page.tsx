@@ -276,19 +276,54 @@ export default function Home() {
     setIsAlertOpen(true);
   };
 
-  const handlefeedbacksubmit = () => {
+  const handleFeedbackSubmit = async () => {
     setIsAlertOpen(false);
     setFeedbackDisable(false);
-
+  
     const total = OrganizerConduct + EventManagement + Refreshments;
     const avg = total / 3;
     setAverageRating(avg);
-
-    setIsThankYouOpen(true);
-
-    toast({
-      title: "Feedback submitted successfully",
-    });
+  
+    const feedbackData = {
+      userId: user?.id,
+      feedbackText: "", 
+      ratingOrganizerConduct: OrganizerConduct,
+      ratingEventManagement: EventManagement,
+      ratingVenueLocation: Refreshments,
+    };
+  
+    try {
+      const response = await fetch(`/api/event/feedback/${selectedEventForFeedback}`, { // Assuming you have the event ID stored in `eventId`
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(feedbackData),
+      });
+  
+      const data = await response.json();
+  
+      if (response.ok) {
+        setIsThankYouOpen(true);
+        toast({
+          title: "Feedback submitted successfully",
+        });
+      } else {
+        toast({
+          title: "Error submitting feedback",
+          description: data.error || "Something went wrong",
+          variant: "destructive",
+        });
+        console.error('Error submitting feedback:', data);
+      }
+    } catch (error) {
+      toast({
+        title: "Error",
+        description: error.message || "Failed to submit feedback",
+        variant: "destructive",
+      });
+      console.error('Error submitting feedback:', error);
+    }
   };
 
   const handleViewRegistrationClick = async (eventId: number) => {
@@ -933,7 +968,7 @@ export default function Home() {
               <Button variant="outline" onClick={handleCloseFeedbackDialog}>
                 Close
               </Button>
-              <Button variant="default" onClick={handlefeedbacksubmit}>
+              <Button variant="default" onClick={handleFeedbackSubmit}>
                 Submit
               </Button>
             </div>
