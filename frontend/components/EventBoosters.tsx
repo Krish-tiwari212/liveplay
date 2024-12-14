@@ -158,6 +158,7 @@ const EventBoosters = ({
   };
 
   const handleProceed = () => {
+    console.log("Event Data:", EventData);
     const fieldsToCheck = isVenueNotDecided
       ? requiredFields.filter(
           (field) =>

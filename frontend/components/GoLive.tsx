@@ -10,6 +10,7 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { Label } from './ui/label';
 import Link from 'next/link';
 import { toast } from "@/hooks/use-toast";
+import { createClient } from '@/utils/supabase/client';
 
 
 const GoLive = () => {
@@ -18,6 +19,7 @@ const GoLive = () => {
   const [isLoading, setIsLoading] = useState(false)
   const [isCheckboxChecked, setIsCheckboxChecked] = useState(false)
   const router = useRouter()
+  const supabase = createClient()
   console.log(EventData)
 
   const handleCheckboxChange = () => {
@@ -28,9 +30,9 @@ const GoLive = () => {
     if (!isLoading && isCheckboxChecked) {
       setIsLoading(true);
       setIsPlaying(false);
-  
+
       const formData = new FormData();
-      
+
       // Add all basic event details
       formData.append("sport", EventData.sport);
       formData.append("event_name", EventData.event_name);
@@ -66,16 +68,10 @@ const GoLive = () => {
       // Add plan selection
       formData.append("selected_plan", EventData.selected_plan || 'standard');
 
-      // Add mobile banner if it exists
-      if (EventData.mobileBanner) {
-        formData.append("mobileBanner", EventData.mobileBanner);
-      }
-
       // Add categories as JSON string
       formData.append(
         "eventData",
         JSON.stringify({
-          ...EventData,
           categories: EventData.categories.map((category: any) => ({
             category_name: category.category_name,
             ticket_description: category.ticket_description,
@@ -99,13 +95,49 @@ const GoLive = () => {
           }))
         })
       );
-  
+
       try {
+        // Upload mobile banner to Supabase if it exists
+        if (EventData.mobileBanner) {
+          const validFormats = ['image/jpeg', 'image/png'];
+          const base64Pattern = /^data:image\/(jpeg|png);base64,/;
+      
+          if (!base64Pattern.test(EventData.mobileBanner)) {
+            throw new Error('Invalid mobile banner format. Please upload a JPEG or PNG image.');
+          }
+      
+          // Extract the base64 data
+          const base64Data = EventData.mobileBanner.replace(base64Pattern, '');
+          const binaryData = atob(base64Data);
+          const arrayBuffer = new ArrayBuffer(binaryData.length);
+          const uint8Array = new Uint8Array(arrayBuffer);
+      
+          for (let i = 0; i < binaryData.length; i++) {
+            uint8Array[i] = binaryData.charCodeAt(i);
+          }
+      
+          const blob = new Blob([uint8Array], { type: 'image/png' }); // Adjust the type if needed
+      
+          const mobileBannerName = `mobile-banner-${Date.now()}.png`; // Adjust the extension if needed
+      
+          // Upload mobile banner to Supabase
+          const { data, error } = await supabase.storage
+            .from('banners')
+            .upload(`mobile/${mobileBannerName}`, blob);
+      
+          if (error) {
+            throw new Error('Image upload failed');
+          }
+      
+          const mobileBannerUrl = supabase.storage.from('banners').getPublicUrl(data.path).data.publicUrl;
+          formData.append("mobileBannerUrl", mobileBannerUrl);
+        }
+
         const response = await fetch('/api/event/create', {
           method: 'POST',
           body: formData,
         });
-  
+
         const data = await response.json();
 
         if (response.ok) {
@@ -115,14 +147,14 @@ const GoLive = () => {
             title: "Success!",
             description: "Event created successfully",
             variant: "success",
-          })
+          });
         } else {
           setIsLoading(false);
           toast({
             title: "Error creating event",
             description: data.error || "Something went wrong",
             variant: "destructive",
-          })
+          });
           console.error('Error creating event:', data);
         }
       } catch (error) {
@@ -131,7 +163,7 @@ const GoLive = () => {
           title: "Error",
           description: error.message || "Failed to create event",
           variant: "destructive",
-        })
+        });
         console.error('Error creating event:', error);
       }
     }

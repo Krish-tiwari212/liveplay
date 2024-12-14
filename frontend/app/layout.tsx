@@ -6,6 +6,7 @@ import { Toast, ToastProvider } from "@radix-ui/react-toast";
 import { Toaster } from "@/components/ui/toaster";
 import { Icon } from "lucide-react";
 import Head from "next/head";
+import GoogleAnalytics from "@/components/GoogleAnalytics";
 
 const geistSans = localFont({
   src: "./fonts/GeistVF.woff",
@@ -34,17 +35,6 @@ export default function RootLayout({
   return (
     <html lang="en">
       <Head>
-        <script async src="https://www.googletagmanager.com/gtag/js?id=G-Z5RES8QC6B"></script>
-        <script
-          dangerouslySetInnerHTML={{
-            __html: `
-              window.dataLayer = window.dataLayer || [];
-              function gtag(){dataLayer.push(arguments);}
-              gtag('js', new Date());
-              gtag('config', 'G-Z5RES8QC6B');
-            `,
-          }}
-        />
         <script
           dangerouslySetInnerHTML={{
             __html: `
@@ -57,6 +47,7 @@ export default function RootLayout({
           }}
         />
       </Head>
+      <GoogleAnalytics />
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
