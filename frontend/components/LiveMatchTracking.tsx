@@ -7,7 +7,8 @@ import { useEventContext } from '@/context/EventDataContext';
 import { HoverCard, HoverCardContent, HoverCardTrigger } from './ui/hover-card';
 
 interface LiveMatchTrackingProps{
-    handleNext:()=>void
+    handleNext:()=>void,
+    eventId:string
 }
 
 const elite = [
@@ -61,7 +62,7 @@ const elite = [
 ];
 
 
-const LiveMatchTracking = ({ handleNext }: LiveMatchTrackingProps) => {
+const LiveMatchTracking = ({ handleNext, eventId }: LiveMatchTrackingProps) => {
   
   const {
     EventData,
