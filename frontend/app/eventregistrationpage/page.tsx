@@ -20,6 +20,7 @@ import { IoLocationSharp, IoShareSocialSharp } from 'react-icons/io5';
 import { PiHandWithdraw } from 'react-icons/pi';
 import { RiDiscountPercentLine } from 'react-icons/ri';
 import { VscGraph } from 'react-icons/vsc';
+import { Suspense } from "react";
 
 interface Participant {
   id: string;
@@ -204,7 +205,7 @@ const participantsdemo = [
   },
 ];
 
-const page = () => {
+const EventPage = () => {
   const router = useRouter();
    const searchParams = useSearchParams();
    const eventId = searchParams.get("id");
@@ -401,7 +402,7 @@ const page = () => {
           </Link>
         </div> */}
         <div className="w-full lg:w-1/3 flex flex-col gap-4">
-          {/* <div className="w-full h-64 hidden md:block">
+          <div className="w-full h-64 hidden md:block">
             <Image
               src="/images/img2.jpeg"
               alt="Event Poster"
@@ -480,11 +481,17 @@ const page = () => {
                 Already Registered ?
               </p>
             </Link>
-          </div> */}
+          </div>
         </div>
       </div>
     </div>
   );
 };
+
+const page = () => (
+  <Suspense fallback={<div>Loading...</div>}>
+    <EventPage />
+  </Suspense>
+);
 
 export default page

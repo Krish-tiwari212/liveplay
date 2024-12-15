@@ -1,12 +1,12 @@
 // "use client";
 
-// // export default function ParticipantsPage() {
-// //   return (
-// //     <div>
-// //       <h1>Participants Page</h1>
-// //     </div>
-// //   );
-// // }
+export default function ParticipantsPage() {
+  return (
+    <div>
+      <h1>Participants Page</h1>
+    </div>
+  );
+}
 
 // import { useEffect, useState, Suspense } from 'react';
 // import { useSearchParams } from 'next/navigation';
