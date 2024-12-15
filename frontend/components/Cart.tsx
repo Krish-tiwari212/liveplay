@@ -10,15 +10,17 @@ import { useToast } from '@/hooks/use-toast';
 import { createClient } from '@/utils/supabase/client';
 
 interface BillingSummaryProps {
-  gstrate:string
-  gstcompliance:boolean
-  gstIncExc:string
+  gstrate: string;
+  gstcompliance: boolean;
+  gstIncExc: string;
+  isCheckboxChecked:Boolean
 }
 
 const BillingSummary = ({
   gstrate="0",
   gstcompliance=false,
   gstIncExc="",
+  isCheckboxChecked
 }: BillingSummaryProps) => {
   const { items, clearCart, total } = useCartContext();
   const [withdrawalFee, setWithdrawalFee] = useState<boolean>(true);
@@ -146,7 +148,9 @@ const BillingSummary = ({
       (acc, item) => acc + (item.discount_value ?? item.price) * item.quantity,
       0
     );
-    setSavings(original - discounted);
+
+    const amount=isCheckboxChecked?discounted:original
+    setSavings(original - amount);
 
     const fee = withdrawalFee ? 0.05 * discounted : 0;
     setFeeAmount(fee);
@@ -154,9 +158,7 @@ const BillingSummary = ({
     const gstAmount = (Number(gstrate)/100) * discounted;
     setGst(gstAmount);
     setTotalPayable(
-      gstIncExc === "inclusive"
-        ? discounted + fee + gstAmount
-        : discounted + fee
+      gstIncExc === "inclusive" ? amount + fee + gstAmount : amount + fee
     );
   }, [items, withdrawalFee]);
 
@@ -171,6 +173,7 @@ const BillingSummary = ({
     setWithdrawalFee(true);
   };
 
+  
   return (
     <div
       id="cart_section"
@@ -196,10 +199,10 @@ const BillingSummary = ({
                   </p>
                 </div>
                 <div className="text-right flex flex-col sm:flex-row sm:gap-2 items-center">
-                  {item.discount_value ? (
+                  {isCheckboxChecked ? (
                     <>
                       <p className="text-sm line-through text-gray-500">
-                        ₹{( item.price * item.quantity).toFixed(2)}
+                        ₹{(item.price * item.quantity).toFixed(2)}
                       </p>
                       <p className="text-green-600 font-semibold">
                         ₹
@@ -284,11 +287,18 @@ const BillingSummary = ({
 
         {items.length > 0 && (
           <div className="py-2 rounded-md flex justify-center items-center">
-            <p className="flex justify-center items-center gap-2">
-              <RiDiscountPercentFill className="text-2xl" />
-              Wohooo! You’ve saved
-              <span className="font-semibold">₹{savings.toFixed(2)}</span>
-            </p>
+            {savings.toFixed(2) === "0.00" ? (
+              <p className="flex justify-center items-center gap-2">
+                <RiDiscountPercentFill className="text-2xl" />
+                Sorry No Savings
+              </p>
+            ) : (
+              <p className="flex justify-center items-center gap-2">
+                <RiDiscountPercentFill className="text-2xl" />
+                Wohooo! You’ve saved
+                <span className="font-semibold">₹{savings.toFixed(2)}</span>
+              </p>
+            )}
           </div>
         )}
       </div>

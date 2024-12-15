@@ -39,7 +39,17 @@ const participantsData: Participant[] = [
   { id: "3", name: "Team Alpha", contact: "alpha@team.com" },
 ];
 
-const ChooseCategoryRegister: React.FC = ({ eventid }: IntrinsicAttributes) => {
+interface ChooseCategoryRegisterprops {
+  eventid: string | null;
+  isCheckboxChecked: Boolean;
+  setIsCheckboxChecked: React.Dispatch<React.SetStateAction<boolean>>;
+}
+
+const ChooseCategoryRegister = ({
+  eventid,
+  isCheckboxChecked,
+  setIsCheckboxChecked
+}:ChooseCategoryRegisterprops ) => {
   const { addItem, items } = useCartContext();
   const [registeredCategories, setRegisteredCategories] = useState<Category[]>(
     []
@@ -75,9 +85,9 @@ const ChooseCategoryRegister: React.FC = ({ eventid }: IntrinsicAttributes) => {
     };
     fetchcategory();
   }, []);
-useEffect(() => {
-  console.log(eventid);
-}, []);
+  useEffect(() => {
+    console.log(eventid);
+  }, []);
   return (
     <div className="w-full lg:w-1/2 relative h-full space-y-4 px-5 sm:px-12">
       <h1 className="text-2xl text-gray-800 font-semibold">Choose Category</h1>
@@ -88,6 +98,8 @@ useEffect(() => {
           participantsData={participantsData}
           isAdded={items.some((item) => item.id === category.id)}
           onAdd={() => handleAddToCart(category)}
+          isCheckboxChecked={isCheckboxChecked}
+          setIsCheckboxChecked={setIsCheckboxChecked}
         />
       ))}
     </div>

@@ -11,7 +11,7 @@ import React, { useEffect, useState } from 'react'
 const page = ({ params }: any) => {
   const {id}=params
   const [EventDetails, setEventDetails] = useState({});
-
+  const [isCheckboxChecked, setIsCheckboxChecked] = useState(false);
 
   useEffect(() => {
     const fetchEventDetails = async () => {
@@ -37,7 +37,6 @@ const page = ({ params }: any) => {
           throw new Error("Invalid event data received");
         }
         setEventDetails(data);
-        console.log(data)
       } catch (error: any) {
         console.error("Error fetching event details:", error);
         toast({
@@ -54,8 +53,17 @@ const page = ({ params }: any) => {
     <>
       <div className="mx-auto pt-6 md:pb-6">
         <div className="flex flex-col lg:flex-row gap-10">
-          <ChooseCategoryregister eventid={id} />
-          <Cart />
+          <ChooseCategoryregister
+            eventid={id}
+            isCheckboxChecked={isCheckboxChecked}
+            setIsCheckboxChecked={setIsCheckboxChecked}
+          />
+          <Cart
+            gstrate={EventDetails.Gst_Rate}
+            gstcompliance={EventDetails.Gst_Compliance}
+            gstIncExc={EventDetails.Gst_Incexc}
+            isCheckboxChecked={isCheckboxChecked}
+          />
           <StickyCart />
         </div>
       </div>
