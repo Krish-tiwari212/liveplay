@@ -223,10 +223,10 @@ const fields = [
       },
       {
         id: "insta_link",
-        label: "Instagram Link",
+        label: "Instagram Username",
         type: "text",
         name: "insta_link",
-        placeholder: "Enter Link",
+        placeholder: "Enter Username",
       },
     ],
   },
@@ -600,7 +600,7 @@ const EventDetailsForm: React.FC<EventDetailsFormProps> = ({
             ))}
           </div>
         </div>
-        <div className=" w-full mx-2 flex flex-col mb-6">
+        {/* <div className=" w-full mx-2 flex flex-col mb-6">
           <div className="mt-2 items-top flex justify-start  space-x-2">
             <Checkbox id="contactInfo" />
             <div className="flex flex-col leading-none">
@@ -615,7 +615,7 @@ const EventDetailsForm: React.FC<EventDetailsFormProps> = ({
               </p>
             </div>
           </div>
-        </div>
+        </div> */}
       </div>
       <div className="flex justify-center items-center">
         <Button
