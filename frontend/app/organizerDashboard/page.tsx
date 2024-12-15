@@ -51,6 +51,7 @@ import {
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { toast } from "@/hooks/use-toast";
+import { createClient } from '@/utils/supabase/client';
 
 interface EventCard {
   id: number;
@@ -74,6 +75,7 @@ export default function Home() {
   const [data, setData] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [hasOrganizerDetails, setHasOrganizerDetails] = useState(false);
 
   const handleCopy = (text: string) => {
     navigator.clipboard
@@ -92,6 +94,32 @@ export default function Home() {
         });
       });
   };
+
+  useEffect(() => {
+    const fetchOrganizerDetails = async () => {
+      const supabase = createClient();
+
+      if (!user?.id) {
+        console.error('User ID is not available');
+        return;
+      }
+
+      const { data, error } = await supabase
+        .from('organizer_details')
+        .select('user_id')
+        .eq('user_id', user.id)
+        .single();
+      console.log(data);
+      if (error) {
+        console.error('Error fetching organizer details:', error);
+      } else {
+        console.log('Fetched organizer details:', data);
+        setHasOrganizerDetails(!!data);
+      }
+    };
+
+    fetchOrganizerDetails();
+  }, [user?.id]);
 
   useEffect(() => {
     const interval = setInterval(() => {
@@ -178,17 +206,19 @@ export default function Home() {
           </h1>
         </div>
         <div className={`flex flex-col sm:flex-row gap-4 sm:py-2`}>
-          <Button
-            onClick={() => router.push(`/organizerDashboard/kyc/${user?.id}`)}
-            variant="tertiary"
-            size="xs"
-            className={`text-sm sm:text-md shadow-md shadow-gray-500 ${
-              isRed ? "text-red-500" : ""
-            }`}
-          >
-            <FaUnlockAlt className="mr-2 text-xl" />
-            Unlock Event Earnings
-          </Button>
+          {!hasOrganizerDetails && (
+            <Button
+              onClick={() => router.push(`/organizerDashboard/kyc/${user?.id}`)}
+              variant="tertiary"
+              size="xs"
+              className={`text-sm sm:text-md shadow-md shadow-gray-500 ${
+                isRed ? "text-red-500" : ""
+              }`}
+            >
+              <FaUnlockAlt className="mr-2 text-xl" />
+              Unlock Event Earnings
+            </Button>
+          )}
           <Button
             onClick={() => router.push("/organizerDashboard/create_event")}
             variant="tertiary"

@@ -4,12 +4,66 @@ import { Button } from './ui/button';
 import Image from 'next/image';
 import { useRouter } from 'next/navigation';
 import { useEventContext } from '@/context/EventDataContext';
+import { toast } from "@/hooks/use-toast";
+import { useUser } from '@/context/UserContext';
+
 const KYCFinalPage = () => {
   const router = useRouter();
-  const {KYCContent}=useEventContext()
-  useEffect(()=>{
-    console.log(KYCContent)
-  },[])
+  const {KYCContent}=useEventContext();
+  const {user} = useUser();
+  useEffect(() => {
+    console.log(KYCContent);
+  
+    const convertFileToBase64 = (file: File): Promise<string> => {
+      return new Promise((resolve, reject) => {
+        const reader = new FileReader();
+        reader.readAsDataURL(file);
+        reader.onload = () => resolve(reader.result as string);
+        reader.onerror = error => reject(error);
+      });
+    };
+  
+    const postOrganizerDetails = async () => {
+      try {
+        const aadharFrontBase64 = await convertFileToBase64(KYCContent.aadharFront);
+        const aadharBackBase64 = await convertFileToBase64(KYCContent.aadharBack);
+        const panBase64 = await convertFileToBase64(KYCContent.pan);
+  
+        let content = {
+          ...KYCContent,
+          user_id: user?.id,
+          aadharFront: aadharFrontBase64,
+          aadharBack: aadharBackBase64,
+          pan: panBase64
+        };
+  
+        const response = await fetch(`/api/auth/kyc`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(content),
+        });
+  
+        if (!response.ok) {
+          throw new Error('Failed to submit organizer details');
+        }
+  
+        const result = await response.json();
+        toast({
+          title: "Organizer details submitted successfully",
+          variant: "success",
+        });
+      } catch (error) {
+        toast({
+          title: error.message,
+          variant: "error",
+        });
+      }
+    };
+  
+    postOrganizerDetails();
+  }, [KYCContent]);
   return (
     <div className="flex items-center justify-center min-h-[500px] p-4">
       <div className="space-y-6 max-w-lg w-full">
