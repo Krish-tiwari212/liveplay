@@ -14,7 +14,7 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { useRouter, useSearchParams } from 'next/navigation';
 import React, { useEffect, useState } from 'react'
-import { GiEntryDoor } from 'react-icons/gi';
+import { GiConsoleController, GiEntryDoor } from 'react-icons/gi';
 import { HiCurrencyRupee } from 'react-icons/hi2';
 import { IoLocationSharp, IoShareSocialSharp } from 'react-icons/io5';
 import { PiHandWithdraw } from 'react-icons/pi';
@@ -60,8 +60,158 @@ interface Event {
   mobile_cover_image_url: string;
 }
 
+
+const participantsdemo = [
+  {
+    id: "1",
+    user_id: "101",
+    name: "Alice Johnson",
+    status: "confirmed",
+    registration_date: "2024-12-01",
+    user: {
+      id: "101",
+      full_name: "Alice Johnson",
+      email: "alice.johnson@example.com",
+      gender: "female",
+      date_of_birth: "1990-05-15",
+    },
+  },
+  {
+    id: "2",
+    user_id: "102",
+    name: "Bob Smith",
+    status: "pending",
+    registration_date: "2024-12-02",
+    user: {
+      id: "102",
+      full_name: "Bob Smith",
+      email: "bob.smith@example.com",
+      gender: "male",
+      date_of_birth: "1988-03-22",
+    },
+  },
+  {
+    id: "3",
+    user_id: "103",
+    name: "Charlie Brown",
+    status: "declined",
+    registration_date: "2024-12-03",
+    user: {
+      id: "103",
+      full_name: "Charlie Brown",
+      email: "charlie.brown@example.com",
+      gender: "male",
+      date_of_birth: "1995-07-19",
+    },
+  },
+  {
+    id: "4",
+    user_id: "104",
+    name: "Diana Prince",
+    status: "confirmed",
+    registration_date: "2024-12-04",
+    user: {
+      id: "104",
+      full_name: "Diana Prince",
+      email: "diana.prince@example.com",
+      gender: "female",
+      date_of_birth: "1992-11-11",
+    },
+  },
+  {
+    id: "5",
+    user_id: "105",
+    name: "Evan Thomas",
+    status: "pending",
+    registration_date: "2024-12-05",
+    user: {
+      id: "105",
+      full_name: "Evan Thomas",
+      email: "evan.thomas@example.com",
+      gender: "male",
+      date_of_birth: "1997-09-04",
+    },
+  },
+  {
+    id: "6",
+    user_id: "106",
+    name: "Fiona Davis",
+    status: "confirmed",
+    registration_date: "2024-12-06",
+    user: {
+      id: "106",
+      full_name: "Fiona Davis",
+      email: "fiona.davis@example.com",
+      gender: "female",
+      date_of_birth: "1985-12-25",
+    },
+  },
+  {
+    id: "7",
+    user_id: "107",
+    name: "George Miller",
+    status: "declined",
+    registration_date: "2024-12-07",
+    user: {
+      id: "107",
+      full_name: "George Miller",
+      email: "george.miller@example.com",
+      gender: "male",
+      date_of_birth: "1993-04-10",
+    },
+  },
+  {
+    id: "8",
+    user_id: "108",
+    name: "Hannah Lee",
+    status: "confirmed",
+    registration_date: "2024-12-08",
+    user: {
+      id: "108",
+      full_name: "Hannah Lee",
+      email: "hannah.lee@example.com",
+      gender: "female",
+      date_of_birth: "1991-06-18",
+    },
+  },
+  {
+    id: "9",
+    user_id: "109",
+    name: "Ian Collins",
+    status: "pending",
+    registration_date: "2024-12-09",
+    user: {
+      id: "109",
+      full_name: "Ian Collins",
+      email: "ian.collins@example.com",
+      gender: "male",
+      date_of_birth: "1990-02-28",
+    },
+  },
+  {
+    id: "10",
+    user_id: "110",
+    name: "Julia Adams",
+    status: "confirmed",
+    registration_date: "2024-12-10",
+    user: {
+      id: "110",
+      full_name: "Julia Adams",
+      email: "julia.adams@example.com",
+      gender: "female",
+      date_of_birth: "1989-08-30",
+    },
+  },
+];
+
 const page = () => {
   const router = useRouter();
+   const searchParams = useSearchParams();
+   const eventId = searchParams.get("id");
+   const [participants, setParticipants] = useState<Participant[]>([]);
+   const [selectedParticipant, setSelectedParticipant] =
+     useState<Participant | null>(null);
+   const [event, setEvent] = useState<Event | null>(null);
 
   const handleCopy = (text: string) => {
     navigator.clipboard
@@ -81,6 +231,26 @@ const page = () => {
       });
   };
 
+   useEffect(() => {
+     if (eventId) {
+       fetch(`/api/event/get_entries/${eventId}`)
+         .then((response) => response.json())
+         .then((data) => {
+           setParticipants(data.participants);
+           console.log(data.participants);
+         })
+         .catch((error) => {
+           console.error("Error fetching participants:", error);
+         });
+
+       fetch(`/api/event/get_by_id/${eventId}`)
+         .then((response) => response.json())
+         .then((data) => {setEvent(data);console.log(data)})
+         .catch((error) => console.error(error));
+     }
+   }, [eventId]);
+
+
   return (
     <div className="mx-auto p-8">
       <div className="flex flex-col lg:flex-row gap-4">
@@ -88,7 +258,9 @@ const page = () => {
           <div className="mb-4">
             <h1 className="text-2xl font-bold">Player Registration</h1>
             <div className="flex items-center justify-between">
-              <h1 className="font bold text-lg">Total registrations: 1728</h1>
+              <h1 className="font bold text-lg">
+                Total registrations: {participants.length}
+              </h1>
               <Dialog>
                 <DialogTrigger asChild>
                   <Button
@@ -141,10 +313,95 @@ const page = () => {
               </Dialog>
             </div>
           </div>
-          <PlayerRegistrationmenu/>
+          <PlayerRegistrationmenu participants={participantsdemo} />
         </div>
+        {/* <div className="hidden lg:block border-2 border-[#141F29] p-4 rounded-lg text-[#141F29]">
+          <h1 className="text-xl sm:text-2xl md:text-3xl font-bold mb-4 line-clamp-2">
+            {event.event_name}
+          </h1>
+
+          <div className="flex flex-wrap gap-2 mb-4">
+            <Badge className="bg-[#E6EAC5] text-[#141F29] text-sm sm:text-base">
+              {event.sport}
+            </Badge>
+            <Badge className="bg-[#E6EAC5] text-[#141F29] text-sm sm:text-base">
+              {event.selected_plan}
+            </Badge>
+            {event.categories.some((cat) => cat.has_discount) && (
+              <Badge className="bg-[#E6EAC5] text-[#F3524F] text-sm sm:text-base flex items-center">
+                <RiDiscountPercentLine className="mr-2" />
+                Early Bird Discount
+              </Badge>
+            )}
+          </div>
+
+          <div className="space-y-3 mb-6">
+            <div className="flex items-center">
+              <CalendarIcon className="w-4 h-4 sm:w-5 sm:h-5 mr-2" />
+              <span className="text-sm sm:text-base">
+                {new Date(event.start_date).toLocaleDateString("en-US", {
+                  day: "numeric",
+                  month: "long",
+                  year: "numeric",
+                })}{" "}
+                | {event.start_time} onwards
+              </span>
+            </div>
+            <div className="flex items-center">
+              <GiEntryDoor className="w-4 h-4 sm:w-5 sm:h-5 mr-2" />
+              <span className="text-sm sm:text-base">
+                Last Date to Register:{" "}
+                {new Date(event.last_registration_date).toLocaleDateString()}
+              </span>
+            </div>
+            <div className="flex items-center">
+              <PiHandWithdraw className="w-4 h-4 sm:w-5 sm:h-5 mr-2" />
+              <span className="text-sm sm:text-base">
+                Last Date to Withdraw:{" "}
+                {new Date(event.last_withdrawal_date).toLocaleDateString()}
+              </span>
+            </div>
+            <div className="flex items-center">
+              <IoLocationSharp className="w-4 h-4 sm:w-5 sm:h-5 mr-2" />
+              <span className="text-sm sm:text-base">{event.venue_name}</span>
+            </div>
+            <Link
+              href={`/eventregistrationpage/${eventId}`}
+              className="flex items-center gap-1 cursor-pointer"
+            >
+              <div className="flex items-center gap-1 cursor-pointer hover:underline text-nowrap">
+                <VscGraph className="w-4 h-4 sm:w-5 sm:h-5  mr-1" />
+                <span className="text-sm sm:text-base">Registrations:</span>
+                <span className="text-blue-600 text-sm sm:text-base">
+                  {event.categories.reduce(
+                    (total, cat) => total + cat.total_quantity,
+                    0
+                  )}
+                </span>
+              </div>
+            </Link>
+            <div className="flex items-center">
+              <HiCurrencyRupee className="w-4 h-4 sm:w-5 sm:h-5 mr-2" />
+              <span className="text-sm sm:text-base  mr-2">Starting From:</span>
+              <span className="text-lg sm:text-xl md:text-2xl font-bold">
+                ₹{Math.min(...event.categories.map((cat) => cat.price))}
+              </span>
+            </div>
+          </div>
+          <Link href={`/choosecategory/${eventId}`}>
+            <Button
+              variant="tertiary"
+              className="w-full border-2 border-black py-8 text-xl"
+            >
+              Register Now
+            </Button>
+            <p className="text-blue-400 underline text-xl mt-2 text-center">
+              Already Registered ?
+            </p>
+          </Link>
+        </div> */}
         <div className="w-full lg:w-1/3 flex flex-col gap-4">
-          <div className="w-full h-64 hidden md:block">
+          {/* <div className="w-full h-64 hidden md:block">
             <Image
               src="/images/img2.jpeg"
               alt="Event Poster"
@@ -223,7 +480,7 @@ const page = () => {
                 Already Registered ?
               </p>
             </Link>
-          </div>
+          </div> */}
         </div>
       </div>
     </div>

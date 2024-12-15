@@ -76,7 +76,7 @@ const ParticipantsPageContent = ({ eventId }: { eventId: string | null }) => {
     if (eventId) {
       fetch(`/api/event/get_entries/${eventId}`)
         .then(response => response.json())
-        .then(data => console.log("data"+data.participants))
+        .then(data => {setParticipants(data.participants);console.log(data)})
         .catch(error => console.error(error));
 
         console.log(participants);
