@@ -9,8 +9,18 @@ import { useRouter } from 'next/navigation';
 import { useToast } from '@/hooks/use-toast';
 import { createClient } from '@/utils/supabase/client';
 
-const BillingSummary: React.FC = () => {
-  const { items, clearCart, total } = useCartContext(); 
+interface BillingSummaryProps {
+  gstrate:string
+  gstcompliance:boolean
+  gstIncExc:string
+}
+
+const BillingSummary = ({
+  gstrate="0",
+  gstcompliance=false,
+  gstIncExc="",
+}: BillingSummaryProps) => {
+  const { items, clearCart, total } = useCartContext();
   const [withdrawalFee, setWithdrawalFee] = useState<boolean>(true);
   const [feeAmount, setFeeAmount] = useState<number>(0);
   const [gst, setGst] = useState<number>(0);
@@ -21,24 +31,25 @@ const BillingSummary: React.FC = () => {
   const supabase = createClient();
   const [session, setSession] = useState<any>(null);
 
-
   useEffect(() => {
-    loadScript('https://checkout.razorpay.com/v1/checkout.js');
+    loadScript("https://checkout.razorpay.com/v1/checkout.js");
   }, []);
 
   useEffect(() => {
     const checkSession = async () => {
-      const { data: { session: currentSession } } = await supabase.auth.getSession();
+      const {
+        data: { session: currentSession },
+      } = await supabase.auth.getSession();
       setSession(currentSession);
     };
-    
+
     checkSession();
   }, []);
 
   const handleLogin = () => {
     // Save current cart state to localStorage before redirecting
-    localStorage.setItem('pendingCart', JSON.stringify(items));
-    router.push('/auth/login?redirect=/cart');
+    localStorage.setItem("pendingCart", JSON.stringify(items));
+    router.push("/auth/login?redirect=/cart");
   };
 
   const handlePayment = async () => {
@@ -47,28 +58,28 @@ const BillingSummary: React.FC = () => {
         toast({
           title: "Please Login",
           description: "You need to be logged in to make a payment",
-          variant: "destructive"
+          variant: "destructive",
         });
-        router.push('/login');
+        router.push("/login");
         return;
       }
-  
+
       // Convert amount to paise and ensure it's an integer
       const amountInPaise = Math.round(totalPayable);
-  
+
       // Create order
-      const response = await fetch('/api/payment/create-order', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+      const response = await fetch("/api/payment/create-order", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           amount: amountInPaise, // Send amount in paise
           categories: items,
-          eventId: items[0]?.event_id
+          eventId: items[0]?.event_id,
         }),
       });
-      
+
       const data = await response.json();
-      if (!data.orderId) throw new Error('Failed to create order');
+      if (!data.orderId) throw new Error("Failed to create order");
 
       const options = {
         key: data.key,
@@ -80,9 +91,9 @@ const BillingSummary: React.FC = () => {
         handler: async function (response: any) {
           try {
             console.log("Payment response:", response);
-            const verifyResponse = await fetch('/api/payment/verify', {
-              method: 'POST',
-              headers: { 'Content-Type': 'application/json' },
+            const verifyResponse = await fetch("/api/payment/verify", {
+              method: "POST",
+              headers: { "Content-Type": "application/json" },
               body: JSON.stringify({
                 razorpay_order_id: response.razorpay_order_id,
                 razorpay_payment_id: response.razorpay_payment_id,
@@ -93,34 +104,35 @@ const BillingSummary: React.FC = () => {
             const verifyData = await verifyResponse.json();
             if (verifyData.success) {
               clearCart();
-              router.push('/paymentsuccesfull');
+              router.push("/paymentsuccesfull");
             } else {
-              router.push('/paymentfailed');
+              router.push("/paymentfailed");
             }
           } catch (error) {
-            console.error('Payment verification failed:', error);
-            router.push('/paymentfailed');
+            console.error("Payment verification failed:", error);
+            router.push("/paymentfailed");
           }
         },
         prefill: {
-          name: session?.user?.user_metadata?.full_name || session?.user?.email?.split('@')[0],
+          name:
+            session?.user?.user_metadata?.full_name ||
+            session?.user?.email?.split("@")[0],
           email: session?.user?.email,
-          contact: session?.user?.phone || ''
+          contact: session?.user?.phone || "",
         },
         theme: {
-          color: "#141F29"
-        }
+          color: "#141F29",
+        },
       };
 
       const paymentObject = new (window as any).Razorpay(options);
       paymentObject.open();
-
     } catch (error) {
-      console.error('Payment initialization failed:', error);
+      console.error("Payment initialization failed:", error);
       toast({
         variant: "destructive",
         title: "Error",
-        description: "Failed to initialize payment"
+        description: "Failed to initialize payment",
       });
     }
   };
@@ -139,10 +151,13 @@ const BillingSummary: React.FC = () => {
     const fee = withdrawalFee ? 0.05 * discounted : 0;
     setFeeAmount(fee);
 
-    const gstAmount = 0.18 * (discounted);
+    const gstAmount = (Number(gstrate)/100) * discounted;
     setGst(gstAmount);
-
-    setTotalPayable(discounted + fee + gstAmount);
+    setTotalPayable(
+      gstIncExc === "inclusive"
+        ? discounted + fee + gstAmount
+        : discounted + fee
+    );
   }, [items, withdrawalFee]);
 
   const handleRemoveFee = () => {
@@ -184,7 +199,7 @@ const BillingSummary: React.FC = () => {
                   {item.discount_value ? (
                     <>
                       <p className="text-sm line-through text-gray-500">
-                        ₹{(item.price * item.quantity).toFixed(2)}
+                        ₹{( item.price * item.quantity).toFixed(2)}
                       </p>
                       <p className="text-green-600 font-semibold">
                         ₹
@@ -208,7 +223,7 @@ const BillingSummary: React.FC = () => {
 
         {items.length > 0 && (
           <div className="flex flex-col gap-2">
-            <div className="flex justify-between items-center rounded-md">
+            <div className="flex justify-between items-center rounded-md mb-2">
               <div className="flex flex-col">
                 <div className="flex">
                   <p className="font-medium">Withdrawal Fee (5%)</p>
@@ -235,11 +250,12 @@ const BillingSummary: React.FC = () => {
                 <p className="text-gray-700">₹{feeAmount.toFixed(2)}</p>
               </div>
             </div>
-
-            <div className="flex justify-between items-center rounded-md mb-2">
-              <p className="font-medium">GST (18%)</p>
-              <p className="text-gray-700">₹{gst.toFixed(2)}</p>
-            </div>
+            {gstcompliance && (
+              <div className="flex justify-between items-center rounded-md mb-2">
+                <p className="font-medium">GST ({gstrate}%)</p>
+                <p className="text-gray-700">₹{gst.toFixed(2)}</p>
+              </div>
+            )}
           </div>
         )}
 

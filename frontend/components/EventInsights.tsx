@@ -58,7 +58,7 @@ const Insightfields = [
     type: "textarea",
     maxlength: 100,
     placeholder:
-      "Please describe what makes your event truly unique. (50 Characters Only)",
+      "Please describe what makes your event truly unique.",
   },
   {
     label: "Rewards And Prizes",

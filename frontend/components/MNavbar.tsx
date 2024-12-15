@@ -89,7 +89,7 @@ const MNavbar = ({ location }: Mnavbar) => {
             side="top"
           >
             <div className="flex flex-col pt-10">
-              <Select>
+              {/* <Select>
                 <SelectTrigger className="w-full h-[30px] text-2xl bg-[#141f29] font-semibold text-[#ccdb28] border border-[#ccdb28] flex justify-center items-center py-8 mb-4">
                   <div className="flex justify-center items-center mr-2">
                     <MdLocationOn className="mr-2 text-2xl" />
@@ -101,7 +101,7 @@ const MNavbar = ({ location }: Mnavbar) => {
                   <SelectItem value="dark">Delhi</SelectItem>
                   <SelectItem value="system">Chennai</SelectItem>
                 </SelectContent>
-              </Select>
+              </Select> */}
               <Button
                 onClick={() =>
                   handleButtonClick(() => router.push("/eventspage"))
