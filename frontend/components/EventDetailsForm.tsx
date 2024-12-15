@@ -223,10 +223,10 @@ const fields = [
       },
       {
         id: "insta_link",
-        label: "Instagram Link",
+        label: "Instagram Username",
         type: "text",
         name: "insta_link",
-        placeholder: "Enter Link",
+        placeholder: "Enter Username",
       },
     ],
   },
