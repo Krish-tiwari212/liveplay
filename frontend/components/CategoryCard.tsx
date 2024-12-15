@@ -53,16 +53,17 @@ interface CategoryCardProps {
   category: Category;
   participantsData: Participant[];
   isAdded: boolean;
+  isCheckboxChecked: Boolean;
+  setIsCheckboxChecked: React.Dispatch<React.SetStateAction<boolean>>;
   onAdd: () => void;
 }
 
-const CategoryCard: React.FC<CategoryCardProps> = ({ category, participantsData, isAdded, onAdd }) => {
+const CategoryCard: React.FC<CategoryCardProps> = ({ category, participantsData,isCheckboxChecked,setIsCheckboxChecked, isAdded, onAdd }) => {
   const [searchOpen, setSearchOpen] = useState(false);
   const [selectedParticipant, setSelectedParticipant] = useState<Participant | null>(null);
   const [teamCode, setTeamCode] = useState('');
   const [teamName, setTeamName] = useState('');
   const [partner, setPartner] = useState('');
-  const [isCheckboxChecked, setIsCheckboxChecked] = useState(false);
   const [disablecheckbox,setdisablecheckbox]=useState(false)
   const [isAlertOpen, setIsAlertOpen] = useState(false);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
@@ -126,13 +127,13 @@ const CategoryCard: React.FC<CategoryCardProps> = ({ category, participantsData,
     
     setdisablecheckbox(true);
     const finalPrice =
-      !isCheckboxChecked && category.discount_value
+      isCheckboxChecked && category.discount_value
         ? category.discount_value
         : category.price;
 
     let finalCategory: Category = {
       ...category,
-      price: finalPrice,
+      price: category.price,
       teamName: teamName,
     };
     console.log(finalPrice)
@@ -180,10 +181,6 @@ const CategoryCard: React.FC<CategoryCardProps> = ({ category, participantsData,
         });
       });
   };
-
-  useEffect(()=>{
-    console.log(category)
-  },[])
   return (
     <div className="border-2 border-[#141f29] p-4 rounded-lg shadow-lg w-full">
       <div

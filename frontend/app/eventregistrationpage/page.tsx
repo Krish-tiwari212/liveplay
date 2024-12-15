@@ -7,12 +7,13 @@ import { Button } from '@/components/ui/button';
 import { Dialog, DialogClose, DialogContent, DialogDescription, DialogFooter, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
+import data from '@/data';
 import { toast } from '@/hooks/use-toast';
 import { CalendarIcon, Copy } from 'lucide-react';
 import Image from 'next/image';
 import Link from 'next/link';
-import { useRouter } from 'next/navigation';
-import React from 'react'
+import { useRouter, useSearchParams } from 'next/navigation';
+import React, { useEffect, useState } from 'react'
 import { GiEntryDoor } from 'react-icons/gi';
 import { HiCurrencyRupee } from 'react-icons/hi2';
 import { IoLocationSharp, IoShareSocialSharp } from 'react-icons/io5';
@@ -20,7 +21,48 @@ import { PiHandWithdraw } from 'react-icons/pi';
 import { RiDiscountPercentLine } from 'react-icons/ri';
 import { VscGraph } from 'react-icons/vsc';
 
+interface Participant {
+  id: string;
+  user_id: string;
+  name: string;
+  status: string;
+  registration_date: string;
+  user: {
+    id: string;
+    full_name: string;
+    email: string;
+    gender: string;
+    date_of_birth: string;
+  };
+}
+
+interface Event {
+  id: string;
+  event_name: string;
+  date: string;
+  location: string;
+  description: string;
+  organizer_contact_number: string;
+  organizer_email: string;
+  start_date: string;
+  end_date: string;
+  last_registration_date: string;
+  last_withdrawal_date: string;
+  venue_name: string;
+  street_address: string;
+  additional_details: string;
+  city: string;
+  pincode: string;
+  event_usp: string;
+  rewards_for_participants: string;
+  playing_rules: string;
+  desktop_cover_image_url: string;
+  mobile_cover_image_url: string;
+}
+
 const page = () => {
+  const router = useRouter();
+
   const handleCopy = (text: string) => {
     navigator.clipboard
       .writeText(text)
@@ -38,7 +80,7 @@ const page = () => {
         });
       });
   };
-  const router = useRouter();
+
   return (
     <div className="mx-auto p-8">
       <div className="flex flex-col lg:flex-row gap-4">
@@ -99,7 +141,7 @@ const page = () => {
               </Dialog>
             </div>
           </div>
-          <PlayerRegistrationmenu />
+          <PlayerRegistrationmenu/>
         </div>
         <div className="w-full lg:w-1/3 flex flex-col gap-4">
           <div className="w-full h-64 hidden md:block">

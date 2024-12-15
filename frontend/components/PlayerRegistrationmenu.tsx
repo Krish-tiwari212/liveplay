@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Input } from './ui/input';
 import {
   Select,
@@ -18,6 +18,7 @@ import {
   PaginationNext,
   PaginationPrevious,
 } from "@/components/ui/pagination";
+import { useSearchParams } from 'next/navigation';
 
 
 const players: Player[] = [
@@ -53,10 +54,32 @@ const players: Player[] = [
   { id: 30, name: "Player 30" },
 ];
 
+interface Participant {
+  id: string;
+  user_id: string;
+  name: string;
+  status: string;
+  registration_date: string;
+  user: {
+    id: string;
+    full_name: string;
+    email: string;
+    gender: string;
+    date_of_birth: string;
+  };
+}
+
 const PlayerRegistrationmenu = () => {
+const searchParams = useSearchParams();
+const eventId = searchParams.get("event_id");
+const [participants, setParticipants] = useState<Participant[]>([]);
+const [selectedParticipant, setSelectedParticipant] =
+  useState<Participant | null>(null);
+const [event, setEvent] = useState<Event | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [searchTerm, setSearchTerm] = useState('');
-  const [filteredPlayers, setFilteredPlayers] = useState<Player[]>(players);
+  const [searchTerm, setSearchTerm] = useState("");
+  const [filteredPlayers, setFilteredPlayers] =
+    useState<Participant[]>(participants);
   const [currentPage, setCurrentPage] = useState(1);
   const playersPerPage = 14;
 
@@ -65,7 +88,7 @@ const PlayerRegistrationmenu = () => {
     setSearchTerm(value);
     // Reset to first page on search
     setCurrentPage(1);
-    const filtered = players.filter(player =>
+    const filtered = participants.filter((player) =>
       player.name.toLowerCase().includes(value.toLowerCase())
     );
     setFilteredPlayers(filtered);
@@ -77,10 +100,34 @@ const PlayerRegistrationmenu = () => {
   // Get current players
   const indexOfLastPlayer = currentPage * playersPerPage;
   const indexOfFirstPlayer = indexOfLastPlayer - playersPerPage;
-  const currentPlayers = filteredPlayers.slice(indexOfFirstPlayer, indexOfLastPlayer);
+  const currentPlayers = filteredPlayers.slice(
+    indexOfFirstPlayer,
+    indexOfLastPlayer
+  );
 
   const paginate = (pageNumber: number) => setCurrentPage(pageNumber);
 
+  useEffect(() => {
+    if (eventId) {
+      fetch(`/api/event/get_entries/${eventId}`)
+        .then((response) => response.json())
+        .then((data) => {
+          setParticipants(data.participants);
+        })
+        .catch((error) => {
+          console.error("Error fetching participants:", error);
+        });
+
+      fetch(`/api/event/get_by_id/${eventId}`)
+        .then((response) => response.json())
+        .then((data) => setEvent(data))
+        .catch((error) => console.error(error));
+    }
+  }, [eventId]);
+
+  useEffect(()=>{
+    console.log(participants);
+  },[])
   return (
     <div className="w-full h-full border rounded-lg">
       <div className="w-full p-6 bg-[#141f29] flex flex-wrap gap-4 rounded-t-lg">
