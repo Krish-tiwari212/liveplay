@@ -88,7 +88,7 @@ const Navbar = ({ location }: NavbarProps) => {
             height={200}
           />
         </div>
-        <Select>
+        {/* <Select>
           <SelectTrigger className="w-[120px] h-[30px] bg-[#141f29] font-semibold text-[#ccdb28] border border-[#ccdb28]">
             <MdLocationOn className="mr-1" />
             <SelectValue placeholder="Location" />
@@ -98,7 +98,7 @@ const Navbar = ({ location }: NavbarProps) => {
             <SelectItem value="dark">Delhi</SelectItem>
             <SelectItem value="system">Chennai</SelectItem>
           </SelectContent>
-        </Select>
+        </Select> */}
       </div>
       <div className="flex items-center gap-4">
         <Button

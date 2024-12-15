@@ -34,7 +34,7 @@ const additionalFields = [
     name: "mobileBanner",
     required: true,
     filecontnet: {
-      size: "SVG,JPG or PNG max(16:9)",
+      size: "JPG or PNG max(16:9)",
       label: "Add Mobile Banner",
     },
   },
@@ -61,10 +61,6 @@ const EventMediaContactForm: React.FC<EventMediaProps> = ({
     useEventContext();
 
   const [isImageLoading, setIsImageLoading] = useState(false);
-  const [media, setMedia] = useState<{
-    mobileBanner?: string;
-    desktopBanner?: string;
-  }>({});
   const [imagePreviews, setImagePreviews] = useState<{
     mobileBanner?: string;
   }>({});
@@ -73,76 +69,87 @@ const EventMediaContactForm: React.FC<EventMediaProps> = ({
     mobileBanner: null,
   });
 
-  // const handleFileChange =
-  //   (index: number) => (event: React.ChangeEvent<HTMLInputElement>) => {
-  //     const file = event.target.files?.[0];
-  //     if (file) {
-  //       const reader = new FileReader();
-  //       reader.onloadend = () => {
-  //         const base64Data = reader.result as string;
-  //         setImagePreviews((prev) => {
-  //           const newPreviews = [...prev];
-  //           newPreviews[index] = base64Data;
-  //           const fieldName = index === 0 ? "mobileBanner" : "desktopBanner";
-  //           setFormData((prevData: any) => ({
-  //             ...prevData,
-  //             [fieldName]: base64Data,
-  //           }));
-  //           if (editPage === "manageEvent") {
-  //             setEventEditData((prevData: any) => ({
-  //               ...prevData,
-  //               [fieldName]: base64Data,
-  //             }));
-  //           } else {
-  //             setEventData((prevData: any) => ({
-  //               ...prevData,
-  //               [fieldName]: base64Data,
-  //             }));
-  //           }
-  //           return newPreviews;
-  //         });
-  //       };
-  //       reader.readAsDataURL(file);
-  //       setIsImageLoading(false);
-  //       const fieldName = index === 0 ? "mobileBanner" : "desktopBanner";
-  //       setFormData((prevData: any) => ({
-  //         ...prevData,
-  //         [`fileName${index}`]: file.name,
-  //       }));
-  //       // if (editPage === "manageEvent") {
-  //         setEventEditData((prevData: any) => ({
-  //           ...prevData,
-  //           [`fileName${index}`]: file.name,
-  //         }));
-  //       } else {
-  //         setEventData((prevData: any) => ({
-  //           ...prevData,
-  //           [`fileName${index}`]: file.name,
-  //         }));
-  //       }
-  //     }
-  //   };
+  //  const handleFileChange =
+  //    (type: keyof typeof imagePreviews) =>
+  //    (event: React.ChangeEvent<HTMLInputElement>) => {
+  //      const file = event.target.files?.[0];
+  //      if (file) {
+  //        const reader = new FileReader();
+  //        setIsImageLoading(true);
+  //        reader.onloadend = () => {
+  //          const base64Data = reader.result as string;
+  //          setImagePreviews((prev) => ({ ...prev, [type]: base64Data }));
+  //          if (editPage === "createEvent") {
+  //            setEventData((prev) => ({ ...prev, [type]: base64Data }));
+  //          } else if (editPage === "manageEvent") {
+  //            setEventEditData((prev) => ({ ...prev, [type]: base64Data }));
+  //          }
+  //          setIsImageLoading(false);
+  //        };
+  //        reader.readAsDataURL(file);
+  //      }
+  //    };
 
-   const handleFileChange =
-     (type: keyof typeof imagePreviews) =>
-     (event: React.ChangeEvent<HTMLInputElement>) => {
-       const file = event.target.files?.[0];
-       if (file) {
-         const reader = new FileReader();
-         setIsImageLoading(true);
-         reader.onloadend = () => {
-           const base64Data = reader.result as string;
-           setImagePreviews((prev) => ({ ...prev, [type]: base64Data }));
-           if (editPage === "createEvent") {
-             setEventData((prev) => ({ ...prev, [type]: base64Data }));
-           } else if (editPage === "manageEvent") {
-             setEventEditData((prev) => ({ ...prev, [type]: base64Data }));
-           }
-           setIsImageLoading(false);
-         };
-         reader.readAsDataURL(file);
-       }
-     };
+  const handleFileChange =
+    (type: keyof typeof imagePreviews) =>
+    (event: React.ChangeEvent<HTMLInputElement>) => {
+      const file = event.target.files?.[0];
+      if (file) {
+        const reader = new FileReader();
+        setIsImageLoading(true);
+
+        reader.onloadend = () => {
+          const base64Data = reader.result as string;
+
+          const img = new window.Image(); 
+          img.onload = () => {
+            const aspectRatio = img.naturalWidth / img.naturalHeight;
+
+            if (Math.abs(aspectRatio - 16 / 9) > 0.01) {
+              toast({
+                title: "Invalid aspect ratio",
+                description: "Please upload an image with a 16:9 aspect ratio.",
+                variant: "destructive",
+              });
+              setIsImageLoading(false);
+              return;
+            }
+
+            setImagePreviews((prev) => ({ ...prev, [type]: base64Data }));
+            if (editPage === "createEvent") {
+              setEventData((prev) => ({ ...prev, [type]: base64Data }));
+            } else if (editPage === "manageEvent") {
+              setEventEditData((prev) => ({ ...prev, [type]: base64Data }));
+            }
+            setIsImageLoading(false);
+          };
+
+          img.onerror = () => {
+            toast({
+              title: "Invalid image file",
+              description:
+                "Could not load the selected file. Please try again.",
+              variant: "destructive",
+            });
+            setIsImageLoading(false);
+          };
+
+          img.src = base64Data; 
+        };
+
+        reader.onerror = () => {
+          toast({
+            title: "File reading error",
+            description: "Could not read the selected file. Please try again.",
+            variant: "destructive",
+          });
+          setIsImageLoading(false);
+        };
+
+        reader.readAsDataURL(file);
+      }
+    };
+
 
   const handleClick = async(event: React.MouseEvent<HTMLButtonElement>) => {
     event.preventDefault();

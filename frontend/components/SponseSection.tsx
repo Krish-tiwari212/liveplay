@@ -147,21 +147,9 @@ const SponsorSection = () => {
             <Label className="font-bold text-lg" htmlFor="registrationdetails">
               Sponsor Details
             </Label>
-            <Button
-              onClick={addSponsor}
-              disabled={isAdding || !areFieldsFilled()}
-              className="hidden md:block my-2"
-              title={!areFieldsFilled() ? "Fill the input field first" : ""}
-            >
-              {isAdding
-                ? "Adding..."
-                : editIndex !== null
-                ? "Update Sponsor"
-                : "Add Sponsor"}
-            </Button>
           </div>
 
-          <div className="flex flex-col xl:flex-row w-full gap-3">
+          <div className="flex flex-col xl:flex-row w-full gap-3 justify-between items-center relative ">
             {formfields.map((field, i) =>
               field.type !== "file" ? (
                 <div className="w-full flex flex-col" key={i}>
@@ -225,9 +213,25 @@ const SponsorSection = () => {
                 </div>
               )
             )}
+            <div className="relative mt-auto w-full md:w-1/3">
+              <Button
+                onClick={addSponsor}
+                disabled={isAdding || !areFieldsFilled()}
+                className={`w-full ${
+                  isAdding || !areFieldsFilled() ? "cursor-not-allowed" : "cursor-pointer"
+                }`}
+                title={!areFieldsFilled() ? "Fill the input field first" : ""}
+              >
+                {isAdding
+                  ? "Adding..."
+                  : editIndex !== null
+                  ? "Update Sponsor"
+                  : "Add Sponsor"}
+              </Button>
+            </div>
           </div>
         </div>
-        <Button
+        {/* <Button
           onClick={addSponsor}
           disabled={isAdding || !areFieldsFilled()}
           className="absolute md:hidden right-2 top-1"
@@ -238,9 +242,9 @@ const SponsorSection = () => {
             : editIndex !== null
             ? "Update Sponsor"
             : "Add Sponsor"}
-        </Button>
+        </Button> */}
       </div>
-      <div className="sponsor-preview grid grid-cols-1 lg:grid-flow-col-3 gap-6">
+      <div className="sponsor-preview grid grid-cols-1 lg:grid-cols-3 gap-6">
         {sponsors.map((sponsor, index) => (
           <div
             key={index}

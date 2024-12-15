@@ -312,23 +312,28 @@ const CategoryCard: React.FC<CategoryCardProps> = ({ category, participantsData,
             )
           ) : (
             <div className="mt-4 flex items-center absolute -bottom-2 right-0">
-              <Button
-                variant="tertiary"
-                className="ml-4 rounded text-lg font-bold flex gap-2 border-2 border-[#141f29]"
-                onClick={handleAddToCart}
-              >
-                {currentQuantity === 0 ? (
+              {currentQuantity === 0 ? (
+                <Button
+                  variant="tertiary"
+                  className="ml-4 rounded text-lg font-bold flex gap-2 border-2 border-[#141f29]"
+                  onClick={handleAddToCart}
+                >
                   <div className="flex justify-center items-center gap-2">
                     <FaPlus />
                     <h1>Add</h1>
                   </div>
-                ) : (
+                </Button>
+              ) : (
+                <Button
+                  variant="tertiary"
+                  className="ml-4 rounded text-lg font-bold flex gap-2 border-2 border-[#141f29]"
+                  onClick={handleRemoveFromCart}
+                >
                   <div className="flex justify-center items-center gap-2">
-                    <RiCheckDoubleFill />
-                    <h1>Added</h1>
+                    <h1>Remove</h1>
                   </div>
-                )}
-              </Button>
+                </Button>
+              )}
             </div>
           )}
         </div>
@@ -370,7 +375,7 @@ const CategoryCard: React.FC<CategoryCardProps> = ({ category, participantsData,
         {category.category_type === "Team" ? (
           <div className="flex flex-col">
             <h1 className="text-sm md:text-lg font-semibold">
-              Enter Team Name, Generate & Share Code
+              Enter Team Name
             </h1>
             <div className="my-4 flex items-center relative bg-[#ccdb28] rounded">
               <label className="block pl-2 text-nowrap">Team Name:</label>
@@ -381,7 +386,7 @@ const CategoryCard: React.FC<CategoryCardProps> = ({ category, participantsData,
                 className="py-2  border-none rounded relative w-full bg-[#ccdb28] focus-visible:outline-none focus-visible:ring-0 focus-visible:ring-ring focus-visible:ring-offset-0"
                 placeholder="Enter Team Name"
               />
-              <Button
+              {/* <Button
                 size="sm"
                 className="ml-2 hidden sm:block h-full text-white absolute right-0"
                 onClick={handleGenerateTeamCode}
@@ -400,14 +405,14 @@ const CategoryCard: React.FC<CategoryCardProps> = ({ category, participantsData,
                 }
               >
                 {teamCode ? "Code" : "Code"}
-              </Button>
+              </Button> */}
             </div>
           </div>
         ) : (
           category.category_type === "Doubles" && (
             <div className="flex flex-col">
               <h1 className="text-sm md:text-lg font-semibold">
-                Enter Partner Name, Generate & Share Code
+                Enter Partner Name
               </h1>
               <div className="my-4 flex items-center relative bg-[#ccdb28] rounded">
                 <label className="block pl-2 text-nowrap">Partner Name:</label>
@@ -418,7 +423,7 @@ const CategoryCard: React.FC<CategoryCardProps> = ({ category, participantsData,
                   className="py-2 border-none rounded relative w-full bg-[#ccdb28] focus-visible:outline-none focus-visible:ring-0 focus-visible:ring-ring focus-visible:ring-offset-0"
                   placeholder="Enter Partner Name"
                 />
-                <Button
+                {/* <Button
                   size="sm"
                   className="ml-2 hidden sm:block h-full text-white absolute right-0"
                   onClick={handleGeneratePartnerCode}
@@ -437,7 +442,7 @@ const CategoryCard: React.FC<CategoryCardProps> = ({ category, participantsData,
                   }
                 >
                   {teamCode ? "Code" : "Code"}
-                </Button>
+                </Button> */}
               </div>
             </div>
           )

@@ -450,7 +450,6 @@ const EventDetailsForm: React.FC<EventDetailsFormProps> = ({
                   {field.label}
                 </Label>
                 <Select
-                  value={formData[field.name] || ""}
                   onValueChange={(value) => {
                     setFormData({
                       ...formData,
