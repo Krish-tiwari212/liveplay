@@ -2,7 +2,8 @@ import { useToast } from '@/hooks/use-toast';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { useRouter } from 'next/navigation';
-import React, { useEffect, useState } from 'react';import {
+import React, { useEffect, useState } from 'react';
+import {
   Select,
   SelectContent,
   SelectItem,
@@ -17,6 +18,7 @@ import { IoIosNotificationsOutline } from 'react-icons/io';
 import { useUser } from '@/context/UserContext';
 import { useEventContext } from '@/context/EventDataContext';
 import { Button } from './ui/button';
+import { createClient } from '@/utils/supabase/client';
 
 const MSidebar = () => {
   const { setUserType, UserType,DashboardName } = useEventContext();
@@ -26,6 +28,32 @@ const MSidebar = () => {
   const { user, setUser } = useUser();
   const path = usePathname();
   const isplayerdashboard = path.includes("playerdashboard");
+  const [hasOrganizerDetails, setHasOrganizerDetails] = useState(false);
+
+  useEffect(() => {
+    const fetchOrganizerDetails = async () => {
+      const supabase = createClient();
+
+      if (!user?.id) {
+        console.error('User ID is not available');
+        return;
+      }
+
+      const { data, error } = await supabase
+        .from('organizer_details')
+        .select('user_id')
+        .eq('user_id', user.id)
+        .single();
+
+      if (error) {
+        console.error('Error fetching organizer details:', error);
+      } else {
+        setHasOrganizerDetails(!!data);
+      }
+    };
+
+    fetchOrganizerDetails();
+  }, [user?.id]);
 
   const handleLogout = async () => {
     try {
@@ -162,19 +190,21 @@ const MSidebar = () => {
                 </Link>
               </li>
               <li>
-                <Link href="/organizerDashboard/kyc/1234">
-                  <button
-                    onClick={() => handleButtonClick("Unlock Event Earnings")}
-                    className={`flex items-center w-full p-2 rounded transition-colors duration-200 ${
-                      activePage === "Unlock Event Earnings"
-                        ? "bg-[#CDDC29] text-[#17202A]"
-                        : "hover:bg-[#CDDC29] hover:text-[#17202A]"
-                    }`}
-                  >
-                    <FaUnlockAlt className="mr-2 text-xl" /> Unlock Event
-                    Earnings
-                  </button>
-                </Link>
+                {!hasOrganizerDetails && (
+                  <Link href="/organizerDashboard/kyc/1234">
+                    <button
+                      onClick={() => handleButtonClick("Unlock Event Earnings")}
+                      className={`flex items-center w-full p-2 rounded transition-colors duration-200 ${
+                        activePage === "Unlock Event Earnings"
+                          ? "bg-[#CDDC29] text-[#17202A]"
+                          : "hover:bg-[#CDDC29] hover:text-[#17202A]"
+                      }`}
+                    >
+                      <FaUnlockAlt className="mr-2 text-xl" /> Unlock Event
+                      Earnings
+                    </button>
+                  </Link>
+                )}
               </li>
               <li>
                 <Link href="/organizerDashboard/notifications">
