@@ -42,10 +42,12 @@ interface Category {
 
 interface CategoryPreviewProps {
   handleNext?: () => void;
+  eventId?: string;
 }
 
 const CategoryPreview = ({
   handleNext=()=>{},
+  eventId
 }: CategoryPreviewProps) => {
   const { EventData, setEventData,editPage,EventEditData,setEventEditData,nextId,setNextId } = useEventContext();
   const [categories, setCategories] = useState<Category[]>([]);

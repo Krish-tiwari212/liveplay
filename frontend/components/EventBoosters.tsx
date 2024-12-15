@@ -174,10 +174,12 @@ const requiredFields = [
 
 interface EventBoostersProps {
   handleNext: () => void;
+  eventId: string;
 }
 
 const EventBoosters = ({
   handleNext,
+  eventId,
 }: EventBoostersProps) => {
   const { EventData, setEventData,EventEditData,setEventEditData, isVenueNotDecided, setIsVenueNotDecided,editPage } =
     useEventContext();

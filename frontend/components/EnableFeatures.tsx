@@ -29,10 +29,11 @@ const OvervieSidebarContentFeatures = [
 
 interface EnableFeaturesProps {
   handleNext: () => void;
+  eventId: string;
 }
 
 
-const EnableFeatures = ({ handleNext }: EnableFeaturesProps) => {
+const EnableFeatures = ({ handleNext, eventId }: EnableFeaturesProps) => {
   const { EventData, setEventData,editPage } = useEventContext();
   const time = new Date();
   time.setSeconds(time.getSeconds() + 1000000);
