@@ -21,6 +21,7 @@ import { PiHandWithdraw } from 'react-icons/pi';
 import { RiDiscountPercentLine } from 'react-icons/ri';
 import { VscGraph } from 'react-icons/vsc';
 import { Suspense } from "react";
+import { useEventContext } from '@/context/EventDataContext';
 
 interface Participant {
   id: string;
@@ -234,6 +235,7 @@ const participantsdemo = [
 ];
 
 const EventPage = () => {
+  const {eventregistratiopage,seteventregistrationpage}=useEventContext()
   const router = useRouter();
    const searchParams = useSearchParams();
    const eventId = searchParams.get("event_id");
@@ -264,23 +266,41 @@ const EventPage = () => {
   };
 
    useEffect(() => {
-     if (eventId) {
-       fetch(`/api/event/get_entries/${eventId}`)
-         .then((response) => response.json())
-         .then((data) => {
-           setParticipants(data.participants);
-         })
-         .catch((error) => {
-           console.error("Error fetching participants:", error);
-         });
+     if (!eventId) return;
 
-       fetch(`/api/event/get_by_id/${eventId}`)
-         .then((response) => response.json())
-         .then((data) => {setEvent(data)})
-         .catch((error) => console.error(error));
-     }
-   }, [eventId]);
+     const fetchEventDetails = async () => {
+       try {
+         const response = await fetch(`/api/event/get_by_id/${eventId}`);
+         if (!response.ok) throw new Error("Failed to fetch event data.");
+         const data = await response.json();
+         setEvent(data);
+       } catch (error) {
+         console.error(error);
+       }
+     };
 
+     const fetchParticipants = async () => {
+       try {
+         const response = await fetch(`/api/event/get_entries/${eventId}`);
+         if (!response.ok) throw new Error("Failed to fetch participants.");
+         const data = await response.json();
+         setParticipants(data);
+       } catch (error) {
+         console.error(error);
+       }
+     };
+
+     fetchEventDetails();
+     fetchParticipants();
+   }, []);
+
+   if (!event) {
+     return <p>Loading event details...</p>;
+   }
+
+   if (!event.categories) {
+     return <p>Loading categories...</p>;
+   }
 
   return (
     <div className="mx-auto p-8">
@@ -319,7 +339,7 @@ const EventPage = () => {
                       </Label>
                       <Input
                         id="link"
-                        defaultValue={`/event/1/share-link`}
+                        defaultValue={`${window.location.origin}/events/${eventId}`}
                         readOnly
                       />
                     </div>
@@ -327,7 +347,11 @@ const EventPage = () => {
                       type="button"
                       size="sm"
                       className="px-3"
-                      onClick={() => handleCopy(`/event/1/share-link`)}
+                      onClick={() =>
+                        handleCopy(
+                          `${window.location.origin}/events/${eventId}`
+                        )
+                      }
                     >
                       <span className="sr-only">Copy</span>
                       <Copy />
@@ -350,7 +374,7 @@ const EventPage = () => {
             setDialog={setOpenPlayerInfo}
             dialogdata={dialogData}
             setdialogdata={setDialogData}
-            categories={event?.categories}
+            categories={event.categories}
           />
         </div>
         <div className="w-full lg:w-1/3 flex flex-col gap-4">
@@ -570,7 +594,7 @@ const EventPage = () => {
                 </Label>
                 <Input
                   id="link"
-                  defaultValue={`/event/1/share-link`}
+                  defaultValue={`${window.location.origin}/events/${eventId}`}
                   readOnly
                 />
               </div>
@@ -578,7 +602,9 @@ const EventPage = () => {
                 type="button"
                 size="sm"
                 className="px-3"
-                onClick={() => handleCopy(`/event/1/share-link`)}
+                onClick={() =>
+                  handleCopy(`${window.location.origin}/events/${eventId}`)
+                }
               >
                 <span className="sr-only">Copy</span>
                 <Copy />

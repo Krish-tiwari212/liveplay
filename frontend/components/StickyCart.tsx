@@ -7,23 +7,37 @@ import { useCartContext } from "@/context/CartContext";
 
 const StickyCart = () => {
     
+  const { isCheckboxChecked } = useCartContext();
   const { items } = useCartContext();
   const [savings, setSavings] = useState<number>(0);
-    useEffect(() => {
-        const original = items.reduce(
+
+  // useEffect(() => {
+    
+
+  //   const fee = withdrawalFee ? 0.05 * discounted : 0;
+  //   setFeeAmount(fee);
+
+  //   const gstAmount = (Number(gstrate) / 100) * discounted;
+  //   setGst(gstAmount);
+  //   setTotalPayable(
+  //     gstIncExc === "inclusive" ? amount + fee + gstAmount : amount + fee
+  //   );
+  // }, [items, withdrawalFee]);
+  useEffect(() => {
+      const original = items.reduce(
         (acc, item) => acc + item.price * item.quantity,
         0
-        );
-        const discounted = items.reduce(
+      );
+      const discounted = items.reduce(
         (acc, item) =>
-            acc + (item.discountedPrice ?? item.price) * item.quantity,
+          acc + (item.discount_value ?? item.price) * item.quantity,
         0
-        );
-        setSavings(original - discounted);
-        console.log(items)
-        console.log(original)
-        console.log(discounted)
-    }, [items]);
+      );
+
+      const amount = isCheckboxChecked ? discounted : original;
+      setSavings(original - amount);
+  }, [items]);
+
   const scrollToCart = () => {
     const cartSection = document.getElementById("cart_section");
     if (cartSection) {

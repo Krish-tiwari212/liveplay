@@ -102,6 +102,7 @@ interface PlayerRegistrationmenuProps {
   setDialog: React.Dispatch<React.SetStateAction<boolean>>;
   dialogdata: Participant;
   setdialogdata: React.Dispatch<React.SetStateAction<Participant>>;
+  categories:Category[]
 }
 
 const PlayerRegistrationmenu = ({
@@ -110,8 +111,8 @@ const PlayerRegistrationmenu = ({
   setDialog,
   dialogdata,
   setdialogdata,
+  categories,
 }: PlayerRegistrationmenuProps) => {
-  const {eventregistratiopage}=useEventContext()
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [searchTerm, setSearchTerm] = useState("");
   const [filteredPlayers, setFilteredPlayers] =
@@ -122,7 +123,6 @@ const PlayerRegistrationmenu = ({
   const handleSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value;
     setSearchTerm(value);
-    // Reset to first page on search
     setCurrentPage(1);
     const filtered = participants.filter((player) =>
       player.name.toLowerCase().includes(value.toLowerCase())
@@ -152,7 +152,6 @@ const PlayerRegistrationmenu = ({
     setdialogdata(player);
     setDialog(true);
   };
-
   return (
     <div className="w-full h-full border rounded-lg">
       <div className="w-full p-6 bg-[#141f29] flex flex-wrap gap-4 rounded-t-lg">
@@ -166,20 +165,19 @@ const PlayerRegistrationmenu = ({
           />
           <BsSearch className="absolute right-2 top-3" />
         </div>
-
         <Select>
           <SelectTrigger className="w-full md:max-w-[250px] border-2 border-[#ccdb28]">
             <SelectValue placeholder="Men’s Double (35 entries)" />
           </SelectTrigger>
           <SelectContent>
-            {["categories"]?.map((e, i) => (
+            {categories?.map((e, i) => (
               <SelectItem
                 key={i}
-                value={e}
+                value={e.category_name}
                 className="flex items-center space-x-2"
               >
                 <div className="flex items-center space-x-2">
-                  <span>{e}</span>
+                  <span>{e.category_name}</span>
                 </div>
               </SelectItem>
             ))}

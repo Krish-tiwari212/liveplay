@@ -41,14 +41,10 @@ const participantsData: Participant[] = [
 
 interface ChooseCategoryRegisterprops {
   eventid: string | null;
-  isCheckboxChecked: Boolean;
-  setIsCheckboxChecked: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
 const ChooseCategoryRegister = ({
   eventid,
-  isCheckboxChecked,
-  setIsCheckboxChecked
 }:ChooseCategoryRegisterprops ) => {
   const { addItem, items } = useCartContext();
   const [registeredCategories, setRegisteredCategories] = useState<Category[]>(
@@ -98,8 +94,6 @@ const ChooseCategoryRegister = ({
           participantsData={participantsData}
           isAdded={items.some((item) => item.id === category.id)}
           onAdd={() => handleAddToCart(category)}
-          isCheckboxChecked={isCheckboxChecked}
-          setIsCheckboxChecked={setIsCheckboxChecked}
         />
       ))}
     </div>
