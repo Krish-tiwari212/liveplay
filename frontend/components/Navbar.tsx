@@ -101,15 +101,14 @@ const Navbar = ({ location }: NavbarProps) => {
         </Select> */}
       </div>
       <div className="flex items-center gap-4">
-        <Button
-          onClick={() => {
-            scrollToSection("hero-features");
-          }}
-          size="xs"
-          className="w-full bg-[#141f29] text-[#ccdb28] border border-[#ccdb28]"
-        >
-          Free Match Generator
-        </Button>
+        <Link href={"/freematchgenerator"}>
+          <Button
+            size="xs"
+            className="w-full bg-[#141f29] text-[#ccdb28] border border-[#ccdb28]"
+          >
+            Free Match Generator
+          </Button>
+        </Link>
         <Button
           onClick={() => {
             router.push("/createeventstaticpage");

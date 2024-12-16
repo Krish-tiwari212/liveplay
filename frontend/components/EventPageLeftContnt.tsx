@@ -175,6 +175,19 @@ const EventPageLeftContent = ({
     fetchDetails();
   }, [eventId]);
 
+  const scrollToSection = (id: string) => {
+    const section = document.getElementById(id);
+    if (section) {
+      const navbarHeight = document.querySelector("nav")?.offsetHeight || 0;
+      const sectionPosition =
+        section.getBoundingClientRect().top + window.scrollY;
+      window.scrollTo({
+        top: sectionPosition - navbarHeight,
+        behavior: "smooth",
+      });
+    }
+  };
+
   return (
     <div className="w-full lg:w-2/3 relative h-full">
       <div className="w-full h-full">
@@ -393,12 +406,12 @@ const EventPageLeftContent = ({
                 {eventDetails.categories.length}+
               </strong>
             </span>
-            <a
-              href="#"
+            <button
+              onClick={() => scrollToSection("Event_Categories")}
               className="text-xs sm:text-sm text-blue-500 hover:underline mb-1 md:mb-0 md:mt-1"
             >
-              (View Categories)
-            </a>
+              (View Categories)hj
+            </button>
           </div>
           <div className="flex flex-col md:flex-row my-4">
             <span className="text-base sm:text-lg md:text-xl font-bold flex items-center gap-2">
@@ -506,7 +519,9 @@ const EventPageLeftContent = ({
             </div>
             <div className="flex items-center gap-1 cursor-pointer hover:underline text-nowrap font-bold text-sm sm:text-base">
               Hosting Since:
-              <span className="text-blue-600 font-normal">{new Date(hostingSince).toLocaleDateString()}</span>
+              <span className="text-blue-600 font-normal">
+                {new Date(hostingSince).toLocaleDateString()}
+              </span>
             </div>
             <div className="flex items-center gap-1 cursor-pointer hover:underline text-nowrap font-bold text-sm sm:text-base">
               Phone:
@@ -530,7 +545,10 @@ const EventPageLeftContent = ({
             )}
             {eventDetails.insta_link && (
               <Link
-                href={`https://www.instagram.com/${eventDetails.insta_link.replace('@', '')}`}
+                href={`https://www.instagram.com/${eventDetails.insta_link.replace(
+                  "@",
+                  ""
+                )}`}
                 target="_blank"
                 rel="noopener noreferrer"
                 className="flex items-center gap-1 cursor-pointer hover:underline text-nowrap font-bold text-sm sm:text-base"
@@ -646,7 +664,7 @@ const EventPageLeftContent = ({
             <h2 className="mb-4">
               Total Registrations: {eventDetails.totalRegistrations || 0}
               <Link
-                href={`/eventregistrationpage/${eventId}`}
+                href={`/eventregistrationpage?id=${eventId}`}
                 className="text-blue-600 ml-2 hover:underline"
               >
                 View player names
@@ -685,7 +703,7 @@ const EventPageLeftContent = ({
         </div>
 
         {/* Event Categories Section */}
-        <div className="mb-6">
+        <div className="mb-6" id="Event_Categories1">
           <h3 className="text-xl font-bold mb-2">Event Categories</h3>
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
             {eventDetails.categories.map((category) => (

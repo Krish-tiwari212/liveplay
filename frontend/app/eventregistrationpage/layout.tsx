@@ -22,14 +22,16 @@ export default function RootLayout({
   const [navexpanded, setnavexpanded] = useState(true);
   return (
     <UserProvider>
-      <UserProvider>
-        <MNavbar />
-        <Navbar />
-        <HeroChangingTagLine ishero={true} />
-        <HeroChangingTagLine extraclass="hidden" />
-        {children}
-        <Footer />
-      </UserProvider>
+      <EventProvider>
+        <UserProvider>
+          <MNavbar />
+          <Navbar />
+          <HeroChangingTagLine ishero={true} />
+          <HeroChangingTagLine extraclass="hidden" />
+          {children}
+          <Footer />
+        </UserProvider>
+      </EventProvider>
     </UserProvider>
   );
 }

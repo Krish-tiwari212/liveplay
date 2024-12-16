@@ -17,16 +17,12 @@ const Contactus = () => {
           from you!
         </p>
         <div className="grid gap-2 md:grid-cols-2 mb-8 w-full md:w-[80%] md:mx-auto">
-          <div className="flex items-start justify-center space-x-4">
+          <div className="flex items-start justify-center space-x-4 mr-10">
             <FaMapMarkerAlt className="w-8 h-8  flex-shrink-0" />
             <div>
               <h2 className="text-xl font-semibold text-[#141f29]">Address</h2>
               <p className="text-gray-600 leading-relaxed">
-                212-A, Amar Cottages CHS,
-                <br />
-                Bhosale Nagar, Hadapsar,
-                <br />
-                Pune - 411028
+                Pune
               </p>
             </div>
           </div>
@@ -38,7 +34,7 @@ const Contactus = () => {
             </div>
           </div>
         </div>
-        <div className="grid gap-6 grid-cols-1 justify-center items-center md:w-[70%] md:mx-auto">
+        <div className="grid gap-6 grid-cols-1 justify-start items-start md:w-[50%] md:mx-auto">
           <div className="flex  space-x-4 ">
             <FaBuilding className="w-8 h-8 flex-shrink-0" />
             <div>

@@ -24,11 +24,15 @@ export default function RootLayout({
   return (
     <UserProvider>
       <CartProvider>
-        <MNavbar />
-        <Navbar />
-        <HeroChangingTagLine ishero={true} />
-        {children}
-        <Footer />
+        <div className="min-h-screen flex flex-col">
+          <main className="flex-grow">
+            <MNavbar />
+            <Navbar />
+            <HeroChangingTagLine ishero={true} />
+            {children}
+          </main>
+          <Footer />
+        </div>
       </CartProvider>
     </UserProvider>
   );

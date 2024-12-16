@@ -19,7 +19,7 @@ import {
   PaginationPrevious,
 } from "@/components/ui/pagination";
 import { useSearchParams } from 'next/navigation';
-
+import { useEventContext } from '@/context/EventDataContext';
 
 const players: Player[] = [
   { id: 1, name: "Om Prakash - Akshay" },
@@ -69,13 +69,49 @@ interface Participant {
   };
 }
 
-const PlayerRegistrationmenu = () => {
-const searchParams = useSearchParams();
-const eventId = searchParams.get("event_id");
-const [participants, setParticipants] = useState<Participant[]>([]);
-const [selectedParticipant, setSelectedParticipant] =
-  useState<Participant | null>(null);
-const [event, setEvent] = useState<Event | null>(null);
+interface Category {
+  id?: number;
+  category_name?: string;
+  total_quantity?: string;
+  max_ticket_quantity?: string;
+  price?: number;
+  ticket_description?: string;
+  discount_code?: string;
+  discount?: boolean;
+  category_type?: string;
+  discountType?: string;
+  number_of_discounts?: string;
+  from_date?: string;
+  till_date?: string;
+  discount_value: number;
+  percentage_input?: string;
+  amount_input?: string;
+  gender?: string;
+  age_from?: string;
+  age_to?: string;
+  ageRangeOption?: string;
+  max_teams_size?: number;
+  sport?: string;
+  teamName?: string;
+  pairname?: string;
+}
+
+interface PlayerRegistrationmenuProps {
+  participants: Participant[];
+  dialog: boolean;
+  setDialog: React.Dispatch<React.SetStateAction<boolean>>;
+  dialogdata: Participant;
+  setdialogdata: React.Dispatch<React.SetStateAction<Participant>>;
+}
+
+const PlayerRegistrationmenu = ({
+  participants,
+  dialog,
+  setDialog,
+  dialogdata,
+  setdialogdata,
+}: PlayerRegistrationmenuProps) => {
+  const {eventregistratiopage}=useEventContext()
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [searchTerm, setSearchTerm] = useState("");
   const [filteredPlayers, setFilteredPlayers] =
@@ -94,10 +130,8 @@ const [event, setEvent] = useState<Event | null>(null);
     setFilteredPlayers(filtered);
   };
 
-  // Calculate total pages
   const totalPages = Math.ceil(filteredPlayers.length / playersPerPage);
 
-  // Get current players
   const indexOfLastPlayer = currentPage * playersPerPage;
   const indexOfFirstPlayer = indexOfLastPlayer - playersPerPage;
   const currentPlayers = filteredPlayers.slice(
@@ -107,27 +141,18 @@ const [event, setEvent] = useState<Event | null>(null);
 
   const paginate = (pageNumber: number) => setCurrentPage(pageNumber);
 
-  useEffect(() => {
-    if (eventId) {
-      fetch(`/api/event/get_entries/${eventId}`)
-        .then((response) => response.json())
-        .then((data) => {
-          setParticipants(data.participants);
-        })
-        .catch((error) => {
-          console.error("Error fetching participants:", error);
-        });
+  const gridColumns = 3;
+  const gridRows = Math.ceil(currentPlayers.length / gridColumns);
+  const getPlayerForCell = (row: number, col: number) => {
+    const index = row * gridColumns + col;
+    return currentPlayers[index];
+  };
 
-      fetch(`/api/event/get_by_id/${eventId}`)
-        .then((response) => response.json())
-        .then((data) => setEvent(data))
-        .catch((error) => console.error(error));
-    }
-  }, [eventId]);
+  const handlePlayerClick = (player: Participant) => {
+    setdialogdata(player);
+    setDialog(true);
+  };
 
-  useEffect(()=>{
-    console.log(participants);
-  },[])
   return (
     <div className="w-full h-full border rounded-lg">
       <div className="w-full p-6 bg-[#141f29] flex flex-wrap gap-4 rounded-t-lg">
@@ -147,9 +172,17 @@ const [event, setEvent] = useState<Event | null>(null);
             <SelectValue placeholder="Men’s Double (35 entries)" />
           </SelectTrigger>
           <SelectContent>
-            <SelectItem value="light">Light</SelectItem>
-            <SelectItem value="dark">Dark</SelectItem>
-            <SelectItem value="system">System</SelectItem>
+            {["categories"]?.map((e, i) => (
+              <SelectItem
+                key={i}
+                value={e}
+                className="flex items-center space-x-2"
+              >
+                <div className="flex items-center space-x-2">
+                  <span>{e}</span>
+                </div>
+              </SelectItem>
+            ))}
           </SelectContent>
         </Select>
       </div>
@@ -168,6 +201,31 @@ const [event, setEvent] = useState<Event | null>(null);
         </div>
       </div>
       <div className="w-full">
+        {Array.from({ length: gridRows }).map((_, rowIndex) => (
+          <div
+            key={rowIndex}
+            className={`grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 pl-6 py-2 ${
+              rowIndex % 2 === 0 ? "bg-white" : "bg-[#e6eac5]"
+            }`}
+          >
+            {Array.from({ length: gridColumns }).map((_, colIndex) => {
+              const player = getPlayerForCell(rowIndex, colIndex);
+              return player ? (
+                <div
+                  key={colIndex}
+                  className="flex justify-start items-center cursor-pointer"
+                  onClick={() => handlePlayerClick(player)}
+                >
+                  <span>{player.name}</span>
+                </div>
+              ) : (
+                <div key={colIndex}></div>
+              );
+            })}
+          </div>
+        ))}
+      </div>
+      {/* <div className="w-full">
         {currentPlayers.map((player, index) => (
           <div
             key={player.id}
@@ -186,7 +244,7 @@ const [event, setEvent] = useState<Event | null>(null);
             </div>
           </div>
         ))}
-      </div>
+      </div> */}
       <Pagination>
         <PaginationContent>
           <PaginationItem>

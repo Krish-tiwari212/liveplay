@@ -102,14 +102,13 @@ const MNavbar = ({ location }: Mnavbar) => {
                   <SelectItem value="system">Chennai</SelectItem>
                 </SelectContent>
               </Select> */}
-              <Button
-                onClick={() =>
-                  handleButtonClick(() => router.push("/eventspage"))
-                }
-                className="w-full mb-4 bg-[#141f29] text-[#ccdb28] border border-[#ccdb28] text-2xl py-8"
-              >
-                Free Match Generator
-              </Button>
+              <Link href={"/freematchgenerator"}>
+                <Button
+                  className="w-full mb-4 bg-[#141f29] text-[#ccdb28] border border-[#ccdb28] text-2xl py-8"
+                >
+                  Free Match Generator
+                </Button>
+              </Link>
               <Button
                 onClick={() =>
                   handleButtonClick(() => router.push("/createeventstaticpage"))
