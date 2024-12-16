@@ -530,11 +530,16 @@ const EventDetailsForm: React.FC<EventDetailsFormProps> = ({
                   type={field.type}
                   name={field.name}
                   required={field.required}
+                  disabled={editPage === "manageEvent" && field.type === "date"}
                   value={
                     formData[field.name as keyof EventDetailsFormProps] || ""
                   }
                   onChange={handleChange}
-                  className="h-10 p-2 bg-white border rounded-md text-sm shadow-2xl text-[#17202A] focus:border-[#17202A] focus:outline-none focus:shadow-lg"
+                  className={`h-10 p-2 bg-white border rounded-md text-sm shadow-2xl text-[#17202A] focus:border-[#17202A] focus:outline-none focus:shadow-lg ${
+                    editPage === "manageEvent" && field.type === "date"
+                      ? "cursor-not-allowed opacity-60"
+                      : ""
+                  }`}
                 />
               </div>
             ))}

@@ -135,13 +135,25 @@ const EventPageRightContent = ({
     fetchDetails();
   }, [eventId]);
 
+  const scrollToSection = (id: string) => {
+    const section = document.getElementById(id);
+    if (section) {
+      const navbarHeight = document.querySelector("nav")?.offsetHeight || 0;
+      const sectionPosition =
+        section.getBoundingClientRect().top + window.scrollY;
+      window.scrollTo({
+        top: sectionPosition - navbarHeight,
+        behavior: "smooth",
+      });
+    }
+  };
+
   return (
     <div className="w-full lg:w-1/3 flex flex-col gap-4">
       <div className="hidden lg:block border-2 border-[#141F29] p-4 rounded-lg text-[#141F29]">
         <h1 className="text-xl sm:text-2xl md:text-3xl font-bold mb-4 line-clamp-2">
           {eventDetails.event_name}
         </h1>
-
         <div className="flex flex-wrap gap-2 mb-4">
           <Badge className="bg-[#E6EAC5] text-[#141F29] text-sm sm:text-base">
             {eventDetails.sport}
@@ -156,7 +168,6 @@ const EventPageRightContent = ({
             </Badge>
           )}
         </div>
-
         <div className="space-y-3 mb-6">
           <div className="flex items-center">
             <CalendarIcon className="w-4 h-4 sm:w-5 sm:h-5 mr-2" />
@@ -249,12 +260,12 @@ const EventPageRightContent = ({
               {eventDetails.categories.length}+
             </strong>
           </span>
-          <a
-            href="#"
+          <button
+            onClick={() => scrollToSection("Event_Categories1")}
             className="text-xs sm:text-sm text-blue-500 hover:underline mb-1 md:mb-0 md:mt-1"
           >
             (View Categories)
-          </a>
+          </button>
         </div>
         <div className="flex flex-col md:flex-row my-4">
           <span className="text-base sm:text-lg md:text-xl font-bold flex items-center gap-2">
@@ -362,7 +373,9 @@ const EventPageRightContent = ({
           </div>
           <div className="flex items-center gap-1 cursor-pointer hover:underline text-nowrap font-bold text-sm sm:text-base">
             Hosting Since:
-            <span className="text-blue-600 font-normal">{new Date(hostingSince).toLocaleDateString()}</span>
+            <span className="text-blue-600 font-normal">
+              {new Date(hostingSince).toLocaleDateString()}
+            </span>
           </div>
           <div className="flex items-center gap-1 cursor-pointer hover:underline text-nowrap font-bold text-sm sm:text-base">
             Phone:
@@ -386,7 +399,10 @@ const EventPageRightContent = ({
           )}
           {eventDetails.insta_link && (
             <Link
-              href={`https://www.instagram.com/${eventDetails.insta_link.replace('@', '')}`}
+              href={`https://www.instagram.com/${eventDetails.insta_link.replace(
+                "@",
+                ""
+              )}`}
               target="_blank"
               rel="noopener noreferrer"
               className="flex items-center gap-1 cursor-pointer hover:underline text-nowrap font-bold text-sm sm:text-base"
@@ -413,7 +429,7 @@ const EventPageRightContent = ({
               0
             )}
             <Link
-              href={`/eventregistrationpage/${eventId}`}
+              href={`/eventregistrationpage?id=${eventId}`}
               className="text-blue-600 ml-2 hover:underline"
             >
               View player names
@@ -433,7 +449,7 @@ const EventPageRightContent = ({
           <h3 className="text-xl font-bold mb-2">Description</h3>
           <p>{eventDetails.event_description}</p>
         </div>
-        <div className="mb-6">
+        <div className="mb-6 lg:hidden" id="Event_Categories">
           <h3 className="text-xl font-bold mb-2">Event Categories</h3>
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
             {eventDetails.categories.map((category, index) => (

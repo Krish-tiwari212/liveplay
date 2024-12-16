@@ -4,7 +4,7 @@ import PlayerRegistrationmenu from '@/components/PlayerRegistrationmenu';
 import { AlertDialogHeader } from '@/components/ui/alert-dialog';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
-import { Dialog, DialogClose, DialogContent, DialogDescription, DialogFooter, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
+import { Dialog, DialogClose, DialogContent, DialogDescription, DialogFooter, DialogTitle, DialogTrigger,DialogHeader } from '@/components/ui/dialog';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import data from '@/data';
@@ -213,6 +213,9 @@ const EventPage = () => {
    const [selectedParticipant, setSelectedParticipant] =
      useState<Participant | null>(null);
    const [event, setEvent] = useState<Event | null>(null);
+   const [openplayerinfo,setOpenPlayerInfo]=useState(false)
+   const [dialogData,setDialogData]=useState<Participant>({})
+   const [openshare,setopenshare]=useState(false)
 
   const handleCopy = (text: string) => {
     navigator.clipboard
@@ -314,93 +317,14 @@ const EventPage = () => {
               </Dialog>
             </div>
           </div>
-          <PlayerRegistrationmenu participants={participantsdemo} />
+          <PlayerRegistrationmenu
+            participants={participantsdemo}
+            dialog={openplayerinfo}
+            setDialog={setOpenPlayerInfo}
+            dialogdata={dialogData}
+            setdialogdata={setDialogData}
+          />
         </div>
-        {/* <div className="hidden lg:block border-2 border-[#141F29] p-4 rounded-lg text-[#141F29]">
-          <h1 className="text-xl sm:text-2xl md:text-3xl font-bold mb-4 line-clamp-2">
-            {event.event_name}
-          </h1>
-
-          <div className="flex flex-wrap gap-2 mb-4">
-            <Badge className="bg-[#E6EAC5] text-[#141F29] text-sm sm:text-base">
-              {event.sport}
-            </Badge>
-            <Badge className="bg-[#E6EAC5] text-[#141F29] text-sm sm:text-base">
-              {event.selected_plan}
-            </Badge>
-            {event.categories.some((cat) => cat.has_discount) && (
-              <Badge className="bg-[#E6EAC5] text-[#F3524F] text-sm sm:text-base flex items-center">
-                <RiDiscountPercentLine className="mr-2" />
-                Early Bird Discount
-              </Badge>
-            )}
-          </div>
-
-          <div className="space-y-3 mb-6">
-            <div className="flex items-center">
-              <CalendarIcon className="w-4 h-4 sm:w-5 sm:h-5 mr-2" />
-              <span className="text-sm sm:text-base">
-                {new Date(event.start_date).toLocaleDateString("en-US", {
-                  day: "numeric",
-                  month: "long",
-                  year: "numeric",
-                })}{" "}
-                | {event.start_time} onwards
-              </span>
-            </div>
-            <div className="flex items-center">
-              <GiEntryDoor className="w-4 h-4 sm:w-5 sm:h-5 mr-2" />
-              <span className="text-sm sm:text-base">
-                Last Date to Register:{" "}
-                {new Date(event.last_registration_date).toLocaleDateString()}
-              </span>
-            </div>
-            <div className="flex items-center">
-              <PiHandWithdraw className="w-4 h-4 sm:w-5 sm:h-5 mr-2" />
-              <span className="text-sm sm:text-base">
-                Last Date to Withdraw:{" "}
-                {new Date(event.last_withdrawal_date).toLocaleDateString()}
-              </span>
-            </div>
-            <div className="flex items-center">
-              <IoLocationSharp className="w-4 h-4 sm:w-5 sm:h-5 mr-2" />
-              <span className="text-sm sm:text-base">{event.venue_name}</span>
-            </div>
-            <Link
-              href={`/eventregistrationpage/${eventId}`}
-              className="flex items-center gap-1 cursor-pointer"
-            >
-              <div className="flex items-center gap-1 cursor-pointer hover:underline text-nowrap">
-                <VscGraph className="w-4 h-4 sm:w-5 sm:h-5  mr-1" />
-                <span className="text-sm sm:text-base">Registrations:</span>
-                <span className="text-blue-600 text-sm sm:text-base">
-                  {event.categories.reduce(
-                    (total, cat) => total + cat.total_quantity,
-                    0
-                  )}
-                </span>
-              </div>
-            </Link>
-            <div className="flex items-center">
-              <HiCurrencyRupee className="w-4 h-4 sm:w-5 sm:h-5 mr-2" />
-              <span className="text-sm sm:text-base  mr-2">Starting From:</span>
-              <span className="text-lg sm:text-xl md:text-2xl font-bold">
-                ₹{Math.min(...event.categories.map((cat) => cat.price))}
-              </span>
-            </div>
-          </div>
-          <Link href={`/choosecategory/${eventId}`}>
-            <Button
-              variant="tertiary"
-              className="w-full border-2 border-black py-8 text-xl"
-            >
-              Register Now
-            </Button>
-            <p className="text-blue-400 underline text-xl mt-2 text-center">
-              Already Registered ?
-            </p>
-          </Link>
-        </div> */}
         <div className="w-full lg:w-1/3 flex flex-col gap-4">
           <div className="w-full h-64 hidden md:block">
             <Image
@@ -413,15 +337,15 @@ const EventPage = () => {
           </div>
           <div className="border-2 border-[#141F29] p-4 rounded-lg text-[#141F29]">
             <h1 className="text-xl sm:text-2xl md:text-3xl font-bold mb-4 line-clamp-2">
-              Summer Basketball Tournament Pro League Men Champ 2.0 2024
+              {event?.event_name}
             </h1>
 
             <div className="flex flex-wrap gap-2 mb-4">
               <Badge className="bg-[#E6EAC5] text-[#141F29] text-sm sm:text-base">
-                Badminton
+                {event?.sport}
               </Badge>
               <Badge className="bg-[#E6EAC5] text-[#141F29] text-sm sm:text-base">
-                Elite
+                {event?.selected_plan}
               </Badge>
               <Badge className="bg-[#E6EAC5] text-[#F3524F] text-sm sm:text-base flex items-center">
                 <RiDiscountPercentLine className="mr-2" />
@@ -433,31 +357,40 @@ const EventPage = () => {
               <div className="flex items-center">
                 <CalendarIcon className="w-4 h-4 sm:w-5 sm:h-5 mr-2" />
                 <span className="text-sm sm:text-base">
-                  25 December 2024 | 8 PM onwards
+                  {new Date(event?.start_date).toLocaleDateString("en-US", {
+                    day: "numeric",
+                    month: "long",
+                    year: "numeric",
+                  })}{" "}
+                  | {event?.start_time} onwards
                 </span>
               </div>
               <div className="flex items-center">
                 <GiEntryDoor className="w-4 h-4 sm:w-5 sm:h-5 mr-2" />
                 <span className="text-sm sm:text-base">
-                  Last Date to Register: 20 December 2024
+                  Last Date to Register:{" "}
+                  {new Date(event?.last_registration_date).toLocaleDateString()}
                 </span>
               </div>
               <div className="flex items-center">
                 <PiHandWithdraw className="w-4 h-4 sm:w-5 sm:h-5 mr-2" />
                 <span className="text-sm sm:text-base">
-                  Last Date to Withdraw: 23 December 2024
+                  Last Date to Withdraw:{" "}
+                  {new Date(event?.last_withdrawal_date).toLocaleDateString()}
                 </span>
               </div>
               <div className="flex items-center">
                 <IoLocationSharp className="w-4 h-4 sm:w-5 sm:h-5 mr-2" />
                 <span className="text-sm sm:text-base">
-                  Major Dhyan Chand Stadium
+                  {event?.venue_name}
                 </span>
               </div>
               <div className="flex items-center gap-1 cursor-pointer hover:underline text-nowrap">
                 <VscGraph className="w-4 h-4 sm:w-5 sm:h-5  mr-1" />
                 <span className="text-sm sm:text-base">Registrations:</span>
-                <span className="text-blue-600 text-sm sm:text-base">5173</span>
+                <span className="text-blue-600 text-sm sm:text-base">
+                  {participants.length}
+                </span>
               </div>
               <div className="flex items-center">
                 <HiCurrencyRupee className="w-4 h-4 sm:w-5 sm:h-5 mr-2" />
@@ -465,7 +398,10 @@ const EventPage = () => {
                   Starting From:
                 </span>
                 <span className="text-lg sm:text-xl md:text-2xl font-bold">
-                  ₹699
+                  ₹
+                  {Math.min(
+                    ...(event?.categories.map((cat) => cat.price) || [])
+                  )}
                 </span>
               </div>
             </div>
@@ -484,6 +420,156 @@ const EventPage = () => {
           </div>
         </div>
       </div>
+      {openplayerinfo && dialogData && (
+        <Dialog open={openplayerinfo} onOpenChange={setOpenPlayerInfo}>
+          <DialogContent className="w-full max-w-[95%] md:max-w-[50%] lg:max-w-[40%] overflow-y-auto">
+            <DialogDescription>
+              <div className="mx-4 my-5 text-black">
+                {/* Header */}
+                <div className="flex justify-between items-center mb-4">
+                  <h1 className="text-lg sm:text-xl md:text-2xl font-bold">
+                    {dialogData.name}
+                  </h1>
+                  <Button
+                    size="sm"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      setopenshare(true);
+                    }}
+                    variant="outline"
+                    className="border-2 shadow-lg border-black flex items-center"
+                  >
+                    <h1 className="mr-1">Share</h1>
+                    <IoShareSocialSharp />
+                  </Button>
+                </div>
+
+                {/* Profile Section */}
+                <div className="flex flex-col md:flex-row items-center md:items-start gap-6 mb-6">
+                  <Image
+                    src={`https://robohash.org/b1b1e228-41be-43f1-bc61-27f335681734.png`}
+                    alt="Organizer Image"
+                    width={150}
+                    height={150}
+                    className="rounded-full w-20 sm:w-24 h-20 sm:h-24 object-cover border-2 border-black"
+                  />
+                  <div className="flex flex-col gap-2 items-center md:items-start">
+                    <Image
+                      src="/images/EliteBadgeDark.svg"
+                      alt="Elite Badge"
+                      width={100}
+                      height={100}
+                    />
+                    <h1 className="text-sm sm:text-md font-semibold">
+                      Profile Views: <span className="font-normal">36181</span>
+                    </h1>
+                    <h1 className="text-sm sm:text-md font-semibold">
+                      Joined Since:{" "}
+                      <span className="font-normal">
+                        {dialogData.registration_date}
+                      </span>
+                    </h1>
+                  </div>
+                </div>
+
+                {/* Events Section */}
+                <div className="w-full flex flex-col sm:flex-row gap-4 my-6">
+                  <div className="flex flex-col justify-center items-center bg-[#CCDB28] rounded-lg w-full sm:w-1/2 h-20 shadow-md">
+                    <h1 className="text-sm sm:text-lg font-semibold">
+                      Events Hosted
+                    </h1>
+                    <h1 className="text-sm sm:text-lg">5</h1>
+                  </div>
+                  <div className="flex flex-col justify-center items-center bg-[#CCDB28] rounded-lg w-full sm:w-1/2 h-20 shadow-md">
+                    <h1 className="text-sm sm:text-lg font-semibold">
+                      Events Played
+                    </h1>
+                    <h1 className="text-sm sm:text-lg">1</h1>
+                  </div>
+                </div>
+
+                {/* User Activity */}
+                <div>
+                  <h1 className="text-lg sm:text-xl font-bold mb-4">
+                    User Activity
+                  </h1>
+                  <div className="flex flex-col gap-4">
+                    {new Array(6).fill(null).map((_, idx) => (
+                      <div
+                        key={idx}
+                        className="flex gap-2 bg-[#F4F4F4] rounded-md w-full px-4 py-2"
+                      >
+                        <h1 className="font-semibold text-sm sm:text-lg">
+                          Hosted:{" "}
+                        </h1>
+                        <p className="text-sm sm:text-md">
+                          Summer Basketball Tournament Pro League Men Champ 2.0
+                          2024
+                        </p>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              </div>
+            </DialogDescription>
+            <DialogFooter>
+              <DialogClose asChild>
+                <Button
+                  onClick={() => setOpenPlayerInfo(false)}
+                  variant="secondary"
+                  className="bg-[#141f29] text-[#ccdb28]"
+                >
+                  Close
+                </Button>
+              </DialogClose>
+            </DialogFooter>
+          </DialogContent>
+        </Dialog>
+      )}
+      {openshare && (
+        <Dialog open={openshare} onOpenChange={setopenshare}>
+          <DialogContent className="sm:max-w-md h-auto">
+            <AlertDialogHeader>
+              <DialogTitle>Share link</DialogTitle>
+              <DialogDescription>
+                Anyone who has this link will be able to view this.
+              </DialogDescription>
+            </AlertDialogHeader>
+            <div className="flex items-center space-x-2">
+              <div className="grid flex-1 gap-2">
+                <Label htmlFor="link" className="sr-only">
+                  Link
+                </Label>
+                <Input
+                  id="link"
+                  defaultValue={`/event/1/share-link`}
+                  readOnly
+                />
+              </div>
+              <Button
+                type="button"
+                size="sm"
+                className="px-3"
+                onClick={() => handleCopy(`/event/1/share-link`)}
+              >
+                <span className="sr-only">Copy</span>
+                <Copy />
+              </Button>
+            </div>
+            <DialogFooter className="sm:justify-start">
+              <DialogClose asChild>
+                <Button
+                  type="button"
+                  variant="tertiary"
+                  className="bg-[#141f29] text-[#ccdb28]"
+                >
+                  Close
+                </Button>
+              </DialogClose>
+            </DialogFooter>
+          </DialogContent>
+        </Dialog>
+      )}
     </div>
   );
 };

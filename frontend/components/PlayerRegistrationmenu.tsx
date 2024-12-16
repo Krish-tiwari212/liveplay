@@ -20,7 +20,6 @@ import {
 } from "@/components/ui/pagination";
 import { useSearchParams } from 'next/navigation';
 
-
 const players: Player[] = [
   { id: 1, name: "Om Prakash - Akshay" },
   { id: 2, name: "Player 2" },
@@ -54,148 +53,6 @@ const players: Player[] = [
   { id: 30, name: "Player 30" },
 ];
 
-const participantsdemo = [
-  {
-    id: "1",
-    user_id: "101",
-    name: "Alice Johnson",
-    status: "confirmed",
-    registration_date: "2024-12-01",
-    user: {
-      id: "101",
-      full_name: "Alice Johnson",
-      email: "alice.johnson@example.com",
-      gender: "female",
-      date_of_birth: "1990-05-15",
-    },
-  },
-  {
-    id: "2",
-    user_id: "102",
-    name: "Bob Smith",
-    status: "pending",
-    registration_date: "2024-12-02",
-    user: {
-      id: "102",
-      full_name: "Bob Smith",
-      email: "bob.smith@example.com",
-      gender: "male",
-      date_of_birth: "1988-03-22",
-    },
-  },
-  {
-    id: "3",
-    user_id: "103",
-    name: "Charlie Brown",
-    status: "declined",
-    registration_date: "2024-12-03",
-    user: {
-      id: "103",
-      full_name: "Charlie Brown",
-      email: "charlie.brown@example.com",
-      gender: "male",
-      date_of_birth: "1995-07-19",
-    },
-  },
-  {
-    id: "4",
-    user_id: "104",
-    name: "Diana Prince",
-    status: "confirmed",
-    registration_date: "2024-12-04",
-    user: {
-      id: "104",
-      full_name: "Diana Prince",
-      email: "diana.prince@example.com",
-      gender: "female",
-      date_of_birth: "1992-11-11",
-    },
-  },
-  {
-    id: "5",
-    user_id: "105",
-    name: "Evan Thomas",
-    status: "pending",
-    registration_date: "2024-12-05",
-    user: {
-      id: "105",
-      full_name: "Evan Thomas",
-      email: "evan.thomas@example.com",
-      gender: "male",
-      date_of_birth: "1997-09-04",
-    },
-  },
-  {
-    id: "6",
-    user_id: "106",
-    name: "Fiona Davis",
-    status: "confirmed",
-    registration_date: "2024-12-06",
-    user: {
-      id: "106",
-      full_name: "Fiona Davis",
-      email: "fiona.davis@example.com",
-      gender: "female",
-      date_of_birth: "1985-12-25",
-    },
-  },
-  {
-    id: "7",
-    user_id: "107",
-    name: "George Miller",
-    status: "declined",
-    registration_date: "2024-12-07",
-    user: {
-      id: "107",
-      full_name: "George Miller",
-      email: "george.miller@example.com",
-      gender: "male",
-      date_of_birth: "1993-04-10",
-    },
-  },
-  {
-    id: "8",
-    user_id: "108",
-    name: "Hannah Lee",
-    status: "confirmed",
-    registration_date: "2024-12-08",
-    user: {
-      id: "108",
-      full_name: "Hannah Lee",
-      email: "hannah.lee@example.com",
-      gender: "female",
-      date_of_birth: "1991-06-18",
-    },
-  },
-  {
-    id: "9",
-    user_id: "109",
-    name: "Ian Collins",
-    status: "pending",
-    registration_date: "2024-12-09",
-    user: {
-      id: "109",
-      full_name: "Ian Collins",
-      email: "ian.collins@example.com",
-      gender: "male",
-      date_of_birth: "1990-02-28",
-    },
-  },
-  {
-    id: "10",
-    user_id: "110",
-    name: "Julia Adams",
-    status: "confirmed",
-    registration_date: "2024-12-10",
-    user: {
-      id: "110",
-      full_name: "Julia Adams",
-      email: "julia.adams@example.com",
-      gender: "female",
-      date_of_birth: "1989-08-30",
-    },
-  },
-];
 
 
 
@@ -215,10 +72,14 @@ interface Participant {
 }
 
 interface PlayerRegistrationmenuProps {
-  participants:Participant[]
+  participants: Participant[];
+  dialog: boolean;
+  setDialog: React.Dispatch<React.SetStateAction<boolean>>;
+  dialogdata: Participant;
+  setdialogdata: React.Dispatch<React.SetStateAction<Participant>>;
 }
 
-const PlayerRegistrationmenu = ({ participants }: PlayerRegistrationmenuProps) => {
+const PlayerRegistrationmenu = ({ participants,dialog,setDialog,dialogdata,setdialogdata }: PlayerRegistrationmenuProps) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [searchTerm, setSearchTerm] = useState("");
   const [filteredPlayers, setFilteredPlayers] =
@@ -237,10 +98,10 @@ const PlayerRegistrationmenu = ({ participants }: PlayerRegistrationmenuProps) =
     setFilteredPlayers(filtered);
   };
 
-  // Calculate total pages
+  
   const totalPages = Math.ceil(filteredPlayers.length / playersPerPage);
 
-  // Get current players
+ 
   const indexOfLastPlayer = currentPage * playersPerPage;
   const indexOfFirstPlayer = indexOfLastPlayer - playersPerPage;
   const currentPlayers = filteredPlayers.slice(
@@ -249,6 +110,20 @@ const PlayerRegistrationmenu = ({ participants }: PlayerRegistrationmenuProps) =
   );
 
   const paginate = (pageNumber: number) => setCurrentPage(pageNumber);
+
+  const gridColumns = 3;
+  const gridRows = Math.ceil(currentPlayers.length / gridColumns);
+  const getPlayerForCell = (row: number, col: number) => {
+    const index = row * gridColumns + col;
+    return currentPlayers[index];
+  };
+
+  const handlePlayerClick = (player: Participant) => {
+    setdialogdata(player);
+    setDialog(true);
+  };
+
+
   return (
     <div className="w-full h-full border rounded-lg">
       <div className="w-full p-6 bg-[#141f29] flex flex-wrap gap-4 rounded-t-lg">
@@ -289,6 +164,31 @@ const PlayerRegistrationmenu = ({ participants }: PlayerRegistrationmenuProps) =
         </div>
       </div>
       <div className="w-full">
+        {Array.from({ length: gridRows }).map((_, rowIndex) => (
+          <div
+            key={rowIndex}
+            className={`grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 pl-6 py-2 ${
+              rowIndex % 2 === 0 ? "bg-white" : "bg-[#e6eac5]"
+            }`}
+          >
+            {Array.from({ length: gridColumns }).map((_, colIndex) => {
+              const player = getPlayerForCell(rowIndex, colIndex);
+              return player ? (
+                <div
+                  key={colIndex}
+                  className="flex justify-start items-center cursor-pointer"
+                  onClick={() => handlePlayerClick(player)}
+                >
+                  <span>{player.name}</span>
+                </div>
+              ) : (
+                <div key={colIndex}></div>
+              );
+            })}
+          </div>
+        ))}
+      </div>
+      {/* <div className="w-full">
         {currentPlayers.map((player, index) => (
           <div
             key={player.id}
@@ -307,7 +207,7 @@ const PlayerRegistrationmenu = ({ participants }: PlayerRegistrationmenuProps) =
             </div>
           </div>
         ))}
-      </div>
+      </div> */}
       <Pagination>
         <PaginationContent>
           <PaginationItem>

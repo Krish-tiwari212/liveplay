@@ -102,8 +102,8 @@ const page = () => {
   };
 
   return (
-    <div className="flex m-3 bg-white rounded-md md:h-[36rem]">
-      <div className="hidden md:flex w-1/3 xl:w-1/4 bg-[#17202a] p-4 rounded-l-md flex-col justify-between h-full">
+    <div className="flex m-3 bg-white rounded-md min-h-screen">
+      <div className="hidden md:flex w-1/3 xl:w-1/4 bg-[#17202a] p-4 rounded-l-md flex-col justify-between min-h-screen">
         <ul className="space-y-2">
           <li
             className={` flex items-center transition-colors rounded-md px-4 py-2 duration-200 hover:text-cad927 ${
