@@ -13,15 +13,14 @@ interface BillingSummaryProps {
   gstrate: string;
   gstcompliance: boolean;
   gstIncExc: string;
-  isCheckboxChecked:Boolean
 }
 
 const BillingSummary = ({
   gstrate="0",
   gstcompliance=false,
   gstIncExc="",
-  isCheckboxChecked
 }: BillingSummaryProps) => {
+  const{isCheckboxChecked}=useCartContext()
   const { items, clearCart, total } = useCartContext();
   const [withdrawalFee, setWithdrawalFee] = useState<boolean>(true);
   const [feeAmount, setFeeAmount] = useState<number>(0);

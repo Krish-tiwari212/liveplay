@@ -41,6 +41,8 @@ interface CartContextType {
   total: number;
   totalQuantity: number;
   getItemQuantity: (categoryId: number) => number;
+  isCheckboxChecked: boolean;
+  setIsCheckboxChecked: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
 const CartContext = createContext<CartContextType | undefined>(undefined);
@@ -58,7 +60,8 @@ interface CartProviderProps {
 }
 
 export const CartProvider: React.FC<CartProviderProps> = ({ children }) => {
-  const [items, setItems] = useState<CartItem[]>([]);
+  const [items, setItems] = useState<CartItem[]>([]); 
+  const [isCheckboxChecked, setIsCheckboxChecked] = useState(false);
 
   const addItem = (category: Category) => {
     setItems((prevItems) => {
@@ -76,6 +79,7 @@ export const CartProvider: React.FC<CartProviderProps> = ({ children }) => {
           amount_input: category.amount_input,
           discount_code: category.discount_code,
           teamName: category.teamName,
+          pairname: category.pairname,
         };
 
         return updatedItems;
@@ -157,6 +161,8 @@ export const CartProvider: React.FC<CartProviderProps> = ({ children }) => {
         total,
         totalQuantity,
         getItemQuantity,
+        isCheckboxChecked,
+        setIsCheckboxChecked
       }}
     >
       {children}

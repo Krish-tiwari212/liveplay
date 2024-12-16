@@ -158,7 +158,7 @@ const MatchFixtures = ({ data }: MatchFixturesProps) => {
           {columnHeaders.map((header, index) => (
             <div
               key={index}
-              className="flex-1 border border-gray-600 p-2 text-center text-white font-bold"
+              className="flex-1 border border-gray-600 w-24 p-2 text-center text-white font-bold"
             >
               {header}
             </div>
@@ -168,7 +168,7 @@ const MatchFixtures = ({ data }: MatchFixturesProps) => {
           {adjustedRounds.map((round, colIndex) => (
             <div
               key={colIndex}
-              className="flex-1 border border-gray-600 text-center text-white"
+              className="flex-1 border border-gray-600 text-center text-white "
             >
               {round.map((match, rowIndex) => {
                 const matchNumber = colIndex * round.length + rowIndex + 1;
@@ -176,9 +176,6 @@ const MatchFixtures = ({ data }: MatchFixturesProps) => {
                   <div
                     key={rowIndex}
                     className="p-4 border-b border-gray-500"
-                    style={{
-                      height: calculateMatchHeight(colIndex), // Set dynamic height
-                    }}
                   >
                     <div className="flex flex-col items-center">
                       <div className="text-white">{`Match ${matchNumber}`}</div>

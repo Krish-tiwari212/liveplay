@@ -53,12 +53,11 @@ interface CategoryCardProps {
   category: Category;
   participantsData: Participant[];
   isAdded: boolean;
-  isCheckboxChecked: Boolean;
-  setIsCheckboxChecked: React.Dispatch<React.SetStateAction<boolean>>;
   onAdd: () => void;
 }
 
-const CategoryCard: React.FC<CategoryCardProps> = ({ category, participantsData,isCheckboxChecked,setIsCheckboxChecked, isAdded, onAdd }) => {
+const CategoryCard: React.FC<CategoryCardProps> = ({ category, participantsData, isAdded, onAdd }) => {
+  const {setIsCheckboxChecked}=useCartContext()
   const [searchOpen, setSearchOpen] = useState(false);
   const [selectedParticipant, setSelectedParticipant] = useState<Participant | null>(null);
   const [teamCode, setTeamCode] = useState('');
@@ -67,6 +66,7 @@ const CategoryCard: React.FC<CategoryCardProps> = ({ category, participantsData,
   const [disablecheckbox,setdisablecheckbox]=useState(false)
   const [isAlertOpen, setIsAlertOpen] = useState(false);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
+  const [isCheckboxCheck, setIsCheckboxCheck] = useState(false);
 
   const { addItem, items, addMultipleItem, totalQuantity, reduceItem } = useCartContext();
 
@@ -127,7 +127,7 @@ const CategoryCard: React.FC<CategoryCardProps> = ({ category, participantsData,
     
     setdisablecheckbox(true);
     const finalPrice =
-      isCheckboxChecked && category.discount_value
+      isCheckboxCheck && category.discount_value
         ? category.discount_value
         : category.price;
 
@@ -135,10 +135,10 @@ const CategoryCard: React.FC<CategoryCardProps> = ({ category, participantsData,
       ...category,
       price: category.price,
       teamName: teamName,
+      pairname: partner,
     };
-    console.log(finalPrice)
-    if (!isCheckboxChecked) {
-      const {  discount_code, ...rest } = finalCategory;
+    if (!isCheckboxCheck) {
+      const { discount_code, ...rest } = finalCategory;
       finalCategory = rest;
     }
     onAdd();
@@ -218,10 +218,11 @@ const CategoryCard: React.FC<CategoryCardProps> = ({ category, participantsData,
                               <Checkbox
                                 disabled={currentQuantity > 0}
                                 id="terms2"
-                                checked={isCheckboxChecked}
-                                onCheckedChange={() =>
-                                  setIsCheckboxChecked(!isCheckboxChecked)
-                                }
+                                checked={isCheckboxCheck}
+                                onCheckedChange={() =>{
+                                  setIsCheckboxCheck(!isCheckboxCheck)
+                                  setIsCheckboxChecked(!isCheckboxCheck)
+                                }}
                               />
                             </TooltipTrigger>
                             <TooltipContent className="bg-[#141f29] text-[#ccdb28]">
@@ -233,9 +234,10 @@ const CategoryCard: React.FC<CategoryCardProps> = ({ category, participantsData,
                         <Checkbox
                           disabled={currentQuantity > 0}
                           id="terms2"
-                          checked={isCheckboxChecked}
-                          onCheckedChange={() =>
-                            setIsCheckboxChecked(!isCheckboxChecked)
+                          checked={isCheckboxCheck}
+                          onCheckedChange={() =>{
+                            setIsCheckboxCheck(!isCheckboxCheck)
+                            setIsCheckboxChecked(!isCheckboxCheck)}
                           }
                         />
                       )}
@@ -244,7 +246,7 @@ const CategoryCard: React.FC<CategoryCardProps> = ({ category, participantsData,
                 </div>
                 <div className="flex gap-2 items-center text-2xl">
                   <div>
-                    {isCheckboxChecked ? (
+                    {isCheckboxCheck ? (
                       <>
                         <span className="text-[#141f29] font-semibold">
                           ₹{category.discount_value}
