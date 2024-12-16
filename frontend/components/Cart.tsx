@@ -65,10 +65,40 @@ const BillingSummary = ({
         router.push("/login");
         return;
       }
-
+  
+      console.log("Creating order for payment", items);
+  
       // Convert amount to paise and ensure it's an integer
       const amountInPaise = Math.round(totalPayable);
-
+  
+      // Fetch organizer_id from events table using event_id
+      const eventId = items[0]?.event_id;
+      const { data: event, error: eventError } = await supabase
+        .from('events')
+        .select('organizer_id')
+        .eq('id', eventId)
+        .single();
+  
+      if (eventError) {
+        throw new Error("Failed to fetch event details");
+      }
+  
+      const organizer_id = event.organizer_id;
+  
+      // Determine create_team, team_name, and partner_name based on category_type
+      let create_team = false;
+      let team_name = null;
+      let partner_name = null;
+  
+      const categoryType = items[0]?.category_type;
+  
+      if (categoryType === 'Doubles') {
+        partner_name = items[0]?.teamName || "";
+      } else if (categoryType === 'team') {
+        create_team = true;
+        team_name = items[0]?.teamName || "";
+      }
+  
       // Create order
       const response = await fetch("/api/payment/create-order", {
         method: "POST",
@@ -76,13 +106,19 @@ const BillingSummary = ({
         body: JSON.stringify({
           amount: amountInPaise, // Send amount in paise
           categories: items,
-          eventId: items[0]?.event_id,
+          eventId: eventId,
+          userId: session.user.id,
+          name: session.user.user_metadata.full_name || session.user.email.split("@")[0],
+          organizer_id: organizer_id,
+          create_team: create_team,
+          team_name: team_name,
+          partner_name: partner_name,
         }),
       });
-
+  
       const data = await response.json();
       if (!data.orderId) throw new Error("Failed to create order");
-
+  
       const options = {
         key: data.key,
         amount: amountInPaise,
@@ -93,7 +129,7 @@ const BillingSummary = ({
         handler: async function (response: any) {
           try {
             console.log("Payment response:", response);
-            const verifyResponse = await fetch("/api/payment/verify", {
+            const verifyResponse = await fetch("/api/event/register", {
               method: "POST",
               headers: { "Content-Type": "application/json" },
               body: JSON.stringify({
@@ -102,8 +138,9 @@ const BillingSummary = ({
                 razorpay_signature: response.razorpay_signature,
               }),
             });
-
+  
             const verifyData = await verifyResponse.json();
+            console.log("Payment verification response:", verifyData);
             if (verifyData.success) {
               clearCart();
               router.push("/paymentsuccesfull");
@@ -116,9 +153,7 @@ const BillingSummary = ({
           }
         },
         prefill: {
-          name:
-            session?.user?.user_metadata?.full_name ||
-            session?.user?.email?.split("@")[0],
+          name: session?.user?.user_metadata?.full_name || session?.user?.email?.split("@")[0],
           email: session?.user?.email,
           contact: session?.user?.phone || "",
         },
@@ -126,7 +161,7 @@ const BillingSummary = ({
           color: "#141F29",
         },
       };
-
+  
       const paymentObject = new (window as any).Razorpay(options);
       paymentObject.open();
     } catch (error) {
