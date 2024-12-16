@@ -37,6 +37,33 @@ interface Participant {
   };
 }
 
+interface Category {
+  id?: number;
+  category_name?: string;
+  total_quantity?: string;
+  max_ticket_quantity?: string;
+  price?: number;
+  ticket_description?: string;
+  discount_code?: string;
+  discount?: boolean;
+  category_type?: string;
+  discountType?: string;
+  number_of_discounts?: string;
+  from_date?: string;
+  till_date?: string;
+  discount_value: number;
+  percentage_input?: string;
+  amount_input?: string;
+  gender?: string;
+  age_from?: string;
+  age_to?: string;
+  ageRangeOption?: string;
+  max_teams_size?: number;
+  sport?: string;
+  teamName?: string;
+  pairname?: string;
+}
+
 interface Event {
   id: string;
   event_name: string;
@@ -59,6 +86,7 @@ interface Event {
   playing_rules: string;
   desktop_cover_image_url: string;
   mobile_cover_image_url: string;
+  categories:Category
 }
 
 
@@ -208,7 +236,7 @@ const participantsdemo = [
 const EventPage = () => {
   const router = useRouter();
    const searchParams = useSearchParams();
-   const eventId = searchParams.get("id");
+   const eventId = searchParams.get("event_id");
    const [participants, setParticipants] = useState<Participant[]>([]);
    const [selectedParticipant, setSelectedParticipant] =
      useState<Participant | null>(null);
@@ -241,7 +269,6 @@ const EventPage = () => {
          .then((response) => response.json())
          .then((data) => {
            setParticipants(data.participants);
-           console.log(data.participants);
          })
          .catch((error) => {
            console.error("Error fetching participants:", error);
@@ -249,7 +276,7 @@ const EventPage = () => {
 
        fetch(`/api/event/get_by_id/${eventId}`)
          .then((response) => response.json())
-         .then((data) => {setEvent(data);console.log(data)})
+         .then((data) => {setEvent(data)})
          .catch((error) => console.error(error));
      }
    }, [eventId]);
@@ -323,6 +350,7 @@ const EventPage = () => {
             setDialog={setOpenPlayerInfo}
             dialogdata={dialogData}
             setdialogdata={setDialogData}
+            categories={event?.categories}
           />
         </div>
         <div className="w-full lg:w-1/3 flex flex-col gap-4">

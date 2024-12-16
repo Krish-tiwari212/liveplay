@@ -429,7 +429,7 @@ const EventPageRightContent = ({
               0
             )}
             <Link
-              href={`/eventregistrationpage?id=${eventId}`}
+              href={`/eventregistrationpage?event_id=${eventId}`}
               className="text-blue-600 ml-2 hover:underline"
             >
               View player names

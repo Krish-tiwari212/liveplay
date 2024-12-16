@@ -19,6 +19,7 @@ import {
   PaginationPrevious,
 } from "@/components/ui/pagination";
 import { useSearchParams } from 'next/navigation';
+import { useEventContext } from '@/context/EventDataContext';
 
 const players: Player[] = [
   { id: 1, name: "Om Prakash - Akshay" },
@@ -53,9 +54,6 @@ const players: Player[] = [
   { id: 30, name: "Player 30" },
 ];
 
-
-
-
 interface Participant {
   id: string;
   user_id: string;
@@ -71,6 +69,33 @@ interface Participant {
   };
 }
 
+interface Category {
+  id?: number;
+  category_name?: string;
+  total_quantity?: string;
+  max_ticket_quantity?: string;
+  price?: number;
+  ticket_description?: string;
+  discount_code?: string;
+  discount?: boolean;
+  category_type?: string;
+  discountType?: string;
+  number_of_discounts?: string;
+  from_date?: string;
+  till_date?: string;
+  discount_value: number;
+  percentage_input?: string;
+  amount_input?: string;
+  gender?: string;
+  age_from?: string;
+  age_to?: string;
+  ageRangeOption?: string;
+  max_teams_size?: number;
+  sport?: string;
+  teamName?: string;
+  pairname?: string;
+}
+
 interface PlayerRegistrationmenuProps {
   participants: Participant[];
   dialog: boolean;
@@ -79,7 +104,14 @@ interface PlayerRegistrationmenuProps {
   setdialogdata: React.Dispatch<React.SetStateAction<Participant>>;
 }
 
-const PlayerRegistrationmenu = ({ participants,dialog,setDialog,dialogdata,setdialogdata }: PlayerRegistrationmenuProps) => {
+const PlayerRegistrationmenu = ({
+  participants,
+  dialog,
+  setDialog,
+  dialogdata,
+  setdialogdata,
+}: PlayerRegistrationmenuProps) => {
+  const {eventregistratiopage}=useEventContext()
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [searchTerm, setSearchTerm] = useState("");
   const [filteredPlayers, setFilteredPlayers] =
@@ -98,10 +130,8 @@ const PlayerRegistrationmenu = ({ participants,dialog,setDialog,dialogdata,setdi
     setFilteredPlayers(filtered);
   };
 
-  
   const totalPages = Math.ceil(filteredPlayers.length / playersPerPage);
 
- 
   const indexOfLastPlayer = currentPage * playersPerPage;
   const indexOfFirstPlayer = indexOfLastPlayer - playersPerPage;
   const currentPlayers = filteredPlayers.slice(
@@ -123,7 +153,6 @@ const PlayerRegistrationmenu = ({ participants,dialog,setDialog,dialogdata,setdi
     setDialog(true);
   };
 
-
   return (
     <div className="w-full h-full border rounded-lg">
       <div className="w-full p-6 bg-[#141f29] flex flex-wrap gap-4 rounded-t-lg">
@@ -143,9 +172,17 @@ const PlayerRegistrationmenu = ({ participants,dialog,setDialog,dialogdata,setdi
             <SelectValue placeholder="Men’s Double (35 entries)" />
           </SelectTrigger>
           <SelectContent>
-            <SelectItem value="light">Light</SelectItem>
-            <SelectItem value="dark">Dark</SelectItem>
-            <SelectItem value="system">System</SelectItem>
+            {["categories"]?.map((e, i) => (
+              <SelectItem
+                key={i}
+                value={e}
+                className="flex items-center space-x-2"
+              >
+                <div className="flex items-center space-x-2">
+                  <span>{e}</span>
+                </div>
+              </SelectItem>
+            ))}
           </SelectContent>
         </Select>
       </div>
