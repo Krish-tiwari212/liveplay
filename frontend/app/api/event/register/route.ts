@@ -54,6 +54,7 @@ export async function POST(req: Request) {
         status: 'confirmed',
         category_id: categories[0]["id"],
         name: authData.user.user_metadata.full_name || authData.user.user_metadata.name || 'Unknown',
+        leader: true,
       })
       .select()
       .single();
@@ -126,6 +127,7 @@ export async function POST(req: Request) {
       let teamCode;
       let teamError;
       let retries = 0;
+      let teamId;
 
       do {
         teamCode = Math.random().toString(36).substring(2, 8).toUpperCase(); // Generate a random 6-digit code
@@ -141,6 +143,7 @@ export async function POST(req: Request) {
             category_type: category.category_type,
           })
           .select();
+        teamId = result.data[0].id;
 
         teamError = result.error;
         retries++;
@@ -150,7 +153,16 @@ export async function POST(req: Request) {
       if (teamError) {
         return NextResponse.json({ error: "Error in team creation" }, { status: 400 });
       }
+      
+      // Update participant row with team_id
+      const { data: updatedParticipant, error: updateParticipantError } = await supabase
+      .from('participants')
+      .update({ team_id: teamId })
+      .eq('id', participantEntry.id);
 
+      if (updateParticipantError) {
+        return NextResponse.json({ error: 'Error updating participant with team ID' }, { status: 400 });
+      }
       teamEntries.push({ categoryId, teamCode });
     }
 

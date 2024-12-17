@@ -10,6 +10,7 @@ import { EventProvider, useEventContext } from "@/context/EventDataContext";
 import { UserProvider, useUser } from "@/context/UserContext";
 import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
+import { createClient } from "@/utils/supabase/client";
 
 export default function RootLayout({
   children,
@@ -46,25 +47,47 @@ export default function RootLayout({
 }
 
 function CompletProfileWrapper({ children }: { children: React.ReactNode }) {
-  const { profileCompleted,setCompleteprofileDialog,completeprofileDialog } = useEventContext();
+  const { profileCompleted, setCompleteprofileDialog } = useEventContext();
   const [showProfilePopup, setShowProfilePopup] = useState(false);
+  const [userDetails, setUserDetails] = useState(null);
   const { user } = useUser();
   const router = useRouter();
+  const supabase = createClient();
 
   useEffect(() => {
+    const fetchUserDetails = async () => {
+      if (user?.id) {
+        const { data, error } = await supabase
+          .from('users')
+          .select('*')
+          .eq('id', user?.id)
+          .single();
 
-    if (!profileCompleted && user) {
+        if (error) {
+          console.error('Error fetching user details:', error);
+        } else {
+          setUserDetails(data);
+        }
+      }
+    };
+    fetchUserDetails();
+  }, [user?.id, supabase]);
+
+  useEffect(() => {
+    if (userDetails && !userDetails.gender && user) {
       setShowProfilePopup(true);
+    } else {
+      setShowProfilePopup(false);
     }
 
     const interval = setInterval(() => {
-      if (!profileCompleted && user) {
+      if (userDetails && !userDetails.gender && user) {
         setShowProfilePopup(true);
       }
     }, 3 * 60 * 1000);
 
     return () => clearInterval(interval);
-  }, [user, profileCompleted]);
+  }, [user, userDetails]);
 
   return (
     <>
@@ -81,11 +104,10 @@ function CompletProfileWrapper({ children }: { children: React.ReactNode }) {
                   setShowProfilePopup(false);
                   setCompleteprofileDialog(true);
                 }}
-                className=""
               >
                 Complete Profile
               </Button>
-              <Button onClick={() => setShowProfilePopup(false)} className="">
+              <Button onClick={() => setShowProfilePopup(false)}>
                 Remind Me Later
               </Button>
             </div>
