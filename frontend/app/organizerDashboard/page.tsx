@@ -193,6 +193,7 @@ export default function Home() {
 
     fetchEvents();
   }, [user?.id]);
+
   return (
     <div className="flex flex-col m-3">
       <section className="mt-4 bg-[#17202A] sm:h-[9rem] shadow-xl rounded-lg p-4 relative mb-4 flex sm:gap-8 flex-col sm:flex-row ">
@@ -341,7 +342,9 @@ export default function Home() {
                 <h3 className="text-xl font-semibold mb-2">No Events Yet</h3>
                 <p className="mb-4">You haven't created any events yet.</p>
                 <Button
-                  onClick={() => router.push("/organizerDashboard/create_event")}
+                  onClick={() =>
+                    router.push("/organizerDashboard/create_event")
+                  }
                   variant="tertiary"
                   size="lg"
                   className="text-sm sm:text-md shadow-md shadow-gray-500"
@@ -484,7 +487,7 @@ export default function Home() {
                               </Label>
                               <Input
                                 id="link"
-                                defaultValue={`/event/${event.id}/share-link`}
+                                defaultValue={`${window.location.origin}/eventspage?event_id=${event.id}`}
                                 readOnly
                               />
                             </div>
@@ -493,7 +496,9 @@ export default function Home() {
                               size="sm"
                               className="px-3"
                               onClick={() =>
-                                handleCopy(`/event/${event.id}/share-link`)
+                                handleCopy(
+                                  `${window.location.origin}/eventspage?event_id=${event.id}`
+                                )
                               }
                             >
                               <span className="sr-only">Copy</span>

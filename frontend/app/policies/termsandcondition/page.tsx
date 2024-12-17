@@ -97,9 +97,11 @@ const page = () => {
       <p className="mb-10 text-sm md:text-lg">
         For any questions or concerns regarding these terms, please contact us
         at
-        <span className="font-bold hover:underline mx-1 cursor-pointer">
-          teamsupport@liveplay.in
-        </span>
+        <a href="mailto:teamsupport@liveplay.in">
+          <span className="font-bold hover:underline mx-1 cursor-pointer">
+            teamsupport@liveplay.in
+          </span>
+        </a>
       </p>
     </div>
   );

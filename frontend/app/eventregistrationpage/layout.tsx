@@ -24,12 +24,16 @@ export default function RootLayout({
     <UserProvider>
       <EventProvider>
         <UserProvider>
-          <MNavbar />
-          <Navbar />
-          <HeroChangingTagLine ishero={true} />
-          <HeroChangingTagLine extraclass="hidden" />
-          {children}
-          <Footer />
+          <div className="min-h-screen flex flex-col">
+            <main className="flex-grow">
+              <MNavbar />
+              <Navbar />
+              <HeroChangingTagLine ishero={true} />
+              <HeroChangingTagLine extraclass="hidden" />
+              {children}
+            </main>
+            <Footer />
+          </div>
         </UserProvider>
       </EventProvider>
     </UserProvider>

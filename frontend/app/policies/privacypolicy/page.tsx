@@ -76,7 +76,7 @@ const page = () => {
         website, participate in events, or use our services. By using
         liveplay.in, you agree to the practices described in this policy. If you
         have any questions or concerns regarding this Privacy Policy, you can
-        write to us at support@liveplay.in.
+        write to us at teamsupport@liveplay.in
       </p>
       {termsdata.map((e, i) => (
         <div key={i}>
@@ -92,9 +92,11 @@ const page = () => {
       <p className="mb-10 text-sm md:text-lg">
         For any questions or concerns regarding these terms, please contact us
         at
-        <span className="font-bold hover:underline mx-1 cursor-pointer">
-          teamsupport@liveplay.in
-        </span>
+        <a href="mailto:teamsupport@liveplay.in">
+          <span className="font-bold hover:underline mx-1 cursor-pointer">
+            teamsupport@liveplay.in
+          </span>
+        </a>
       </p>
     </div>
   );

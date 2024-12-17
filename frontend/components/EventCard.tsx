@@ -105,7 +105,7 @@ const EventCard = ({ id, eventDetails }: EventCardProps) => {
                 <HiCurrencyRupee className="text-lg" />
                 STARTING FROM: ₹{minPrice}
               </p>
-              <Link href={`/eventspage?event_id=${id}`}>
+              <Link href={`/eventregistrationpage?event_id=${id}`}>
                 <p className="text-gray-500 text-[12px] flex items-center gap-1 cursor-pointer hover:underline text-nowrap">
                   <VscGraph className="text-lg" />
                   Registrations:

@@ -70,8 +70,8 @@ const Footer = () => {
                   className="text-gray-400 hover:text-blue-400 transition duration-300"
                 >
                   <Image
-                    src="/icons/X.svg"
-                    alt="public/icons/X.svg"
+                    src="/icons/facebook.png"
+                    alt="public/icons/facebook.png"
                     width={40}
                     height={40}
                   />
@@ -93,12 +93,16 @@ const Footer = () => {
               Quick Links
             </h4>
             <ul className="list-none pl-0 space-y-1 cursor-pointer">
-              <li className="text-[#cad927] hover:text-white transition duration-300">
-                Create your Event
-              </li>
-              <li className="text-[#cad927] hover:text-white transition duration-300">
-                About Us
-              </li>
+              <Link href="/createeventstaticpage">
+                <li className="text-[#cad927] hover:text-white transition duration-300">
+                  Create your Event
+                </li>
+              </Link>
+              <Link href="/aboutus">
+                <li className="text-[#cad927] hover:text-white transition duration-300">
+                  About Us
+                </li>
+              </Link>
               <li className="text-[#cad927] hover:text-white transition duration-300">
                 FAQs
               </li>
@@ -134,7 +138,8 @@ const Footer = () => {
             </Link>
           </div>
           <div className="mt-4 md:mt-0">
-            &copy; 2024 Impact Stream Ventures. <br className='md:hidden'/>liveplay.in™ All rights reserved
+            &copy; 2024 Impact Stream Ventures. <br className="md:hidden" />
+            liveplay.in™ All rights reserved
           </div>
         </div>
       </footer>

@@ -203,7 +203,7 @@ const EventPageRightContent = ({
             </span>
           </div>
           <Link
-            href={`/eventregistrationpage/${eventId}`}
+            href={`/eventregistrationpage?event_id=${eventId}`}
             className="flex items-center gap-1 cursor-pointer"
           >
             <div className="flex items-center gap-1 cursor-pointer hover:underline text-nowrap">

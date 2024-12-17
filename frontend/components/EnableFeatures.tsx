@@ -47,7 +47,7 @@ const EnableFeatures = ({ handleNext, eventId }: EnableFeaturesProps) => {
       <div className="flex flex-col bg-slate-200 overflow-hidden gap-5">
         <MyTimer expiryTimestamp={time} setFeatureData={setFeatureData} />
         <TshirtForParticipant setFeatureData={setFeatureData} />
-        <Drawfixtures setFeatureData={setFeatureData} />
+        {/* <Drawfixtures setFeatureData={setFeatureData} /> */}
         <QandA handleNext={handleNext} FeatureData={FeatureData} />
         <GSTCompliance handleNext={handleNext} FeatureData={FeatureData} />
 

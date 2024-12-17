@@ -312,7 +312,7 @@ const page = () => {
                               </Label>
                               <Input
                                 id="link"
-                                defaultValue={`https://www.liveplay.in/event/${event.id}/share-link`}
+                                defaultValue={`${window.location.origin}/eventspage?event_id=${event.id}`}
                                 readOnly
                               />
                             </div>
@@ -322,7 +322,7 @@ const page = () => {
                               className="px-3"
                               onClick={() =>
                                 handleCopy(
-                                  `https://www.liveplay.in/event/${event.id}/share-link`
+                                  `${window.location.origin}/eventspage?event_id=${event.id}`
                                 )
                               }
                             >

@@ -12,6 +12,8 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { useRouter } from "next/navigation";
+import { title } from "process";
+import { useToast } from "@/hooks/use-toast";
 
 interface Event {
   id: string;
@@ -92,12 +94,21 @@ const SportsType = [
     name: "Marathon",
     icon: <img src="/images/marathon.png" alt="Marathon" className="h-4 w-4" />,
   },
+  {
+    name: "Box Cricket",
+    icon: <img src="/images/cricket.png" alt="Cricket" className="h-4 w-4" />,
+  },
+  {
+    name: "Turf Football",
+    icon: <img src="/images/football.png" alt="Football" className="h-4 w-4" />,
+  },
 ];
 
 const CardCarousel = () => {
   const [events, setEvents] = useState<Event[]>([]);
   const router=useRouter()
-
+  const {toast}=useToast()
+  const [isOnline, setIsOnline] = useState(false);
   const NextArrow = (props: any) => {
     const { className, onClick } = props;
     return (
@@ -153,19 +164,55 @@ const CardCarousel = () => {
     ],
   };
 
-  useEffect(() => {
-    const fetchEvents = async () => {
-      try {
-        const response = await fetch("/api/event/all_events");
-        const data = await response.json();
-        data.events.length>0 ? setEvents(data.events) : setEvents([])
-      } catch (error) {
-        console.error("Error fetching events:", error);
-        router.push("/error")
-      }
-    };
-    fetchEvents();
-  }, []);
+ useEffect(() => {
+   if (typeof window !== "undefined") {
+     setIsOnline(navigator.onLine);
+
+     const fetchEvents = async () => {
+       try {
+         const response = await fetch("/api/event/all_events");
+         const data = await response.json();
+         if (data.events.length > 0) {
+           setEvents(data.events);
+         } else {
+           setEvents([]);
+         }
+       } catch (error) {
+         console.error("Error fetching events:", error);
+         toast({
+           title:
+             "We are unable to retrieve event details at the moment. Please check your network connection and try again.",
+           variant: "destructive",
+         });
+       }
+     };
+
+     fetchEvents();
+
+     const handleOnline = () => {
+       setIsOnline(true);
+       toast({
+         title: "Network connection restored. Reloading the page....",
+       });
+       setTimeout(() => {
+         window.location.reload();
+       }, 3000); 
+     };
+
+     const handleOffline = () => {
+       setIsOnline(false);
+     };
+
+     window.addEventListener("online", handleOnline);
+     window.addEventListener("offline", handleOffline);
+
+     return () => {
+       window.removeEventListener("online", handleOnline);
+       window.removeEventListener("offline", handleOffline);
+     };
+   }
+ }, []);
+  
 
   return (
     <div className="my-6 overflow-x-hidden">
