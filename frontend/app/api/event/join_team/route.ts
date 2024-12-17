@@ -9,7 +9,7 @@ export async function POST(req: Request) {
     // Fetch team details using the team code
     const { data: teamData, error: teamError } = await supabase
       .from('teams')
-      .select('id, category_type, participant_ids, event_id')
+      .select('id, category_type, participant_ids, event_id, category_id')
       .eq('team_code', team_code)
       .single();
 
@@ -56,11 +56,20 @@ export async function POST(req: Request) {
       return NextResponse.json({ error: 'Participant already in another team for this event' }, { status: 400 });
     }
 
+    const { data: userData, error: userError } = await supabase
+      .from('users')
+      .select('full_name')
+      .eq('id', user_id)
+      .single();
+
     // Create a new participant entry
     const { data: participantEntry, error: participantError } = await supabase
       .from('participants')
       .insert({
         user_id: user_id,
+        name: userData?.full_name,
+        team_id: teamId,
+        category_id: teamData.category_id,
         event_id: event_id,
         payment_status: 'paid',
         registration_date: new Date().toISOString(),

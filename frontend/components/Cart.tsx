@@ -92,7 +92,7 @@ const BillingSummary = ({
       const categoryType = items[0]?.category_type;
   
       if (categoryType === 'Doubles') {
-        partner_name = items[0]?.teamName || "";
+        partner_name = items[0]?.pairname || "";
       } else if (categoryType === 'team') {
         create_team = true;
         team_name = items[0]?.teamName || "";
