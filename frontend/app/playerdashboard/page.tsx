@@ -9,6 +9,7 @@ import { FaCalendarAlt, FaPlus, FaRegEye, FaStar } from "react-icons/fa";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { createClient } from "@/utils/supabase/client";
 import JoinTeamDialog from "@/components/JoinTeamDialog";
+import { FiCopy } from "react-icons/fi";
 import {
   FaHandHoldingDollar,
   FaIndianRupeeSign,
@@ -131,6 +132,18 @@ export default function Home() {
   const [teamMembers, setTeamMembers] = useState([]);
   const [interestedEvents, setInterestedEvents] = useState([]);
   const [pastEvents, setPastEvents] = useState([]);
+  const [copySuccess, setCopySuccess] = useState('');
+
+  const handleCopyTeamCode = () => {
+    navigator.clipboard.writeText(teamDetails.team_code)
+      .then(() => {
+        setCopySuccess('Team code copied to clipboard!');
+        setTimeout(() => setCopySuccess(''), 2000);
+      })
+      .catch(err => {
+        console.error('Failed to copy: ', err);
+      });
+  };
 
   useEffect(() => {
     const fetchPastEvents = async () => {
@@ -1154,6 +1167,18 @@ export default function Home() {
                       </div>
                     ))}
                   </div>
+                  <div className="mt-4 flex items-center justify-between p-3 border rounded-md shadow-sm bg-white">
+                    <div className="flex items-center space-x-3">
+                      <span className="text-sm font-medium text-gray-800">Team Code: {teamDetails.team_code}</span>
+                    </div>
+                    <Button
+                      className="px-3 py-1 text-sm rounded-md flex items-center"
+                      onClick={handleCopyTeamCode}
+                    >
+                      <FiCopy className="mr-2" /> Copy
+                    </Button>
+                  </div>
+                  {copySuccess && <div className="mt-2 text-green-500">{copySuccess}</div>}
                 </div>
               )}
             </DialogHeader>
