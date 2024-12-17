@@ -89,6 +89,8 @@ export default function Home() {
     setNotification,
     completeprofileDialog,
     setCompleteprofileDialog,
+    profileCompleted,
+    setProfileCompleted
   } = useEventContext();
   const [events, setEvents] = useState<EventCard[]>([]);
   const [registeredEvents, setRegisteredEvents] = useState<EventCard[]>([]);
@@ -127,6 +129,82 @@ export default function Home() {
   const [participantId, setParticipantId] = useState(null);
   const [eventId, setEventId] = useState(null);
   const [teamMembers, setTeamMembers] = useState([]);
+  const [interestedEvents, setInterestedEvents] = useState([]);
+  const [pastEvents, setPastEvents] = useState([]);
+
+  useEffect(() => {
+    const fetchPastEvents = async () => {
+      if (!user) return;
+
+      try {
+        // Fetch participant entries for the given user ID
+        const { data: participantEntries, error: participantError } = await supabase
+          .from('participants')
+          .select('event_id')
+          .eq('user_id', user.id);
+
+        if (participantError) throw participantError;
+
+        if (!participantEntries || participantEntries.length === 0) {
+          setPastEvents([]);
+          return;
+        }
+
+        const eventIds = participantEntries.map(entry => entry.event_id);
+
+        // Fetch event details using the event IDs and check if the event has ended
+        const { data: events, error: eventsError } = await supabase
+          .from('events')
+          .select('*')
+          .in('id', eventIds)
+          .lt('end_date', new Date().toISOString()); // Check if the event has ended
+
+        if (eventsError) throw eventsError;
+
+        setPastEvents(events);
+      } catch (error) {
+        console.error('Error fetching past events:', error);
+      }
+    };
+
+    fetchPastEvents();
+  }, [user, supabase]);
+
+  useEffect(() => {
+    const fetchLikedEvents = async () => {
+      if (!user) return;
+
+      try {
+        // Fetch liked event IDs
+        const { data: likedEvents, error: likedEventsError } = await supabase
+          .from('user_event_likes')
+          .select('event_id')
+          .eq('user_id', user.id);
+
+        if (likedEventsError) throw likedEventsError;
+
+        // Fetch details of each liked event
+        const eventDetailsPromises = likedEvents.map(async (likedEvent) => {
+          const { data: eventData, error: eventError } = await supabase
+            .from('events')
+            .select('*')
+            .eq('id', likedEvent.event_id)
+            .single();
+
+          if (eventError) throw eventError;
+
+          return eventData;
+        });
+
+        const eventDetails = await Promise.all(eventDetailsPromises);
+        setInterestedEvents(eventDetails);
+      } catch (error) {
+        console.error('Error fetching liked events:', error);
+      }
+    };
+
+    fetchLikedEvents();
+  }, [user, supabase]);
 
     const fetchEventData = async (eventId) => {
       try {
@@ -248,6 +326,7 @@ export default function Home() {
           setUserDetails(data);
         }
       }
+
     };
     console.log(userDetails);
 
@@ -662,7 +741,7 @@ export default function Home() {
               </h1>
               <div className="flex justify-start items-center text-xl gap-2">
                 <BiLike className="" />
-                <h1 className="">0</h1>
+                <h1 className="">{interestedEvents.length}</h1>
               </div>
             </CardContent>
           </Card>
@@ -674,7 +753,7 @@ export default function Home() {
             <h1 className="font-semibold text-lg">Events Participated</h1>
             <div className="flex justify-start items-center text-xl gap-2">
               <MdEventRepeat className="" />
-              <h1 className="">0</h1>
+              <h1 className="">{registeredEvents.length}</h1>
             </div>
           </CardContent>
         </Card>
@@ -683,13 +762,13 @@ export default function Home() {
             <h1 className="font-semibold text-lg">Events I’m interested in</h1>
             <div className="flex justify-start items-center text-xl gap-2">
               <BiLike className="" />
-              <h1 className="">0</h1>
+              <h1 className="">{interestedEvents.length}</h1>
             </div>
           </CardContent>
         </Card>
       </section>
       <section className="mt-8 bg-white shadow-md rounded-lg px-4 pt-4">
-        <h2 className="text-xl font-semibold mb-2">Upcoming Events</h2>
+        <h2 className="text-xl font-semibold mb-2">Registered Events</h2>
         <div className="flex space-x-4 overflow-x-auto pb-8">
           {isLoading ? (
             <div className="flex space-x-4">
@@ -809,9 +888,9 @@ export default function Home() {
               ))}
             </div>
           ) : (
-            events.map((event, i) => (
+            interestedEvents.map((event, i) => (
               <React.Fragment key={event.id}>
-                <Card className="shadow-md cursor-pointer hover:shadow-2xl flex-none min-w-[240px] max-w-[270px] sm:min-w-[450px] sm:max-w-[550px] border-2 border-gray-800">
+                <Card className="shadow-md cursor-pointer hover:shadow-2xl flex-none min-w-[240px] h-[15rem] max-w-[270px] sm:min-w-[450px] sm:max-w-[550px] border-2 border-gray-800">
                   <CardContent className="py-4 flex flex-col sm:flex-row gap-4 h-full">
                     <div className="flex-[1]">
                       <Image
@@ -852,7 +931,7 @@ export default function Home() {
                       <div className="flex flex-col justify-center items-center gap-2 mt-2">
                         <button
                           className="text-sm bg-[#17202A] text-[#CDDC29] hover:text-white py-1 w-full rounded-lg hover:shadow-xl"
-                          onClick={() => router.push("/")}
+                          onClick={() => router.push("/eventspage?event_id="+event.id)}
                         >
                           Register Now
                         </button>
@@ -892,7 +971,7 @@ export default function Home() {
               ))}
             </div>
           ) : (
-            events.map((event, i) => (
+            pastEvents.map((event, i) => (
               <React.Fragment key={event.id}>
                 <Card className="shadow-md cursor-pointer hover:shadow-2xl flex-none min-w-[240px] max-w-[270px] sm:min-w-[550px] border-2 border-gray-800">
                   <CardContent className="py-4 flex flex-col sm:flex-row gap-4 h-full">

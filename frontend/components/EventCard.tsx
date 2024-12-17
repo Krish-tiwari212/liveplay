@@ -1,7 +1,7 @@
 "use client";
 import { cn } from "@/lib/utils";
 import Image from "next/image";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import {
   HiCurrencyRupee,
   HiOutlineCalendar,
@@ -14,6 +14,7 @@ import { BiLike } from "react-icons/bi";
 import { useRouter } from "next/navigation";
 import { VscGraph } from "react-icons/vsc";
 import Link from "next/link";
+import { createClient } from "@/utils/supabase/client";
 
 interface EventCategory {
   id: number;
@@ -42,6 +43,83 @@ interface EventCardProps {
 const EventCard = ({ id, eventDetails }: EventCardProps) => {
   const [isLiked, setIsLiked] = useState(false);
   const router = useRouter();
+  const supabase = createClient();
+  const [session, setSession] = useState(null);
+
+  useEffect(() => {
+    const checkSession = async () => {
+      const {
+        data: { session: currentSession },
+      } = await supabase.auth.getSession();
+      setSession(currentSession);
+    };
+
+    checkSession();
+  }, []);
+
+  useEffect(() => {
+    const fetchLikeStatus = async () => {
+      if (!session) return;
+
+      const user = session.user;
+      if (!user) return;
+
+      const { data, error } = await supabase
+        .from("user_event_likes")
+        .select("*")
+        .eq("user_id", user.id)
+        .eq("event_id", id)
+        .single();
+
+      if (error) {
+        return;
+      }
+
+      if (data) {
+        setIsLiked(true);
+      }
+    };
+
+    fetchLikeStatus();
+  }, [id, supabase, session]);
+
+  const handleLike = async () => {
+    if (!session) {
+      router.push("/auth/login");
+      return;
+    }
+
+    const user = session.user;
+    if (!user) {
+      console.error("User not authenticated");
+      return;
+    }
+
+    if (isLiked) {
+      const { error } = await supabase
+        .from("user_event_likes")
+        .delete()
+        .eq("user_id", user.id)
+        .eq("event_id", id);
+
+      if (error) {
+        return;
+      }
+    } else {
+      const { error } = await supabase.from("user_event_likes").insert([
+        {
+          user_id: user.id,
+          event_id: id,
+        },
+      ]);
+
+      if (error) {
+        return;
+      }
+    }
+
+    setIsLiked(!isLiked);
+  };
 
   // Format date
   const formattedDate = new Intl.DateTimeFormat("en-US", {
@@ -132,7 +210,7 @@ const EventCard = ({ id, eventDetails }: EventCardProps) => {
               className={`text-[12px] border border-black hover:bg-[#ccdb28] hover:text-black flex justify-center items-center gap-1 px-2 ${
                 isLiked ? "bg-[#ccdb28] text-black" : ""
               }`}
-              onClick={() => setIsLiked(!isLiked)}
+              onClick={handleLike}
             >
               {isLiked ? "Liked" : "Like"}
               <BiLike className="" />
