@@ -4,7 +4,7 @@ import Image from "next/image";
 import React, { useState } from "react";
 import { Button } from "./ui/button";
 import { BiLike } from "react-icons/bi";
-import { IoLocationSharp, IoShareSocialSharp } from "react-icons/io5";
+import { IoLocationSharp, IoPeople, IoPerson, IoShareSocialSharp } from "react-icons/io5";
 import EventCategoryCard from "./EventCategoryCard";
 import QnaSectionEventpage from "./QnaSectionEventpage";
 import { Badge } from "./ui/badge";
@@ -36,6 +36,7 @@ import CountdownTimer from "./Countdown";
 import EventPageRightContent from "./EventPageRightContent";
 import { createClient } from "@/utils/supabase/client";
 import { useEffect } from "react";
+import { FaPeopleGroup } from "react-icons/fa6";
 
 interface EventCategory {
   id: number;
@@ -487,32 +488,35 @@ const EventPageLeftContent = ({
           </h1>
 
           <div className="flex flex-wrap gap-2 mb-4">
-            {eventDetails.categories.map((cat) => {
+            {/* Create a Set to filter out duplicates */}
+            {Array.from(
+              new Set(eventDetails.categories.map((cat) => cat.category_type))
+            ).map((categoryType) => {
               let icon;
 
               // Determine which icon to use based on the category_type
-              switch (cat.category_type) {
+              switch (categoryType) {
                 case "Team":
-                  icon = <FaUsers className="mr-2" />;
+                  icon = <FaPeopleGroup className="mr-2" />;
                   break;
                 case "Doubles":
-                  icon = <FaRegHandshake className="mr-2" />;
+                  icon = <IoPeople className="mr-2" />;
                   break;
                 case "Singles":
-                  icon = <FaRunning className="mr-2" />;
+                  icon = <IoPerson className="mr-2" />;
                   break;
                 default:
-                  icon = <FaBasketballBall className="mr-2" />; // Default icon
+                  icon = <FaBasketballBall className="mr-2" />;
                   break;
               }
 
               return (
                 <Badge
-                  key={cat.id}
+                  key={categoryType}
                   className="bg-[#E6EAC5] text-[#141F29] text-sm sm:text-base flex items-center"
                 >
                   {icon}
-                  {cat.category_type}
+                  {categoryType}
                 </Badge>
               );
             })}

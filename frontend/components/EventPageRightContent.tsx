@@ -1,6 +1,6 @@
 import Image from "next/image";
 import React from "react";
-import { FaBasketballBall, FaStar } from "react-icons/fa";
+import { FaBasketballBall, FaRegHandshake, FaRunning, FaStar, FaUsers } from "react-icons/fa";
 import { GiEntryDoor, GiShuttlecock, GiWhistle } from "react-icons/gi";
 import { GrTrophy } from "react-icons/gr";
 import { MdCategory } from "react-icons/md";
@@ -9,7 +9,7 @@ import { Badge } from "./ui/badge";
 import { Button } from "./ui/button";
 import { HiCurrencyRupee } from "react-icons/hi2";
 import { VscGraph } from "react-icons/vsc";
-import { IoLocationSharp, IoShareSocialSharp } from "react-icons/io5";
+import { IoLocationSharp, IoPeople, IoPerson, IoShareSocialSharp } from "react-icons/io5";
 import { CalendarIcon } from "lucide-react";
 import { usePathname, useRouter } from "next/navigation";
 import QnaSectionEventpage from "./QnaSectionEventpage";
@@ -19,6 +19,7 @@ import { PiHandWithdraw } from "react-icons/pi";
 import { createClient } from "@/utils/supabase/client";
 import { useEffect, useState } from "react";
 import Link from "next/link";
+import { FaPeopleGroup } from "react-icons/fa6";
 
 interface EventCategory {
   id: number;
@@ -261,15 +262,38 @@ const EventPageRightContent = ({
         </h1>
 
         <div className="flex flex-wrap gap-2 mb-4">
-          {eventDetails.categories.map((cat) => (
-            <Badge
-              key={cat.id}
-              className="bg-[#E6EAC5] text-[#141F29] text-sm sm:text-base flex items-center"
-            >
-              <FaBasketballBall className="mr-2" />
-              {cat.category_type}
-            </Badge>
-          ))}
+          {/* Create a Set to filter out duplicates */}
+          {Array.from(
+            new Set(eventDetails.categories.map((cat) => cat.category_type))
+          ).map((categoryType) => {
+            let icon;
+
+            // Determine which icon to use based on the category_type
+            switch (categoryType) {
+              case "Team":
+                icon = <FaPeopleGroup className="mr-2" />;
+                break;
+              case "Doubles":
+                icon = <IoPeople className="mr-2" />;
+                break;
+              case "Singles":
+                icon = <IoPerson className="mr-2" />;
+                break;
+              default:
+                icon = <FaBasketballBall className="mr-2" />;
+                break;
+            }
+
+            return (
+              <Badge
+                key={categoryType}
+                className="bg-[#E6EAC5] text-[#141F29] text-sm sm:text-base flex items-center"
+              >
+                {icon}
+                {categoryType}
+              </Badge>
+            );
+          })}
         </div>
         <div className="flex flex-col md:flex-row my-4">
           <span className="text-base sm:text-lg md:text-xl font-bold flex items-center gap-2">
