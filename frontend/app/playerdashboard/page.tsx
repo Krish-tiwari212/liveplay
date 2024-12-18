@@ -1167,19 +1167,24 @@ export default function Home() {
                       </div>
                     ))}
                   </div>
-                  <div className="mt-4 flex items-center justify-between p-3 border rounded-md shadow-sm bg-white">
-                    <div className="flex items-center space-x-3">
-                      <span className="text-sm font-medium text-gray-800">Team Code: {teamDetails.team_code}</span>
-                    </div>
-                    <Button
-                      className="px-3 py-1 text-sm rounded-md flex items-center"
-                      onClick={handleCopyTeamCode}
-                    >
-                      <FiCopy className="mr-2" /> Copy
-                    </Button>
-                  </div>
-                  {copySuccess && <div className="mt-2 text-green-500">{copySuccess}</div>}
+                  {teamDetails.category_type !== "Singles" && (
+                    <>
+                      <div className="mt-4 flex items-center justify-between p-3 border rounded-md shadow-sm bg-white">
+                        <div className="flex items-center space-x-3">
+                          <span className="text-sm font-medium text-gray-800">Team Code: {teamDetails.team_code}</span>
+                        </div>
+                        <Button
+                          className="px-3 py-1 text-sm rounded-md flex items-center"
+                          onClick={handleCopyTeamCode}
+                        >
+                          <FiCopy className="mr-2" /> Copy
+                        </Button>
+                      </div>
+                      {copySuccess && <div className="mt-2 text-green-500">{copySuccess}</div>}
+                    </>
+                  )}
                 </div>
+
               )}
             </DialogHeader>
             <div className="flex justify-between">

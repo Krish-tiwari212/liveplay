@@ -42,6 +42,7 @@ interface EventCardProps {
 
 const EventCard = ({ id, eventDetails }: EventCardProps) => {
   const [isLiked, setIsLiked] = useState(false);
+  const [likeCount, setLikeCount] = useState(0);
   const router = useRouter();
   const supabase = createClient();
   const [session, setSession] = useState(null);
@@ -80,7 +81,21 @@ const EventCard = ({ id, eventDetails }: EventCardProps) => {
       }
     };
 
+    const fetchLikeCount = async () => {
+      const { data, error } = await supabase
+        .from("user_event_likes")
+        .select("*", { count: "exact" })
+        .eq("event_id", id);
+
+      if (error) {
+        return;
+      }
+
+      setLikeCount(data.length);
+    };
+
     fetchLikeStatus();
+    fetchLikeCount();
   }, [id, supabase, session]);
 
   const handleLike = async () => {
@@ -105,6 +120,8 @@ const EventCard = ({ id, eventDetails }: EventCardProps) => {
       if (error) {
         return;
       }
+
+      setLikeCount(likeCount - 1);
     } else {
       const { error } = await supabase.from("user_event_likes").insert([
         {
@@ -116,6 +133,8 @@ const EventCard = ({ id, eventDetails }: EventCardProps) => {
       if (error) {
         return;
       }
+
+      setLikeCount(likeCount + 1);
     }
 
     setIsLiked(!isLiked);
@@ -215,6 +234,7 @@ const EventCard = ({ id, eventDetails }: EventCardProps) => {
               {isLiked ? "Liked" : "Like"}
               <BiLike className="" />
             </Button>
+            <p className="text-[12px] mt-[0.4rem] text-gray-500">{likeCount} Likes</p>
           </div>
           <Button
             onClick={() => router.push(`/choosecategory/${id}`)}

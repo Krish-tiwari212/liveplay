@@ -141,6 +141,101 @@ const EventPageLeftContent = ({
   const [eventsHosted, setEventsHosted] = useState(0);
   const [hostingSince, setHostingSince] = useState<string | null>(null);
   const supabase = createClient();
+  const [likeCount, setLikeCount] = useState(0);
+  const [session, setSession] = useState(null);
+
+  useEffect(() => {
+    const checkSession = async () => {
+      const {
+        data: { session: currentSession },
+      } = await supabase.auth.getSession();
+      setSession(currentSession);
+    };
+
+    checkSession();
+  }, []);
+
+  useEffect(() => {
+    const fetchLikeStatus = async () => {
+      if (!session) return;
+
+      const user = session.user;
+      if (!user) return;
+
+      const { data, error } = await supabase
+        .from("user_event_likes")
+        .select("*")
+        .eq("user_id", user.id)
+        .eq("event_id", eventDetails.id)
+        .single();
+
+      if (error) {
+        return;
+      }
+
+      if (data) {
+        setIsLiked(true);
+      }
+    };
+
+    const fetchLikeCount = async () => {
+      const { data, error } = await supabase
+        .from("user_event_likes")
+        .select("*", { count: "exact" })
+        .eq("event_id", eventDetails.id);
+
+      if (error) {
+        return;
+      }
+
+      setLikeCount(data.length);
+    };
+
+    fetchLikeStatus();
+    fetchLikeCount();
+  }, [eventDetails.id, supabase, session]);
+
+  const handleLike = async () => {
+    if (!session) {
+      router.push("/auth/login");
+      return;
+    }
+
+    const user = session.user;
+    if (!user) {
+      console.error("User not authenticated");
+      return;
+    }
+
+    if (isLiked) {
+      const { error } = await supabase
+        .from("user_event_likes")
+        .delete()
+        .eq("user_id", user.id)
+        .eq("event_id", eventDetails.id);
+
+      if (error) {
+        return;
+      }
+
+      setLikeCount(likeCount - 1);
+    } else {
+      const { error } = await supabase.from("user_event_likes").insert([
+        {
+          user_id: user.id,
+          event_id: eventDetails.id,
+        },
+      ]);
+
+      if (error) {
+        return;
+      }
+
+      setLikeCount(likeCount + 1);
+    }
+
+    setIsLiked(!isLiked);
+  };
 
   useEffect(() => {
     const fetchDetails = async () => {
@@ -220,7 +315,7 @@ const EventPageLeftContent = ({
           <Button
             size="sm"
             variant="outline"
-            onClick={() => setIsLiked(!isLiked)}
+            onClick={handleLike}
             className={`border-2 shadow-lg border-black flex items-center ${
               isLiked ? "bg-[#ccdb28] text-black" : ""
             }`}
