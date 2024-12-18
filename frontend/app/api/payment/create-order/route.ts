@@ -9,7 +9,7 @@ const razorpay = new Razorpay({
 
 export async function POST(req: Request) {
   const supabase = await createClient();
-  const { amount, eventId, categories } = await req.json();
+  const { amount, eventId, categories, withdrawal_fee, team_name, partner_name, create_team } = await req.json();
 
   try {
     // Authenticate user
@@ -26,7 +26,10 @@ export async function POST(req: Request) {
       notes: {
         eventId,
         userId: user.id,
-        categories: JSON.stringify(categories)
+        categories: JSON.stringify(categories),
+        withdrawal_fee,
+        team_name,
+        partner_name
       }
     });
 

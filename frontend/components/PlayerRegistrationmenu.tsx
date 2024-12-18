@@ -115,8 +115,9 @@ const PlayerRegistrationmenu = ({
 }: PlayerRegistrationmenuProps) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [searchTerm, setSearchTerm] = useState("");
+  console.log(participants);
   const [filteredPlayers, setFilteredPlayers] =
-    useState<Participant[]>(participants);
+    useState<Participant[]>(participants.participants);
   const [currentPage, setCurrentPage] = useState(1);
   const playersPerPage = 14;
 
@@ -167,7 +168,7 @@ const PlayerRegistrationmenu = ({
         </div>
         <Select>
           <SelectTrigger className="w-full md:max-w-[250px] border-2 border-[#ccdb28]">
-            <SelectValue placeholder="Men’s Double (35 entries)" />
+            <SelectValue placeholder="Select The Category" />
           </SelectTrigger>
           <SelectContent>
             {categories?.map((e, i) => (

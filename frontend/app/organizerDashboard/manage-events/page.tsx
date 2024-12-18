@@ -219,19 +219,19 @@ const page = () => {
                         <div className="flex flex-col justify-between">
                           <span className="flex gap-2 items-center">
                             <p className="font-semibold ">Sales:</p>{" "}
-                            {event.revenue || "7800"}
+                            {event.revenue || "₹0"}
                           </span>
                           <span className="flex gap-2 items-center">
                             <p className="font-semibold ">Views:</p>{" "}
-                            {event.event_views || "20000"}
+                            {event.event_views || "0"}
                           </span>
                           <span className="flex gap-2 items-center">
                             <p className="font-semibold ">Registrations:</p>{" "}
-                            {event.entries || "200"}
+                            {event.entries || "0"}
                           </span>
                           <span className="flex gap-2 items-center">
                             <p className="font-semibold ">Interested:</p>{" "}
-                            {event.interested_people || "891"}
+                            {event.interested_people || "0"}
                           </span>
                           {/* <TooltipProvider>
                           <Tooltip>

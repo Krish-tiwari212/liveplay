@@ -21,6 +21,7 @@ import { useToast } from "@/hooks/use-toast";
 import { FaGoogle } from "react-icons/fa";
 import Image from "next/image";
 import Script from "next/script";
+import { useSearchParams } from "next/navigation";
 
 // Define the schema for login validation
 const loginSchema = z.object({
@@ -33,6 +34,8 @@ const LoginForm = () => {
   const { toast } = useToast();
   const [loading, setLoading] = useState(false);
   const turnstileRef = useRef<HTMLDivElement>(null);
+  const searchParams = useSearchParams();
+  const redirect = searchParams.get("redirect");
 
   const form = useForm({
     resolver: zodResolver(loginSchema),
@@ -73,7 +76,7 @@ const LoginForm = () => {
         title: "Login Successful",
         description: "You are now logged in!",
       });
-      router.push("/");
+      router.push(redirect || "/");
     } else {
       toast({
         title: "Login Failed",

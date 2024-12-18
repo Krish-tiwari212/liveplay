@@ -43,6 +43,7 @@ export async function POST(req: Request) {
       return NextResponse.json({ error: authError?.message || 'Unauthorized' }, { status: 401 });
     }
     // Insert into Participants table
+    console.log(payment.notes);
     const { data: participantEntry, error: participantError } = await supabase
       .from('participants')
       .insert({
@@ -55,6 +56,7 @@ export async function POST(req: Request) {
         category_id: categories[0]["id"],
         name: authData.user.user_metadata.full_name || authData.user.user_metadata.name || 'Unknown',
         partner_name: categories[0]["pairname"],
+        withdrawal_fee: payment.notes.withdrawal_fee,
         leader: true,
       })
       .select()
@@ -75,7 +77,7 @@ export async function POST(req: Request) {
         payment_status: 'completed',
         payment_method: payment.method,
         transaction_id: razorpay_payment_id,
-        payment_date: new Date(payment.created_at).toISOString()
+        payment_date: new Date(payment.created_at).toISOString(),
       });
 
     if (paymentError) {
