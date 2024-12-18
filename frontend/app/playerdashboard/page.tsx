@@ -372,7 +372,7 @@ export default function Home() {
     fetchEvents();
   }, []);
 
-  const handleWithdrawClick = async (eventId: number) => {
+  const handleWithdrawClick = async (eventId: string) => {
     setIsModalOpen(true);
     try {
       const response = await fetch(`/api/event/categories/${eventId}`);
@@ -494,6 +494,29 @@ export default function Home() {
     fetchParticipantId();
   }, [user?.id, eventId]);
 
+  useEffect(() => {
+    const fetchParticipantData = async () => {
+      if (user?.id) {
+        const { data, error } = await supabase
+          .from("participants") // Table where participant details are stored
+          .select("*") // Fetch all participant details
+          .eq("user_id", user.id) // Filters by the user's ID
+          .eq("event_id", eventId) // Filters by the event ID
+          .single(); // Expects a single result
+
+        if (error) {
+          console.error("Error fetching participant data:", error);
+        } else {
+          setParticipantdetails(data); 
+          console.log(data)// Sets the fetched participant data in state
+        }
+      }
+    };
+
+    fetchParticipantData();
+  }, [user?.id, eventId]);
+
+
   const handleViewRegistrationClick = async (eventId: number) => {
     await fetchEventData(eventId);
     setEventId(eventId);
@@ -601,6 +624,7 @@ export default function Home() {
   }, [isRegistrationModalOpen, participantId, eventId]);
 
   const handleWithdrawFromCategory = async (categoryName) => {
+    setIsAlertOpen(true);
     try {
       // Fetch the category ID based on the category name
       const { data: categoryData, error: categoryError } = await supabase
@@ -628,7 +652,8 @@ export default function Home() {
         return;
       }
       setSelectedEventForWithdraw(categoryName);
-      setIsAlertOpen(true);
+
+      
     } catch (error) {
       console.error('Error withdrawing from category:', error);
     }
@@ -1036,20 +1061,16 @@ export default function Home() {
                         </div>
                         <div className="flex flex-col justify-between ">
                           <span className="flex gap-1">
-                            <h1 className="font-bold">Sales:</h1>
-                            0
+                            <h1 className="font-bold">Sales:</h1>0
                           </span>
                           <span className="flex gap-1 whitespace-nowrap">
-                            <h1 className="font-bold">Views:</h1>
-                            0
+                            <h1 className="font-bold">Views:</h1>0
                           </span>
                           <span className="flex gap-1 whitespace-nowrap">
-                            <h1 className="font-bold">Registrations:</h1>
-                            0
+                            <h1 className="font-bold">Registrations:</h1>0
                           </span>
                           <span className="flex gap-1 whitespace-nowrap">
-                            <h1 className="font-bold">Interested:</h1>
-                            0
+                            <h1 className="font-bold">Interested:</h1>0
                           </span>
                         </div>
                       </div>
@@ -1077,7 +1098,7 @@ export default function Home() {
         </div>
       </section>
 
-      {/* {isModalOpen && (
+      {isModalOpen && (
         <Dialog open={isModalOpen} onOpenChange={setIsModalOpen}>
           <DialogTrigger asChild>
             <Button className="hidden">Open</Button>
@@ -1128,7 +1149,7 @@ export default function Home() {
             </Button>
           </DialogContent>
         </Dialog>
-      )} */}
+      )}
       {isRegistrationModalOpen && (
         <Dialog
           open={isRegistrationModalOpen}
@@ -1146,7 +1167,7 @@ export default function Home() {
                   Event Pass
                 </Button>
               </DialogTitle>
-              <DialogDescription className="text-sm text-gray-500">
+              <DialogDescription className="text-sm text-gray-500 text-start">
                 Below are the categories you have registered for this event.
               </DialogDescription>
 
@@ -1154,16 +1175,17 @@ export default function Home() {
                 {registeredCategories.map((category) => (
                   <div className="flex justify-between gap-2" key={category.id}>
                     <div className="flex flex-col p-2 border rounded-md shadow-sm w-full">
-                      <span className="font-medium">
+                      <span className="font-medium text-start">
                         {category.category_name} - Rs. {category.price}
                       </span>
                     </div>
                     {isLeader && (
                       <Button
                         className="px-3 py-1 text-sm"
-                        onClick={() =>
-                          handleWithdrawFromCategory(category.category_name)
-                        }
+                        // onClick={() =>
+                        //   handleWithdrawFromCategory(category.category_name)
+                        // }
+                        onClick={() => handleWithdrawClick(eventId)}
                       >
                         Withdraw
                       </Button>
@@ -1174,7 +1196,9 @@ export default function Home() {
 
               {teamDetails && (
                 <div className="mt-4">
-                  <h2 className="text-lg font-semibold mb-2">Team Members</h2>
+                  <h2 className="text-start text-lg font-semibold mb-2">
+                    {participantdetails ? "Partner" : "Team Members"}
+                  </h2>
                   <div className="space-y-2">
                     {teamMembers.map((member) => (
                       <div
@@ -1220,7 +1244,9 @@ export default function Home() {
                           </TooltipProvider>
                           <div className="flex items-start space-x-3">
                             <span className="text-sm font-medium text-gray-800">
-                              Team Code: {teamDetails.team_code}
+                              {participantdetails
+                                ? `Partner Code: ${teamDetails.team_code}`
+                                : `Team Code: ${teamDetails.team_code}`}
                             </span>
                           </div>
                         </div>
@@ -1396,10 +1422,12 @@ export default function Home() {
                 </div>
                 <div className=" leading-tight">
                   <p className="text-[10px] sm:text-[12px] font-semibold text-[#64758B]">
-                    Team Name
+                    {participantdetails ? "Partner Name" : "Team Name"}
                   </p>
                   <h1 className="text-[11px] sm:text-[14px]">
-                    {teamDetails.team_name || "N/A"}
+                    {participantdetails
+                      ? participantdetails.partner_name
+                      : teamDetails.team_name}
                   </h1>
                 </div>
                 <div className=" leading-tight">
