@@ -583,6 +583,7 @@ export default function Home() {
           if (teamMembersError) {
             console.error(teamMembersError);
             return;
+            
           }
 
           setTeamMembers(teamMembersData);
@@ -1014,19 +1015,19 @@ export default function Home() {
                         <div className="flex flex-col justify-between ">
                           <span className="flex gap-1">
                             <h1 className="font-bold">Sales:</h1>
-                            100000
+                            0
                           </span>
                           <span className="flex gap-1 whitespace-nowrap">
                             <h1 className="font-bold">Views:</h1>
-                            10000
+                            0
                           </span>
                           <span className="flex gap-1 whitespace-nowrap">
                             <h1 className="font-bold">Registrations:</h1>
-                            10000
+                            0
                           </span>
                           <span className="flex gap-1 whitespace-nowrap">
                             <h1 className="font-bold">Interested:</h1>
-                            1000
+                            0
                           </span>
                         </div>
                       </div>

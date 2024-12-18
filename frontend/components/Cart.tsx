@@ -50,7 +50,7 @@ const BillingSummary = ({
   const handleLogin = () => {
     // Save current cart state to localStorage before redirecting
     localStorage.setItem("pendingCart", JSON.stringify(items));
-    router.push("/auth/login?redirect=/cart");
+    router.push(`/auth/login?redirect=/choosecategory/${items[0]?.event_id}`);
   };
 
   const handlePayment = async () => {
@@ -112,6 +112,7 @@ const BillingSummary = ({
           create_team: create_team,
           team_name: team_name,
           partner_name: partner_name,
+          withdrawal_fee: withdrawalFee,
         }),
       });
   
