@@ -6,7 +6,7 @@ interface EventCategoryCardProps {
     category_name: string;
     price: number;
     category_type: string;
-    category_gender: string;
+    gender: string;
     age_range_option: string;
   };
 }
@@ -50,7 +50,10 @@ const EventCategoryCard: React.FC<EventCategoryCardProps> = ({ event }) => {
           </div>
           <div className="flex items-center gap-2">
             <h1 className="font-bold">Category Gender:</h1>
-            <h1>{event.category_gender}</h1>
+            <h1>
+              {event.gender.charAt(0).toUpperCase() +
+                event.gender.slice(1).toLowerCase()}
+            </h1>
           </div>
           <div className="flex items-center gap-2">
             <h1 className="font-bold">Age Range:</h1>

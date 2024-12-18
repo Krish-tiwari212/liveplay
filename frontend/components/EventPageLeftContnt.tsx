@@ -12,7 +12,7 @@ import { RiDiscountPercentLine, RiStarSmileFill } from "react-icons/ri";
 import { CalendarIcon, Copy } from "lucide-react";
 import { VscGraph } from "react-icons/vsc";
 import { HiCurrencyRupee } from "react-icons/hi2";
-import { FaBasketballBall, FaStar } from "react-icons/fa";
+import { FaBasketballBall, FaRegHandshake, FaRunning, FaStar, FaUsers } from "react-icons/fa";
 import { MdCategory } from "react-icons/md";
 import { GrTrophy } from "react-icons/gr";
 import { GiEntryDoor, GiShuttlecock, GiWhistle } from "react-icons/gi";
@@ -487,16 +487,37 @@ const EventPageLeftContent = ({
           </h1>
 
           <div className="flex flex-wrap gap-2 mb-4">
-            {eventDetails.categories.map((cat) => (
-              <Badge
-                key={cat.id}
-                className="bg-[#E6EAC5] text-[#141F29] text-sm sm:text-base flex items-center"
-              >
-                <FaBasketballBall className="mr-2" />
-                {cat.category_type}
-              </Badge>
-            ))}
+            {eventDetails.categories.map((cat) => {
+              let icon;
+
+              // Determine which icon to use based on the category_type
+              switch (cat.category_type) {
+                case "Team":
+                  icon = <FaUsers className="mr-2" />;
+                  break;
+                case "Doubles":
+                  icon = <FaRegHandshake className="mr-2" />;
+                  break;
+                case "Singles":
+                  icon = <FaRunning className="mr-2" />;
+                  break;
+                default:
+                  icon = <FaBasketballBall className="mr-2" />; // Default icon
+                  break;
+              }
+
+              return (
+                <Badge
+                  key={cat.id}
+                  className="bg-[#E6EAC5] text-[#141F29] text-sm sm:text-base flex items-center"
+                >
+                  {icon}
+                  {cat.category_type}
+                </Badge>
+              );
+            })}
           </div>
+
           <div className="flex flex-col md:flex-row my-4">
             <span className="text-base sm:text-lg md:text-xl font-bold flex items-center gap-2">
               <MdCategory className="mr-2 text-xl" />
