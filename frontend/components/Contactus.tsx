@@ -16,17 +16,15 @@ const Contactus = () => {
           Whether you’re here to host, join or just say "Hi," we’d love to hear
           from you!
         </p>
-        <div className="grid gap-2 md:grid-cols-2 mb-8 w-full md:w-[80%] md:mx-auto">
-          <div className="flex items-start justify-center space-x-4 mr-10">
+        <div className="grid gap-2 md:grid-cols-2 mb-8 w-full md:w-[70%] md:mx-auto">
+          <div className="flex items-start justify-start md:justify-start space-x-4 mr-10">
             <FaMapMarkerAlt className="w-8 h-8  flex-shrink-0" />
             <div>
               <h2 className="text-xl font-semibold text-[#141f29]">Address</h2>
-              <p className="text-gray-600 leading-relaxed">
-                Pune
-              </p>
+              <p className="text-gray-600 leading-relaxed">Pune</p>
             </div>
           </div>
-          <div className="flex items-start justify-center space-x-4">
+          <div className="flex items-start justify-start md:justify-center space-x-4">
             <FaEnvelope className="w-8 h-8  flex-shrink-0" />
             <div>
               <h2 className="text-xl font-semibold text-[#141f29]">Email</h2>
@@ -34,11 +32,11 @@ const Contactus = () => {
             </div>
           </div>
         </div>
-        <div className="grid gap-6 grid-cols-1 justify-start items-start md:w-[50%] md:mx-auto">
-          <div className="flex  space-x-4 ">
-            <FaBuilding className="w-8 h-8 flex-shrink-0" />
+        <div className="grid gap-6 grid-cols-1 justify-center md:justify-center items-start">
+          <div className="flex  space-x-4 items-center justify-center ">
+            {/* <FaBuilding className="w-8 h-8 flex-shrink-0" /> */}
             <div>
-              <h2 className="text-xl font-semibold text-[#141f29]">Company</h2>
+              {/* <h2 className="text-xl font-semibold text-[#141f29]">Company</h2> */}
               <p className="text-gray-600">
                 Impact Stream Ventures proudly brings you liveplay.in™ ❤
               </p>

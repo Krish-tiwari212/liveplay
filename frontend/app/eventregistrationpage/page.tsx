@@ -339,7 +339,7 @@ const EventPage = () => {
                       </Label>
                       <Input
                         id="link"
-                        defaultValue={`${window.location.origin}/events/${eventId}`}
+                        defaultValue={`${window.location.origin}/eventregistrationpage?event_id=${eventId}`}
                         readOnly
                       />
                     </div>
@@ -349,7 +349,7 @@ const EventPage = () => {
                       className="px-3"
                       onClick={() =>
                         handleCopy(
-                          `${window.location.origin}/events/${eventId}`
+                          `${window.location.origin}/eventregistrationpage?event_id=${eventId}`
                         )
                       }
                     >
@@ -594,7 +594,7 @@ const EventPage = () => {
                 </Label>
                 <Input
                   id="link"
-                  defaultValue={`${window.location.origin}/events/${eventId}`}
+                  defaultValue={`${window.location.origin}/participantdetails?event_id=${eventId}`}
                   readOnly
                 />
               </div>
@@ -603,7 +603,9 @@ const EventPage = () => {
                 size="sm"
                 className="px-3"
                 onClick={() =>
-                  handleCopy(`${window.location.origin}/events/${eventId}`)
+                  handleCopy(
+                    `${window.location.origin}/participantdetails?event_id=${eventId}`
+                  )
                 }
               >
                 <span className="sr-only">Copy</span>

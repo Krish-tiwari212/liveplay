@@ -1,6 +1,15 @@
-import React from "react";
+import React, { useState } from "react";
+import {
+  Select,
+  SelectTrigger,
+  SelectValue,
+  SelectContent,
+  SelectItem,
+} from "./ui/select";
+import { Input } from "./ui/input";
 import { Button } from "./ui/button";
 import { RiExportFill } from "react-icons/ri";
+import { FaRegCalendarCheck } from "react-icons/fa";
 
 interface Data {
   sport: string;
@@ -14,191 +23,249 @@ interface MatchFixturesProps {
   data: Data;
 }
 
-const dummyData = {
-  sport: "Soccer",
-  eventName: "Knockout Championship",
-  playersPerTeam: "11",
-  thirdPlaceMatch: "Yes",
-  participantNames: [
-    "Team A",
-    "Team B",
-    "Team C",
-    "Team D",
-    "Team E",
-    "Team F",
-    "Team G",
-    "Team H",
-    "Team I",
-    "Team J",
-    "Team K",
-    "Team L",
-    "Team M",
-    "Team N",
-    "Team O",
-    "Team P",
-    "Team Q",
-    "Team R",
-    "Team S",
-    "Team T",
-  ],
-};
-
 const MatchFixtures = ({ data }: MatchFixturesProps) => {
-  const generateTableData = (participants: string[]) => {
-    const rounds: string[][] = [];
+  const [matchesData, setMatchesData] = useState<any>({});
+  const { participantNames, eventName } = data;
 
-    // Ensure an even number of participants by adding a placeholder "Bye" team if necessary
-    if (participants.length % 2 !== 0) {
-      participants.push("Bye");
-    }
+  const rounds = getTournamentRounds(participantNames);
+  const firstRoundHeight = rounds[0].length * 200;
 
-    let currentRound = [...participants];
-
-    while (currentRound.length > 1) {
-      // Pair teams for matches in this round
-      rounds.push(
-        currentRound.reduce((acc, team, index) => {
-          if (index % 2 === 0) {
-            acc.push(`${currentRound[index]} vs ${currentRound[index + 1]}`);
-          }
-          return acc;
-        }, [] as string[])
-      );
-
-      // Generate the next round by halving the number of matches
-      const nextRound = [];
-      for (let i = 0; i < currentRound.length / 2; i++) {
-        nextRound.push(`Winner of Match ${i + 1}`);
-      }
-      currentRound = nextRound;
-    }
-
-    // Add the final single match
-    rounds.push(currentRound);
-
-    return rounds;
+  // Update team selection
+  const handleTeamChange = (
+    roundIndex: number,
+    matchIndex: number,
+    teamKey: string,
+    value: string
+  ) => {
+    setMatchesData((prev: any) => ({
+      ...prev,
+      [`round-${roundIndex}-match-${matchIndex}`]: {
+        ...prev[`round-${roundIndex}-match-${matchIndex}`],
+        [teamKey]: value,
+      },
+    }));
   };
 
-  const tableRounds = generateTableData(dummyData.participantNames);
-
-  // Dynamically calculate column headers based on the number of rounds
-  const generateColumnHeaders = (rounds: string[][]) => {
-    const totalRounds = rounds.length;
-    const headers = [];
-
-    if (totalRounds > 4) {
-      headers.push("Round 1");
-    }
-
-    for (let i = 2; i <= totalRounds - 4; i++) {
-      headers.push(`Round ${i}`);
-    }
-
-    if (totalRounds > 3) {
-      headers.push("Quarterfinals");
-    }
-
-    if (totalRounds > 2) {
-      headers.push("Semifinals");
-    }
-
-    headers.push("Finals", "Winner");
-
-    return headers;
-  };
-
-  const columnHeaders = generateColumnHeaders(tableRounds);
-
-  const fillFinalsAndWinner = (rounds: string[][]) => {
-    const finalRound = rounds[rounds.length - 2]; // Second to last round (Finals)
-    const winner = rounds[rounds.length - 1][0]; // Last round winner
-
-    return rounds.map((round, roundIndex) => {
-      if (roundIndex === rounds.length - 2) {
-        return finalRound.map((match, index) => (index === 0 ? match : ""));
-      }
-      if (roundIndex === rounds.length - 1) {
-        return [winner];
-      }
-      return round;
-    });
-  };
-
-  const adjustedRounds = fillFinalsAndWinner(tableRounds);
-
-  // Generate a date and time for each match (example: "2024-12-16 10:00 AM")
-  const getMatchDateTime = (index: number) => {
-    const baseDate = new Date("2024-12-16T10:00:00Z");
-    baseDate.setMinutes(baseDate.getMinutes() + index * 30); // Increment by 30 minutes for each match
-    return baseDate.toLocaleString();
-  };
-
-  // Function to calculate the dynamic height based on column index
-  const calculateMatchHeight = (columnIndex: number) => {
-    return `${100 * Math.pow(2, columnIndex)}px`; // Height doubles with each column index
+  // Update match date and time
+  const handleInputChange = (
+    roundIndex: number,
+    matchIndex: number,
+    field: string,
+    value: string
+  ) => {
+    setMatchesData((prev: any) => ({
+      ...prev,
+      [`round-${roundIndex}-match-${matchIndex}`]: {
+        ...prev[`round-${roundIndex}-match-${matchIndex}`],
+        [field]: value,
+      },
+    }));
   };
 
   return (
-    <div className="">
-      <div className="flex justify-between items-center my-4 ">
-        <h1 className="text-xl font-semibold">{dummyData.eventName}</h1>
+    <div className="py-4">
+      <div className="flex justify-between items-center my-4">
+        <h1 className="text-xl md:text-2xl font-semibold">{eventName}</h1>
         <Button
           size="sm"
-          onClick={(e) => {
-            e.stopPropagation();
-          }}
           variant="outline"
           className="border-2 shadow-lg border-black flex items-center"
         >
           <h1 className="mr-1">Export</h1> <RiExportFill />
         </Button>
       </div>
-      <div className="bg-[#141F29] overflow-auto h-auto w-auto p-4">
-        <div className="flex">
-          {columnHeaders.map((header, index) => (
-            <div
-              key={index}
-              className="flex-1 border border-gray-600 w-24 p-2 text-center text-white font-bold"
-            >
-              {header}
-            </div>
-          ))}
-        </div>
-        <div className="flex">
-          {adjustedRounds.map((round, colIndex) => (
-            <div
-              key={colIndex}
-              className="flex-1 border border-gray-600 text-center text-white "
-            >
-              {round.map((match, rowIndex) => {
-                const matchNumber = colIndex * round.length + rowIndex + 1;
-                return (
+
+      <div
+        id="match-fixtures"
+        className="flex bg-[#141F29] overflow-auto text-white p-4"
+      >
+        {rounds.map((round, roundIndex) => {
+          const roundHeight = Math.min(
+            firstRoundHeight,
+            200 * Math.pow(2, roundIndex)
+          );
+
+          return (
+            <div key={roundIndex} className="flex-1">
+              <h3 className="text-xl font-semibold text-center py-2 border border-gray-300">
+                Round {roundIndex + 1}
+              </h3>
+              <div>
+                {round.map((match: any, matchIndex: number) => (
                   <div
-                    key={rowIndex}
-                    className="p-4 border-b border-gray-500"
+                    key={matchIndex}
+                    className="flex flex-col justify-center items-center w-64 lg:w-auto"
+                    style={{ height: `${roundHeight}px` }}
                   >
-                    <div className="flex flex-col items-center">
-                      <div className="text-white">{`Match ${matchNumber}`}</div>
-                      <div className="text-white">
-                        {getMatchDateTime(matchNumber - 1)}
+                    <div className="shadow border border-gray-300 flex flex-col h-[200px] space-y-2 px-4">
+                      <h1 className="mt-4">Match {matchIndex + 1}</h1>
+
+                      {/* Match Date and Time */}
+                      <div className="flex gap-1 justify-center items-center">
+                        <FaRegCalendarCheck className="mr-1" />
+                        <Input
+                          type="text"
+                          placeholder="Match Date"
+                          onChange={(e) =>
+                            handleInputChange(
+                              roundIndex,
+                              matchIndex,
+                              "date",
+                              e.target.value
+                            )
+                          }
+                          className="border h-8 rounded-md bg-[#141F29] text-white flex-[1] pl-2 placeholder:text-white text-sm border-none focus:outline-none focus:ring-0 focus:border-none appearance-none focus:shadow-none"
+                        />
+                        <h1>|</h1>
+                        <Input
+                          type="text"
+                          placeholder="Match Time"
+                          onChange={(e) =>
+                            handleInputChange(
+                              roundIndex,
+                              matchIndex,
+                              "time",
+                              e.target.value
+                            )
+                          }
+                          className="border rounded-md bg-[#141F29] text-white h-8 flex-[1] pl-2 placeholder:text-white text-sm border-none focus:outline-none focus:ring-0 focus:border-none appearance-none focus:shadow-none"
+                        />
                       </div>
-                      <div className="flex flex-col items-center">
-                        {match.split(" vs ").map((team, index) => (
-                          <div key={index} className="text-white">
-                            {team}
-                          </div>
-                        ))}
-                      </div>
+
+                      {/* Team 1 */}
+                      {match.team1 !== "Bye" ? (
+                        <Select
+                          value={
+                            matchesData[
+                              `round-${roundIndex}-match-${matchIndex}`
+                            ]?.team1 || (roundIndex === 0 ? match.team1 : "TBA")
+                          }
+                          onValueChange={(value) =>
+                            handleTeamChange(
+                              roundIndex,
+                              matchIndex,
+                              "team1",
+                              value
+                            )
+                          }
+                        >
+                          <SelectTrigger className="text-[#141F29]">
+                            <SelectValue
+                              placeholder={
+                                roundIndex === 0 ? match.team1 : "TBA"
+                              }
+                            />
+                          </SelectTrigger>
+                          <SelectContent className="text-[#141F29]">
+                            <SelectItem value="TBA">TBA</SelectItem>
+                            {participantNames.map((team, i) => (
+                              <SelectItem key={i} value={team}>
+                                {team}
+                              </SelectItem>
+                            ))}
+                          </SelectContent>
+                        </Select>
+                      ) : (
+                        <span className="flex justify-center items-center py-2 bg-white text-[#141F29] rounded-md w-full ">
+                          {match.team2}
+                        </span>
+                      )}
+
+                      {/* Team 2 */}
+                      {match.team2 !== "Bye" ? (
+                        <Select
+                          value={
+                            matchesData[
+                              `round-${roundIndex}-match-${matchIndex}`
+                            ]?.team2 || (roundIndex === 0 ? match.team2 : "TBA")
+                          }
+                          onValueChange={(value) =>
+                            handleTeamChange(
+                              roundIndex,
+                              matchIndex,
+                              "team2",
+                              value
+                            )
+                          }
+                        >
+                          <SelectTrigger className="text-[#141F29]">
+                            <SelectValue
+                              placeholder={
+                                roundIndex === 0 ? match.team2 : "TBA"
+                              }
+                            />
+                          </SelectTrigger>
+                          <SelectContent className="text-[#141F29]">
+                            <SelectItem value="TBA">TBA</SelectItem>
+                            {participantNames.map((team, i) => (
+                              <SelectItem key={i} value={team}>
+                                {team}
+                              </SelectItem>
+                            ))}
+                          </SelectContent>
+                        </Select>
+                      ) : (
+                        <span className="flex justify-center items-center py-2 bg-white text-[#141F29] rounded-md w-full ">
+                          {match.team2}
+                        </span>
+                      )}
                     </div>
                   </div>
-                );
-              })}
+                ))}
+              </div>
             </div>
-          ))}
-        </div>
+          );
+        })}
       </div>
+
+      {/* Debug: Display Matches Data */}
+      {/* <pre className="text-white mt-4 p-4 bg-gray-800 rounded-md">
+        {JSON.stringify(matchesData, null, 2)}
+      </pre> */}
     </div>
   );
+};
+
+const getTournamentRounds = (participants: string[]) => {
+  const rounds: any[] = [];
+  let currentRound = [...participants];
+
+  const nearestPowerOf2 = Math.pow(
+    2,
+    Math.ceil(Math.log2(currentRound.length))
+  );
+  const byesCount = nearestPowerOf2 - currentRound.length;
+
+  let roundMatches: any[] = [];
+  let teamsWithByes = currentRound.slice(0, byesCount);
+  let teamsWithMatches = currentRound.slice(byesCount);
+
+  for (let i = 0; i < teamsWithMatches.length; i += 2) {
+    roundMatches.push({
+      team1: teamsWithMatches[i],
+      team2: teamsWithMatches[i + 1],
+    });
+  }
+
+  rounds.push([
+    ...roundMatches,
+    ...teamsWithByes.map((team) => ({ team1: team, team2: "Bye" })),
+  ]);
+  currentRound = [
+    ...teamsWithByes,
+    ...roundMatches.map((match) => match.team1),
+  ];
+
+  while (currentRound.length > 1) {
+    roundMatches = [];
+    for (let i = 0; i < currentRound.length; i += 2) {
+      roundMatches.push({ team1: currentRound[i], team2: currentRound[i + 1] });
+    }
+    rounds.push(roundMatches);
+    currentRound = roundMatches.map((match) => match.team1);
+  }
+
+  return rounds;
 };
 
 export default MatchFixtures;

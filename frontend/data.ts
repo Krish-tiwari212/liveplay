@@ -124,24 +124,24 @@ const eventsArray = [
     buttontext:"Create Your Event",
     buttoncolor:"yellow"
   },
-  {
-    title: "Features Event Poster (Gold/Premium)",
-    image: "/images/carousel1 (3).svg",
-    buttontext:"Register Now",
-    buttoncolor:"yellow"
-  },
-  {
-    title: "Features Event Poster (Gold/Premium)",
-    image: "/images/carousel1 (4).svg",
-    buttontext:"Register Now",
-    buttoncolor:"yellow"
-  },
-  {
-    title: "Features Event Poster (Gold/Premium)",
-    image: "/images/carousel1 (5).svg",
-    buttontext:"Register Now",
-    buttoncolor:"yellow"
-  },
+  // {
+  //   title: "Features Event Poster (Gold/Premium)",
+  //   image: "/images/carousel1 (3).svg",
+  //   buttontext:"Register Now",
+  //   buttoncolor:"yellow"
+  // },
+  // {
+  //   title: "Features Event Poster (Gold/Premium)",
+  //   image: "/images/carousel1 (4).svg",
+  //   buttontext:"Register Now",
+  //   buttoncolor:"yellow"
+  // },
+  // {
+  //   title: "Features Event Poster (Gold/Premium)",
+  //   image: "/images/carousel1 (5).svg",
+  //   buttontext:"Register Now",
+  //   buttoncolor:"yellow"
+  // },
 ];
 
 const videoEventData = [

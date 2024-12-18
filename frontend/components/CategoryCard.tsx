@@ -518,8 +518,8 @@ const CategoryCard: React.FC<CategoryCardProps> = ({ category, participantsData,
               <AlertDialogTitle>Incomplete Information</AlertDialogTitle>
               <AlertDialogDescription>
                 {category.category_type === "Team"
-                  ? "Enter team name & generate team code before adding category to cart"
-                  : "Enter partner name & generate partner code before adding category to cart"}
+                  ? "Enter team name before adding category to cart"
+                  : "Enter partner name before adding category to cart"}
               </AlertDialogDescription>
             </AlertDialogHeader>
             <AlertDialogFooter>

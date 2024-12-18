@@ -60,7 +60,7 @@ const HeroChangingTagLine = ({
               height={30}
             />
           </div>
-          <p className="text-lg sm:text-xl text-center sm:text-left transition-opacity duration-500 opacity-100">
+          <p className="text-md sm:text-xl text-center sm:text-left transition-opacity duration-500 opacity-100">
             <span className="block md:hidden">
               {taglines[currentTaglineIndex]}
             </span>

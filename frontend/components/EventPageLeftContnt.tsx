@@ -347,7 +347,7 @@ const EventPageLeftContent = ({
                   </Label>
                   <Input
                     id="link"
-                    defaultValue={`https://www.liveplay.in${path}`}
+                    defaultValue={`${window.location.origin}/eventspage?event_id=${eventId}`}
                     readOnly
                   />
                 </div>
@@ -355,7 +355,11 @@ const EventPageLeftContent = ({
                   type="button"
                   size="sm"
                   className="px-3"
-                  onClick={() => handleCopy(`https://www.liveplay.in${path}`)}
+                  onClick={() =>
+                    handleCopy(
+                      `${window.location.origin}/eventspage?event_id=${eventId}`
+                    )
+                  }
                 >
                   <span className="sr-only">Copy</span>
                   <Copy />
@@ -446,7 +450,7 @@ const EventPageLeftContent = ({
               </span>
             </div>
             <Link
-              href={`/eventregistrationpage/${eventId}`}
+              href={`/eventregistrationpage?event_id=${eventId}`}
               className="flex items-center gap-1 cursor-pointer"
             >
               <div className="flex items-center gap-1 cursor-pointer hover:underline text-nowrap">
@@ -759,7 +763,7 @@ const EventPageLeftContent = ({
             <h2 className="mb-4">
               Total Registrations: {eventDetails.totalRegistrations || 0}
               <Link
-                href={`/eventregistrationpage?id=${eventId}`}
+                href={`/eventregistrationpage?event_id=${eventId}`}
                 className="text-blue-600 ml-2 hover:underline"
               >
                 View player names

@@ -88,15 +88,15 @@ const Page = () => {
   const [openfixtures,setopenfixtures]=useState(false)
 
   const inputFields = [
-    { id: "event-sport", label: "Event Sport", type: "select" },
-    { id: "event-name", label: "Event Name", type: "text" },
+    { id: "sport", label: "Event Sport", type: "select" },
+    { id: "eventName", label: "Event Name", type: "text" },
     {
-      id: "number-of-players",
+      id: "playersPerTeam",
       label: "Number of Players/Team",
       type: "number",
     },
     {
-      id: "third-place-match",
+      id: "thirdPlaceMatch",
       label: "Third Place Match?",
       type: "radio",
       options: ["Yes", "No"],
@@ -153,13 +153,13 @@ const Page = () => {
     }
   };
   return (
-    <div className="w-[90%] mx-auto p-4">
+    <div className="w-full sm:w-[90%] mx-auto p-4">
       <h1 className="text-3xl font-bold mb-2">Free Match Generator</h1>
       <p className="text-xl mb-2">
         Effortlessly create match fixtures for your event in seconds.
       </p>
 
-      <div className="p-2 rounded-lg mb-6 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 items-center justify-start gap-8 font-semibold">
+      <div className="p-2 rounded-lg mb-6 flex flex-col lg:flex-row gap-4 items-start justify-start font-semibold">
         <div className="flex items-center space-x-2">
           <span role="img" aria-label="lightning">
             ⚡
@@ -286,8 +286,8 @@ const Page = () => {
           Unlock Live Scoring
         </Button>
       </div>
-      {/* {openfixtures ? <MatchFixtures data={data} /> : <></>} */}
-      <MatchFixtures data={data} />
+      {openfixtures ? <MatchFixtures data={data} /> : <></>}
+      {/* <MatchFixtures data={data} /> */}
     </div>
   );
 };

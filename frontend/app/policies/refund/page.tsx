@@ -40,9 +40,11 @@ const page = () => {
       </p>
       <p className="mb-10  text-base md:text-lg">
         For any questions or concerns regarding refunds, please contact us at
-        <span className="font-bold mx-1 hover:underline cursor-pointer">
-          teamsupport@liveplay.in
-        </span>
+        <a href="mailto:teamsupport@liveplay.in">
+          <span className="font-bold hover:underline mx-1 cursor-pointer">
+            teamsupport@liveplay.in
+          </span>
+        </a>
       </p>
     </div>
   );

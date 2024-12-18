@@ -100,6 +100,14 @@ const SportsType = [
     name: "Marathon",
     icon: <img src="/images/marathon.png" alt="Marathon" className="h-4 w-4" />,
   },
+  {
+    name: "Box Cricket",
+    icon: <img src="/images/cricket.png" alt="Cricket" className="h-4 w-4" />,
+  },
+  {
+    name: "Turf Football",
+    icon: <img src="/images/football.png" alt="Football" className="h-4 w-4" />,
+  },
 ];
 
 const requiredFields = [

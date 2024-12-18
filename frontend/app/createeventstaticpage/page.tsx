@@ -227,12 +227,12 @@ const page = () => {
           </PopoverContent>
         </Popover>
         <div className="lg:flex space-x-4 hidden">
-          <Button
+          {/* <Button
             onClick={() => scrollToSection("hero")}
             className="bg-[#141f29] text-[#ccdb28] border border-[#ccdb28]"
           >
             Home
-          </Button>
+          </Button> */}
           <Button
             onClick={() => scrollToSection("pricing")}
             className="bg-[#141f29] text-[#ccdb28] border border-[#ccdb28]"
@@ -493,19 +493,19 @@ const page = () => {
           <Button className="mb-6 text-lg">Start Generating Fixtures</Button>
           <ul className="text-left text-[#141f29] space-y-2 ld:mx-12 text-[16px] md:text-2xl">
             <li className="flex gap-4 items-center">
-              <IoArrowForwardCircle className="flex-none" />{" "}
+              <IoArrowForwardCircle className="flex-none" />
               <h1>No Signup needed</h1>
             </li>
             <li className="flex gap-4 items-center">
               <FaTrophy className="flex-none" /> <h1>10+ Sports</h1>
             </li>
             <li className="flex gap-4 items-center">
-              <MdEvent className="flex-none" />{" "}
+              <MdEvent className="flex-none" />
               <h1>Team events / Singles events / Doubles Events</h1>
             </li>
             <li className="flex gap-4 items-center">
-              <TbListDetails className="flex-none" />{" "}
-              <h1>Knockouts, Group Playoffs & Round Robin</h1>
+              <TbListDetails className="flex-none" />
+              <h1>Support Knockouts Format</h1>
             </li>
           </ul>
         </div>
