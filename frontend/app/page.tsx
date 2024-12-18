@@ -20,6 +20,7 @@ import { FaTrophy } from "react-icons/fa";
 import { IoArrowForwardCircle } from "react-icons/io5";
 import { Button } from "@/components/ui/button";
 import HeroFeatures from "@/components/HeroFeatures";
+import { useRouter } from 'next/navigation';
 
 interface location {
   latitude: number | null;
@@ -30,6 +31,7 @@ export default function Home() {
      latitude: null,
      longitude: null,
    });
+   const router=useRouter()
 
    useEffect(() => {
      if (navigator.geolocation) {
@@ -65,7 +67,12 @@ export default function Home() {
           <p className="text-[16px] md:text-2xl text-[#141f29] mb-4 md:mb-6">
             Generate match fixtures for your event
           </p>
-          <Button className="mb-6 text-lg">Start Generating Fixtures</Button>
+          <Button
+            className="mb-6 text-lg"
+            onClick={() => router.push("/freematchgenerator")}
+          >
+            Start Generating Fixtures
+          </Button>
           <ul className="text-start text-[#141f29] space-y-2 lg:ml-32 text-[16px] md:text-2xl  ">
             <li className="flex gap-4 items-center ">
               <IoArrowForwardCircle className="flex-none" />

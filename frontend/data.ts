@@ -116,13 +116,15 @@ const eventsArray = [
     title: "Start playing in sports events",
     image: "/images/carousel1 (1).svg",
     buttontext:"View My Profile",
-    buttoncolor:"purple"
+    buttoncolor:"purple",
+    buttonRoute:"/playerdashboard"
   },
   {
     title: "Host your Event with Us",
     image: "/images/carousel1 (2).svg",
     buttontext:"Create Your Event",
-    buttoncolor:"yellow"
+    buttoncolor:"yellow",
+    buttonRoute:"/createeventstaticpage"
   },
   // {
   //   title: "Features Event Poster (Gold/Premium)",

@@ -148,7 +148,7 @@ const page = () => {
                   Features
                 </Button>
                 <Button
-                  onClick={() => scrollToSection("freeMatchGenerator")}
+                  onClick={() => scrollToSection("/freeMatchGenerator")}
                   className="w-full mb-4 bg-[#141f29] text-[#ccdb28] border border-[#ccdb28] text-2xl py-8"
                 >
                   Free Match Generator
