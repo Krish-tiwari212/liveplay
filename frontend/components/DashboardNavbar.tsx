@@ -71,9 +71,6 @@ const Navbar = () => {
     setIsPopoverOpen(false);
   };
 
-  useEffect(() => {
-    console.log(user)
-  } , [user])  
 
 
   return (

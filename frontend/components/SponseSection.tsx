@@ -46,33 +46,115 @@ const SponsorSection = () => {
   const [imagePreviews, setImagePreviews] = useState<string[]>([]);
   const imageRefs = useRef<(HTMLInputElement | null)[]>([]);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
+  const [imageValid, setImageValid] = useState(true);
 
 
-  const handleFileChange =
-    (index: number) => (event: React.ChangeEvent<HTMLInputElement>) => {
-      const file = event.target.files?.[0];
-      if (file) {
-        const reader = new FileReader();
-        reader.onloadend = () => {
-          const base64Data = reader.result as string;
+  // const handleFileChange =
+  //   (index: number) => (event: React.ChangeEvent<HTMLInputElement>) => {
+  //     const file = event.target.files?.[0];
+  //     if (file) {
+  //       const reader = new FileReader();
+  //       reader.onloadend = () => {
+  //         const base64Data = reader.result as string;
+  //         setImagePreviews((prev) => {
+  //           const newPreviews = [...prev];
+  //           newPreviews[index] = base64Data;
+  //           return newPreviews;
+  //         });
+  //         setNewSponsor((prevData) => ({
+  //           ...prevData,
+  //           logo: base64Data,
+  //         }));
+  //       };
+  //       reader.readAsDataURL(file);
+  //       setIsImageLoading(false);
+  //       setNewSponsor((prevData) => ({
+  //         ...prevData,
+  //         [`fileName${index}`]: file.name,
+  //       }));
+  //     }
+  //   };
+
+const handleFileChange =
+  (index: number) => (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0];
+    if (file) {
+      setIsImageLoading(true); // Set loading to true when the file is being processed
+
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        const base64Data = reader.result as string;
+
+        const img = new window.Image();
+        img.onload = () => {
+          const width = img.naturalWidth;
+          const height = img.naturalHeight;
+
+          // Check if the aspect ratio is 1:1
+          if (width !== height) {
+            toast({
+              title: "Invalid Image Aspect Ratio",
+              description: "Please upload an image with a 1:1 aspect ratio.",
+              variant: "destructive", // Customize the toast variant if needed
+            });
+            setImageValid(false); // Mark the image as invalid
+            setIsImageLoading(false); // Stop loading state when the image ratio is invalid
+            return; // Prevent further processing if aspect ratio is not 1:1
+          }
+
+          // Set image preview and sponsor data if valid aspect ratio
           setImagePreviews((prev) => {
             const newPreviews = [...prev];
             newPreviews[index] = base64Data;
             return newPreviews;
           });
+
+          // Only update newSponsor if the image is valid
           setNewSponsor((prevData) => ({
             ...prevData,
             logo: base64Data,
           }));
+          setImageValid(true); // Mark the image as valid
+          setIsImageLoading(false); // Set loading to false once image is processed
         };
-        reader.readAsDataURL(file);
-        setIsImageLoading(false);
-        setNewSponsor((prevData) => ({
-          ...prevData,
-          [`fileName${index}`]: file.name,
-        }));
+
+        img.onerror = () => {
+          toast({
+            title: "Invalid image file",
+            description: "Could not load the selected file. Please try again.",
+            variant: "destructive",
+          });
+          setImageValid(false); // Mark the image as invalid
+          setIsImageLoading(false); // Stop loading state if image cannot be loaded
+        };
+
+        img.src = reader.result as string; // Load the image to get its dimensions
+      };
+      reader.readAsDataURL(file);
+
+      // Update the file name without setting loading to false here
+      setNewSponsor((prevData) => ({
+        ...prevData,
+        [`fileName${index}`]: file.name,
+      }));
+    }
+  };
+
+const areFieldsFilled = () => {
+  return formfields.every((field) => {
+    if (field.required) {
+      if (field.type === "file") {
+        // Ensure the file is only considered valid if the image is valid
+        return imageValid && newSponsor[`fileName${formfields.indexOf(field)}`];
       }
-    };
+      return newSponsor[field.name] && newSponsor[field.name].trim() !== "";
+    }
+    return true;
+  });
+};
+
+
+
 
   const handleSponsorChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
@@ -127,23 +209,6 @@ const SponsorSection = () => {
       }
     }
   }, [editPage, EventEditData, EventData]);
-  
-  useEffect(()=>{
-    console.log(EventEditData);
-    // console.log(EventData);
-  })
-
-  const areFieldsFilled = () => {
-    return formfields.every((field) => {
-      if (field.required) {
-        if (field.type === "file") {
-          return newSponsor[`fileName${formfields.indexOf(field)}`];
-        }
-        return newSponsor[field.name] && newSponsor[field.name].trim() !== "";
-      }
-      return true;
-    });
-  };
 
   return (
     <div className="sponsor-section mt-8 p-2 bg-gray-100 rounded-lg shadow-md">
@@ -250,7 +315,7 @@ const SponsorSection = () => {
             : "Add Sponsor"}
         </Button> */}
       </div>
-      <div className="sponsor-preview grid grid-cols-2 md:grid-cols-3 gap-1 sm:gap-6">
+      <div className="sponsor-preview grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
         {sponsors.map((sponsor, index) => (
           <div
             key={index}
