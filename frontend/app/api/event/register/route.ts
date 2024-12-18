@@ -54,6 +54,7 @@ export async function POST(req: Request) {
         status: 'confirmed',
         category_id: categories[0]["id"],
         name: authData.user.user_metadata.full_name || authData.user.user_metadata.name || 'Unknown',
+        partner_name: categories[0]["pairname"],
         leader: true,
       })
       .select()
@@ -138,7 +139,7 @@ export async function POST(req: Request) {
             event_id: eventId,
             category_id: Number(categoryId),
             team_code: teamCode,
-            team_name: team_name || partner_name || 'Team',
+            team_name: categories[0]["teamName"] || categories[0]["pairname"] || 'Team',
             participant_ids: [participantEntry.id],
             category_type: category.category_type,
           })

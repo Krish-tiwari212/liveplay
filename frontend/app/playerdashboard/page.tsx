@@ -1334,7 +1334,7 @@ export default function Home() {
                   <p className="text-[10px] sm:text-[12px] font-semibold text-[#64758B]">
                     Team Name
                   </p>
-                  <h1 className="text-[11px] sm:text-[14px]">N/A</h1>
+                  <h1 className="text-[11px] sm:text-[14px]">{teamDetails.team_name || "N/A"}</h1>
                 </div>
                 <div className=" leading-tight">
                   <p className="text-[10px] sm:text-[12px] font-semibold text-[#64758B]">

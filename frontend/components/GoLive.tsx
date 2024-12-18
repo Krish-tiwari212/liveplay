@@ -135,6 +135,52 @@ const GoLive = () => {
           formData.append("mobileBannerUrl", mobileBannerUrl);
         }
 
+        if (EventData.sponsors && EventData.sponsors.length > 0) {
+          const sponsorLogos = [];
+  
+          for (const sponsor of EventData.sponsors) {
+            const base64Pattern = /^data:image\/(jpeg|png);base64,/;
+            const match = sponsor.logo.match(base64Pattern);
+  
+            if (!match) {
+              throw new Error(`Invalid logo format for sponsor ${sponsor.sponsor_Name}. Please upload a JPEG or PNG image.`);
+            }
+  
+            // Extract the MIME type and base64 data
+            const mimeType = match[1] === 'jpeg' ? 'image/jpeg' : 'image/png';
+            const extension = match[1] === 'jpeg' ? 'jpg' : 'png';
+            const base64Data = sponsor.logo.replace(base64Pattern, '');
+            const binaryData = atob(base64Data);
+            const arrayBuffer = new ArrayBuffer(binaryData.length);
+            const uint8Array = new Uint8Array(arrayBuffer);
+  
+            for (let i = 0; i < binaryData.length; i++) {
+              uint8Array[i] = binaryData.charCodeAt(i);
+            }
+  
+            const blob = new Blob([uint8Array], { type: mimeType });
+  
+            const sponsorLogoName = `sponsor-logo-${sponsor.sponsor_Name}-${Date.now()}.${extension}`;
+  
+            // Upload sponsor logo to Supabase
+            const { data, error } = await supabase.storage
+              .from('sponsors')
+              .upload(`logos/${sponsorLogoName}`, blob);
+  
+            if (error) {
+              throw new Error(`Image upload failed for sponsor ${sponsor.sponsor_Name}`);
+            }
+  
+            const sponsorLogoUrl = supabase.storage.from('sponsors').getPublicUrl(data.path).data.publicUrl;
+            sponsorLogos.push({
+              sponsor_Name: sponsor.sponsor_Name,
+              logoUrl: sponsorLogoUrl
+            });
+          }
+  
+          formData.append("sponsorLogos", JSON.stringify(sponsorLogos));
+        }
+
         const response = await fetch('/api/event/create', {
           method: 'POST',
           body: formData,

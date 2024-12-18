@@ -3,11 +3,21 @@
 import { Button } from "@/components/ui/button";
 import { useCartContext } from "@/context/CartContext";
 import Image from "next/image";
-import React from "react";
+import React, { useEffect } from "react";
 import { RiDiscountPercentFill } from "react-icons/ri";
+import { useRouter } from "next/navigation";
 
 const Page = () => {
-  const { items } = useCartContext();
+  const { items, clearCart } = useCartContext();
+  const router = useRouter();
+
+  // useEffect(() => {
+  //   // Clear the cart after the component has rendered
+  //   if (items.length > 0) {
+  //     clearCart();
+  //   }
+  // }, []);
+
   return (
     <div className="flex justify-center items-center flex-col py-6 px-4 sm:px-6 lg:px-8">
       <div className="w-full max-w-md">
@@ -28,7 +38,7 @@ const Page = () => {
             Congrats, you’ve successfully booked the event!
           </p>
         </div>
-        <div className="my-4 w-full">
+        {/* <div className="my-4 w-full">
           <div className="border-2 border-gray-800 p-2 md:p-5 rounded-lg">
             <div className="flex flex-col mb-1">
               {items.length === 0 ? (
@@ -92,17 +102,18 @@ const Page = () => {
               </div>
             )}
           </div>
-        </div>
+        </div> */}
         <div className="flex flex-col w-full gap-4">
           <Button
             variant="tertiary"
             className="flex justify-center items-center py-6 border-2 border-gray-800 mb-2  w-full sm:w-[60%] mx-auto"
+            onClick={() => router.push("/playerdashboard")}
           >
             <p className="font-semibold text-lg sm:text-xl">
               Go to Player Dashboard
             </p>
           </Button>
-          <Button className="flex justify-center items-center py-6 border-2 border-gray-800 mb-2 w-full sm:w-[60%] mx-auto">
+          <Button className="flex justify-center items-center py-6 border-2 border-gray-800 mb-2 w-full sm:w-[60%] mx-auto" onClick={() => router.push("/")}>
             <p className="font-semibold text-lg sm:text-xl">
               Return To Homepage
             </p>

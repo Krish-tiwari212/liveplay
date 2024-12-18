@@ -93,7 +93,7 @@ const BillingSummary = ({
   
       if (categoryType === 'Doubles') {
         partner_name = items[0]?.pairname || "";
-      } else if (categoryType === 'team') {
+      } else if (categoryType === 'Team') {
         create_team = true;
         team_name = items[0]?.teamName || "";
       }
@@ -141,7 +141,6 @@ const BillingSummary = ({
             const verifyData = await verifyResponse.json();
             console.log("Payment verification response:", verifyData);
             if (verifyData.success) {
-              clearCart();
               router.push("/paymentsuccesfull");
             } else {
               router.push("/paymentfailed");
