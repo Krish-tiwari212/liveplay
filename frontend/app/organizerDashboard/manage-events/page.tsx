@@ -291,7 +291,7 @@ const page = () => {
                         <DialogTrigger asChild>
                           <button
                             onClick={(e) => e.stopPropagation()}
-                            className="z-50 w-full bg-[#17202a] text-[#cddc29] hover:text-white flex gap-2 mt-2 py-1 rounded-lg hover:shadow-xl justify-center items-center"
+                            className=" w-full bg-[#17202a] text-[#cddc29] hover:text-white flex gap-2 mt-2 py-1 rounded-lg hover:shadow-xl justify-center items-center"
                           >
                             <h1>Share</h1>
                             <IoShareSocialSharp />

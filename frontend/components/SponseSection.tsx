@@ -16,6 +16,7 @@ import {
   AlertDialogTitle,
 } from "./ui/alert-dialog";
 import { useEventContext } from "@/context/EventDataContext";
+import { toast } from "@/hooks/use-toast";
 
 
 const formfields = [
@@ -125,7 +126,12 @@ const SponsorSection = () => {
         setSponsors(EventData.sponsors);
       }
     }
-  }, [editPage, EventEditData, EventData, sponsors]);
+  }, [editPage, EventEditData, EventData]);
+  
+  useEffect(()=>{
+    console.log(EventEditData);
+    // console.log(EventData);
+  })
 
   const areFieldsFilled = () => {
     return formfields.every((field) => {
@@ -244,7 +250,7 @@ const SponsorSection = () => {
             : "Add Sponsor"}
         </Button> */}
       </div>
-      <div className="sponsor-preview grid grid-cols-1 lg:grid-cols-3 gap-6">
+      <div className="sponsor-preview grid grid-cols-2 md:grid-cols-3 gap-1 sm:gap-6">
         {sponsors.map((sponsor, index) => (
           <div
             key={index}

@@ -201,15 +201,18 @@ const EventMediaContactForm: React.FC<EventMediaProps> = ({
     handleNext();
   };
 
-   useEffect(() => {
-     const contextData = editPage === "createEvent" ? EventData : EventEditData;
-     if (contextData) {
-       setImagePreviews({
-         mobileBanner: contextData.mobileBanner,
-       });
-     }
-   }, [editPage, EventData, EventEditData]);
-
+  useEffect(() => {
+    if (editPage === "manageEvent") {
+      setImagePreviews({
+        mobileBanner: EventEditData.desktop_cover_image_url,
+      });
+    } else if (editPage === "createEvent") {
+      setImagePreviews({
+        mobileBanner: EventData.mobileBanner,
+      });
+    }
+  }, [editPage, EventEditData, EventData]);
+  
   return (
     <form className="bg-white p-5 rounded-lg">
       <div className="flex flex-wrap ">
