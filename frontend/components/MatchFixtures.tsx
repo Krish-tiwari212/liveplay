@@ -86,7 +86,11 @@ const MatchFixtures = ({ data }: MatchFixturesProps) => {
           );
 
           return (
-            <div key={roundIndex} className="flex-1">
+            <div
+              key={roundIndex}
+              className="flex flex-col w-80" // Fixed width for each round
+              style={{ flexShrink: 0 }}
+            >
               <h3 className="text-xl font-semibold text-center py-2 border border-gray-300">
                 Round {roundIndex + 1}
               </h3>
@@ -94,17 +98,17 @@ const MatchFixtures = ({ data }: MatchFixturesProps) => {
                 {round.map((match: any, matchIndex: number) => (
                   <div
                     key={matchIndex}
-                    className="flex flex-col justify-center items-center w-64 lg:w-auto"
+                    className="flex flex-col justify-center items-center w-full "
                     style={{ height: `${roundHeight}px` }}
                   >
-                    <div className="shadow border border-gray-300 flex flex-col h-[200px] space-y-2 px-4">
+                    <div className="shadow border border-gray-300 flex flex-col h-[200px] space-y-2 px-4 w-full">
                       <h1 className="mt-4">Match {matchIndex + 1}</h1>
 
                       {/* Match Date and Time */}
                       <div className="flex gap-1 justify-center items-center">
                         <FaRegCalendarCheck className="mr-1" />
                         <Input
-                          type="text"
+                          type="date"
                           placeholder="Match Date"
                           onChange={(e) =>
                             handleInputChange(
@@ -115,10 +119,14 @@ const MatchFixtures = ({ data }: MatchFixturesProps) => {
                             )
                           }
                           className="border h-8 rounded-md bg-[#141F29] text-white flex-[1] pl-2 placeholder:text-white text-sm border-none focus:outline-none focus:ring-0 focus:border-none appearance-none focus:shadow-none"
+                          style={{
+                            colorScheme: "dark",
+                            WebkitAppearance: "none",
+                          }}
                         />
                         <h1>|</h1>
                         <Input
-                          type="text"
+                          type="time"
                           placeholder="Match Time"
                           onChange={(e) =>
                             handleInputChange(
@@ -129,6 +137,10 @@ const MatchFixtures = ({ data }: MatchFixturesProps) => {
                             )
                           }
                           className="border rounded-md bg-[#141F29] text-white h-8 flex-[1] pl-2 placeholder:text-white text-sm border-none focus:outline-none focus:ring-0 focus:border-none appearance-none focus:shadow-none"
+                          style={{
+                            colorScheme: "dark",
+                            WebkitAppearance: "none",
+                          }}
                         />
                       </div>
 

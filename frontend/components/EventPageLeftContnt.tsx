@@ -4,7 +4,7 @@ import Image from "next/image";
 import React, { useState } from "react";
 import { Button } from "./ui/button";
 import { BiLike } from "react-icons/bi";
-import { IoLocationSharp, IoPeople, IoPerson, IoShareSocialSharp } from "react-icons/io5";
+import { IoInformationCircle, IoLocationSharp, IoPeople, IoPerson, IoShareSocialSharp } from "react-icons/io5";
 import EventCategoryCard from "./EventCategoryCard";
 import QnaSectionEventpage from "./QnaSectionEventpage";
 import { Badge } from "./ui/badge";
@@ -37,6 +37,7 @@ import EventPageRightContent from "./EventPageRightContent";
 import { createClient } from "@/utils/supabase/client";
 import { useEffect } from "react";
 import { FaPeopleGroup } from "react-icons/fa6";
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "./ui/tooltip";
 
 interface EventCategory {
   id: number;
@@ -796,10 +797,20 @@ const EventPageLeftContent = ({
             </h2>
           </div>
           <Link href={`/playerdashboard`}>
-            <div className="mr-5">
+            <div className="mr-5 flex gap-2">
               <h1 className="text-blue-400 hover:underline text-2xl cursor-pointer">
                 Already Registered?
               </h1>
+              <TooltipProvider>
+                <Tooltip>
+                  <TooltipTrigger>
+                    <IoInformationCircle className="text-2xl " />
+                  </TooltipTrigger>
+                  <TooltipContent className="bg-[#141f29] text-[#ccdb28]">
+                    <p>Enter Team / Doubles Pair Code in your Dashboard.</p>
+                  </TooltipContent>
+                </Tooltip>
+              </TooltipProvider>
             </div>
           </Link>
         </div>

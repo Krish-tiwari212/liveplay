@@ -303,7 +303,7 @@ const BillingSummary = ({
                 className="flex justify-center items-center py-8 w-full border-2 border-gray-800"
                 onClick={handleLogin}
               >
-                Login to Continue
+                <p className="font-semibold text-2xl">Login To Continue</p>
               </Button>
             ) : (
               <Button

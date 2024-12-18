@@ -6,7 +6,7 @@ import { Button } from './ui/button';
 interface SearchDialogProps {
   open: boolean;
   onClose: () => void;
-  data: Participant[]; // Define Participant type accordingly
+  data: Participant[]; 
   onSelect: (selected: Participant | null) => void;
 }
 

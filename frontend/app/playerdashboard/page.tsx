@@ -17,7 +17,7 @@ import {
   FaPeopleGroup,
 } from "react-icons/fa6";
 import { LiaStreetViewSolid } from "react-icons/lia";
-import { IoEnterOutline, IoTicketOutline } from "react-icons/io5";
+import { IoEnterOutline, IoInformationCircle, IoTicketOutline } from "react-icons/io5";
 import EventCard from "@/components/EventCard";
 import data from "@/data";
 import { Button } from "@/components/ui/button";
@@ -63,6 +63,7 @@ import { BiLike } from "react-icons/bi";
 import { Input } from "@/components/ui/input";
 import { Copy } from "lucide-react";
 import { FaSmile } from "react-icons/fa";
+import html2canvas from "html2canvas";
 
 interface EventCard {
   id: number;
@@ -126,6 +127,7 @@ export default function Home() {
   const [event, setEvent] = useState(null);
   const [organizerName, setOrganizerName] = useState('');
   const [teamDetails, setTeamDetails] = useState(null);
+  const [participantdetails, setParticipantdetails] = useState(null);
   const [isLeader, setIsLeader] = useState(false);
   const [participantId, setParticipantId] = useState(null);
   const [eventId, setEventId] = useState(null);
@@ -675,7 +677,25 @@ export default function Home() {
     }
   };
 
+  const downloadImage = () => {
+    const div = document.getElementById("Event_pass"); // Your div's ID
+    html2canvas(div, {
+      scale: 1, // Ensure the scale is set to 1 to preserve the original size
+      width: div.offsetWidth, // Use the div's current width
+      height: div.offsetHeight, // Use the div's current height
+      x: 0, // Capture the full div from the left
+      y: 0, // Capture the full div from the top
+    }).then((canvas) => {
+      // Create an image from the canvas
+      const imgData = canvas.toDataURL("image/png");
 
+      // Create a temporary link element
+      const link = document.createElement("a");
+      link.href = imgData;
+      link.download = "Event Pass.png"; // You can change the filename here
+      link.click();
+    });
+  };
   return (
     <div className="flex flex-col m-3">
       {/* <div className={`flex flex-col sm:flex-row gap-2 sm:gap-4`}>
@@ -944,7 +964,9 @@ export default function Home() {
                       <div className="flex flex-col justify-center items-center gap-2 mt-2">
                         <button
                           className="text-sm bg-[#17202A] text-[#CDDC29] hover:text-white py-1 w-full rounded-lg hover:shadow-xl"
-                          onClick={() => router.push("/eventspage?event_id="+event.id)}
+                          onClick={() =>
+                            router.push("/eventspage?event_id=" + event.id)
+                          }
                         >
                           Register Now
                         </button>
@@ -1107,7 +1129,10 @@ export default function Home() {
         </Dialog>
       )} */}
       {isRegistrationModalOpen && (
-        <Dialog open={isRegistrationModalOpen} onOpenChange={setIsRegistrationModalOpen}>
+        <Dialog
+          open={isRegistrationModalOpen}
+          onOpenChange={setIsRegistrationModalOpen}
+        >
           <DialogTrigger asChild>
             <Button className="hidden">Open</Button>
           </DialogTrigger>
@@ -1123,7 +1148,7 @@ export default function Home() {
               <DialogDescription className="text-sm text-gray-500">
                 Below are the categories you have registered for this event.
               </DialogDescription>
-        
+
               <div className="space-y-4">
                 {registeredCategories.map((category) => (
                   <div className="flex justify-between gap-2" key={category.id}>
@@ -1135,7 +1160,9 @@ export default function Home() {
                     {isLeader && (
                       <Button
                         className="px-3 py-1 text-sm"
-                        onClick={() => handleWithdrawFromCategory(category.category_name)}
+                        onClick={() =>
+                          handleWithdrawFromCategory(category.category_name)
+                        }
                       >
                         Withdraw
                       </Button>
@@ -1143,18 +1170,25 @@ export default function Home() {
                   </div>
                 ))}
               </div>
-        
+
               {teamDetails && (
                 <div className="mt-4">
                   <h2 className="text-lg font-semibold mb-2">Team Members</h2>
                   <div className="space-y-2">
                     {teamMembers.map((member) => (
-                      <div className="flex items-center justify-between p-3 border rounded-md shadow-sm bg-white" key={member.id}>
+                      <div
+                        className="flex items-center justify-between p-3 border rounded-md shadow-sm bg-white"
+                        key={member.id}
+                      >
                         <div className="flex items-center space-x-3">
                           <div className="w-10 h-10 bg-gray-200 rounded-full flex items-center justify-center">
-                            <span className="text-lg font-semibold text-gray-700">{member.name.charAt(0)}</span>
+                            <span className="text-lg font-semibold text-gray-700">
+                              {member.name.charAt(0)}
+                            </span>
                           </div>
-                          <span className="text-sm font-medium text-gray-800">{member.name}</span>
+                          <span className="text-sm font-medium text-gray-800">
+                            {member.name}
+                          </span>
                         </div>
                         {isLeader && member.id !== participantId && (
                           <Button
@@ -1170,9 +1204,26 @@ export default function Home() {
                   {teamDetails.category_type !== "Singles" && (
                     <>
                       <div className="mt-4 flex items-center justify-between p-3 border rounded-md shadow-sm bg-white">
-                        <div className="flex items-center space-x-3">
-                          <span className="text-sm font-medium text-gray-800">Team Code: {teamDetails.team_code}</span>
+                        <div className="flex justify-center items-center gap-2">
+                          <TooltipProvider>
+                            <Tooltip>
+                              <TooltipTrigger>
+                                <IoInformationCircle className="text-xl " />
+                              </TooltipTrigger>
+                              <TooltipContent className="bg-[#141f29] text-[#ccdb28]">
+                                <p>
+                                  Share this code with Your Team or Your Partner
+                                </p>
+                              </TooltipContent>
+                            </Tooltip>
+                          </TooltipProvider>
+                          <div className="flex items-start space-x-3">
+                            <span className="text-sm font-medium text-gray-800">
+                              Team Code: {teamDetails.team_code}
+                            </span>
+                          </div>
                         </div>
+
                         <Button
                           className="px-3 py-1 text-sm rounded-md flex items-center"
                           onClick={handleCopyTeamCode}
@@ -1180,18 +1231,25 @@ export default function Home() {
                           <FiCopy className="mr-2" /> Copy
                         </Button>
                       </div>
-                      {copySuccess && <div className="mt-2 text-green-500">{copySuccess}</div>}
+                      {copySuccess && (
+                        <div className="mt-2 text-green-500">{copySuccess}</div>
+                      )}
                     </>
                   )}
                 </div>
-
               )}
             </DialogHeader>
             <div className="flex justify-between">
-              <Button variant="outline" onClick={() => setIsRegistrationModalOpen(false)}>
+              <Button
+                variant="outline"
+                onClick={() => setIsRegistrationModalOpen(false)}
+              >
                 Close
               </Button>
-              <Button className="px-4 py-2 rounded" onClick={() => router.push(`/eventspage?event_id=${eventId}`)}>
+              <Button
+                className="px-4 py-2 rounded"
+                onClick={() => router.push(`/eventspage?event_id=${eventId}`)}
+              >
                 Register for More Categories
               </Button>
             </div>
@@ -1292,7 +1350,10 @@ export default function Home() {
       )}
       {isEventPassOpen && (
         <Dialog open={isEventPassOpen} onOpenChange={setIsEventPassOpen}>
-          <DialogContent className="w-[90%] max-w-md flex flex-col items-center h-auto p-4 rounded-md">
+          <DialogContent
+            id="Event_pass"
+            className="w-[90%] max-w-md flex flex-col items-center h-auto p-4 rounded-md"
+          >
             <div
               className="w-full h-96 bg-cover bg-center rounded-lg shadow-xl flex items-center justify-center relative"
               style={{
@@ -1328,13 +1389,17 @@ export default function Home() {
                   <p className="text-[10px] sm:text-[12px] font-semibold text-[#64758B]">
                     Player
                   </p>
-                  <h1 className="text-[11px] sm:text-[14px]">{userDetails.full_name}</h1>
+                  <h1 className="text-[11px] sm:text-[14px]">
+                    {userDetails.full_name}
+                  </h1>
                 </div>
                 <div className=" leading-tight">
                   <p className="text-[10px] sm:text-[12px] font-semibold text-[#64758B]">
                     Team Name
                   </p>
-                  <h1 className="text-[11px] sm:text-[14px]">{teamDetails.team_name || "N/A"}</h1>
+                  <h1 className="text-[11px] sm:text-[14px]">
+                    {teamDetails.team_name || "N/A"}
+                  </h1>
                 </div>
                 <div className=" leading-tight">
                   <p className="text-[10px] sm:text-[12px] font-semibold text-[#64758B]">
@@ -1346,7 +1411,7 @@ export default function Home() {
                 </div>
               </div>
               <div className="absolute bottom-0 w-[90%] h-[55%] ">
-                <div className="leading-tight -rotate-90 absolute -right-10 bottom-20 ">
+                <div className="leading-tight -rotate-90 absolute -right-6 bottom-16 ">
                   <p className="text-[10px] sm:text-[12px] font-semibold text-[#64758B]">
                     Event Date
                   </p>
@@ -1356,14 +1421,18 @@ export default function Home() {
                 </div>
               </div>
             </div>
-
-            <Button
-              variant="default"
-              className=""
-              onClick={() => setIsEventPassOpen(false)}
-            >
-              Close
-            </Button>
+            <div className="flex items-center justify-between w-full">
+              <Button
+                variant="default"
+                className=""
+                onClick={() => setIsEventPassOpen(false)}
+              >
+                Close
+              </Button>
+              <Button variant="default" className="" onClick={downloadImage}>
+                Download
+              </Button>
+            </div>
           </DialogContent>
         </Dialog>
       )}

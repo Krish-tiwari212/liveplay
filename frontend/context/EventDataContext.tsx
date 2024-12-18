@@ -68,6 +68,8 @@ interface EventContextType {
   setUnlockEventCircle: React.Dispatch<React.SetStateAction<number>>;
   KYCContent: FormField;
   setKYCContent: React.Dispatch<React.SetStateAction<FormField>>;
+  eventregistratiopage: EventData;
+  seteventregistrationpage: React.Dispatch<React.SetStateAction<EventData>>;
 }
 
 const EventContext = createContext<EventContextType | undefined>(undefined);
@@ -92,7 +94,17 @@ export const EventProvider: React.FC<{ children: ReactNode }> = ({
   const [completeprofileDialog, setCompleteprofileDialog] = useState(false);
   const [isNavbarCollapsed, setIsNavbarCollapsed] = useState(true);
   const [unlockEventCircle, setUnlockEventCircle] = useState(0);
-  const [KYCContent, setKYCContent] = useState<FormField>({});
+  const [KYCContent, setKYCContent] = useState<FormField>({
+    id: "",
+    label: "",
+    type: "",
+    name: "",
+    fieldid: 0,
+  });
+  const [eventregistratiopage, seteventregistrationpage] = useState<EventData>(
+    {}
+  );
+
 
   return (
     <EventContext.Provider
@@ -126,7 +138,9 @@ export const EventProvider: React.FC<{ children: ReactNode }> = ({
         unlockEventCircle,
         setUnlockEventCircle,
         KYCContent,
-        setKYCContent
+        setKYCContent,
+        eventregistratiopage,
+        seteventregistrationpage
       }}
     >
       {children}

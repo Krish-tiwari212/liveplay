@@ -112,13 +112,15 @@ const Page = () => {
  const validateParticipantNames = (value:any) => {
    const participants = value.split(",").map((name:any) => name.trim());
 
-   // Regex to allow alphabets, hyphen (-), and spaces (e.g., "roshan r", "krish tiwari")
-   const isValid = participants.every((name:any) => /^[a-zA-Z\s-]+$/.test(name));
+   const isValid = participants.every((name: any) =>
+     /^[a-zA-Z\s,-]+$/.test(name)
+   );
 
    if (!isValid) {
      toast({
        title: "Error",
-       description: "Names can only contain alphabets, spaces, and hyphens.",
+       description:
+         "Names can only contain alphabets, spaces, hyphens, and commas.",
        variant: "destructive",
      });
      return false;
@@ -134,9 +136,8 @@ const Page = () => {
    }
 
    setData((prev) => ({ ...prev, participantNames: participants }));
-   return true;
- };
-
+    return true;
+  };
 
   const handleInputChange = (id:any, value:any) => {
     if (id === "participant-names") {
@@ -147,11 +148,54 @@ const Page = () => {
   };
 
   const handleGenerate = () => {
-    if (validateParticipantNames(data.participantNames.join(","))) {
-      console.log(data);
-      setopenfixtures(true)
+    const { sport, eventName, playersPerTeam, participantNames } = data;
+
+    // Check for empty fields
+    if (
+      !sport ||
+      !eventName ||
+      !playersPerTeam ||
+      participantNames.length === 0
+    ) {
+      toast({
+        title: "Error",
+        description: "Please fill in all fields before generating.",
+        variant: "destructive",
+      });
+      return;
     }
+
+    // Check if participant names string ends with a comma
+    const participantInput = document.getElementById(
+      "participant-names"
+    ) as HTMLTextAreaElement;
+    if (participantInput && participantInput.value.trim().endsWith(",")) {
+      toast({
+        title: "Error",
+        description: "Participant names should not end with a comma.",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    const totalPlayers = Number(playersPerTeam);
+
+    // Check if the number of participants matches the required total players
+    if (participantNames.length !== totalPlayers) {
+      toast({
+        title: "Error",
+        description: `Number of participants (${participantNames.length}) must be equal to the number of players (${totalPlayers}).`,
+        variant: "destructive",
+      });
+      return;
+    }
+
+    console.log(data);
+    setopenfixtures(true);
   };
+
+
+
   return (
     <div className="w-full sm:w-[90%] mx-auto p-4">
       <h1 className="text-3xl font-bold mb-2">Free Match Generator</h1>
