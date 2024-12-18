@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server';
-import { createClient } from '@/utils/supabase/server'
+import { createClient } from '@/utils/supabase/server';
 
 interface UpdateEventRequest {
   event_name?: string;
@@ -13,6 +13,7 @@ interface UpdateEventRequest {
   street_address?: string;
   additional_details?: string;
   city?: string;
+  state?: string;
   pincode?: string;
   venue_not_decided?: boolean;
   map_view?: string;
@@ -22,6 +23,18 @@ interface UpdateEventRequest {
   playing_rules?: string;
   desktop_cover_image_url?: string;
   mobile_cover_image_url?: string;
+  sport?: string;
+  organizer_name?: string;
+  website_link?: string;
+  insta_link?: string;
+  venue_link?: string;
+  cash_price_pool?: string;
+  countdown?: boolean;
+  want_tshirts?: boolean;
+  enable_fixtures?: boolean;
+  show_qna?: boolean;
+  selected_plan?: string;
+  gst_compliance?: boolean;
 }
 
 export async function PATCH(request: Request, { params }: { params: { id: string } }) {
