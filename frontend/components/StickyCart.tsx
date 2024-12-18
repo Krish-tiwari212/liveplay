@@ -12,23 +12,23 @@ const StickyCart = () => {
   const [savings, setSavings] = useState<number>(0);
 
   useEffect(() => {
-        const original = items.reduce(
-          (acc, item) => acc + item.price * item.quantity,
-          0
-        );
-        const discounted = items.reduce(
-          (acc, item) =>
-            acc + (item.discount_value ?? item.price) * item.quantity,
-          0
-        );
+      const original = items.reduce(
+        (acc, item) => acc + item.price * item.quantity,
+        0
+      );
+      const discounted = items.reduce(
+        (acc, item) =>
+          acc + (item.discount_value ?? item.price) * item.quantity,
+        0
+      );
 
-        const amount = isCheckboxChecked ? discounted : original;
-        setSavings(original - amount);
+      const amount = isCheckboxChecked ? discounted : original;
+      setSavings(original - amount);
       console.log(items)
       console.log(original)
       console.log(discounted)
   }, [items]);
-  
+
   const scrollToCart = () => {
     const cartSection = document.getElementById("cart_section");
     if (cartSection) {

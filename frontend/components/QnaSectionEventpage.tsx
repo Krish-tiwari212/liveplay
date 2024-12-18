@@ -118,7 +118,7 @@ const QnaSectionEventpage = ({ isright, eventId }: QnaSectionEventpageProps) => 
       
       setIsThankYouOpen(true);
       setQuestion("");
-      fetchQuestions(); // Refresh questions list
+      fetchQuestions(); 
     } catch (error) {
       toast({
         title: "Error",

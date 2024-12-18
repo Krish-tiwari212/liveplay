@@ -68,7 +68,6 @@ const ChooseCategoryRegister = ({
           throw new Error("Network response was not ok");
         }
         const data = await response.json();
-        console.log(data.categories);
         setRegisteredCategories(data.categories);
       } catch (error) {
         console.error("Error fetching registered categories:", error);
@@ -80,9 +79,6 @@ const ChooseCategoryRegister = ({
       }
     };
     fetchcategory();
-  }, []);
-  useEffect(() => {
-    console.log(eventid);
   }, []);
   return (
     <div className="w-full lg:w-1/2 relative h-full space-y-4 px-5 sm:px-12">

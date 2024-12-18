@@ -23,7 +23,7 @@ export default function RootLayout({
     <UserProvider>
       <AppContextProvider>
         <EventProvider>
-          {/* <KYCWrapper> */}
+          <KYCWrapper>
             <Sidebar setnavexpanded={setnavexpanded} />
             <div
               className={`flex h-screen ${
@@ -40,7 +40,7 @@ export default function RootLayout({
                 {children}
               </div>
             </div>
-          {/* </KYCWrapper> */}
+          </KYCWrapper>
         </EventProvider>
       </AppContextProvider>
     </UserProvider>

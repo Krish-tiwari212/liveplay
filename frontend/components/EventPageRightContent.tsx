@@ -347,7 +347,7 @@ const EventPageRightContent = ({
                     alt={sponsor.name}
                     width={60}
                     height={60}
-                    className="mb-2 object-contain"
+                    className="mb-2 object-contain border border-black"
                   />
                   <span className="text-[11px]  md:text-sm leading-none">
                     {sponsor.name}
