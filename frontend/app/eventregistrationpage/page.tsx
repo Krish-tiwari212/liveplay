@@ -380,7 +380,7 @@ const EventPage = () => {
         <div className="w-full lg:w-1/3 flex flex-col gap-4">
           <div className="w-full h-64 hidden md:block">
             <Image
-              src="/images/img2.jpeg"
+              src={event?.desktop_cover_image_url}
               alt="Event Poster"
               className="object-cover w-full h-64 rounded-lg"
               width={200}

@@ -27,12 +27,7 @@ const CountdownTimer = ({ targetDate, targetTime }: CountdownProps) => {
         
         const now = new Date();
 
-        // Log for debugging
-        console.log('Target DateTime:', targetDateTime);
-        console.log('Current DateTime:', now);
-
         const difference = targetDateTime.getTime() - now.getTime();
-        console.log('Time Difference (ms):', difference);
 
         // If target date is in the past, show zeros
         if (difference <= 0) {

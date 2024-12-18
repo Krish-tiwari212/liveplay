@@ -96,34 +96,18 @@ export async function POST(request: Request) {
       }
     }
 
-    // Insert sponsors from eventData
-    if (eventData.sponsors && Array.isArray(eventData.sponsors)) {
-      for (const sponsor of eventData.sponsors) {
-        let sponsorImageUrl = '';
-        const sponsorImage = formData.get(`sponsorImage_${sponsor.name}`) as File;
+    const sponsors = JSON.parse(formData.get('sponsorLogos') as string);
 
-        if (sponsorImage && sponsorImage.size > 0) {
-          const { data: sponsorImageData, error: sponsorImageError } = await supabase.storage
-            .from('sponsors')
-            .upload(`sponsors/${Date.now()}-${sponsorImage.name}`, sponsorImage);
-
-          if (sponsorImageError) {
-            console.error('Sponsor image upload error:', sponsorImageError);
-            return NextResponse.json({ error: `Sponsor image upload failed: ${sponsorImageError.message}` }, { status: 400 });
-          }
-
-          // Get sponsor image URL
-          sponsorImageUrl = supabase.storage.from('sponsors').getPublicUrl(sponsorImageData.path).data.publicUrl;
-        }
-
+    if (sponsors && Array.isArray(sponsors)) {
+      for (const sponsor of sponsors) {
         const { error: sponsorError } = await supabase
           .from('sponsors')
           .insert({
             event_id: event.id,
-            name: sponsor.name,
-            image_url: sponsorImageUrl
+            name: sponsor.sponsor_Name,
+            image_url: sponsor.logoUrl,
           });
-
+    
         if (sponsorError) {
           console.error('Sponsor insertion error:', sponsorError);
           return NextResponse.json({ error: `Sponsor insertion failed: ${sponsorError.message}` }, { status: 400 });

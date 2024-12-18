@@ -100,7 +100,26 @@ const EventPageRightContent = ({
   const [averageRating, setAverageRating] = useState(0);
   const [eventsHosted, setEventsHosted] = useState(0);
   const [hostingSince, setHostingSince] = useState<string | null>(null);
+  const [sponsors, setSponsors] = useState<string[]>([]);
   const supabase = createClient();
+
+  useEffect(() => {
+    const fetchSponsors = async () => {
+      const { data: sponsors, error: sponsorsError } = await supabase
+        .from('sponsors')
+        .select('*')
+        .eq('event_id', eventId);
+
+      if (sponsorsError) {
+        console.error('Error fetching sponsors:', sponsorsError);
+        return;
+      }
+      console.log(sponsors);
+      setSponsors(sponsors);
+    };
+
+    fetchSponsors();
+  }, [eventId]);
 
   useEffect(() => {
     const fetchDetails = async () => {
@@ -295,44 +314,24 @@ const EventPageRightContent = ({
           <h3 className="text-base sm:text-lg md:text-xl font-bold flex items-center mb-2">
             <RiStarSmileFill className="mr-2 text-2xl" /> Sponsored By
           </h3>
-          <div className="grid grid-cols-3 gap-4 ml-6">
-            <div className="rounded-lg flex flex-col p-4">
-              <Image
-                src="/images/sponsor (1).svg"
-                alt="Nexus Global Ventures"
-                width={60}
-                height={60}
-                className="mb-2 object-contain"
-              />
-              <span className="text-[11px]  md:text-sm leading-none">
-                Nexus Global Ventures
-              </span>
+          {sponsors.length && (
+            <div className="grid grid-cols-3 gap-4 ml-6">
+              {sponsors.map((sponsor, index) => (
+                <div key={index} className="rounded-lg flex flex-col p-4">
+                  <Image
+                    src={sponsor.image_url}
+                    alt={sponsor.name}
+                    width={60}
+                    height={60}
+                    className="mb-2 object-contain"
+                  />
+                  <span className="text-[11px]  md:text-sm leading-none">
+                    {sponsor.name}
+                  </span>
+                </div>
+              ))}
             </div>
-            <div className="rounded-lg flex flex-col p-4">
-              <Image
-                src="/images/sponsor (2).svg"
-                alt="Summit Crest Corporation"
-                width={60}
-                height={60}
-                className="mb-2 object-contain"
-              />
-              <span className="text-[11px]  md:text-sm leading-none">
-                Summit Crest Corporation
-              </span>
-            </div>
-            <div className="rounded-lg flex flex-col p-4 text-sm">
-              <Image
-                src="/images/sponsor (1).svg"
-                alt="Titan Edge Enterprises"
-                width={60}
-                height={60}
-                className="mb-2 object-contain"
-              />
-              <span className="text-[11px] md:text-sm leading-none">
-                Titan Edge Enterprises
-              </span>
-            </div>
-          </div>
+          )}
         </div>
       </div>
 
