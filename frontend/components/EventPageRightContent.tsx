@@ -103,6 +103,23 @@ const EventPageRightContent = ({
   const [hostingSince, setHostingSince] = useState<string | null>(null);
   const [sponsors, setSponsors] = useState<string[]>([]);
   const supabase = createClient();
+  const [registrations, setRegistrations] = useState(0);
+
+  useEffect(() => {
+    const getRegistrations = async () => {
+      const { data, error } = await supabase
+        .from("participants")
+        .select("*")
+        .eq("event_id", eventId);
+
+      if (error) {
+        console.error("Error fetching registrations:", error);
+        return;
+      }
+      setRegistrations(data.length);
+    };
+    getRegistrations();
+  }, [eventId]);
 
   useEffect(() => {
     const fetchSponsors = async () => {
@@ -230,10 +247,7 @@ const EventPageRightContent = ({
               <VscGraph className="w-4 h-4 sm:w-5 sm:h-5  mr-1" />
               <span className="text-sm sm:text-base">Registrations:</span>
               <span className="text-blue-600 text-sm sm:text-base">
-                {eventDetails.categories.reduce(
-                  (total, cat) => total + cat.total_quantity,
-                  0
-                )}
+                {registrations}
               </span>
             </div>
           </Link>
@@ -447,10 +461,7 @@ const EventPageRightContent = ({
           <h1 className="text-2xl font-semibold mb-2">Event Information</h1>
           <h2 className="mb-4">
             Total Registrations:{" "}
-            {eventDetails.categories.reduce(
-              (total, cat) => total + cat.total_quantity,
-              0
-            )}
+            <span className="">{registrations}</span>
             <Link
               href={`/eventregistrationpage?event_id=${eventId}`}
               className="text-blue-600 ml-2 hover:underline"

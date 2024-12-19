@@ -34,6 +34,7 @@ import {
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { toast } from "@/hooks/use-toast";
+import { createClient } from '@/utils/supabase/client';
 
 
 interface EventCard {
@@ -109,6 +110,55 @@ const page = () => {
   const { setDashboardName,UserType } = useEventContext();
   const [isLoading, setIsLoading] = useState(true);
   const { user } = useUser();
+  const [registrations, setRegistrations] = useState({});
+  const [sales, setSales] = useState({});
+  const [views, setViews] = useState({});
+  const [interested, setInterested] = useState({});
+  const [totalViews, setTotalViews] = useState(0);
+  const [totalSales, setTotalSales] = useState(0);
+  const [totalRegistrations, setTotalRegistrations] = useState(0);
+  const [totalInterested, setTotalInterested] = useState(0);
+  const supabase = createClient();
+
+  const fetchEventDetails = async (eventId) => {
+    const { data: registrationsData, error: registrationsError } = await supabase
+      .from('participants')
+      .select('*')
+      .eq('event_id', eventId);
+
+    const { data: salesData, error: salesError } = await supabase
+      .from('participants')
+      .select('total_amount')
+      .eq('event_id', eventId);
+
+    const { data: interestedData, error: interestedError } = await supabase
+      .from('user_event_likes')
+      .select('*')
+      .eq('event_id', eventId);
+
+    const { data: viewsData, error: viewsError } = await supabase
+      .from('event_views')
+      .select('*')
+      .eq('event_id', eventId);
+
+    if (registrationsError || salesError || interestedError) {
+      console.error('Error fetching event details:', registrationsError || salesError || interestedError);
+      return;
+    }
+
+    const totalSalesForEvent = salesData.reduce((acc, curr) => acc + parseFloat(curr.total_amount), 0);
+
+    setRegistrations(prev => ({ ...prev, [eventId]: registrationsData.length }));
+    setSales(prev => ({ ...prev, [eventId]: totalSalesForEvent }));
+    setInterested(prev => ({ ...prev, [eventId]: interestedData.length }));
+    // Assuming views are fetched from another table or API
+    setViews(prev => ({...prev, [eventId]: viewsData?.length})); // Replace with actual views fetching logic
+    setTotalViews(prev => prev + (viewsData?.length || 0));
+    setTotalSales(prev => prev + totalSalesForEvent);
+    setTotalRegistrations(prev => prev + registrationsData.length);
+    setTotalInterested(prev => prev + interestedData.length);
+  };
+
   useEffect(() => {
     setDashboardName("Event Management");
   }, []);
@@ -142,7 +192,10 @@ const page = () => {
           throw new Error("Network response was not ok");
         }
         const data = await response.json();
-        setEvents(data.events);
+        setEvents(data.events || []);
+
+        const eventDetailsPromises = data.events.map(event => fetchEventDetails(event.id));
+        await Promise.all(eventDetailsPromises);
       } catch (error) {
         console.error("Error fetching events:", error);
         toast({
@@ -214,24 +267,24 @@ const page = () => {
                     <div className="flex-[1] flex flex-col justify-between">
                       <div className="flex flex-col">
                         <h3 className="font-bold line-clamp-2 overflow-hidden text-ellipsis">
-                          {event.event_name} Badminton Pro Sports 2024
+                          {event.event_name}
                         </h3>
                         <div className="flex flex-col justify-between">
                           <span className="flex gap-2 items-center">
                             <p className="font-semibold ">Sales:</p>{" "}
-                            {event.revenue || "₹0"}
+                            {sales[event.id] || "₹0"}
                           </span>
                           <span className="flex gap-2 items-center">
                             <p className="font-semibold ">Views:</p>{" "}
-                            {event.event_views || "0"}
+                            {views[event.id] || "0"}
                           </span>
                           <span className="flex gap-2 items-center">
                             <p className="font-semibold ">Registrations:</p>{" "}
-                            {event.entries || "0"}
+                            {registrations[event.id] || "0"}
                           </span>
                           <span className="flex gap-2 items-center">
                             <p className="font-semibold ">Interested:</p>{" "}
-                            {event.interested_people || "0"}
+                            {interested[event.id] || "0"}
                           </span>
                           {/* <TooltipProvider>
                           <Tooltip>

@@ -19,6 +19,7 @@ import { Input } from "@/components/ui/input";
 import { useToast } from "@/hooks/use-toast";
 import { FaGoogle } from "react-icons/fa";
 import Image from "next/image";
+import { Checkbox } from "@/components/ui/checkbox";
 
 const formSchema = z
   .object({
@@ -200,6 +201,12 @@ const SignUpForm = () => {
                   </FormItem>
                 )}
               />
+              <div className="flex items-center">
+                <input type="checkbox" id="terms" className="mr-2 border-3" />
+                <label htmlFor="terms" className="text-sm font-bold text-gray-600">
+                  Agree with the <a href="/policies/termsandcondition" className="text-blue-600">Terms & Conditions</a> of using liveplay.in
+                </label>
+              </div>
               <Button type="submit" disabled={loading} className="w-full">
                 {loading ? "Signing up..." : "Sign Up"}
               </Button>

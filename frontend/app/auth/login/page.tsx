@@ -1,12 +1,11 @@
 "use client";
 
-import { useState, useRef } from "react";
+import { useState, useRef, Suspense } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
-
 import { Button } from "@/components/ui/button";
 import {
   Form,
@@ -121,7 +120,6 @@ const LoginForm = () => {
         className="z-0"
       />
       
-
       <Script src="https://challenges.cloudflare.com/turnstile/v0/api.js" async defer />
       <Image
         src="/images/Logo.png"
@@ -224,4 +222,10 @@ const LoginForm = () => {
   );
 };
 
-export default LoginForm;
+const LoginPage = () => (
+  <Suspense fallback={<div>Loading...</div>}>
+    <LoginForm />
+  </Suspense>
+);
+
+export default LoginPage;

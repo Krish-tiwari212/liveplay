@@ -145,6 +145,23 @@ const EventPageLeftContent = ({
   const supabase = createClient();
   const [likeCount, setLikeCount] = useState(0);
   const [session, setSession] = useState(null);
+  const [registrations, setRegistrations] = useState(0);
+
+  useEffect(() => {
+    const getRegistrations = async () => {
+      const { data, error } = await supabase
+        .from("participants")
+        .select("*")
+        .eq("event_id", eventId);
+
+      if (error) {
+        console.error("Error fetching registrations:", error);
+        return;
+      }
+      setRegistrations(data.length);
+    };
+    getRegistrations();
+  }, [eventId]);
 
   useEffect(() => {
     const checkSession = async () => {
@@ -314,6 +331,7 @@ const EventPageLeftContent = ({
         </h1>
 
         <div className="flex justify-center md:justify-between gap-2 xl:gap-12">
+          <div className="flex space-x-3">
           <Button
             size="sm"
             variant="outline"
@@ -324,6 +342,8 @@ const EventPageLeftContent = ({
           >
             <h1 className="mr-1">{isLiked ? "Liked" : "Like"}</h1> <BiLike />
           </Button>
+          <p className="text-[12px] mt-[0.4rem] text-gray-500">{likeCount} Likes</p>
+          </div>
 
           <Dialog>
             <DialogTrigger asChild>
@@ -459,10 +479,7 @@ const EventPageLeftContent = ({
                 <VscGraph className="w-4 h-4 sm:w-5 sm:h-5  mr-1" />
                 <span className="text-sm sm:text-base">Registrations:</span>
                 <span className="text-blue-600 text-sm sm:text-base">
-                  {eventDetails.categories.reduce(
-                    (total, cat) => total + cat.total_quantity,
-                    0
-                  )}
+                  { registrations }
                 </span>
               </div>
             </Link>
@@ -787,7 +804,7 @@ const EventPageLeftContent = ({
           <div>
             <h1 className="text-2xl font-semibold mb-2">Event Information</h1>
             <h2 className="mb-4">
-              Total Registrations: {eventDetails.totalRegistrations || 0}
+              Total Registrations: {registrations || 0}
               <Link
                 href={`/eventregistrationpage?event_id=${eventId}`}
                 className="text-blue-600 ml-2 hover:underline"

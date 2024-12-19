@@ -722,6 +722,16 @@ export default function Home() {
       link.click();
     });
   };
+
+  const [isWithdrawModalOpen, setIsWithdrawModalOpen] = useState(false);
+
+  const handleWithdraw = async () => {
+    // Add your withdrawal logic here
+    // For example, call an API to process the withdrawal
+    // After successful withdrawal, show a success message
+    console.log('Withdrawal successful');
+    setIsWithdrawModalOpen(false);
+};
   return (
     <div className="flex flex-col m-3">
       {/* <div className={`flex flex-col sm:flex-row gap-2 sm:gap-4`}>
@@ -1050,30 +1060,28 @@ export default function Home() {
                     </div>
                     <div className="flex flex-col flex-[1] justify-between">
                       <div>
-                        <div className="flex flex-col items-start mb-2">
-                          <h3 className="font-bold text-md line-clamp-2">
-                            {event.event_name}
-                          </h3>
-                          <span className="text-[0.8rem] flex gap-1">
-                            <h1 className="font-bold">By</h1>{" "}
-                            {event.organizer_name || "Mohit"}
-                          </span>
+                          <div className="flex flex-col items-start mb-2">
+                            <h3 className="font-bold text-md line-clamp-2">
+                              {event.event_name}
+                            </h3>
+                            <span className="text-[0.8rem] flex gap-1">
+                              <h1 className="font-bold">By</h1>{" "}
+                              {event.organizer_name || "Mohit"}
+                            </span>
+                          </div>
+                          <div className="flex flex-col justify-between ">
+                            <span className="flex gap-1">
+                              <h1 className="font-bold">Venue:</h1>
+                              {event.venue_name || ""}
+                            </span>
+                            <span className="flex gap-1 whitespace-nowrap">
+                              <h1 className="font-bold">Event Date:</h1>
+                              {event.start_date
+                                ? formatDate(event.start_date)
+                                : "20th Nov 2024"}
+                            </span>
+                          </div>
                         </div>
-                        <div className="flex flex-col justify-between ">
-                          <span className="flex gap-1">
-                            <h1 className="font-bold">Sales:</h1>0
-                          </span>
-                          <span className="flex gap-1 whitespace-nowrap">
-                            <h1 className="font-bold">Views:</h1>0
-                          </span>
-                          <span className="flex gap-1 whitespace-nowrap">
-                            <h1 className="font-bold">Registrations:</h1>0
-                          </span>
-                          <span className="flex gap-1 whitespace-nowrap">
-                            <h1 className="font-bold">Interested:</h1>0
-                          </span>
-                        </div>
-                      </div>
                       <div className="flex flex-col justify-between items-center gap-2 mt-2">
                         <button
                           className="text-sm bg-[#17202A] text-[#CDDC29] hover:text-white py-1 w-full rounded-lg hover:shadow-xl"
@@ -1150,6 +1158,29 @@ export default function Home() {
           </DialogContent>
         </Dialog>
       )}
+      {isWithdrawModalOpen && (
+        <Dialog open={isWithdrawModalOpen} onOpenChange={setIsWithdrawModalOpen}>
+          <DialogTrigger asChild>
+            <Button className="hidden">Open</Button>
+          </DialogTrigger>
+          <DialogContent className="w-[90%] sm:max-w-md p-4 flex flex-col justify-between h-auto">
+            <DialogHeader>
+              <DialogTitle className="text-lg font-semibold">Withdraw from Event</DialogTitle>
+              <DialogDescription className="text-sm text-gray-500 text-start">
+                Are you sure you want to withdraw from this event? You will receive an instant refund upon successful withdrawal.
+              </DialogDescription>
+            </DialogHeader>
+            <div className="flex justify-between mt-4">
+              <Button variant="outline" onClick={() => setIsWithdrawModalOpen(false)}>
+                No
+              </Button>
+              <Button className="px-4 py-2 rounded" onClick={handleWithdraw}>
+                Yes
+              </Button>
+            </div>
+          </DialogContent>
+        </Dialog>
+      )}
       {isRegistrationModalOpen && (
         <Dialog
           open={isRegistrationModalOpen}
@@ -1185,7 +1216,7 @@ export default function Home() {
                         // onClick={() =>
                         //   handleWithdrawFromCategory(category.category_name)
                         // }
-                        onClick={() => handleWithdrawClick(eventId)}
+                        onClick={() => setIsWithdrawModalOpen(true)}
                       >
                         Withdraw
                       </Button>
