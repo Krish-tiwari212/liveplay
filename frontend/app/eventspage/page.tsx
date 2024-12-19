@@ -8,6 +8,7 @@ import { useSearchParams } from 'next/navigation';
 import { toast } from "@/hooks/use-toast";
 import CardCarousel from '@/components/CardCarousel';
 import EventPageLeftContnt from '@/components/EventPageLeftContnt';
+import { createClient } from '@/utils/supabase/client';
 import EventPageRightContent from '@/components/EventPageRightContent';
 
 interface EventCategory {
@@ -86,7 +87,18 @@ const EventPageLoader = () => (
 const EventPage = ({ eventId }: { eventId: string }) => {
   const [eventDetails, setEventDetails] = useState<EventDetails | null>(null);
   const [isLoading, setIsLoading] = useState(true);
+  const supabase = createClient();
 
+  const logEventView = async (eventId: string) => {
+    const { error } = await supabase
+      .from('event_views')
+      .insert([{ event_id: eventId }]);
+  
+    if (error) {
+      console.error('Error logging event view:', error);
+    }
+  };
+  
   useEffect(() => {
     const fetchEventDetails = async () => {
       if (!eventId) {
@@ -98,21 +110,24 @@ const EventPage = ({ eventId }: { eventId: string }) => {
         });
         return;
       }
-
+  
       try {
         const response = await fetch(`/api/event/get_by_id/${eventId}`);
         if (!response.ok) {
           throw new Error('Failed to fetch event details');
         }
-
+  
         const data = await response.json();
-
+  
         if (!data || !data.id) {
           console.error('Invalid API response:', data);
           throw new Error('Invalid event data received');
         }
-
+  
         setEventDetails(data); // Set the data directly
+  
+        // Log the event view
+        await logEventView(eventId);
       } catch (error: any) {
         console.error('Error fetching event details:', error);
         toast({
@@ -124,7 +139,7 @@ const EventPage = ({ eventId }: { eventId: string }) => {
         setIsLoading(false);
       }
     };
-
+  
     fetchEventDetails();
   }, [eventId]);
 

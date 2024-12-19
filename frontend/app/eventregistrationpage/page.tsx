@@ -16,14 +16,12 @@ import { useRouter, useSearchParams } from 'next/navigation';
 import React, { useEffect, useState } from 'react'
 import { GiConsoleController, GiEntryDoor } from 'react-icons/gi';
 import { HiCurrencyRupee } from 'react-icons/hi2';
-import { IoInformationCircle, IoLocationSharp, IoShareSocialSharp } from 'react-icons/io5';
+import { IoLocationSharp, IoShareSocialSharp } from 'react-icons/io5';
 import { PiHandWithdraw } from 'react-icons/pi';
 import { RiDiscountPercentLine } from 'react-icons/ri';
 import { VscGraph } from 'react-icons/vsc';
 import { Suspense } from "react";
 import { useEventContext } from '@/context/EventDataContext';
-import { createClient } from '@/utils/supabase/client';
-import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
 
 interface Participant {
   id: string;
@@ -92,6 +90,150 @@ interface Event {
   categories:Category
 }
 
+
+const participantsdemo = [
+  {
+    id: "1",
+    user_id: "101",
+    name: "Alice Johnson",
+    status: "confirmed",
+    registration_date: "2024-12-01",
+    user: {
+      id: "101",
+      full_name: "Alice Johnson",
+      email: "alice.johnson@example.com",
+      gender: "female",
+      date_of_birth: "1990-05-15",
+    },
+  },
+  {
+    id: "2",
+    user_id: "102",
+    name: "Bob Smith",
+    status: "pending",
+    registration_date: "2024-12-02",
+    user: {
+      id: "102",
+      full_name: "Bob Smith",
+      email: "bob.smith@example.com",
+      gender: "male",
+      date_of_birth: "1988-03-22",
+    },
+  },
+  {
+    id: "3",
+    user_id: "103",
+    name: "Charlie Brown",
+    status: "declined",
+    registration_date: "2024-12-03",
+    user: {
+      id: "103",
+      full_name: "Charlie Brown",
+      email: "charlie.brown@example.com",
+      gender: "male",
+      date_of_birth: "1995-07-19",
+    },
+  },
+  {
+    id: "4",
+    user_id: "104",
+    name: "Diana Prince",
+    status: "confirmed",
+    registration_date: "2024-12-04",
+    user: {
+      id: "104",
+      full_name: "Diana Prince",
+      email: "diana.prince@example.com",
+      gender: "female",
+      date_of_birth: "1992-11-11",
+    },
+  },
+  {
+    id: "5",
+    user_id: "105",
+    name: "Evan Thomas",
+    status: "pending",
+    registration_date: "2024-12-05",
+    user: {
+      id: "105",
+      full_name: "Evan Thomas",
+      email: "evan.thomas@example.com",
+      gender: "male",
+      date_of_birth: "1997-09-04",
+    },
+  },
+  {
+    id: "6",
+    user_id: "106",
+    name: "Fiona Davis",
+    status: "confirmed",
+    registration_date: "2024-12-06",
+    user: {
+      id: "106",
+      full_name: "Fiona Davis",
+      email: "fiona.davis@example.com",
+      gender: "female",
+      date_of_birth: "1985-12-25",
+    },
+  },
+  {
+    id: "7",
+    user_id: "107",
+    name: "George Miller",
+    status: "declined",
+    registration_date: "2024-12-07",
+    user: {
+      id: "107",
+      full_name: "George Miller",
+      email: "george.miller@example.com",
+      gender: "male",
+      date_of_birth: "1993-04-10",
+    },
+  },
+  {
+    id: "8",
+    user_id: "108",
+    name: "Hannah Lee",
+    status: "confirmed",
+    registration_date: "2024-12-08",
+    user: {
+      id: "108",
+      full_name: "Hannah Lee",
+      email: "hannah.lee@example.com",
+      gender: "female",
+      date_of_birth: "1991-06-18",
+    },
+  },
+  {
+    id: "9",
+    user_id: "109",
+    name: "Ian Collins",
+    status: "pending",
+    registration_date: "2024-12-09",
+    user: {
+      id: "109",
+      full_name: "Ian Collins",
+      email: "ian.collins@example.com",
+      gender: "male",
+      date_of_birth: "1990-02-28",
+    },
+  },
+  {
+    id: "10",
+    user_id: "110",
+    name: "Julia Adams",
+    status: "confirmed",
+    registration_date: "2024-12-10",
+    user: {
+      id: "110",
+      full_name: "Julia Adams",
+      email: "julia.adams@example.com",
+      gender: "female",
+      date_of_birth: "1989-08-30",
+    },
+  },
+];
+
 const EventPage = () => {
   const {eventregistratiopage,seteventregistrationpage}=useEventContext()
   const router = useRouter();
@@ -104,37 +246,6 @@ const EventPage = () => {
    const [openplayerinfo,setOpenPlayerInfo]=useState(false)
    const [dialogData,setDialogData]=useState<Participant>({})
    const [openshare,setopenshare]=useState(false)
-
-   useEffect(() => {
-    const fetchParticipants = async () => {
-      const supabase = createClient();
-      const { data, error } = await supabase
-        .from('participants')
-        .select(`
-          id,
-          name,
-          status,
-          registration_date,
-          user:users (
-            id,
-            full_name,
-            email,
-            gender,
-            date_of_birth
-          )
-        `)
-        .eq('event_id', eventId);
-      if (error) {
-        console.error('Error fetching participants:', error);
-      } else {
-        setParticipants(data || []);
-      }
-    };
-
-    if (eventId) {
-      fetchParticipants();
-    }
-  }, [eventId]);
 
   const handleCopy = (text: string) => {
     navigator.clipboard
@@ -258,7 +369,7 @@ const EventPage = () => {
             </div>
           </div>
           <PlayerRegistrationmenu
-            participants={participants}
+            participants={participantsdemo}
             dialog={openplayerinfo}
             setDialog={setOpenPlayerInfo}
             dialogdata={dialogData}
@@ -267,14 +378,13 @@ const EventPage = () => {
           />
         </div>
         <div className="w-full lg:w-1/3 flex flex-col gap-4">
-          <div className="w-full h-full hidden md:block">
+          <div className="w-full h-64 hidden md:block">
             <Image
               src={event?.desktop_cover_image_url}
               alt="Event Poster"
-              className="object-cover rounded-lg"
-              layout="responsive"
-              width={1920} // Replace with the actual width of your image
-              height={1080} // Replace with the actual height of your image
+              className="object-cover w-full h-64 rounded-lg"
+              width={200}
+              height={200}
             />
           </div>
           <div className="border-2 border-[#141F29] p-4 rounded-lg text-[#141F29]">
@@ -348,30 +458,16 @@ const EventPage = () => {
               </div>
             </div>
 
-            <Link href={`/choosecategory/${eventId}`}>
+            <Link href="/choosecategory">
               <Button
                 variant="tertiary"
                 className="w-full border-2 border-black py-8 text-xl"
               >
                 Register Now
               </Button>
-            </Link>
-            <Link href={`/playerdashboard`}>
-              <div className="mr-5 flex gap-2 justify-center items-center w-full py-2">
-                <h1 className="text-blue-400 hover:underline text-xl cursor-pointer">
-                  Already Registered?
-                </h1>
-                <TooltipProvider>
-                  <Tooltip>
-                    <TooltipTrigger>
-                      <IoInformationCircle className="text-xl " />
-                    </TooltipTrigger>
-                    <TooltipContent className="bg-[#141f29] text-[#ccdb28]">
-                      <p>Enter Team / Doubles Pair Code in your Dashboard.</p>
-                    </TooltipContent>
-                  </Tooltip>
-                </TooltipProvider>
-              </div>
+              <p className="text-blue-400 underline text-xl mt-2 text-center">
+                Already Registered ?
+              </p>
             </Link>
           </div>
         </div>

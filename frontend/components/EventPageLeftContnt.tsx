@@ -484,10 +484,7 @@ const EventPageLeftContent = ({
                 <VscGraph className="w-4 h-4 sm:w-5 sm:h-5  mr-1" />
                 <span className="text-sm sm:text-base">Registrations:</span>
                 <span className="text-blue-600 text-sm sm:text-base">
-                  {eventDetails.categories.reduce(
-                    (total, cat) => total + cat.total_quantity,
-                    0
-                  )}
+                  { registrations }
                 </span>
               </div>
             </Link>
@@ -813,7 +810,7 @@ const EventPageLeftContent = ({
           <div>
             <h1 className="text-2xl font-bold mb-2">Event Information</h1>
             <h2 className="mb-4">
-              Total Registrations: {eventDetails.totalRegistrations || 0}
+              Total Registrations: {registrations || 0}
               <Link
                 href={`/eventregistrationpage?event_id=${eventId}`}
                 className="text-blue-600 ml-2 hover:underline"
