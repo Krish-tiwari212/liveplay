@@ -53,16 +53,16 @@ const ProgressBarCheckpointsManageEventID = [
     label: "Event Boosters",
     placement: 6,
   },
-  {
-    icon: <TbTournament />,
-    label: "Match Fixtures",
-    placement: 7,
-  },
-  {
-    icon: <MdLiveTv />,
-    label: "Live Score Updation",
-    placement: 8,
-  },
+  // {
+  //   icon: <TbTournament />,
+  //   label: "Live Match Tracker",
+  //   placement: 7,
+  // },
+  // {
+  //   icon: <MdLiveTv />,
+  //   label: "Live Score Updation",
+  //   placement: 8,
+  // },
 ];
 
 
@@ -237,10 +237,10 @@ const page = ({params}:any) => {
             {currentPage === 4 && <CategoryPreview handleNext={handleNext} eventId={ManageEventId} />}
             {currentPage === 5 && <EnableFeatures handleNext={handleNext} eventId={ManageEventId} />}
             {currentPage === 6 && <EventBoosters handleNext={handleNext} eventId={ManageEventId} />}
-            {currentPage === 7 && (
+            {/* {currentPage === 7 && (
               <DrawCreation id={ManageEventId} handleNext={handleNext} eventId={ManageEventId} />
-            )}
-            {currentPage === 8 && <LiveMatchTracking handleNext={handleNext} eventId={ManageEventId} />}
+            )} */}
+            {/* {currentPage === 7 && <LiveMatchTracking handleNext={handleNext} eventId={ManageEventId} />} */}
           </div>
         ) : (
           <div className="mt-20 lg:mt-4 w-full rounded-lg">
@@ -255,7 +255,7 @@ const page = ({params}:any) => {
             {currentPage === 4 && <CategoryPreview handleNext={handleNext} eventId={ManageEventId} />}
             {currentPage === 5 && <EnableFeatures handleNext={handleNext} eventId={ManageEventId} />}
             {currentPage === 6 && <EventBoosters handleNext={handleNext} eventId={ManageEventId} />}
-            {currentPage === 7 && <LiveMatchTracking handleNext={handleNext} eventId={ManageEventId} />}
+            {/* {currentPage === 7 && <LiveMatchTracking handleNext={handleNext} eventId={ManageEventId} />} */}
           </div>
         )}
 

@@ -1,5 +1,3 @@
-"use client"
-
 import { useEffect, useRef, useState } from "react";
 import { Button } from "./ui/button";
 import { Label } from "./ui/label";
@@ -17,6 +15,7 @@ import {
 } from "./ui/alert-dialog";
 import { useEventContext } from "@/context/EventDataContext";
 import { toast } from "@/hooks/use-toast";
+import { createClient } from "@/utils/supabase/client";
 
 
 const formfields = [
@@ -36,8 +35,9 @@ const formfields = [
   },
 ];
 
-const SponsorSection = () => {
-  const { EventData, setEventData,editPage,EventEditData,setEventEditData } = useEventContext();
+const SponsorSection = ({ ManageEventId }:any) => {
+  const { EventData, setEventData, editPage, EventEditData, setEventEditData } =
+    useEventContext();
   const [sponsors, setSponsors] = useState<Record<string, any>[]>([]);
   const [newSponsor, setNewSponsor] = useState<Record<string, any>>({});
   const [isAdding, setIsAdding] = useState(false);
@@ -47,7 +47,7 @@ const SponsorSection = () => {
   const imageRefs = useRef<(HTMLInputElement | null)[]>([]);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [imageValid, setImageValid] = useState(true);
-
+  const supabase = createClient();
 
   // const handleFileChange =
   //   (index: number) => (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -75,86 +75,86 @@ const SponsorSection = () => {
   //     }
   //   };
 
-const handleFileChange =
-  (index: number) => (event: React.ChangeEvent<HTMLInputElement>) => {
-    const file = event.target.files?.[0];
-    if (file) {
-      setIsImageLoading(true); // Set loading to true when the file is being processed
+  const handleFileChange =
+    (index: number) => (event: React.ChangeEvent<HTMLInputElement>) => {
+      const file = event.target.files?.[0];
+      if (file) {
+        setIsImageLoading(true); // Set loading to true when the file is being processed
 
-      const reader = new FileReader();
-      reader.onloadend = () => {
-        const base64Data = reader.result as string;
+        const reader = new FileReader();
+        reader.onloadend = () => {
+          const base64Data = reader.result as string;
 
-        const img = new window.Image();
-        img.onload = () => {
-          const width = img.naturalWidth;
-          const height = img.naturalHeight;
+          const img = new window.Image();
+          img.onload = () => {
+            const width = img.naturalWidth;
+            const height = img.naturalHeight;
 
-          // Check if the aspect ratio is 1:1
-          if (width !== height) {
+            // Check if the aspect ratio is 1:1
+            if (width !== height) {
+              toast({
+                title: "Invalid Image Aspect Ratio",
+                description: "Please upload an image with a 1:1 aspect ratio.",
+                variant: "destructive", // Customize the toast variant if needed
+              });
+              setImageValid(false); // Mark the image as invalid
+              setIsImageLoading(false); // Stop loading state when the image ratio is invalid
+              return; // Prevent further processing if aspect ratio is not 1:1
+            }
+
+            // Set image preview and sponsor data if valid aspect ratio
+            setImagePreviews((prev) => {
+              const newPreviews = [...prev];
+              newPreviews[index] = base64Data;
+              return newPreviews;
+            });
+
+            // Only update newSponsor if the image is valid
+            setNewSponsor((prevData) => ({
+              ...prevData,
+              logo: base64Data,
+            }));
+            setImageValid(true); // Mark the image as valid
+            setIsImageLoading(false); // Set loading to false once image is processed
+          };
+
+          img.onerror = () => {
             toast({
-              title: "Invalid Image Aspect Ratio",
-              description: "Please upload an image with a 1:1 aspect ratio.",
-              variant: "destructive", // Customize the toast variant if needed
+              title: "Invalid image file",
+              description:
+                "Could not load the selected file. Please try again.",
+              variant: "destructive",
             });
             setImageValid(false); // Mark the image as invalid
-            setIsImageLoading(false); // Stop loading state when the image ratio is invalid
-            return; // Prevent further processing if aspect ratio is not 1:1
-          }
+            setIsImageLoading(false); // Stop loading state if image cannot be loaded
+          };
 
-          // Set image preview and sponsor data if valid aspect ratio
-          setImagePreviews((prev) => {
-            const newPreviews = [...prev];
-            newPreviews[index] = base64Data;
-            return newPreviews;
-          });
-
-          // Only update newSponsor if the image is valid
-          setNewSponsor((prevData) => ({
-            ...prevData,
-            logo: base64Data,
-          }));
-          setImageValid(true); // Mark the image as valid
-          setIsImageLoading(false); // Set loading to false once image is processed
+          img.src = reader.result as string; // Load the image to get its dimensions
         };
+        reader.readAsDataURL(file);
 
-        img.onerror = () => {
-          toast({
-            title: "Invalid image file",
-            description: "Could not load the selected file. Please try again.",
-            variant: "destructive",
-          });
-          setImageValid(false); // Mark the image as invalid
-          setIsImageLoading(false); // Stop loading state if image cannot be loaded
-        };
-
-        img.src = reader.result as string; // Load the image to get its dimensions
-      };
-      reader.readAsDataURL(file);
-
-      // Update the file name without setting loading to false here
-      setNewSponsor((prevData) => ({
-        ...prevData,
-        [`fileName${index}`]: file.name,
-      }));
-    }
-  };
-
-const areFieldsFilled = () => {
-  return formfields.every((field) => {
-    if (field.required) {
-      if (field.type === "file") {
-        // Ensure the file is only considered valid if the image is valid
-        return imageValid && newSponsor[`fileName${formfields.indexOf(field)}`];
+        // Update the file name without setting loading to false here
+        setNewSponsor((prevData) => ({
+          ...prevData,
+          [`fileName${index}`]: file.name,
+        }));
       }
-      return newSponsor[field.name] && newSponsor[field.name].trim() !== "";
-    }
-    return true;
-  });
-};
+    };
 
-
-
+  const areFieldsFilled = () => {
+    return formfields.every((field) => {
+      if (field.required) {
+        if (field.type === "file") {
+          // Ensure the file is only considered valid if the image is valid
+          return (
+            imageValid && newSponsor[`fileName${formfields.indexOf(field)}`]
+          );
+        }
+        return newSponsor[field.name] && newSponsor[field.name].trim() !== "";
+      }
+      return true;
+    });
+  };
 
   const handleSponsorChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
@@ -200,15 +200,33 @@ const areFieldsFilled = () => {
     setNewSponsor({});
   };
 
+  // useEffect(() => {
+  //   if (sponsors.length === 0) {
+  //     if (editPage === "manageEvent" && EventEditData?.sponsors) {
+  //       setSponsors(EventEditData.sponsors);
+  //     } else if (editPage === "createEvent" && EventData?.sponsors) {
+  //       setSponsors(EventData.sponsors);
+  //     }
+  //   }
+  // }, [editPage, EventEditData, EventData]);
+
   useEffect(() => {
-    if (sponsors.length === 0) {
-      if (editPage === "manageEvent" && EventEditData?.sponsors) {
-        setSponsors(EventEditData.sponsors);
-      } else if (editPage === "createEvent" && EventData?.sponsors) {
-        setSponsors(EventData.sponsors);
+    const fetchSponsors = async () => {
+      const { data: sponsors, error: sponsorsError } = await supabase
+        .from("sponsors")
+        .select("*")
+        .eq("event_id", ManageEventId);
+
+      if (sponsorsError) {
+        console.error("Error fetching sponsors:", sponsorsError);
+        return;
       }
-    }
-  }, [editPage, EventEditData, EventData]);
+      console.log(sponsors);
+      setSponsors(sponsors);
+    };
+
+    fetchSponsors();
+  }, [ManageEventId]);
 
   return (
     <div className="sponsor-section mt-8 p-2 bg-gray-100 rounded-lg shadow-md">
@@ -289,7 +307,9 @@ const areFieldsFilled = () => {
                 onClick={addSponsor}
                 disabled={isAdding || !areFieldsFilled()}
                 className={`w-full ${
-                  isAdding || !areFieldsFilled() ? "cursor-not-allowed" : "cursor-pointer"
+                  isAdding || !areFieldsFilled()
+                    ? "cursor-not-allowed"
+                    : "cursor-pointer"
                 }`}
                 title={!areFieldsFilled() ? "Fill the input field first" : ""}
               >

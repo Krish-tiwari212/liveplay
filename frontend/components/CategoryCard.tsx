@@ -57,7 +57,7 @@ interface CategoryCardProps {
 }
 
 const CategoryCard: React.FC<CategoryCardProps> = ({ category, participantsData, isAdded, onAdd }) => {
-  const {setIsCheckboxChecked}=useCartContext()
+  const { setIsCheckboxChecked, setItems,isCheckboxChecked } = useCartContext();
   const [searchOpen, setSearchOpen] = useState(false);
   const [selectedParticipant, setSelectedParticipant] = useState<Participant | null>(null);
   const [teamCode, setTeamCode] = useState('');
@@ -126,6 +126,19 @@ const CategoryCard: React.FC<CategoryCardProps> = ({ category, participantsData,
 
     
     setdisablecheckbox(true);
+
+   setIsCheckboxChecked((prev) => {
+     const updatedState = [
+       ...prev,
+       { id: category.id, checked: isCheckboxCheck }, // Assuming the checkbox is checked when added
+     ];
+
+     // Update localStorage
+     localStorage.setItem("checkboxes", JSON.stringify(updatedState));
+
+     return updatedState;
+   });
+
     const finalPrice =
       isCheckboxCheck && category.discount_value
         ? category.discount_value
@@ -141,15 +154,26 @@ const CategoryCard: React.FC<CategoryCardProps> = ({ category, participantsData,
       const { discount_code, ...rest } = finalCategory;
       finalCategory = rest;
     }
+
     onAdd();
     addItem(finalCategory);
     // category.sport === "marathon"
     //   ? addMultipleItem(finalCategory)
     //   : addItem(finalCategory);
+
   };
 
   const handleRemoveFromCart = () => {
-    reduceItem(category.id);
+     reduceItem(category.id);
+
+     // Remove the item from the array and update localStorage
+     const updatedState = isCheckboxChecked.filter(
+       (item) => item.id !== category.id
+     );
+
+     // Ensure the item is removed from the state and localStorage
+     setIsCheckboxChecked(updatedState);
+     localStorage.setItem("checkboxes", JSON.stringify(updatedState));
     onAdd();
   };
 
@@ -181,6 +205,45 @@ const CategoryCard: React.FC<CategoryCardProps> = ({ category, participantsData,
         });
       });
   };
+
+  const handleTeamNameChange = (value: string) => {
+    setTeamName(value);
+    localStorage.setItem(`teamName-${category.id}`, value);
+  };
+
+  const handlePartnerNameChange = (value: string) => {
+    setPartner(value);
+    localStorage.setItem(`partnerName-${category.id}`, value);
+  };
+
+  const handleCheckboxChange = (categoryId: number|undefined, value: boolean) => {
+    setIsCheckboxCheck(!isCheckboxCheck);
+    
+  };
+
+
+  useEffect(() => {
+    const savedTeamName = localStorage.getItem(`teamName-${category.id}`);
+    const savedPartnerName = localStorage.getItem(`partnerName-${category.id}`);
+    const savedCheckboxes = localStorage.getItem("checkboxes");
+    if (savedCheckboxes) {
+      setIsCheckboxChecked(JSON.parse(savedCheckboxes));
+      setIsCheckboxCheck(
+        savedCheckboxes.length === 0
+          ? false
+          : isCheckboxChecked.some(
+              (item) => item.id === category.id && item.checked
+            )
+      );
+    }
+    
+    if (savedTeamName) setTeamName(savedTeamName);
+    if (savedPartnerName) setPartner(savedPartnerName);
+    // if (savedIsChecked) setIsCheckboxChecked(savedIsChecked);
+  }, [category.id]);
+
+
+
   return (
     <div className="border-2 border-[#141f29] p-4 rounded-lg shadow-lg w-full">
       <div
@@ -218,10 +281,12 @@ const CategoryCard: React.FC<CategoryCardProps> = ({ category, participantsData,
                               <Checkbox
                                 disabled={currentQuantity > 0}
                                 id="terms2"
-                                checked={isCheckboxCheck}
-                                onCheckedChange={() =>{
-                                  setIsCheckboxCheck(!isCheckboxCheck)
-                                  setIsCheckboxChecked(!isCheckboxCheck)
+                                checked={isCheckboxCheck} // If no checkboxes, set all as unchecked
+                                onCheckedChange={() => {
+                                  handleCheckboxChange(
+                                    category.id,
+                                    !isCheckboxCheck
+                                  );
                                 }}
                               />
                             </TooltipTrigger>
@@ -234,10 +299,9 @@ const CategoryCard: React.FC<CategoryCardProps> = ({ category, participantsData,
                         <Checkbox
                           disabled={currentQuantity > 0}
                           id="terms2"
-                          checked={isCheckboxCheck}
-                          onCheckedChange={() =>{
-                            setIsCheckboxCheck(!isCheckboxCheck)
-                            setIsCheckboxChecked(!isCheckboxCheck)}
+                          checked={isCheckboxCheck} // If no checkboxes, set all as unchecked
+                          onCheckedChange={() =>
+                            handleCheckboxChange(category.id, !isCheckboxCheck)
                           }
                         />
                       )}
@@ -381,7 +445,7 @@ const CategoryCard: React.FC<CategoryCardProps> = ({ category, participantsData,
               <Input
                 type="text"
                 value={teamName}
-                onChange={(e) => setTeamName(e.target.value)}
+                onChange={(e) => handleTeamNameChange(e.target.value)}
                 className="py-2  border-none rounded relative w-full bg-[#ccdb28] focus-visible:outline-none focus-visible:ring-0 focus-visible:ring-ring focus-visible:ring-offset-0"
                 placeholder="Enter Team Name"
               />
@@ -418,7 +482,7 @@ const CategoryCard: React.FC<CategoryCardProps> = ({ category, participantsData,
                 <Input
                   type="text"
                   value={partner}
-                  onChange={(e) => setPartner(e.target.value)}
+                  onChange={(e) => handlePartnerNameChange(e.target.value)}
                   className="py-2 border-none rounded relative w-full bg-[#ccdb28] focus-visible:outline-none focus-visible:ring-0 focus-visible:ring-ring focus-visible:ring-offset-0"
                   placeholder="Enter Partner Name"
                 />

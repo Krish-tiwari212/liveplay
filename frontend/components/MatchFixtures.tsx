@@ -74,11 +74,26 @@ const MatchFixtures = ({ data }: MatchFixturesProps) => {
           <h1 className="mr-1">Export</h1> <RiExportFill />
         </Button>
       </div>
-
       <div
         id="match-fixtures"
-        className="flex bg-[#141F29] overflow-auto text-white p-4"
+        className="flex bg-[#141F29] overflow-auto text-white p-4 relative"
       >
+        {/* Watermark */}
+        <div className="absolute inset-0 flex justify-center items-center pointer-events-none ">
+          <h1
+            style={{
+              zIndex: 0,
+              fontSize: "20rem", // Increased for better clarity
+              color: "rgba(255, 255, 255, 0.07)", // Subtle color for unobtrusive visibility
+              transform: "rotate(-30deg)", // Slightly adjusted rotation
+              whiteSpace: "nowrap", // Ensures text doesn't break into multiple lines
+            }}
+          >
+            liveplay.in
+          </h1>
+        </div>
+
+        {/* Tournament Rounds */}
         {rounds.map((round, roundIndex) => {
           const roundHeight = Math.min(
             firstRoundHeight,
@@ -98,11 +113,11 @@ const MatchFixtures = ({ data }: MatchFixturesProps) => {
                 {round.map((match: any, matchIndex: number) => (
                   <div
                     key={matchIndex}
-                    className="flex flex-col justify-center items-center w-full "
+                    className="flex flex-col justify-center items-center w-full"
                     style={{ height: `${roundHeight}px` }}
                   >
                     <div className="shadow border border-gray-300 flex flex-col h-[200px] space-y-2 px-4 w-full">
-                      <h1 className="mt-4">Match {matchIndex + 1}</h1>
+                      <h1 className="mt-4">Match {match.matchNumber}</h1>
 
                       {/* Match Date and Time */}
                       <div className="flex gap-1 justify-center items-center">
@@ -251,17 +266,23 @@ const getTournamentRounds = (participants: string[]) => {
   let roundMatches: any[] = [];
   let teamsWithByes = currentRound.slice(0, byesCount);
   let teamsWithMatches = currentRound.slice(byesCount);
+  let matchNumber = 1;
 
   for (let i = 0; i < teamsWithMatches.length; i += 2) {
     roundMatches.push({
       team1: teamsWithMatches[i],
       team2: teamsWithMatches[i + 1],
+      matchNumber: matchNumber++,
     });
   }
 
   rounds.push([
     ...roundMatches,
-    ...teamsWithByes.map((team) => ({ team1: team, team2: "Bye" })),
+    ...teamsWithByes.map((team) => ({
+      team1: team,
+      team2: "Bye",
+      matchNumber: matchNumber++,
+    })),
   ]);
   currentRound = [
     ...teamsWithByes,
@@ -271,7 +292,11 @@ const getTournamentRounds = (participants: string[]) => {
   while (currentRound.length > 1) {
     roundMatches = [];
     for (let i = 0; i < currentRound.length; i += 2) {
-      roundMatches.push({ team1: currentRound[i], team2: currentRound[i + 1] });
+      roundMatches.push({
+        team1: currentRound[i],
+        team2: currentRound[i + 1],
+        matchNumber: matchNumber++,
+      });
     }
     rounds.push(roundMatches);
     currentRound = roundMatches.map((match) => match.team1);

@@ -1422,7 +1422,7 @@ export default function Home() {
                 </div>
                 <div className=" leading-tight">
                   <p className="text-[10px] sm:text-[12px] font-semibold text-[#64758B]">
-                    {participantdetails ? "Partner Name" : "Team Name"}
+                    {participantdetails ? "Doubles" : "Team"}
                   </p>
                   <h1 className="text-[11px] sm:text-[14px]">
                     {participantdetails

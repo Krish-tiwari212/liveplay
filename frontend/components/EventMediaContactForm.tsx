@@ -1,3 +1,4 @@
+
 import { Loader } from "lucide-react";
 import Image from "next/image";
 import { Input } from "./ui/input";
@@ -59,6 +60,7 @@ const EventMediaContactForm: React.FC<EventMediaProps> = ({
 }) => {
   const { EventData, setEventData, setEventEditData, EventEditData, editPage,fetchedEventdatafromManagemeEvent } =
     useEventContext();
+    
 
   const [isImageLoading, setIsImageLoading] = useState(false);
   const [imagePreviews, setImagePreviews] = useState<{
@@ -259,19 +261,19 @@ const EventMediaContactForm: React.FC<EventMediaProps> = ({
             </div>
             {imagePreviews[field.name as keyof typeof imagePreviews] && (
               <div className="flex justify-center items-center py-2">
-              <Image
-                src={imagePreviews[field.name as keyof typeof imagePreviews]!}
-                alt={`${field.name} preview`}
-                width={400}
-                height={400}
-                className="rounded-md border-2"
-              />
+                <Image
+                  src={imagePreviews[field.name as keyof typeof imagePreviews]!}
+                  alt={`${field.name} preview`}
+                  width={400}
+                  height={400}
+                  className="rounded-md border-2"
+                />
               </div>
             )}
           </div>
         ))}
       </div>
-      <SponsorSection />
+      <SponsorSection ManageEventId={ManageEventId}/>
       <div className="flex justify-center items-center">
         <Button
           variant="tertiary"

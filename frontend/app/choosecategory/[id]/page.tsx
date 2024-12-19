@@ -4,6 +4,7 @@ import Cart from '@/components/Cart';
 import ChooseCategoryregister from '@/components/ChooseCategoryregister';
 import HeroChangingTagLine from '@/components/HeroChangingTagLine';
 import StickyCart from '@/components/StickyCart';
+import { useCartContext } from '@/context/CartContext';
 import { useUser } from '@/context/UserContext';
 import { toast } from '@/hooks/use-toast';
 import React, { useEffect, useState } from 'react'
@@ -11,6 +12,7 @@ import React, { useEffect, useState } from 'react'
 const page = ({ params }: any) => {
   const {id}=params
   const [EventDetails, setEventDetails] = useState({});
+  const {settagline}=useCartContext()
 
   useEffect(() => {
     const fetchEventDetails = async () => {
@@ -36,6 +38,7 @@ const page = ({ params }: any) => {
           throw new Error("Invalid event data received");
         }
         setEventDetails(data);
+        settagline(data.event_name);
       } catch (error: any) {
         console.error("Error fetching event details:", error);
         toast({

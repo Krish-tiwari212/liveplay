@@ -145,6 +145,25 @@ const EventPageLeftContent = ({
   const supabase = createClient();
   const [likeCount, setLikeCount] = useState(0);
   const [session, setSession] = useState(null);
+  const [sponsors, setSponsors] = useState<string[]>([]);
+
+  useEffect(() => {
+    const fetchSponsors = async () => {
+      const { data: sponsors, error: sponsorsError } = await supabase
+        .from("sponsors")
+        .select("*")
+        .eq("event_id", eventId);
+
+      if (sponsorsError) {
+        console.error("Error fetching sponsors:", sponsorsError);
+        return;
+      }
+      console.log(sponsors);
+      setSponsors(sponsors);
+    };
+
+    fetchSponsors();
+  }, [eventId]);
 
   useEffect(() => {
     const checkSession = async () => {
@@ -305,25 +324,31 @@ const EventPageLeftContent = ({
           }}
         />
       </div>
-      <div className="flex w-full flex-col md:flex-row justify-between items-center my-4 space-y-4 md:space-y-0">
+      <div className="flex w-full flex-col md:flex-row justify-between  items-center my-4 space-y-4 md:space-y-0">
         <h1
-          className="text-xl font-semibold text-center lg:text-left"
+          className="text-2xl font-semibold text-center lg:text-left"
           style={{ textShadow: "0 3px 0 #cddc29" }}
         >
           {eventDetails.event_name}
         </h1>
 
-        <div className="flex justify-center md:justify-between gap-2 xl:gap-12">
-          <Button
-            size="sm"
-            variant="outline"
-            onClick={handleLike}
-            className={`border-2 shadow-lg border-black flex items-center ${
-              isLiked ? "bg-[#ccdb28] text-black" : ""
-            }`}
-          >
-            <h1 className="mr-1">{isLiked ? "Liked" : "Like"}</h1> <BiLike />
-          </Button>
+        <div className="flex justify-center md:justify-between gap-2 xl:gap-8">
+          <div className="flex gap-2 justify-center items-center">
+            <Button
+              variant="outline"
+              size="xs"
+              className={`text-[12px] border-2 shadow-lg border-black hover:bg-[#ccdb28] hover:text-black flex justify-center items-center gap-1 px-2 ${
+                isLiked ? "bg-[#ccdb28] text-black" : ""
+              }`}
+              onClick={handleLike}
+            >
+              {isLiked ? "Liked" : "Like"}
+              <BiLike className="" />
+            </Button>
+            <p className="text-[12px] mt-[0.4rem] text-gray-500">
+              {likeCount} Likes
+            </p>
+          </div>
 
           <Dialog>
             <DialogTrigger asChild>
@@ -482,6 +507,23 @@ const EventPageLeftContent = ({
               Register Now
             </Button>
           </Link>
+          <Link href={`/playerdashboard`}>
+            <div className="mr-5 flex gap-2 justify-center items-center w-full py-2">
+              <h1 className="text-blue-400 hover:underline text-xl cursor-pointer">
+                Already Registered?
+              </h1>
+              <TooltipProvider>
+                <Tooltip>
+                  <TooltipTrigger>
+                    <IoInformationCircle className="text-2xl " />
+                  </TooltipTrigger>
+                  <TooltipContent className="bg-[#141f29] text-[#ccdb28]">
+                    <p>Enter Team / Doubles Pair Code in your Dashboard.</p>
+                  </TooltipContent>
+                </Tooltip>
+              </TooltipProvider>
+            </div>
+          </Link>
         </div>
         <div className="block lg:hidden border-2 border-[#141F29] p-4 rounded-lg text-[#141F29]">
           <h1 className="text-xl sm:text-2xl md:text-3xl font-bold mb-4">
@@ -562,49 +604,33 @@ const EventPageLeftContent = ({
               ))}
             </ul>
           </div>
-          <div className="my-4">
-            <h3 className="text-base sm:text-lg md:text-xl font-bold flex items-center mb-2">
-              <RiStarSmileFill className="mr-2 text-2xl" /> Sponsored By
-            </h3>
-            <div className="grid grid-cols-3 gap-4 ml-6">
-              <div className="rounded-lg flex flex-col p-4">
-                <Image
-                  src="/images/sponsor (1).svg"
-                  alt="Nexus Global Ventures"
-                  width={60}
-                  height={60}
-                  className="mb-2 object-contain"
-                />
-                <span className="text-[11px]  md:text-sm leading-none">
-                  Nexus Global Ventures
-                </span>
-              </div>
-              <div className="rounded-lg flex flex-col p-4">
-                <Image
-                  src="/images/sponsor (2).svg"
-                  alt="Summit Crest Corporation"
-                  width={60}
-                  height={60}
-                  className="mb-2 object-contain"
-                />
-                <span className="text-[11px]  md:text-sm leading-none">
-                  Summit Crest Corporation
-                </span>
-              </div>
-              <div className="rounded-lg flex flex-col p-4 text-sm">
-                <Image
-                  src="/images/sponsor (1).svg"
-                  alt="Titan Edge Enterprises"
-                  width={60}
-                  height={60}
-                  className="mb-2 object-contain"
-                />
-                <span className="text-[11px] md:text-sm leading-none">
-                  Titan Edge Enterprises
-                </span>
-              </div>
+          {sponsors.length > 0 ? (
+            <div className="my-4">
+              <h3 className="text-base sm:text-lg md:text-xl font-bold flex items-center mb-2">
+                <RiStarSmileFill className="mr-2 text-2xl" /> Sponsored By
+              </h3>
+              {sponsors.length && (
+                <div className="grid grid-cols-3 gap-4 ml-6">
+                  {sponsors.map((sponsor, index) => (
+                    <div key={index} className="rounded-lg flex flex-col p-4">
+                      <Image
+                        src={sponsor.image_url}
+                        alt={sponsor.name}
+                        width={60}
+                        height={60}
+                        className="mb-2 object-contain border border-black"
+                      />
+                      <span className="text-[11px]  md:text-sm leading-none">
+                        {sponsor.name}
+                      </span>
+                    </div>
+                  ))}
+                </div>
+              )}
             </div>
-          </div>
+          ) : (
+            <></>
+          )}
         </div>
 
         {/* Event Organizer */}
@@ -785,7 +811,7 @@ const EventPageLeftContent = ({
       <div className="hidden lg:block w-full relative h-auto">
         <div className="flex justify-between items-center">
           <div>
-            <h1 className="text-2xl font-semibold mb-2">Event Information</h1>
+            <h1 className="text-2xl font-bold mb-2">Event Information</h1>
             <h2 className="mb-4">
               Total Registrations: {eventDetails.totalRegistrations || 0}
               <Link
@@ -817,7 +843,7 @@ const EventPageLeftContent = ({
 
         {/* Location Section */}
         <div className="mb-6">
-          <h3 className="text-xl font-bold mb-2">Location</h3>
+          <h3 className="text-2xl font-bold mb-2">Location</h3>
           {eventDetails.venue_not_decided ? (
             <p>Venue to be announced</p>
           ) : (
@@ -831,16 +857,16 @@ const EventPageLeftContent = ({
 
         {/* Description Section */}
         <div className="mb-6">
-          <h3 className="text-xl font-bold mb-2">Description</h3>
-          <p className="whitespace-pre-line">
+          <h3 className="text-2xl font-bold mb-2">Description</h3>
+          <p className="whitespace-pre-line text-lg">
             {eventDetails.event_description}
           </p>
         </div>
 
         {/* Event Categories Section */}
         <div className="mb-6" id="Event_Categories1">
-          <h3 className="text-xl font-bold mb-2">Event Categories</h3>
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+          <h3 className="text-2xl font-bold mb-2">Event Categories</h3>
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 text-lg">
             {eventDetails.categories.map((category) => (
               <EventCategoryCard key={category.id} event={category} />
             ))}

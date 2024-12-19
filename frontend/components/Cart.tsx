@@ -20,8 +20,8 @@ const BillingSummary = ({
   gstcompliance=false,
   gstIncExc="",
 }: BillingSummaryProps) => {
-  const{isCheckboxChecked}=useCartContext()
-  const { items, clearCart, total } = useCartContext();
+  const{isCheckboxChecked,setIsCheckboxChecked}=useCartContext()
+  const { items, clearCart, total,setItems, } = useCartContext();
   const [withdrawalFee, setWithdrawalFee] = useState<boolean>(true);
   const [feeAmount, setFeeAmount] = useState<number>(0);
   const [gst, setGst] = useState<number>(0);
@@ -54,6 +54,7 @@ const BillingSummary = ({
   };
 
   const handlePayment = async () => {
+    console.log("Payment button clicked");
     try {
       if (!session) {
         toast({
@@ -163,6 +164,13 @@ const BillingSummary = ({
   
       const paymentObject = new (window as any).Razorpay(options);
       paymentObject.open();
+      items.forEach((item) => {
+        const id = item.id;
+        localStorage.removeItem(`teamName-${id}`);
+        localStorage.removeItem(`partnerName-${id}`);
+        localStorage.removeItem(`checkboxes`);
+      });
+      localStorage.removeItem("pendingCart");
     } catch (error) {
       console.error("Payment initialization failed:", error);
       toast({
@@ -171,22 +179,41 @@ const BillingSummary = ({
         description: "Failed to initialize payment",
       });
     }
+    
+    
   };
 
   useEffect(() => {
     const original = items.reduce(
-      (acc, item) => acc + item.price * item.quantity,
-      0
-    );
-    const discounted = items.reduce(
-      (acc, item) => acc + (item.discount_value ?? item.price) * item.quantity,
+      (acc, item, index) =>
+        acc +
+        (isCheckboxChecked[index]?.checked
+          ? (item.discount_value ?? item.price) * item.quantity
+          : item.price * item.quantity),
       0
     );
 
-    const amount=isCheckboxChecked?discounted:original
+    const discounted = items.reduce(
+      (acc, item, index) =>
+        acc +
+        (isCheckboxChecked[index]?.checked
+          ? (item.discount_value ?? item.price) * item.quantity
+          : 0),
+      0
+    );
+
+    console.log("Original total:", original);
+    console.log("Discounted total:", discounted);
+
+    // Calculate amount based on whether any checkbox is checked
+    const amount = isCheckboxChecked.map((checkbox) => checkbox.checked)
+      ? original
+      : discounted;
+
+  
     setSavings(original - amount);
 
-    const fee = withdrawalFee ? 0.05 * discounted : 0;
+    const fee = withdrawalFee ? 0.05 * amount : 0;
     setFeeAmount(fee);
 
     const gstAmount = (Number(gstrate)/100) * discounted;
@@ -207,7 +234,28 @@ const BillingSummary = ({
     setWithdrawalFee(true);
   };
 
-  
+   useEffect(() => {
+    items.forEach((id) => {
+      localStorage.getItem(`isChecked-${id}`);
+    });
+     const savedCart = localStorage.getItem("pendingCart");
+     if (savedCart) {
+       setItems(JSON.parse(savedCart));
+     }
+   }, [setItems]);
+
+   useEffect(() => {
+     const savedCheckboxes = localStorage.getItem("checkboxes");
+     if (savedCheckboxes) {
+       setIsCheckboxChecked(JSON.parse(savedCheckboxes));
+     }
+   }, []);
+
+  useEffect(() => {
+    const name = "isCheckboxChecked array";
+    console.log(`${name}:`, isCheckboxChecked);
+  }, [isCheckboxChecked]);
+
   return (
     <div
       id="cart_section"
@@ -219,7 +267,7 @@ const BillingSummary = ({
           {items.length === 0 ? (
             <p className="text-gray-600">Your cart is empty.</p>
           ) : (
-            items.map((item) => (
+            items.map((item,i) => (
               <div
                 key={item.id}
                 className="flex justify-between sm:items-center rounded-md gap-2 sm:gap-0"
@@ -233,7 +281,24 @@ const BillingSummary = ({
                   </p>
                 </div>
                 <div className="text-right flex flex-col sm:flex-row sm:gap-2 items-center">
-                  {isCheckboxChecked ? (
+                  {isCheckboxChecked[i]?.checked ? (
+                  <>
+                    <p className="text-sm line-through text-gray-500">
+                      ₹{(item.price * item.quantity).toFixed(2)} 
+                    </p>
+                    <p className="text-green-600 font-semibold">
+                      ₹
+                      {(
+                        (item.discount_value ?? item.price) * item.quantity
+                      ).toFixed(2)}
+                    </p>
+                  </>
+                  ) : (
+                  <p className="text-green-600 font-semibold">
+                    ₹{(item.price * item.quantity).toFixed(2)}
+                  </p>
+                  )}
+                  {/* {isCheckboxChecked[0] ? (
                     <>
                       <p className="text-sm line-through text-gray-500">
                         ₹{(item.price * item.quantity).toFixed(2)}
@@ -251,7 +316,7 @@ const BillingSummary = ({
                         ₹{(item.price * item.quantity).toFixed(2)}
                       </p>
                     </>
-                  )}
+                  )} */}
                 </div>
               </div>
             ))

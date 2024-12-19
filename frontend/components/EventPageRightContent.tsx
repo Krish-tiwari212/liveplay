@@ -334,29 +334,33 @@ const EventPageRightContent = ({
             ))}
           </ul>
         </div>
-        <div className="my-4">
-          <h3 className="text-base sm:text-lg md:text-xl font-bold flex items-center mb-2">
-            <RiStarSmileFill className="mr-2 text-2xl" /> Sponsored By
-          </h3>
-          {sponsors.length && (
-            <div className="grid grid-cols-3 gap-4 ml-6">
-              {sponsors.map((sponsor, index) => (
-                <div key={index} className="rounded-lg flex flex-col p-4">
-                  <Image
-                    src={sponsor.image_url}
-                    alt={sponsor.name}
-                    width={60}
-                    height={60}
-                    className="mb-2 object-contain border border-black"
-                  />
-                  <span className="text-[11px]  md:text-sm leading-none">
-                    {sponsor.name}
-                  </span>
-                </div>
-              ))}
-            </div>
-          )}
-        </div>
+        {sponsors.length > 0 ? (
+          <div className="my-4">
+            <h3 className="text-base sm:text-lg md:text-xl font-bold flex items-center mb-2">
+              <RiStarSmileFill className="mr-2 text-2xl" /> Sponsored By
+            </h3>
+            {sponsors.length && (
+              <div className="grid grid-cols-3 gap-4 ml-6">
+                {sponsors.map((sponsor, index) => (
+                  <div key={index} className="rounded-lg flex flex-col p-4">
+                    <Image
+                      src={sponsor.image_url}
+                      alt={sponsor.name}
+                      width={60}
+                      height={60}
+                      className="mb-2 object-contain border border-black"
+                    />
+                    <span className="text-[11px]  md:text-sm leading-none">
+                      {sponsor.name}
+                    </span>
+                  </div>
+                ))}
+              </div>
+            )}
+          </div>
+        ) : (
+          <></>
+        )}
       </div>
 
       {/* Event Organizer */}

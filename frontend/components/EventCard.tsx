@@ -223,18 +223,22 @@ const EventCard = ({ id, eventDetails }: EventCardProps) => {
             >
               View Matches
             </Button>
-            <Button
-              variant="outline"
-              size="xs"
-              className={`text-[12px] border border-black hover:bg-[#ccdb28] hover:text-black flex justify-center items-center gap-1 px-2 ${
-                isLiked ? "bg-[#ccdb28] text-black" : ""
-              }`}
-              onClick={handleLike}
-            >
-              {isLiked ? "Liked" : "Like"}
-              <BiLike className="" />
-            </Button>
-            <p className="text-[12px] mt-[0.4rem] text-gray-500">{likeCount} Likes</p>
+            <div className="flex gap-2 justify-center items-center">
+              <Button
+                variant="outline"
+                size="xs"
+                className={`text-[12px] border border-black hover:bg-[#ccdb28] hover:text-black flex justify-center items-center gap-1 px-2 ${
+                  isLiked ? "bg-[#ccdb28] text-black" : ""
+                }`}
+                onClick={handleLike}
+              >
+                {isLiked ? "Liked" : "Like"}
+                <BiLike className="" />
+              </Button>
+              <p className="text-[12px] mt-[0.4rem] text-gray-500">
+                {likeCount} Likes
+              </p>
+            </div>
           </div>
           <Button
             onClick={() => router.push(`/choosecategory/${id}`)}
