@@ -21,6 +21,7 @@ import { FaGoogle } from "react-icons/fa";
 import Image from "next/image";
 import Script from "next/script";
 import { useSearchParams } from "next/navigation";
+import { FaArrowLeft } from "react-icons/fa";
 
 // Define the schema for login validation
 const loginSchema = z.object({
@@ -29,12 +30,12 @@ const loginSchema = z.object({
 });
 
 const LoginForm = () => {
-  const router = useRouter();
   const { toast } = useToast();
   const [loading, setLoading] = useState(false);
   const turnstileRef = useRef<HTMLDivElement>(null);
   const searchParams = useSearchParams();
   const redirect = searchParams.get("redirect");
+  const router = useRouter();
 
   const form = useForm({
     resolver: zodResolver(loginSchema),
@@ -129,6 +130,9 @@ const LoginForm = () => {
         className="z-20"
       />
       <div className="relative z-20 w-[90%] mx-auto sm:w-full max-w-md p-8 bg-white rounded shadow-md">
+        <Button variant="ghost" onClick={() => router.back()} className="float-left space-x-2 mb-4 -mt-2 -ml-2">
+          <FaArrowLeft />
+        </Button>
         <h2 className="text-2xl font-bold text-center mb-6">
           Login to Your Account
         </h2>

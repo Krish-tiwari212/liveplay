@@ -20,6 +20,7 @@ import { useToast } from "@/hooks/use-toast";
 import { FaGoogle } from "react-icons/fa";
 import Image from "next/image";
 import { Checkbox } from "@/components/ui/checkbox";
+import { FaArrowLeft } from "react-icons/fa";
 
 const formSchema = z
   .object({
@@ -109,6 +110,9 @@ const SignUpForm = () => {
           className="z-10"
         />
         <div className="w-[90%] mx-auto sm:w-full max-w-lg p-8 bg-white rounded shadow-md z-10">
+          <Button variant="ghost" onClick={() => router.back()} className="float-left space-x-2 mb-4 -mt-2 -ml-2">
+            <FaArrowLeft />
+          </Button>
           <h2 className="text-2xl font-bold text-center mb-6">
             Create Your Account
           </h2>

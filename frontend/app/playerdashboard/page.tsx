@@ -1448,16 +1448,16 @@ export default function Home() {
                     Player
                   </p>
                   <h1 className="text-[11px] sm:text-[14px]">
-                    {userDetails.full_name}
+                    {teamMembers[0].name}
                   </h1>
                 </div>
                 <div className=" leading-tight">
                   <p className="text-[10px] sm:text-[12px] font-semibold text-[#64758B]">
-                    {participantdetails ? "Partner Name" : "Team Name"}
+                    {participantdetails.partner_name ? "Partner Name" : "Team Name"}
                   </p>
                   <h1 className="text-[11px] sm:text-[14px]">
-                    {participantdetails
-                      ? participantdetails.partner_name
+                    {participantdetails.partner_name
+                      ? teamMembers[1]?.name || participantdetails.partner_name
                       : teamDetails.team_name}
                   </h1>
                 </div>
