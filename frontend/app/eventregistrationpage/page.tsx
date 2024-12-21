@@ -188,20 +188,7 @@ const EventPage = () => {
          console.error(error);
        }
      };
-
-     const fetchParticipants = async () => {
-       try {
-         const response = await fetch(`/api/event/get_entries/${eventId}`);
-         if (!response.ok) throw new Error("Failed to fetch participants.");
-         const data = await response.json();
-         setParticipants(data);
-       } catch (error) {
-         console.error(error);
-       }
-     };
-
      fetchEventDetails();
-     fetchParticipants();
    }, []);
 
    useEffect(() => {
@@ -442,13 +429,13 @@ const EventPage = () => {
                       width={100}
                       height={100}
                     />
-                    <h1 className="text-sm sm:text-md font-semibold">
+                    {/* <h1 className="text-sm sm:text-md font-semibold">
                       Profile Views: <span className="font-normal">36181</span>
-                    </h1>
+                    </h1> */}
                     <h1 className="text-sm sm:text-md font-semibold">
                       Joined Since:{" "}
                       <span className="font-normal">
-                        {dialogData.registration_date}
+                        {new Date(dialogData.registration_date).toLocaleDateString()}
                       </span>
                     </h1>
                   </div>
@@ -460,7 +447,7 @@ const EventPage = () => {
                     <h1 className="text-sm sm:text-lg font-semibold">
                       Events Hosted
                     </h1>
-                    <h1 className="text-sm sm:text-lg">5</h1>
+                    <h1 className="text-sm sm:text-lg">0</h1>
                   </div>
                   <div className="flex flex-col justify-center items-center bg-[#CCDB28] rounded-lg w-full sm:w-1/2 h-20 shadow-md">
                     <h1 className="text-sm sm:text-lg font-semibold">
@@ -476,20 +463,16 @@ const EventPage = () => {
                     User Activity
                   </h1>
                   <div className="flex flex-col gap-4">
-                    {new Array(6).fill(null).map((_, idx) => (
                       <div
-                        key={idx}
                         className="flex gap-2 bg-[#F4F4F4] rounded-md w-full px-4 py-2"
                       >
                         <h1 className="font-semibold text-sm sm:text-lg">
                           Hosted:{" "}
                         </h1>
                         <p className="text-sm sm:text-md">
-                          Summer Basketball Tournament Pro League Men Champ 2.0
-                          2024
+                          No events hosted yet.
                         </p>
                       </div>
-                    ))}
                   </div>
                 </div>
               </div>

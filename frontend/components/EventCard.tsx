@@ -15,6 +15,8 @@ import { useRouter } from "next/navigation";
 import { VscGraph } from "react-icons/vsc";
 import Link from "next/link";
 import { createClient } from "@/utils/supabase/client";
+import { Badge } from "./ui/badge";
+import { RiDiscountPercentLine, RiStarSmileFill } from "react-icons/ri";
 
 interface EventCategory {
   id: number;
@@ -196,8 +198,16 @@ const EventCard = ({ id, eventDetails }: EventCardProps) => {
 
       <div className="bg-white px-4 py-1 flex flex-col justify-between">
         <div>
+          <div className="flex space-x-2">
           <div className="bg-[#E6EAC5] text-black text-xs px-2 py-1 rounded inline-block">
             {eventDetails.sport}
+          </div>
+          {eventDetails.categories.some((cat) => cat.has_discount) && (
+            <Badge className="bg-[#E6EAC5] text-[#F3524F] text-xs flex items-center">
+              <RiDiscountPercentLine className="mr-2" />
+              Early Bird Discount
+            </Badge>
+          )}
           </div>
           <h1 className="font-bold text-xl text-gray-900 line-clamp-2">
             {eventDetails.event_name}
