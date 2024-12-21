@@ -959,7 +959,7 @@ export default function Home() {
           ) : (
             interestedEvents.map((event, i) => (
               <React.Fragment key={event.id}>
-                <Card className="shadow-md cursor-pointer hover:shadow-2xl flex-none min-w-[240px] h-[15rem] max-w-[270px] sm:min-w-[450px] sm:max-w-[550px] border-2 border-gray-800">
+                <Card className="shadow-md cursor-pointer hover:shadow-2xl flex-none min-w-[240px] max-w-[270px] sm:min-w-[450px] sm:max-w-[550px] border-2 border-gray-800">
                   <CardContent className="py-4 flex flex-col sm:flex-row gap-4 h-full">
                     <div className="flex-[1]">
                       <Image
