@@ -46,6 +46,23 @@ const EventCard = ({ id, eventDetails }: EventCardProps) => {
   const router = useRouter();
   const supabase = createClient();
   const [session, setSession] = useState(null);
+  const [registrations, setRegistrations] = useState(0);
+
+  useEffect(() => {
+    const getRegistrations = async () => {
+      const { data, error } = await supabase
+        .from("participants")
+        .select("*")
+        .eq("event_id", id);
+
+      if (error) {
+        console.error("Error fetching registrations:", error);
+        return;
+      }
+      setRegistrations(data.length);
+    };
+    getRegistrations();
+  }, [id]);
 
   useEffect(() => {
     const checkSession = async () => {
@@ -207,7 +224,7 @@ const EventCard = ({ id, eventDetails }: EventCardProps) => {
                   <VscGraph className="text-lg" />
                   Registrations:
                   <span className="text-blue-600 font-semibold text-[14px] ">
-                    {eventDetails.categories.length}
+                    {registrations || 0}
                   </span>
                 </p>
               </Link>

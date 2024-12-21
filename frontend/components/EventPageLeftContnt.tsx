@@ -146,6 +146,23 @@ const EventPageLeftContent = ({
   const [likeCount, setLikeCount] = useState(0);
   const [session, setSession] = useState(null);
   const [sponsors, setSponsors] = useState<string[]>([]);
+  const [registrations, setRegistrations] = useState(0);
+
+  useEffect(() => {
+    const getRegistrations = async () => {
+      const { data, error } = await supabase
+        .from("participants")
+        .select("*")
+        .eq("event_id", eventId);
+
+      if (error) {
+        console.error("Error fetching registrations:", error);
+        return;
+      }
+      setRegistrations(data.length);
+    };
+    getRegistrations();
+  }, [eventId]);
 
   useEffect(() => {
     const fetchSponsors = async () => {
@@ -484,7 +501,7 @@ const EventPageLeftContent = ({
                 <VscGraph className="w-4 h-4 sm:w-5 sm:h-5  mr-1" />
                 <span className="text-sm sm:text-base">Registrations:</span>
                 <span className="text-blue-600 text-sm sm:text-base">
-                  { registrations }
+                  {registrations || 0}
                 </span>
               </div>
             </Link>

@@ -97,16 +97,16 @@ interface Category {
 }
 
 interface PlayerRegistrationmenuProps {
-  participants: Participant[];
+  participants?: Participant[] | null;
   dialog: boolean;
   setDialog: React.Dispatch<React.SetStateAction<boolean>>;
   dialogdata: Participant;
   setdialogdata: React.Dispatch<React.SetStateAction<Participant>>;
-  categories:Category[]
+  categories: Category[];
 }
 
 const PlayerRegistrationmenu = ({
-  participants,
+  participants = [],
   dialog,
   setDialog,
   dialogdata,
@@ -117,8 +117,13 @@ const PlayerRegistrationmenu = ({
   const [searchTerm, setSearchTerm] = useState("");
   console.log(participants);
   const [filteredPlayers, setFilteredPlayers] =
-    useState<Participant[]>(participants.participants);
+    useState<Participant[]>([]);
   const [currentPage, setCurrentPage] = useState(1);
+
+   useEffect(() => {
+     setFilteredPlayers(participants || []); 
+   }, [participants]);
+
   const playersPerPage = 14;
 
   const handleSearch = (e: React.ChangeEvent<HTMLInputElement>) => {

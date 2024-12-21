@@ -21,7 +21,7 @@ const EventCategoryCard: React.FC<EventCategoryCardProps> = ({ event }) => {
   return (
     <div
       className={`border rounded px-4 py-2 shadow transition-all  duration-500 ${
-        isExpanded ? "max-h-40 opacity-100" : "max-h-[70px]"
+        isExpanded ? "max-h-44 opacity-100" : "max-h-[80px]"
       }`}
     >
       <button

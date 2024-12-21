@@ -16,12 +16,13 @@ import { useRouter, useSearchParams } from 'next/navigation';
 import React, { useEffect, useState } from 'react'
 import { GiConsoleController, GiEntryDoor } from 'react-icons/gi';
 import { HiCurrencyRupee } from 'react-icons/hi2';
-import { IoLocationSharp, IoShareSocialSharp } from 'react-icons/io5';
+import { IoInformationCircle, IoLocationSharp, IoShareSocialSharp } from 'react-icons/io5';
 import { PiHandWithdraw } from 'react-icons/pi';
 import { RiDiscountPercentLine } from 'react-icons/ri';
 import { VscGraph } from 'react-icons/vsc';
 import { Suspense } from "react";
 import { useEventContext } from '@/context/EventDataContext';
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
 
 interface Participant {
   id: string;
@@ -294,6 +295,10 @@ const EventPage = () => {
      fetchParticipants();
    }, []);
 
+   useEffect(() => {
+     console.log(eventId);
+   }, []);
+
    if (!event) {
      return <p>Loading event details...</p>;
    }
@@ -302,6 +307,8 @@ const EventPage = () => {
      return <p>Loading categories...</p>;
    }
 
+   
+  
   return (
     <div className="mx-auto p-8">
       <div className="flex flex-col lg:flex-row gap-4">
@@ -458,16 +465,30 @@ const EventPage = () => {
               </div>
             </div>
 
-            <Link href="/choosecategory">
+            <Link href={`/choosecategory/${eventId}`}>
               <Button
                 variant="tertiary"
                 className="w-full border-2 border-black py-8 text-xl"
               >
                 Register Now
               </Button>
-              <p className="text-blue-400 underline text-xl mt-2 text-center">
-                Already Registered ?
-              </p>
+            </Link>
+            <Link href={`/playerdashboard`}>
+              <div className="mr-5 flex gap-2 justify-center items-center w-full py-2">
+                <h1 className="text-blue-400 hover:underline text-xl cursor-pointer">
+                  Already Registered?
+                </h1>
+                <TooltipProvider>
+                  <Tooltip>
+                    <TooltipTrigger>
+                      <IoInformationCircle className="text-nxl " />
+                    </TooltipTrigger>
+                    <TooltipContent className="bg-[#141f29] text-[#ccdb28]">
+                      <p>Enter Team / Doubles Pair Code in your Dashboard.</p>
+                    </TooltipContent>
+                  </Tooltip>
+                </TooltipProvider>
+              </div>
             </Link>
           </div>
         </div>
