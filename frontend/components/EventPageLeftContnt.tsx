@@ -591,7 +591,7 @@ const EventPageLeftContent = ({
               onClick={() => scrollToSection("Event_Categories")}
               className="text-xs sm:text-sm text-blue-500 hover:underline mb-1 md:mb-0 md:mt-1"
             >
-              (View Categories)hj
+              (View Categories)
             </button>
           </div>
           <div className="flex flex-col md:flex-row my-4">
