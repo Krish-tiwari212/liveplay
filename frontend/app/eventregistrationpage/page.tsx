@@ -23,6 +23,7 @@ import { VscGraph } from 'react-icons/vsc';
 import { Suspense } from "react";
 import { useEventContext } from '@/context/EventDataContext';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
+import { createClient} from '@/utils/supabase/client'
 
 interface Participant {
   id: string;
@@ -91,150 +92,6 @@ interface Event {
   categories:Category
 }
 
-
-const participantsdemo = [
-  {
-    id: "1",
-    user_id: "101",
-    name: "Alice Johnson",
-    status: "confirmed",
-    registration_date: "2024-12-01",
-    user: {
-      id: "101",
-      full_name: "Alice Johnson",
-      email: "alice.johnson@example.com",
-      gender: "female",
-      date_of_birth: "1990-05-15",
-    },
-  },
-  {
-    id: "2",
-    user_id: "102",
-    name: "Bob Smith",
-    status: "pending",
-    registration_date: "2024-12-02",
-    user: {
-      id: "102",
-      full_name: "Bob Smith",
-      email: "bob.smith@example.com",
-      gender: "male",
-      date_of_birth: "1988-03-22",
-    },
-  },
-  {
-    id: "3",
-    user_id: "103",
-    name: "Charlie Brown",
-    status: "declined",
-    registration_date: "2024-12-03",
-    user: {
-      id: "103",
-      full_name: "Charlie Brown",
-      email: "charlie.brown@example.com",
-      gender: "male",
-      date_of_birth: "1995-07-19",
-    },
-  },
-  {
-    id: "4",
-    user_id: "104",
-    name: "Diana Prince",
-    status: "confirmed",
-    registration_date: "2024-12-04",
-    user: {
-      id: "104",
-      full_name: "Diana Prince",
-      email: "diana.prince@example.com",
-      gender: "female",
-      date_of_birth: "1992-11-11",
-    },
-  },
-  {
-    id: "5",
-    user_id: "105",
-    name: "Evan Thomas",
-    status: "pending",
-    registration_date: "2024-12-05",
-    user: {
-      id: "105",
-      full_name: "Evan Thomas",
-      email: "evan.thomas@example.com",
-      gender: "male",
-      date_of_birth: "1997-09-04",
-    },
-  },
-  {
-    id: "6",
-    user_id: "106",
-    name: "Fiona Davis",
-    status: "confirmed",
-    registration_date: "2024-12-06",
-    user: {
-      id: "106",
-      full_name: "Fiona Davis",
-      email: "fiona.davis@example.com",
-      gender: "female",
-      date_of_birth: "1985-12-25",
-    },
-  },
-  {
-    id: "7",
-    user_id: "107",
-    name: "George Miller",
-    status: "declined",
-    registration_date: "2024-12-07",
-    user: {
-      id: "107",
-      full_name: "George Miller",
-      email: "george.miller@example.com",
-      gender: "male",
-      date_of_birth: "1993-04-10",
-    },
-  },
-  {
-    id: "8",
-    user_id: "108",
-    name: "Hannah Lee",
-    status: "confirmed",
-    registration_date: "2024-12-08",
-    user: {
-      id: "108",
-      full_name: "Hannah Lee",
-      email: "hannah.lee@example.com",
-      gender: "female",
-      date_of_birth: "1991-06-18",
-    },
-  },
-  {
-    id: "9",
-    user_id: "109",
-    name: "Ian Collins",
-    status: "pending",
-    registration_date: "2024-12-09",
-    user: {
-      id: "109",
-      full_name: "Ian Collins",
-      email: "ian.collins@example.com",
-      gender: "male",
-      date_of_birth: "1990-02-28",
-    },
-  },
-  {
-    id: "10",
-    user_id: "110",
-    name: "Julia Adams",
-    status: "confirmed",
-    registration_date: "2024-12-10",
-    user: {
-      id: "110",
-      full_name: "Julia Adams",
-      email: "julia.adams@example.com",
-      gender: "female",
-      date_of_birth: "1989-08-30",
-    },
-  },
-];
-
 const EventPage = () => {
   const {eventregistratiopage,seteventregistrationpage}=useEventContext()
   const router = useRouter();
@@ -247,6 +104,58 @@ const EventPage = () => {
    const [openplayerinfo,setOpenPlayerInfo]=useState(false)
    const [dialogData,setDialogData]=useState<Participant>({})
    const [openshare,setopenshare]=useState(false)
+  const supabase = createClient();
+
+  useEffect(() => {
+    const fetchParticipants = async () => {
+      const { data: participantsData, error: participantsError } = await supabase
+        .from('participants')
+        .select(`
+          id,
+          user_id,
+          name,
+          status,
+          registration_date
+        `)
+        .eq('event_id', eventId); // Filter by event_id
+  
+      if (participantsError) {
+        console.error('Error fetching participants:', participantsError);
+        return;
+      }
+  
+      // Fetch user details for each participant
+      const userIds = participantsData.map(participant => participant.user_id);
+      const { data: usersData, error: usersError } = await supabase
+        .from('users')
+        .select(`
+          id,
+          full_name,
+          email,
+          gender,
+          date_of_birth
+        `)
+        .in('id', userIds);
+  
+      if (usersError) {
+        console.error('Error fetching users:', usersError);
+        return;
+      }
+    
+      // Merge participants with their corresponding user details
+      const participantsWithUserDetails = participantsData.map(participant => {
+        const user = usersData.find(user => user.id === participant.user_id);
+        return { ...participant, user };
+      });
+
+      setParticipants(participantsWithUserDetails);
+      console.log("participants", participantsWithUserDetails);
+    };
+
+    fetchParticipants();
+  }, [eventId]);
+
+  const participantsdemo = Array.isArray(participants) ? [...participants] : [];
 
   const handleCopy = (text: string) => {
     navigator.clipboard
