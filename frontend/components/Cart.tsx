@@ -188,40 +188,45 @@ const BillingSummary = ({
       (acc, item, index) =>
         acc +
         (isCheckboxChecked[index]?.checked
-          ? (item.discount_value ?? item.price) * item.quantity
+          ? item.price * item.quantity
           : item.price * item.quantity),
       0
     );
-
+  
     const discounted = items.reduce(
-      (acc, item, index) =>
-        acc +
-        (isCheckboxChecked[index]?.checked
-          ? (item.discount_value ?? item.price) * item.quantity
-          : 0),
+      (acc, item, index) => {
+        if (isCheckboxChecked[index]?.checked) {
+          const discount = item.discount_value
+            ? item.discount_value
+            : item.percentage_input
+            ? (item.price * item.percentage_input) / 100
+            : 0;
+          return acc + (item.price - discount) * item.quantity;
+        }
+        return acc;
+      },
       0
     );
-
+  
     console.log("Original total:", original);
     console.log("Discounted total:", discounted);
-
+  
     // Calculate amount based on whether any checkbox is checked
-    const amount = isCheckboxChecked.map((checkbox) => checkbox.checked)
-      ? original
-      : discounted;
-
+    const amount = isCheckboxChecked.some((checkbox) => checkbox.checked)
+      ? discounted
+      : original;
   
     setSavings(original - amount);
-
+  
     const fee = withdrawalFee ? 0.05 * amount : 0;
     setFeeAmount(fee);
-
-    const gstAmount = (Number(gstrate)/100) * discounted;
+  
+    const gstAmount = (Number(gstrate) / 100) * discounted;
     setGst(gstAmount);
     setTotalPayable(
       gstIncExc === "inclusive" ? amount + fee + gstAmount : amount + fee
     );
-  }, [items, withdrawalFee]);
+  }, [items, withdrawalFee, isCheckboxChecked, gstrate, gstIncExc]);
 
   const handleRemoveFee = () => {
     setWithdrawalFee(false);
@@ -267,7 +272,7 @@ const BillingSummary = ({
           {items.length === 0 ? (
             <p className="text-gray-600">Your cart is empty.</p>
           ) : (
-            items.map((item,i) => (
+            items.map((item, i) => (
               <div
                 key={item.id}
                 className="flex justify-between sm:items-center rounded-md gap-2 sm:gap-0"
@@ -282,23 +287,6 @@ const BillingSummary = ({
                 </div>
                 <div className="text-right flex flex-col sm:flex-row sm:gap-2 items-center">
                   {isCheckboxChecked[i]?.checked ? (
-                  <>
-                    <p className="text-sm line-through text-gray-500">
-                      ₹{(item.price * item.quantity).toFixed(2)} 
-                    </p>
-                    <p className="text-green-600 font-semibold">
-                      ₹
-                      {(
-                        (item.discount_value ?? item.price) * item.quantity
-                      ).toFixed(2)}
-                    </p>
-                  </>
-                  ) : (
-                  <p className="text-green-600 font-semibold">
-                    ₹{(item.price * item.quantity).toFixed(2)}
-                  </p>
-                  )}
-                  {/* {isCheckboxChecked[0] ? (
                     <>
                       <p className="text-sm line-through text-gray-500">
                         ₹{(item.price * item.quantity).toFixed(2)}
@@ -306,17 +294,15 @@ const BillingSummary = ({
                       <p className="text-green-600 font-semibold">
                         ₹
                         {(
-                          (item.discount_value ?? item.price) * item.quantity
+                          (item.price - (item.discount_value ?? (item.price * (item.percentage_input ?? 0) / 100))) * item.quantity
                         ).toFixed(2)}
                       </p>
                     </>
                   ) : (
-                    <>
-                      <p className="text-green-600 font-semibold">
-                        ₹{(item.price * item.quantity).toFixed(2)}
-                      </p>
-                    </>
-                  )} */}
+                    <p className="text-green-600 font-semibold">
+                      ₹{(item.price * item.quantity).toFixed(2)}
+                    </p>
+                  )}
                 </div>
               </div>
             ))
@@ -387,7 +373,7 @@ const BillingSummary = ({
         {items.length > 0 && (
           <div className="py-2 rounded-md flex justify-center items-center">
             {savings.toFixed(2) === "0.00" ? (
-              <p className="flex justify-center items-center gap-2">
+              <p className="hidden items-center gap-2 sm:flex sm:justify-center">
                 <RiDiscountPercentFill className="text-2xl" />
                 Sorry No Savings
               </p>

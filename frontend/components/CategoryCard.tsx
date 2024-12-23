@@ -139,10 +139,14 @@ const CategoryCard: React.FC<CategoryCardProps> = ({ category, participantsData,
      return updatedState;
    });
 
-    const finalPrice =
-      isCheckboxCheck && category.discount_value
-        ? category.discount_value
-        : category.price;
+   const finalPrice =
+   isCheckboxCheck
+     ? category.discount_value
+       ? category.price - category.discount_value
+       : category.percentage_input
+       ? category.price - (category.price * category.percentage_input) / 100
+       : category.price
+     : category.price;
 
     let finalCategory: Category = {
       ...category,
@@ -313,15 +317,20 @@ const CategoryCard: React.FC<CategoryCardProps> = ({ category, participantsData,
                     {isCheckboxCheck ? (
                       <>
                         <span className="text-[#141f29] font-semibold">
-                          ₹{category.discount_value}
+                          ₹
+                          {category.discount_value
+                            ? (category.price - category.discount_value).toFixed(2)
+                            : category.percentage_input
+                            ? (category.price - (category.price * category.percentage_input) / 100).toFixed(2)
+                            : category.price.toFixed(2)}
                         </span>
                         <span className="line-through text-gray-500 ml-2">
-                          ₹{category.price}
+                          ₹{category.price.toFixed(2)}
                         </span>
                       </>
                     ) : (
                       <span className="text-[#141f29] font-semibold">
-                        ₹{category.price}
+                        ₹{category.price.toFixed(2)}
                       </span>
                     )}
                   </div>

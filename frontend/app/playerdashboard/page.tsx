@@ -64,6 +64,7 @@ import { Input } from "@/components/ui/input";
 import { Copy } from "lucide-react";
 import { FaSmile } from "react-icons/fa";
 import html2canvas from "html2canvas";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 
 interface EventCard {
   id: number;
@@ -479,7 +480,7 @@ export default function Home() {
         const { data, error } = await supabase
           .from('participants')
           .select('id')
-          .eq('user_id', user.id)
+          .eq('user_id', user?.id)
           .eq('event_id', eventId)
           .single();
 
@@ -500,7 +501,7 @@ export default function Home() {
         const { data, error } = await supabase
           .from("participants") // Table where participant details are stored
           .select("*") // Fetch all participant details
-          .eq("user_id", user.id) // Filters by the user's ID
+          .eq("user_id", user?.id) // Filters by the user's ID
           .eq("event_id", eventId) // Filters by the event ID
           .single(); // Expects a single result
 
@@ -553,6 +554,17 @@ export default function Home() {
     }
   };
 
+  const groupedCategories = registeredCategories.reduce((acc, category) => {
+    if (!acc[category.category_type]) {
+      acc[category.category_type] = [];
+    }
+    acc[category.category_type].push(category);
+    return acc;
+  }, {});
+  const [selectedTab, setSelectedTab] = useState(
+    Object.keys(groupedCategories).length > 0 ? Object.keys(groupedCategories)[0] : ''
+  );
+
   useEffect(() => {
     const fetchCategoriesAndTeamDetails = async () => {
       try {
@@ -580,16 +592,18 @@ export default function Home() {
         }
   
         // Filter categories based on participant's registered category_id
-        const registeredCategories = categoriesData.filter(category => category.id === participantData.category_id);
-  
+        const registeredCategories = categoriesData.filter(category => participantData.category_ids.includes(category.id));
         setRegisteredCategories(registeredCategories);
+        setSelectedTab(registeredCategories.length > 0 ? registeredCategories[0].category_type : '');
   
         // Fetch team details if the participant is part of a team
-        if (participantData.team_id) {
+        if (participantData.team_ids && participantData.team_ids.length > 0) {
+          const firstTeamId = participantData.team_ids[0];
+          console.log(firstTeamId);
           const { data: teamData, error: teamError } = await supabase
             .from('teams')
             .select('*')
-            .eq('id', participantData.team_id)
+            .eq('id', firstTeamId)
             .single();
   
           if (teamError) {
@@ -597,20 +611,19 @@ export default function Home() {
             return;
           }
   
-          setTeamDetails(teamData);
+          setTeamDetails([teamData]);
           setIsLeader(participantData.leader); // Assuming the first participant is the leader
-
+  
           const { data: teamMembersData, error: teamMembersError } = await supabase
             .from('participants')
             .select('id, name')
             .in('id', teamData.participant_ids);
-
+  
           if (teamMembersError) {
             console.error(teamMembersError);
             return;
-            
           }
-
+  
           setTeamMembers(teamMembersData);
         }
       } catch (error) {
@@ -622,6 +635,75 @@ export default function Home() {
       fetchCategoriesAndTeamDetails();
     }
   }, [isRegistrationModalOpen, participantId, eventId]);
+  
+  useEffect(() => {
+    const fetchTeamDetailsByCategory = async () => {
+      try {
+        console.log(selectedTab);
+        // Fetch team details based on the selected category type
+  
+        const { data: participantData, error: participantError } = await supabase
+          .from('participants')
+          .select('*')
+          .eq('id', participantId)
+          .single();
+  
+        if (participantError) {
+          console.error(participantError);
+          return;
+        }
+  
+        if (participantData.team_ids && participantData.team_ids.length > 0) {
+          const teamDetailsPromises = participantData.team_ids.map(async (teamId) => {
+            const { data: teamData, error: teamError } = await supabase
+              .from('teams')
+              .select('*')
+              .eq('id', teamId)
+              .eq('category_type', selectedTab)
+              .maybeSingle();
+  
+            if (teamError) {
+              console.error(`Error fetching team with id ${teamId}:`, teamError);
+              return null;
+            }
+  
+            return teamData;
+          });
+  
+          const teamDetails = await Promise.all(teamDetailsPromises);
+          const validTeamDetails = teamDetails.filter(team => team !== null);
+          setTeamDetails(validTeamDetails[0]);
+  
+          if (validTeamDetails.length > 0) {
+            setIsLeader(participantData.leader); // Assuming the first participant is the leader
+  
+            const teamMembersPromises = validTeamDetails.map(async (team) => {
+              const { data: teamMembersData, error: teamMembersError } = await supabase
+                .from('participants')
+                .select('id, name')
+                .in('id', team.participant_ids);
+  
+              if (teamMembersError) {
+                console.error(`Error fetching members for team with id ${team.id}:`, teamMembersError);
+                return [];
+              }
+  
+              return teamMembersData;
+            });
+  
+            const teamMembers = await Promise.all(teamMembersPromises);
+            setTeamMembers(teamMembers.flat());
+          }
+        }
+      } catch (error) {
+        console.error('Error fetching team details by category:', error);
+      }
+    };
+  
+    if (selectedTab) {
+      fetchTeamDetailsByCategory();
+    }
+  }, [selectedTab]);
 
   const handleWithdrawFromCategory = async (categoryName) => {
     setIsAlertOpen(true);
@@ -731,7 +813,8 @@ export default function Home() {
     // After successful withdrawal, show a success message
     console.log('Withdrawal successful');
     setIsWithdrawModalOpen(false);
-};
+  };
+  
   return (
     <div className="flex flex-col m-3">
       {/* <div className={`flex flex-col sm:flex-row gap-2 sm:gap-4`}>
@@ -1182,138 +1265,145 @@ export default function Home() {
         </Dialog>
       )}
       {isRegistrationModalOpen && (
-        <Dialog
-          open={isRegistrationModalOpen}
-          onOpenChange={setIsRegistrationModalOpen}
-        >
-          <DialogTrigger asChild>
-            <Button className="hidden">Open</Button>
-          </DialogTrigger>
-          <DialogContent className="w-[90%] sm:max-w-2xl p-4 flex flex-col justify-between h-auto">
-            <DialogHeader>
-              <EventDetails />
-              <DialogTitle className="text-lg font-semibold flex justify-between">
-                <h1>My Registered Categories</h1>
-                <Button size="xs" onClick={() => setIsEventPassOpen(true)}>
-                  Event Pass
-                </Button>
-              </DialogTitle>
-              <DialogDescription className="text-sm text-gray-500 text-start">
-                Below are the categories you have registered for this event.
-              </DialogDescription>
+      <Dialog open={isRegistrationModalOpen} onOpenChange={setIsRegistrationModalOpen}>
+        <DialogTrigger asChild>
+          <Button className="hidden">Open</Button>
+        </DialogTrigger>
+        <DialogContent className="w-[90%] sm:max-w-2xl p-4 flex flex-col justify-between h-auto">
+          <DialogHeader>
+            <EventDetails />
+            <DialogTitle className="text-lg font-semibold flex justify-between">
+              <h1>My Registered Categories</h1>
+              <Button size="xs" onClick={() => setIsEventPassOpen(true)}>
+                Event Pass
+              </Button>
+            </DialogTitle>
+            <DialogDescription className="text-sm text-gray-500 text-start">
+              Below are the categories you have registered for this event.
+            </DialogDescription>
 
-              <div className="space-y-4">
-                {registeredCategories.map((category) => (
-                  <div className="flex justify-between gap-2" key={category.id}>
-                    <div className="flex flex-col p-2 border rounded-md shadow-sm w-full">
-                      <span className="font-medium text-start">
-                        {category.category_name} - Rs. {category.price}
-                      </span>
-                    </div>
-                    {isLeader && (
-                      <Button
-                        className="px-3 py-1 text-sm"
-                        // onClick={() =>
-                        //   handleWithdrawFromCategory(category.category_name)
-                        // }
-                        onClick={() => setIsWithdrawModalOpen(true)}
-                      >
-                        Withdraw
-                      </Button>
-                    )}
-                  </div>
+            <Tabs defaultValue={selectedTab} onValueChange={setSelectedTab} className="w-full">
+              <TabsList className="grid w-full grid-cols-2">
+                {Object.keys(groupedCategories).map((categoryType) => (
+                  <TabsTrigger key={categoryType} value={categoryType}>
+                    {categoryType}
+                  </TabsTrigger>
                 ))}
-              </div>
-
-              {teamDetails && (
-                <div className="mt-4">
-                  <h2 className="text-start text-lg font-semibold mb-2">
-                    {participantdetails ? "Partner" : "Team Members"}
-                  </h2>
-                  <div className="space-y-2">
-                    {teamMembers.map((member) => (
-                      <div
-                        className="flex items-center justify-between p-3 border rounded-md shadow-sm bg-white"
-                        key={member.id}
-                      >
-                        <div className="flex items-center space-x-3">
-                          <div className="w-10 h-10 bg-gray-200 rounded-full flex items-center justify-center">
-                            <span className="text-lg font-semibold text-gray-700">
-                              {member.name.charAt(0)}
-                            </span>
-                          </div>
-                          <span className="text-sm font-medium text-gray-800">
-                            {member.name}
+              </TabsList>
+              {Object.keys(groupedCategories).map((categoryType) => (
+                <TabsContent key={categoryType} value={categoryType}>
+                  <div className="space-y-4">
+                    {groupedCategories[categoryType].map((category) => (
+                      <div className="flex justify-between gap-2" key={category.id}>
+                        <div className="flex flex-col p-2 border rounded-md shadow-sm w-full">
+                          <span className="font-medium text-start">
+                            {category.category_name} - Rs. {category.price}
                           </span>
                         </div>
-                        {isLeader && member.id !== participantId && (
+                        {isLeader && (
                           <Button
-                            className="px-3 py-1 text-sm bg-red-500 text-white rounded-md hover:bg-red-600"
-                            onClick={() => handleRemoveTeamMember(member.id)}
+                            className="px-3 py-1 text-sm"
+                            onClick={() => setIsWithdrawModalOpen(true)}
                           >
-                            Remove
+                            Withdraw
                           </Button>
                         )}
                       </div>
                     ))}
                   </div>
-                  {teamDetails.category_type !== "Singles" && (
-                    <>
-                      <div className="mt-4 flex items-center justify-between p-3 border rounded-md shadow-sm bg-white">
-                        <div className="flex justify-center items-center gap-2">
-                          <TooltipProvider>
-                            <Tooltip>
-                              <TooltipTrigger>
-                                <IoInformationCircle className="text-xl " />
-                              </TooltipTrigger>
-                              <TooltipContent className="bg-[#141f29] text-[#ccdb28]">
-                                <p>
-                                  Share this code with Your Team or Your Partner
-                                </p>
-                              </TooltipContent>
-                            </Tooltip>
-                          </TooltipProvider>
-                          <div className="flex items-start space-x-3">
-                            <span className="text-sm font-medium text-gray-800">
-                              {participantdetails
-                                ? `Partner Code: ${teamDetails.team_code}`
-                                : `Team Code: ${teamDetails.team_code}`}
-                            </span>
-                          </div>
-                        </div>
+                </TabsContent>
+              ))}
+            </Tabs>
 
-                        <Button
-                          className="px-3 py-1 text-sm rounded-md flex items-center"
-                          onClick={handleCopyTeamCode}
-                        >
-                          <FiCopy className="mr-2" /> Copy
-                        </Button>
+            {teamDetails && (
+              <div className="mt-4">
+                <h2 className="text-start text-lg font-semibold mb-2">
+                  {participantdetails ? "Partner" : "Team Members"}
+                </h2>
+                <div className="space-y-2">
+                  {teamMembers.map((member) => (
+                    <div
+                      className="flex items-center justify-between p-3 border rounded-md shadow-sm bg-white"
+                      key={member.id}
+                    >
+                      <div className="flex items-center space-x-3">
+                        <div className="w-10 h-10 bg-gray-200 rounded-full flex items-center justify-center">
+                          <span className="text-lg font-semibold text-gray-700">
+                            {member.name.charAt(0)}
+                          </span>
+                        </div>
+                        <span className="text-sm font-medium text-gray-800">
+                          {member.name}
+                        </span>
                       </div>
-                      {copySuccess && (
-                        <div className="mt-2 text-green-500">{copySuccess}</div>
+                      {isLeader && member.id !== participantId && (
+                        <Button
+                          className="px-3 py-1 text-sm bg-red-500 text-white rounded-md hover:bg-red-600"
+                          onClick={() => handleRemoveTeamMember(member.id)}
+                        >
+                          Remove
+                        </Button>
                       )}
-                    </>
-                  )}
+                    </div>
+                  ))}
                 </div>
-              )}
-            </DialogHeader>
-            <div className="flex justify-between">
-              <Button
-                variant="outline"
-                onClick={() => setIsRegistrationModalOpen(false)}
-              >
-                Close
-              </Button>
-              <Button
-                className="px-4 py-2 rounded"
-                onClick={() => router.push(`/eventspage?event_id=${eventId}`)}
-              >
-                Register for More Categories
-              </Button>
-            </div>
-          </DialogContent>
-        </Dialog>
-      )}
+                {selectedTab !== "Singles" && (
+                  <>
+                    <div className="mt-4 flex items-center justify-between p-3 border rounded-md shadow-sm bg-white">
+                      <div className="flex justify-center items-center gap-2">
+                        <TooltipProvider>
+                          <Tooltip>
+                            <TooltipTrigger>
+                              <IoInformationCircle className="text-xl " />
+                            </TooltipTrigger>
+                            <TooltipContent className="bg-[#141f29] text-[#ccdb28]">
+                              <p>
+                                Share this code with Your Team or Your Partner
+                              </p>
+                            </TooltipContent>
+                          </Tooltip>
+                        </TooltipProvider>
+                        <div className="flex items-start space-x-3">
+                          <span className="text-sm font-medium text-gray-800">
+                            {participantdetails
+                              ? `Partner Code: ${teamDetails.team_code}`
+                              : `Team Code: ${teamDetails.team_code}`}
+                          </span>
+                        </div>
+                      </div>
+
+                      <Button
+                        className="px-3 py-1 text-sm rounded-md flex items-center"
+                        onClick={handleCopyTeamCode}
+                      >
+                        <FiCopy className="mr-2" /> Copy
+                      </Button>
+                    </div>
+                    {copySuccess && (
+                      <div className="mt-2 text-green-500">{copySuccess}</div>
+                    )}
+                  </>
+                )}
+              </div>
+            )}
+          </DialogHeader>
+          <div className="flex justify-between">
+            <Button
+              variant="outline"
+              onClick={() => setIsRegistrationModalOpen(false)}
+            >
+              Close
+            </Button>
+            <Button
+              className="px-4 py-2 rounded"
+              onClick={() => router.push(`/eventspage?event_id=${eventId}`)}
+            >
+              Register for More Categories
+            </Button>
+          </div>
+        </DialogContent>
+      </Dialog>
+    )}
       {completeprofileDialog && (
         <Dialog onOpenChange={handleCloseDialog} open={completeprofileDialog}>
           <DialogTitle>Complete Your Profile</DialogTitle>

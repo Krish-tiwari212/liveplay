@@ -42,8 +42,11 @@ export async function POST(req: Request) {
     if (authError || !authData || !authData.user) {
       return NextResponse.json({ error: authError?.message || 'Unauthorized' }, { status: 401 });
     }
+
+    // Collect all category IDs
+    const categoryIds = categories.map(category => category.id);
+
     // Insert into Participants table
-    console.log(payment.notes);
     const { data: participantEntry, error: participantError } = await supabase
       .from('participants')
       .insert({
@@ -53,9 +56,8 @@ export async function POST(req: Request) {
         total_amount: payment.amount / 100,
         registration_date: new Date().toISOString(),
         status: 'confirmed',
-        category_id: categories[0]["id"],
+        category_ids: categoryIds,
         name: authData.user.user_metadata.full_name || authData.user.user_metadata.name || 'Unknown',
-        partner_name: categories[0]["pairname"],
         withdrawal_fee: payment.notes.withdrawal_fee,
         leader: true,
       })
@@ -123,8 +125,9 @@ export async function POST(req: Request) {
 
     const maxRetries = 5;
     const teamEntries = [];
+    const teamIds = [];
     console.log('Categories:', categories);
-    for (let i=0; i<categories.length; i++) {
+    for (let i = 0; i < categories.length; i++) {
       const category = categories[i];
       const categoryId = category.id;
       let teamCode;
@@ -141,7 +144,7 @@ export async function POST(req: Request) {
             event_id: eventId,
             category_id: Number(categoryId),
             team_code: teamCode,
-            team_name: categories[0]["teamName"] || categories[0]["pairname"] || 'Team',
+            team_name: category.category_type === 'team' ? team_name : 'Team',
             participant_ids: [participantEntry.id],
             category_type: category.category_type,
           })
@@ -156,29 +159,43 @@ export async function POST(req: Request) {
       if (teamError) {
         return NextResponse.json({ error: "Error in team creation" }, { status: 400 });
       }
-      
-      // Update participant row with team_id
-      const { data: updatedParticipant, error: updateParticipantError } = await supabase
-      .from('participants')
-      .update({ team_id: teamId })
-      .eq('id', participantEntry.id);
 
-      if (updateParticipantError) {
-        return NextResponse.json({ error: 'Error updating participant with team ID' }, { status: 400 });
-      }
+      teamIds.push(teamId);
       teamEntries.push({ categoryId, teamCode });
     }
 
-    // Handle partner name for doubles category
-    if (partner_name) {
-      const { data: partnerData, error: partnerError } = await supabase
-        .from('participants')
-        .update({ partner_name })
-        .eq('id', participantEntry.id)
-        .eq('event_id', eventId);
+    // Update participant row with team_ids
+    const { data: updatedParticipant, error: updateParticipantError } = await supabase
+      .from('participants')
+      .update({ team_ids: teamIds })
+      .eq('id', participantEntry.id);
 
-      if (partnerError) {
-        return NextResponse.json({ error: "error in partner creation", success: true }, { status: 400 });
+    if (updateParticipantError) {
+      return NextResponse.json({ error: 'Error updating participant with team IDs' }, { status: 400 });
+    }
+
+    // Handle partner name for doubles category
+    for (const category of categories) {
+      if (category.category_type === 'Doubles') {
+        const { data: partnerData, error: partnerError } = await supabase
+          .from('participants')
+          .update({ partner_name })
+          .eq('id', participantEntry.id)
+          .eq('event_id', eventId);
+
+        if (partnerError) {
+          return NextResponse.json({ error: "Error updating partner name", success: true }, { status: 400 });
+        }
+      } else if (category.category_type === 'team') {
+        const { data: teamData, error: teamError } = await supabase
+          .from('participants')
+          .update({ team_name })
+          .eq('id', participantEntry.id)
+          .eq('event_id', eventId);
+
+        if (teamError) {
+          return NextResponse.json({ error: "Error updating team name", success: true }, { status: 400 });
+        }
       }
     }
 

@@ -474,6 +474,18 @@ const EventPage = () => {
                         </p>
                       </div>
                   </div>
+                  <div className="flex flex-col gap-4">
+                    <div
+                      className="flex gap-2 bg-[#F4F4F4] rounded-md w-full px-4 py-2"
+                    >
+                      <h1 className="font-semibold text-sm sm:text-lg">
+                        Played:{" "}
+                      </h1>
+                      <p className="text-sm sm:text-md">
+                        Participated in <span className="font-semibold">{event?.event_name}</span>
+                      </p>
+                    </div>
+                  </div>
                 </div>
               </div>
             </DialogDescription>

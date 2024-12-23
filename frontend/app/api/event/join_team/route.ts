@@ -17,16 +17,16 @@ export async function POST(req: Request) {
       return NextResponse.json({ error: 'Invalid team code' }, { status: 400 });
     }
 
-    const { id: teamId, category_type, participant_ids, event_id } = teamData;
+    const { id: teamId, category_type, participant_ids, event_id, category_id } = teamData;
 
     // Check the number of participants in the team
     const participantCount = participant_ids.length;
 
-    if (category_type === 'singles' && participantCount >= 1) {
+    if (category_type === 'Singles' && participantCount >= 1) {
       return NextResponse.json({ error: 'Singles team already has 1 participant' }, { status: 400 });
     }
 
-    if (category_type === 'doubles' && participantCount >= 2) {
+    if (category_type === 'Doubles' && participantCount >= 2) {
       return NextResponse.json({ error: 'Doubles team already has 2 participants' }, { status: 400 });
     }
 
@@ -39,12 +39,11 @@ export async function POST(req: Request) {
       return NextResponse.json({ error: 'Participant already in the team' }, { status: 400 });
     }
 
-    // Check if the participant is already in another team for the same event
+    // Fetch existing participant data to update team_ids and category_ids
     const { data: existingParticipant, error: existingParticipantError } = await supabase
       .from('participants')
-      .select('id')
+      .select('id, team_ids, category_ids')
       .eq('user_id', user_id)
-      .eq('event_id', event_id)
       .single();
 
     if (existingParticipantError && existingParticipantError.code !== 'PGRST116') {
@@ -52,9 +51,12 @@ export async function POST(req: Request) {
       throw existingParticipantError;
     }
 
-    if (existingParticipant) {
-      return NextResponse.json({ error: 'Participant already in another team for this event' }, { status: 400 });
-    }
+    let teamIds = existingParticipant ? existingParticipant.team_ids : [];
+    let categoryIds = existingParticipant ? existingParticipant.category_ids : [];
+
+    // Add the new team and category to the arrays
+    teamIds = [...teamIds, teamId];
+    categoryIds = [...categoryIds, category_id];
 
     const { data: userData, error: userError } = await supabase
       .from('users')
@@ -62,19 +64,23 @@ export async function POST(req: Request) {
       .eq('id', user_id)
       .single();
 
-    // Create a new participant entry
+    if (userError) {
+      throw userError;
+    }
+
+    // Create or update the participant entry
     const { data: participantEntry, error: participantError } = await supabase
       .from('participants')
-      .insert({
+      .upsert({
         user_id: user_id,
         name: userData?.full_name,
-        team_id: teamId,
-        category_id: teamData.category_id,
+        team_ids: teamIds,
+        category_ids: categoryIds,
         event_id: event_id,
         payment_status: 'paid',
         registration_date: new Date().toISOString(),
         status: 'confirmed',
-      })
+      }, { onConflict: ['user_id', 'event_id'] })
       .select()
       .single();
 
