@@ -55,7 +55,7 @@ const ChangePasswordPage = () => {
 
     if (response.ok) {
       toast({ title: "Password Changed", description: "Your password has been changed successfully!" });
-      router.push("/login");
+      router.push("/auth/login");
     } else {
       toast({ title: "Change Failed", description: result.error || "An error occurred. Please try again.", variant: "destructive" });
     }

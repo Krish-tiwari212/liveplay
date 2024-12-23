@@ -50,7 +50,6 @@ const ForgetPasswordForm = () => {
 
     if (response.ok) {
       toast({ title: "Email Sent", description: "A password reset link has been sent to your email!" });
-      router.push("/login");
     } else {
       toast({ title: "Request Failed", description: result.error || "An error occurred. Please try again.", variant: "destructive" });
     }

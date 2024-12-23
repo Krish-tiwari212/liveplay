@@ -52,14 +52,6 @@ const LoginForm = () => {
     const turnstileInput = turnstileRef.current?.querySelector('input[type="hidden"]') as HTMLInputElement;
     if (turnstileInput) {
       token = turnstileInput.value;
-    } else {
-      toast({
-        title: "Verification Required",
-        description: "Please complete the verification challenge",
-        variant: "destructive",
-      });
-      setLoading(false);
-      return;
     }
 
     const response = await fetch("/api/auth/login", {
