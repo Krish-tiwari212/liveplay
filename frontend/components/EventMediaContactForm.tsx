@@ -39,17 +39,6 @@ const additionalFields = [
       label: "Add Mobile Banner",
     },
   },
-  // {
-  //   id: "desktopBanner",
-  //   label: "Add Desktop Banner",
-  //   type: "file",
-  //   name: "desktopBanner",
-  //   required: true,
-  //   filecontnet: {
-  //     size: "SVG,JPG or PNG max(1080x1080px)",
-  //     label: "Add Desktop Banner",
-  //   },
-  // },
 ];
 
 const EventMediaContactForm: React.FC<EventMediaProps> = ({
@@ -70,27 +59,6 @@ const EventMediaContactForm: React.FC<EventMediaProps> = ({
   const imageRefs = useRef<{ mobileBanner?: HTMLInputElement | null }>({
     mobileBanner: null,
   });
-
-  //  const handleFileChange =
-  //    (type: keyof typeof imagePreviews) =>
-  //    (event: React.ChangeEvent<HTMLInputElement>) => {
-  //      const file = event.target.files?.[0];
-  //      if (file) {
-  //        const reader = new FileReader();
-  //        setIsImageLoading(true);
-  //        reader.onloadend = () => {
-  //          const base64Data = reader.result as string;
-  //          setImagePreviews((prev) => ({ ...prev, [type]: base64Data }));
-  //          if (editPage === "createEvent") {
-  //            setEventData((prev) => ({ ...prev, [type]: base64Data }));
-  //          } else if (editPage === "manageEvent") {
-  //            setEventEditData((prev) => ({ ...prev, [type]: base64Data }));
-  //          }
-  //          setIsImageLoading(false);
-  //        };
-  //        reader.readAsDataURL(file);
-  //      }
-  //    };
 
   const handleFileChange =
     (type: keyof typeof imagePreviews) =>
@@ -152,23 +120,68 @@ const EventMediaContactForm: React.FC<EventMediaProps> = ({
       }
     };
 
+    const uploadImage = async (base64Image: string, folder: string, namePrefix: string) => {
+      const base64Pattern = /^data:image\/(jpeg|png);base64,/;
+      const match = base64Image.match(base64Pattern);
+    
+      if (!match) {
+        throw new Error('Invalid image format. Please upload a JPEG or PNG image.');
+      }
+    
+      const mimeType = match[1] === 'jpeg' ? 'image/jpeg' : 'image/png';
+      const extension = match[1] === 'jpeg' ? 'jpg' : 'png';
+      const base64Data = base64Image.replace(base64Pattern, '');
+      const binaryData = atob(base64Data);
+      const arrayBuffer = new ArrayBuffer(binaryData.length);
+      const uint8Array = new Uint8Array(arrayBuffer);
+    
+      for (let i = 0; i < binaryData.length; i++) {
+        uint8Array[i] = binaryData.charCodeAt(i);
+      }
+    
+      const blob = new Blob([uint8Array], { type: mimeType });
+      const imageName = `${namePrefix}-${Date.now()}.${extension}`;
+    
+      const { data, error } = await supabase.storage
+        .from(folder)
+        .upload(`${folder}/${imageName}`, blob);
+    
+      if (error) {
+        throw new Error('Image upload failed');
+      }
+    
+      return supabase.storage.from(folder).getPublicUrl(data.path).data.publicUrl;
+    };
 
-  const handleClick = async(event: React.MouseEvent<HTMLButtonElement>) => {
+  const handleClick = async (event: React.MouseEvent<HTMLButtonElement>) => {
     event.preventDefault();
     if (editPage === "manageEvent") {
-      const differences = {};
+      const differences: any = {};
       const formFields = [
         "mobileBanner",
         "desktopBanner",
       ];
 
-      formFields.forEach((field) => {
-        if (
-          EventEditData?.[field] !== fetchedEventdatafromManagemeEvent?.[field]
-        ) {
-          differences[field] = EventEditData?.[field];
+      for (const field of formFields) {
+        if (EventEditData?.[field] !== fetchedEventdatafromManagemeEvent?.[field]) {
+          if (field === "mobileBanner" || field === "desktopBanner") {
+            try {
+              const imageUrl = await uploadImage(EventEditData?.[field], 'event-banners', field);
+              differences[field] = imageUrl;
+            } catch (error) {
+              console.error("An error occurred while uploading the image:", error);
+              toast({
+                title: "Failed to upload image. Please try again.",
+                variant: "destructive",
+              });
+              return;
+            }
+          } else {
+            differences[field] = EventEditData?.[field];
+          }
         }
-      });
+      }
+
       console.log(differences);
 
       if (Object.keys(differences).length > 0) {
