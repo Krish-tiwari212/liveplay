@@ -1,3 +1,4 @@
+
 import { Loader } from "lucide-react";
 import Image from "next/image";
 import { Input } from "./ui/input";
@@ -34,21 +35,10 @@ const additionalFields = [
     name: "mobileBanner",
     required: true,
     filecontnet: {
-      size: "SVG,JPG or PNG max(16:9)",
+      size: "JPG or PNG max(16:9)",
       label: "Add Mobile Banner",
     },
   },
-  // {
-  //   id: "desktopBanner",
-  //   label: "Add Desktop Banner",
-  //   type: "file",
-  //   name: "desktopBanner",
-  //   required: true,
-  //   filecontnet: {
-  //     size: "SVG,JPG or PNG max(1080x1080px)",
-  //     label: "Add Desktop Banner",
-  //   },
-  // },
 ];
 
 const EventMediaContactForm: React.FC<EventMediaProps> = ({
@@ -59,62 +49,139 @@ const EventMediaContactForm: React.FC<EventMediaProps> = ({
 }) => {
   const { EventData, setEventData, setEventEditData, EventEditData, editPage,fetchedEventdatafromManagemeEvent } =
     useEventContext();
+    
 
   const [isImageLoading, setIsImageLoading] = useState(false);
-  const [imagePreviews, setImagePreviews] = useState<string[]>([]);
-  const imageRefs = useRef<(HTMLInputElement | null)[]>([]);
+  const [imagePreviews, setImagePreviews] = useState<{
+    mobileBanner?: string;
+  }>({});
+
+  const imageRefs = useRef<{ mobileBanner?: HTMLInputElement | null }>({
+    mobileBanner: null,
+  });
 
   const handleFileChange =
-    (index: number) => (event: React.ChangeEvent<HTMLInputElement>) => {
+    (type: keyof typeof imagePreviews) =>
+    (event: React.ChangeEvent<HTMLInputElement>) => {
       const file = event.target.files?.[0];
       if (file) {
         const reader = new FileReader();
+        setIsImageLoading(true);
+
         reader.onloadend = () => {
           const base64Data = reader.result as string;
-          setImagePreviews((prev) => {
-            const newPreviews = [...prev];
-            newPreviews[index] = base64Data;
-            const fieldName = index === 0 ? "mobileBanner" : "desktopBanner";
-            setFormData((prevData: any) => ({
-              ...prevData,
-              [fieldName]: file,
-            }));
-            if (editPage === "manageEvent") {
-              setEventEditData((prevData: any) => ({
-                ...prevData,
-                [fieldName]: file,
-              }));
-            } else {
-              setEventData((prevData: any) => ({
-                ...prevData,
-                [fieldName]: file,
-              }));
+
+          const img = new window.Image(); 
+          img.onload = () => {
+            const aspectRatio = img.naturalWidth / img.naturalHeight;
+
+            if (Math.abs(aspectRatio - 16 / 9) > 0.01) {
+              toast({
+                title: "Invalid aspect ratio",
+                description: "Please upload an image with a 16:9 aspect ratio.",
+                variant: "destructive",
+              });
+              setIsImageLoading(false);
+              return;
             }
 
-            return newPreviews;
-          });
+            setImagePreviews((prev) => ({ ...prev, [type]: base64Data }));
+            if (editPage === "createEvent") {
+              setEventData((prev) => ({ ...prev, [type]: base64Data }));
+            } else if (editPage === "manageEvent") {
+              setEventEditData((prev) => ({ ...prev, [type]: base64Data }));
+            }
+            setIsImageLoading(false);
+          };
+
+          img.onerror = () => {
+            toast({
+              title: "Invalid image file",
+              description:
+                "Could not load the selected file. Please try again.",
+              variant: "destructive",
+            });
+            setIsImageLoading(false);
+          };
+
+          img.src = base64Data; 
         };
+
+        reader.onerror = () => {
+          toast({
+            title: "File reading error",
+            description: "Could not read the selected file. Please try again.",
+            variant: "destructive",
+          });
+          setIsImageLoading(false);
+        };
+
         reader.readAsDataURL(file);
-        setIsImageLoading(false);
       }
     };
 
-  const handleClick = async(event: React.MouseEvent<HTMLButtonElement>) => {
+    const uploadImage = async (base64Image: string, folder: string, namePrefix: string) => {
+      const base64Pattern = /^data:image\/(jpeg|png);base64,/;
+      const match = base64Image.match(base64Pattern);
+    
+      if (!match) {
+        throw new Error('Invalid image format. Please upload a JPEG or PNG image.');
+      }
+    
+      const mimeType = match[1] === 'jpeg' ? 'image/jpeg' : 'image/png';
+      const extension = match[1] === 'jpeg' ? 'jpg' : 'png';
+      const base64Data = base64Image.replace(base64Pattern, '');
+      const binaryData = atob(base64Data);
+      const arrayBuffer = new ArrayBuffer(binaryData.length);
+      const uint8Array = new Uint8Array(arrayBuffer);
+    
+      for (let i = 0; i < binaryData.length; i++) {
+        uint8Array[i] = binaryData.charCodeAt(i);
+      }
+    
+      const blob = new Blob([uint8Array], { type: mimeType });
+      const imageName = `${namePrefix}-${Date.now()}.${extension}`;
+    
+      const { data, error } = await supabase.storage
+        .from(folder)
+        .upload(`${folder}/${imageName}`, blob);
+    
+      if (error) {
+        throw new Error('Image upload failed');
+      }
+    
+      return supabase.storage.from(folder).getPublicUrl(data.path).data.publicUrl;
+    };
+
+  const handleClick = async (event: React.MouseEvent<HTMLButtonElement>) => {
     event.preventDefault();
     if (editPage === "manageEvent") {
-      const differences = {};
+      const differences: any = {};
       const formFields = [
         "mobileBanner",
         "desktopBanner",
       ];
 
-      formFields.forEach((field) => {
-        if (
-          EventEditData?.[field] !== fetchedEventdatafromManagemeEvent?.[field]
-        ) {
-          differences[field] = EventEditData?.[field];
+      for (const field of formFields) {
+        if (EventEditData?.[field] !== fetchedEventdatafromManagemeEvent?.[field]) {
+          if (field === "mobileBanner" || field === "desktopBanner") {
+            try {
+              const imageUrl = await uploadImage(EventEditData?.[field], 'event-banners', field);
+              differences[field] = imageUrl;
+            } catch (error) {
+              console.error("An error occurred while uploading the image:", error);
+              toast({
+                title: "Failed to upload image. Please try again.",
+                variant: "destructive",
+              });
+              return;
+            }
+          } else {
+            differences[field] = EventEditData?.[field];
+          }
         }
-      });
+      }
+
       console.log(differences);
 
       if (Object.keys(differences).length > 0) {
@@ -150,80 +217,76 @@ const EventMediaContactForm: React.FC<EventMediaProps> = ({
   };
 
   useEffect(() => {
-    if (editPage === "manageEvent" && EventEditData) {
-      setFormData((prevEventData: any) => ({
-        ...prevEventData,
-        mobileBanner: EventEditData.mobileBanner || {},
-        desktopBanner: EventEditData.desktopBanner || {},
-      }));
-    } else if (editPage === "createEvent" && EventData) {
-      setFormData((prevEventData: any) => ({
-        ...prevEventData,
-        mobileBanner: EventData.mobileBanner || {},
-        desktopBanner: EventData.desktopBanner || {},
-      }));
+    if (editPage === "manageEvent") {
+      setImagePreviews({
+        mobileBanner: EventEditData.desktop_cover_image_url,
+      });
+    } else if (editPage === "createEvent") {
+      setImagePreviews({
+        mobileBanner: EventData.mobileBanner,
+      });
     }
-  }, [EventData, EventEditData]);
-
+  }, [editPage, EventEditData, EventData]);
+  
   return (
     <form className="bg-white p-5 rounded-lg">
       <div className="flex flex-wrap ">
-        {additionalFields.map((field, index) => 
-           (
-            <div className="flex flex-col w-full mt-5" key={field.id}>
-              <Label className="font-bold text-lg">
-                {field.filecontnet?.label}
-                <span className="text-red-500">*</span>
-              </Label>
-              <div
-                className="flex items-center justify-center mt-1 h-[142px] w-full cursor-pointer flex-col gap-3 rounded-xl border-[3.2px] border-dashed border-gray-600  bg-white "
-                onClick={() => imageRefs.current[index]?.click()}
-              >
-                <Input
-                  type="file"
-                  className="hidden"
-                  ref={(el) => {
-                    imageRefs.current[index] = el;
-                  }}
-                  onChange={handleFileChange(index)}
-                />
-                {!isImageLoading ? (
-                  <Image
-                    src="/icons/upload-image.svg"
-                    alt="upload"
-                    width={40}
-                    height={40}
-                    className="invert"
-                  />
-                ) : (
-                  <div className="text-16 flex items-center justify-center  font-medium text-gray-700 ">
-                    Uploading
-                    <Loader size={20} className="animate-spin ml-2" />
-                  </div>
+        {additionalFields.map((field, index) => (
+          <div className="flex flex-col w-full mt-5" key={field.id}>
+            <Label className="font-bold text-lg">
+              {field.filecontnet?.label}
+              <span className="text-red-500">*</span>
+            </Label>
+            <div
+              className="flex items-center justify-center mt-1 h-[142px] w-full cursor-pointer flex-col gap-3 rounded-xl border-[3.2px] border-dashed border-gray-600  bg-white "
+              onClick={() => imageRefs.current[field.name]?.click()}
+            >
+              <Input
+                type="file"
+                className="hidden"
+                ref={(el) => (imageRefs.current[field.name] = el)}
+                onChange={handleFileChange(
+                  field.name as keyof typeof imagePreviews
                 )}
-                <div className="flex flex-col items-center gap-1">
-                  <h2 className="text-12 font-bold text-gray-400 ">
-                    Click to upload
-                  </h2>
-                  <p className="text-12 text-center font-bold text-gray-500 ">
-                    {field.filecontnet?.size}
-                  </p>
-                </div>
-              </div>
-              {imagePreviews[index] && (
-                <div className="mt-2 items-center mx-auto">
-                  <Image
-                    src={imagePreviews[index]}
-                    alt="Preview"
-                    width={300}
-                    height={300}
-                  />
+              />
+              {!isImageLoading ? (
+                <Image
+                  src="/icons/upload-image.svg"
+                  alt="upload"
+                  width={40}
+                  height={40}
+                  className="invert"
+                />
+              ) : (
+                <div className="text-16 flex items-center justify-center  font-medium text-gray-700 ">
+                  Uploading
+                  <Loader size={20} className="animate-spin ml-2" />
                 </div>
               )}
+              <div className="flex flex-col items-center gap-1">
+                <h2 className="text-12 font-bold text-gray-400 ">
+                  Click to upload
+                </h2>
+                <p className="text-12 text-center font-bold text-gray-500 ">
+                  {field.filecontnet?.size}
+                </p>
+              </div>
             </div>
-          ))}
+            {imagePreviews[field.name as keyof typeof imagePreviews] && (
+              <div className="flex justify-center items-center py-2">
+                <Image
+                  src={imagePreviews[field.name as keyof typeof imagePreviews]!}
+                  alt={`${field.name} preview`}
+                  width={400}
+                  height={400}
+                  className="rounded-md border-2"
+                />
+              </div>
+            )}
+          </div>
+        ))}
       </div>
-      <SponsorSection />
+      <SponsorSection ManageEventId={ManageEventId}/>
       <div className="flex justify-center items-center">
         <Button
           variant="tertiary"

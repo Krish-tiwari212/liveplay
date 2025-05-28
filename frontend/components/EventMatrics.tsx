@@ -57,6 +57,7 @@ import {
 } from "@/components/ui/dialog";
 import { useEventContext } from "@/context/EventDataContext";
 import { BiLike } from "react-icons/bi";
+import { createClient } from "@/utils/supabase/client";
 
 const secondaryMetrics = [
   {
@@ -83,38 +84,10 @@ const secondaryMetrics = [
 
 interface EventMatricsProps {
   handleNext: () => void;
+  eventId: string;
 }
 
-const EventDetails = () => {
-  return (
-    <Card className="bg-gray-100 rounded-lg shadow-md p-5 mb-5 flex flex-col sm:flex-row">
-      <img
-        src="/images/img3.jpeg"
-        alt="Event"
-        className="w-full sm:w-1/3 md:w-1/4 rounded-lg"
-      />
-      <div className="flex-1 sm:pl-5">
-        <div className="flex justify-between items-start pt-2 sm:pt-0">
-          <div className="text-start">
-            <p className="text-sm text-gray-500">Basketball</p>
-            <h2 className="text-xl font-bold">Krish Event</h2>
-            <p className="text-gray-800">Maratha Mandir: Mumbai Central</p>
-            <p className="text-sm text-gray-600">Tue, 01 Nov | 11:30 am</p>
-          </div>
-        </div>
-        <hr className="my-3 border-gray-300" />
-        <div className="flex justify-between">
-          <div className="text-start">
-            <p className="text-sm text-gray-500">Organizer</p>
-            <p className="font-bold">Krish</p>
-          </div>
-        </div>
-      </div>
-    </Card>
-  );
-};
-
-const EventMatrics = ({ handleNext }: EventMatricsProps) => {
+const EventMatrics = ({ handleNext, eventId }: EventMatricsProps) => {
   const router = useRouter();
   const { editPage } = useEventContext();
   const [showUpsell, setShowUpsell] = useState(true);
@@ -131,12 +104,78 @@ const EventMatrics = ({ handleNext }: EventMatricsProps) => {
   >(null);
   const netEventSales = amountPaid - ParticipantRefund;
   const cancellationFee = netEventSales * cancellationFeePercentage;
+  const [event, setEvent] = useState(null);
+  const [organizerName, setOrganizerName] = useState('');
+  const supabase = createClient();
+
+  useEffect(() => {
+    const fetchEventData = async () => {
+      try {
+        // Fetch event data
+        const { data: eventData, error: eventError } = await supabase
+          .from('events')
+          .select('*')
+          .eq('id', eventId)
+          .single();
+
+        if (eventError) throw eventError;
+
+        setEvent(eventData);
+
+        // Fetch organizer name
+        const { data: organizerData, error: organizerError } = await supabase
+          .from('users')
+          .select('full_name')
+          .eq('id', eventData.organizer_id)
+          .single();
+
+        if (organizerError) throw organizerError;
+
+        setOrganizerName(organizerData.full_name);
+      } catch (error) {
+        console.error('Error fetching event data:', error);
+      }
+    };
+
+    fetchEventData();
+  }, [eventId]);
+
+  const EventDetails = () => {
+    return (
+      <Card className="bg-gray-100 rounded-lg shadow-md p-5 mb-5 flex flex-col sm:flex-row">
+        <img
+          src={event.desktop_cover_image_url}
+          alt="Event"
+          className="w-full sm:w-1/3 md:w-1/4 rounded-lg"
+        />
+        <div className="flex-1 sm:pl-5">
+          <div className="flex justify-between items-start pt-2 sm:pt-0">
+            <div className="text-start">
+              <p className="text-sm text-gray-500">{event.sport}</p>
+              <h2 className="text-xl font-bold">{event.event_name}</h2>
+              <p className="text-gray-800">{event.venue_name}: {event.city}</p>
+              <p className="text-sm text-gray-600">
+                {new Date(event.start_date).toLocaleDateString()} | {event.start_time}
+              </p>
+            </div>
+          </div>
+          <hr className="my-3 border-gray-300" />
+          <div className="flex justify-between">
+            <div className="text-start">
+              <p className="text-sm text-gray-500">Organizer</p>
+              <p className="font-bold">{organizerName}</p>
+            </div>
+          </div>
+        </div>
+      </Card>
+    );
+  };
 
   useEffect(() => {
     const fetchData = async () => {
       try {
         const response = await fetch(
-          "/api/event/categories/d262e530-8109-4d6f-9c9d-e74f92a28806"
+          `/api/event/categories/${eventId}`
         );
         if (!response.ok) {
           throw new Error("Network response was not ok");
@@ -196,11 +235,11 @@ const EventMatrics = ({ handleNext }: EventMatricsProps) => {
   };
   return (
     <div className={`text-gray-800 px-2 sm:px-5 pb-5`}>
-      <div className="flex flex-col sm:flex-row gap-2 sm:gap-0 justify-between items-start sm:items-center mb-4 sm:mb-8">
+      <div className="flex after:flex-row gap-2 sm:gap-0 sm:justify-between items-start sm:items-center mb-4 sm:mb-8">
         <h1 className="text-3xl text-gray-800 font-bold">Event Overview</h1>
         <Button
           onClick={() => handleCancelClick("Cancel Event")}
-          className="w-full sm:w-[20%]"
+          className="ml-auto"
         >
           Cancel Event
         </Button>

@@ -157,12 +157,16 @@ const page = () => {
                           Event Dates: {event.event_views || "20th Nov 2024"}
                         </span>
                       </div>
-                      <Link href={`/event/${event.id}/share-link`}>
+                      <Link
+                        href={`${window.location.origin}/participantdetails/${event.id}`}
+                      >
                         <Button className="w-full mt-2 bg-[#17202A] text-[#CDDC29] hover:text-white py-1 px-2 rounded hover:shadow-xl">
                           Withdraw From Event
                         </Button>
                       </Link>
-                      <Link href={`/event/${event.id}/share-link`}>
+                      <Link
+                        href={`${window.location.origin}/participantdetails/${event.id}`}
+                      >
                         <Button className="w-full mt-2 bg-[#17202A] text-[#CDDC29] hover:text-white py-1 px-2 rounded hover:shadow-xl">
                           View My Registration
                         </Button>

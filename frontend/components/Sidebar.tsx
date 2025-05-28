@@ -20,6 +20,8 @@ import Image from "next/image";
 import { useEventContext } from "@/context/EventDataContext";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "./ui/select";
 import { useUser } from "@/context/UserContext";
+import { Button } from "./ui/button";
+import { createClient } from '@/utils/supabase/client';
 
 const Sidebar = ({ setnavexpanded }: { setnavexpanded :Dispatch<SetStateAction<boolean>>}) => {
   const [activePage, setActivePage] = useState("Dashboard");
@@ -32,7 +34,34 @@ const Sidebar = ({ setnavexpanded }: { setnavexpanded :Dispatch<SetStateAction<b
   const path = usePathname();
   const isplayerdashboard = path.includes("playerdashboard");
   const { toast } = useToast();
+  const supabase = createClient();
+  const [hasOrganizerDetails, setHasOrganizerDetails] = useState(false);
   const router = useRouter();
+
+  useEffect(() => {
+    const fetchOrganizerDetails = async () => {
+      const supabase = createClient();
+
+      if (!user?.id) {
+        console.error('User ID is not available');
+        return;
+      }
+
+      const { data, error } = await supabase
+        .from('organizer_details')
+        .select('user_id')
+        .eq('user_id', user.id)
+        .single();
+
+      if (error) {
+        console.error('Error fetching organizer details:', error);
+      } else {
+        setHasOrganizerDetails(!!data);
+      }
+    };
+
+    fetchOrganizerDetails();
+  }, [user?.id]);
 
   const toggleEvents = () => {
     setOpenEvents(!openEvents);
@@ -107,7 +136,6 @@ const Sidebar = ({ setnavexpanded }: { setnavexpanded :Dispatch<SetStateAction<b
     >
       <div className="flex items-center mt-8 border-b border-gray-700 pb-8">
         {!isNavbarCollapsed && (
-          <Link href={"/"}>
             <div className="text-3xl font-bold text-gray-500 ml-2">
               <Image
                 src="/images/Logo.png"
@@ -116,7 +144,6 @@ const Sidebar = ({ setnavexpanded }: { setnavexpanded :Dispatch<SetStateAction<b
                 height={150}
               />
             </div>
-          </Link>
         )}
         {!isNavbarCollapsed && (
           <button
@@ -127,6 +154,16 @@ const Sidebar = ({ setnavexpanded }: { setnavexpanded :Dispatch<SetStateAction<b
           </button>
         )}
       </div>
+      {!isNavbarCollapsed && (
+      <Link href="/">
+        <Button
+          className="w-full bg-[#141f29] text-[#ccdb28] border border-[#ccdb28] hover:bg-[#ccdb28] hover:text-[#141f29] md:hidden mb-2"
+          size="xs"
+        >
+          Home
+        </Button>
+      </Link>
+      )}
       {!isNavbarCollapsed && (
         <>
           <ul className="space-y-2 flex-grow relative">
@@ -196,23 +233,27 @@ const Sidebar = ({ setnavexpanded }: { setnavexpanded :Dispatch<SetStateAction<b
                     </button>
                   </Link>
                 </li>
-                <li>
-                  <Link href={`/organizerDashboard/kyc/${user?.id}`}>
-                    <button
-                      onClick={() => {
-                        handlePageChange("Unlock Earnings");
-                        handleCollapse();
-                      }}
-                      className={`flex items-center w-full p-2 rounded relative ${
-                        activePage === "Unlock Earnings"
-                          ? "bg-[#CDDC29] text-[#17202A]"
-                          : "hover:bg-[#CDDC29] hover:text-[#17202A]"
-                      }`}
-                    >
-                      <FaUnlockAlt className="mr-2 " /> Unlock Event Earnings
-                    </button>
-                  </Link>
-                </li>
+                
+                {!hasOrganizerDetails && (
+                  <li>
+                      <Link href={`/organizerDashboard/kyc/${user?.id}`}>
+                        <button
+                          onClick={() => {
+                            handlePageChange("Unlock Earnings");
+                            handleCollapse();
+                          }}
+                          className={`flex items-center w-full p-2 rounded relative ${
+                            activePage === "Unlock Earnings"
+                              ? "bg-[#CDDC29] text-[#17202A]"
+                              : "hover:bg-[#CDDC29] hover:text-[#17202A]"
+                          }`}
+                        >
+                          <FaUnlockAlt className="mr-2 " /> Unlock Event Earnings
+                        </button>
+                      </Link>
+                    
+                  </li>
+                )}
                 <li>
                   <Link href="/organizerDashboard/notifications">
                     <button

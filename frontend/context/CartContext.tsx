@@ -31,8 +31,14 @@ export interface CartItem extends Category {
   quantity: number;
 }
 
+interface checkbox{
+  id:number;
+  checked:boolean
+}
+
 interface CartContextType {
   items: CartItem[];
+  setItems: React.Dispatch<React.SetStateAction<CartItem[]>>;
   addItem: (category: Category) => void;
   addMultipleItem: (category: Category) => void;
   removeItem: (categoryId: number) => void;
@@ -41,6 +47,12 @@ interface CartContextType {
   total: number;
   totalQuantity: number;
   getItemQuantity: (categoryId: number) => number;
+  isCheckboxChecked: checkbox[];
+  setIsCheckboxChecked: React.Dispatch<React.SetStateAction<checkbox[]>>;
+  tagline: string;
+  settagline: React.Dispatch<React.SetStateAction<string>>;
+  cartRedirect: any;
+  setCartRedirect: React.Dispatch<React.SetStateAction<Category[]>>;
 }
 
 const CartContext = createContext<CartContextType | undefined>(undefined);
@@ -58,7 +70,10 @@ interface CartProviderProps {
 }
 
 export const CartProvider: React.FC<CartProviderProps> = ({ children }) => {
-  const [items, setItems] = useState<CartItem[]>([]);
+  const [items, setItems] = useState<CartItem[]>([]); 
+  const [isCheckboxChecked, setIsCheckboxChecked] = useState<checkbox[]>([]);
+  const [tagline, settagline] = useState("");
+  const [cartRedirect,setCartRedirect]=useState<Category[]>([])
 
   const addItem = (category: Category) => {
     setItems((prevItems) => {
@@ -76,6 +91,7 @@ export const CartProvider: React.FC<CartProviderProps> = ({ children }) => {
           amount_input: category.amount_input,
           discount_code: category.discount_code,
           teamName: category.teamName,
+          pairname: category.pairname,
         };
 
         return updatedItems;
@@ -149,6 +165,7 @@ export const CartProvider: React.FC<CartProviderProps> = ({ children }) => {
     <CartContext.Provider
       value={{
         items,
+        setItems,
         addItem,
         removeItem,
         addMultipleItem,
@@ -157,6 +174,12 @@ export const CartProvider: React.FC<CartProviderProps> = ({ children }) => {
         total,
         totalQuantity,
         getItemQuantity,
+        isCheckboxChecked,
+        setIsCheckboxChecked,
+        tagline,
+        settagline,
+        cartRedirect,
+        setCartRedirect
       }}
     >
       {children}

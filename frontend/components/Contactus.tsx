@@ -13,24 +13,18 @@ const Contactus = () => {
           Contact Us
         </h1>
         <p className="text-md md:text-lg text-gray-700 mb-8 text-center">
-          Whether you’re here to host, join or just say "Hi," we’d love
-          to hear from you!
+          Whether you’re here to host, join or just say "Hi," we’d love to hear
+          from you!
         </p>
-        <div className="grid gap-2 md:grid-cols-2 mb-8 w-full md:w-[80%] md:mx-auto">
-          <div className="flex items-start justify-center space-x-4">
+        <div className="grid gap-2 md:grid-cols-2 mb-8 w-full md:w-[70%] md:mx-auto">
+          <div className="flex items-start justify-start md:justify-start space-x-4 mr-10">
             <FaMapMarkerAlt className="w-8 h-8  flex-shrink-0" />
             <div>
               <h2 className="text-xl font-semibold text-[#141f29]">Address</h2>
-              <p className="text-gray-600 leading-relaxed">
-                212-A, Amar Cottages CHS,
-                <br />
-                Bhosale Nagar, Hadapsar,
-                <br />
-                Pune - 411028
-              </p>
+              <p className="text-gray-600 leading-relaxed">Pune</p>
             </div>
           </div>
-          <div className="flex items-start justify-center space-x-4">
+          <div className="flex items-start justify-start md:justify-center space-x-4">
             <FaEnvelope className="w-8 h-8  flex-shrink-0" />
             <div>
               <h2 className="text-xl font-semibold text-[#141f29]">Email</h2>
@@ -38,14 +32,13 @@ const Contactus = () => {
             </div>
           </div>
         </div>
-        <div className="grid gap-6 grid-cols-1 w-[80%] mx-auto justify-center items-center">
-          <div className="flex  space-x-4 justify-center ">
-            <FaBuilding className="w-8 h-8 flex-shrink-0" />
+        <div className="grid gap-6 grid-cols-1 justify-center md:justify-center items-start">
+          <div className="flex  space-x-4 items-center justify-center ">
+            {/* <FaBuilding className="w-8 h-8 flex-shrink-0" /> */}
             <div>
-              <h2 className="text-xl font-semibold text-[#141f29]">Company</h2>
+              {/* <h2 className="text-xl font-semibold text-[#141f29]">Company</h2> */}
               <p className="text-gray-600">
-                Impact Stream Ventures proudly brings you
-                liveplay.in™ ❤
+                Impact Stream Ventures proudly brings you liveplay.in™ ❤
               </p>
             </div>
           </div>

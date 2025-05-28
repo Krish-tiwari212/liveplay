@@ -42,10 +42,12 @@ interface Category {
 
 interface CategoryPreviewProps {
   handleNext?: () => void;
+  eventId?: string;
 }
 
 const CategoryPreview = ({
   handleNext=()=>{},
+  eventId
 }: CategoryPreviewProps) => {
   const { EventData, setEventData,editPage,EventEditData,setEventEditData,nextId,setNextId } = useEventContext();
   const [categories, setCategories] = useState<Category[]>([]);
@@ -131,7 +133,7 @@ const CategoryPreview = ({
   };
 
   const duplicateCategory = (category: Category) => {
-    const duplicatedCategory = { ...category, id: nextId, category_name: `${category.category_name} (Copy)` }; 
+    const duplicatedCategory = { ...category, id: nextId, category_name: `${category.category_name}` }; 
     setCategories((prevCategories) => [...prevCategories, duplicatedCategory]);
     setNextId((prevId) => prevId + 1);
     if (editPage==="manageEvent"){

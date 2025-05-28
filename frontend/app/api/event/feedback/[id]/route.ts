@@ -5,12 +5,15 @@ export async function POST(request: Request, { params }) {
   try {
     const { id } = params;
     const { userId, feedbackText, ratingOrganizerConduct, ratingEventManagement, ratingVenueLocation } = await request.json();
+    console.log('Feedback submission:', { id, userId, feedbackText, ratingOrganizerConduct, ratingEventManagement, ratingVenueLocation });
 
-    if (!userId || !feedbackText || ratingOrganizerConduct == null || ratingOrganizerConduct < 1 || ratingOrganizerConduct > 5 ||
+    if (!userId || ratingOrganizerConduct == null || ratingOrganizerConduct < 1 || ratingOrganizerConduct > 5 ||
         ratingEventManagement == null || ratingEventManagement < 1 || ratingEventManagement > 5 ||
         ratingVenueLocation == null || ratingVenueLocation < 1 || ratingVenueLocation > 5) {
       return NextResponse.json({ error: 'Missing or invalid required fields' }, { status: 400 });
     }
+
+    let rating = (ratingOrganizerConduct + ratingEventManagement + ratingVenueLocation) / 3;
 
     const supabase = await createClient();
 
@@ -22,7 +25,8 @@ export async function POST(request: Request, { params }) {
         feedback_text: feedbackText,
         rating_organizer_conduct: ratingOrganizerConduct,
         rating_event_management: ratingEventManagement,
-        rating_venue_location: ratingVenueLocation
+        rating_venue_location: ratingVenueLocation,
+        rating: rating
       })
       .single();
 

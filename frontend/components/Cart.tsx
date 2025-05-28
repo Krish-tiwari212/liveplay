@@ -1,37 +1,232 @@
 "use client"
 
-import React, { use, useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Button } from './ui/button';
 import { RiDiscountPercentFill } from 'react-icons/ri';
 import { useCartContext } from '@/context/CartContext';
+import { loadScript } from '@/utils/razorpay';
+import { useRouter } from 'next/navigation';
+import { useToast } from '@/hooks/use-toast';
+import { createClient } from '@/utils/supabase/client';
 
-const BillingSummary: React.FC = () => {
-  const { items, clearCart, total } = useCartContext(); 
+interface BillingSummaryProps {
+  gstrate: string;
+  gstcompliance: boolean;
+  gstIncExc: string;
+}
+
+const BillingSummary = ({
+  gstrate="0",
+  gstcompliance=false,
+  gstIncExc="",
+}: BillingSummaryProps) => {
+  const{isCheckboxChecked,setIsCheckboxChecked}=useCartContext()
+  const { items, clearCart, total,setItems, } = useCartContext();
   const [withdrawalFee, setWithdrawalFee] = useState<boolean>(true);
   const [feeAmount, setFeeAmount] = useState<number>(0);
   const [gst, setGst] = useState<number>(0);
   const [totalPayable, setTotalPayable] = useState<number>(0);
   const [savings, setSavings] = useState<number>(0);
+  const router = useRouter();
+  const { toast } = useToast();
+  const supabase = createClient();
+  const [session, setSession] = useState<any>(null);
+
+  useEffect(() => {
+    loadScript("https://checkout.razorpay.com/v1/checkout.js");
+  }, []);
+
+  useEffect(() => {
+    const checkSession = async () => {
+      const {
+        data: { session: currentSession },
+      } = await supabase.auth.getSession();
+      setSession(currentSession);
+    };
+
+    checkSession();
+  }, []);
+
+  const handleLogin = () => {
+    // Save current cart state to localStorage before redirecting
+    localStorage.setItem("pendingCart", JSON.stringify(items));
+    router.push(`/auth/login?redirect=/choosecategory/${items[0]?.event_id}`);
+  };
+
+  const handlePayment = async () => {
+    console.log("Payment button clicked");
+    try {
+      if (!session) {
+        toast({
+          title: "Please Login",
+          description: "You need to be logged in to make a payment",
+          variant: "destructive",
+        });
+        router.push("/login");
+        return;
+      }
+  
+      console.log("Creating order for payment", items);
+  
+      // Convert amount to paise and ensure it's an integer
+      const amountInPaise = Math.round(totalPayable);
+  
+      // Fetch organizer_id from events table using event_id
+      const eventId = items[0]?.event_id;
+      const { data: event, error: eventError } = await supabase
+        .from('events')
+        .select('organizer_id')
+        .eq('id', eventId)
+        .single();
+  
+      if (eventError) {
+        throw new Error("Failed to fetch event details");
+      }
+  
+      const organizer_id = event.organizer_id;
+  
+      // Determine create_team, team_name, and partner_name based on category_type
+      let create_team = false;
+      let team_name = null;
+      let partner_name = null;
+  
+      const categoryType = items[0]?.category_type;
+  
+      if (categoryType === 'Doubles') {
+        partner_name = items[0]?.pairname || "";
+      } else if (categoryType === 'Team') {
+        create_team = true;
+        team_name = items[0]?.teamName || "";
+      }
+  
+      // Create order
+      const response = await fetch("/api/payment/create-order", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          amount: amountInPaise, // Send amount in paise
+          categories: items,
+          eventId: eventId,
+          userId: session.user.id,
+          name: session.user.user_metadata.full_name || session.user.email.split("@")[0],
+          organizer_id: organizer_id,
+          create_team: create_team,
+          team_name: team_name,
+          partner_name: partner_name,
+          withdrawal_fee: withdrawalFee,
+        }),
+      });
+  
+      const data = await response.json();
+      if (!data.orderId) throw new Error("Failed to create order");
+  
+      const options = {
+        key: data.key,
+        amount: amountInPaise,
+        currency: data.currency,
+        name: "Liveplay Sports",
+        description: "Event Registration Payment",
+        order_id: data.orderId,
+        handler: async function (response: any) {
+          try {
+            console.log("Payment response:", response);
+            const verifyResponse = await fetch("/api/event/register", {
+              method: "POST",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify({
+                razorpay_order_id: response.razorpay_order_id,
+                razorpay_payment_id: response.razorpay_payment_id,
+                razorpay_signature: response.razorpay_signature,
+              }),
+            });
+  
+            const verifyData = await verifyResponse.json();
+            console.log("Payment verification response:", verifyData);
+            if (verifyData.success) {
+              router.push("/paymentsuccesfull");
+            } else {
+              router.push("/paymentfailed");
+            }
+          } catch (error) {
+            console.error("Payment verification failed:", error);
+            router.push("/paymentfailed");
+          }
+        },
+        prefill: {
+          name: session?.user?.user_metadata?.full_name || session?.user?.email?.split("@")[0],
+          email: session?.user?.email,
+          contact: session?.user?.phone || "",
+        },
+        theme: {
+          color: "#141F29",
+        },
+      };
+  
+      const paymentObject = new (window as any).Razorpay(options);
+      paymentObject.open();
+      items.forEach((item) => {
+        const id = item.id;
+        localStorage.removeItem(`teamName-${id}`);
+        localStorage.removeItem(`partnerName-${id}`);
+        localStorage.removeItem(`checkboxes`);
+      });
+      localStorage.removeItem("pendingCart");
+    } catch (error) {
+      console.error("Payment initialization failed:", error);
+      toast({
+        variant: "destructive",
+        title: "Error",
+        description: "Failed to initialize payment",
+      });
+    }
+    
+    
+  };
 
   useEffect(() => {
     const original = items.reduce(
-      (acc, item) => acc + item.price * item.quantity,
+      (acc, item, index) =>
+        acc +
+        (isCheckboxChecked[index]?.checked
+          ? item.price * item.quantity
+          : item.price * item.quantity),
       0
     );
+  
     const discounted = items.reduce(
-      (acc, item) => acc + (item.discount_value ?? item.price) * item.quantity,
+      (acc, item, index) => {
+        if (isCheckboxChecked[index]?.checked) {
+          const discount = item.discount_value
+            ? item.discount_value
+            : item.percentage_input
+            ? (item.price * item.percentage_input) / 100
+            : 0;
+          return acc + (item.price - discount) * item.quantity;
+        }
+        return acc;
+      },
       0
     );
-    setSavings(original - discounted);
-
-    const fee = withdrawalFee ? 0.05 * discounted : 0;
+  
+    console.log("Original total:", original);
+    console.log("Discounted total:", discounted);
+  
+    // Calculate amount based on whether any checkbox is checked
+    const amount = isCheckboxChecked.some((checkbox) => checkbox.checked)
+      ? discounted
+      : original;
+  
+    setSavings(original - amount);
+  
+    const fee = withdrawalFee ? 0.05 * amount : 0;
     setFeeAmount(fee);
-
-    const gstAmount = 0.18 * (discounted);
+  
+    const gstAmount = (Number(gstrate) / 100) * discounted;
     setGst(gstAmount);
-
-    setTotalPayable(discounted + fee + gstAmount);
-  }, [items, withdrawalFee]);
+    setTotalPayable(
+      gstIncExc === "inclusive" ? amount + fee + gstAmount : amount + fee
+    );
+  }, [items, withdrawalFee, isCheckboxChecked, gstrate, gstIncExc]);
 
   const handleRemoveFee = () => {
     setWithdrawalFee(false);
@@ -44,6 +239,28 @@ const BillingSummary: React.FC = () => {
     setWithdrawalFee(true);
   };
 
+   useEffect(() => {
+    items.forEach((id) => {
+      localStorage.getItem(`isChecked-${id}`);
+    });
+     const savedCart = localStorage.getItem("pendingCart");
+     if (savedCart) {
+       setItems(JSON.parse(savedCart));
+     }
+   }, [setItems]);
+
+   useEffect(() => {
+     const savedCheckboxes = localStorage.getItem("checkboxes");
+     if (savedCheckboxes) {
+       setIsCheckboxChecked(JSON.parse(savedCheckboxes));
+     }
+   }, []);
+
+  useEffect(() => {
+    const name = "isCheckboxChecked array";
+    console.log(`${name}:`, isCheckboxChecked);
+  }, [isCheckboxChecked]);
+
   return (
     <div
       id="cart_section"
@@ -55,7 +272,7 @@ const BillingSummary: React.FC = () => {
           {items.length === 0 ? (
             <p className="text-gray-600">Your cart is empty.</p>
           ) : (
-            items.map((item) => (
+            items.map((item, i) => (
               <div
                 key={item.id}
                 className="flex justify-between sm:items-center rounded-md gap-2 sm:gap-0"
@@ -69,7 +286,7 @@ const BillingSummary: React.FC = () => {
                   </p>
                 </div>
                 <div className="text-right flex flex-col sm:flex-row sm:gap-2 items-center">
-                  {item.discount_value ? (
+                  {isCheckboxChecked[i]?.checked ? (
                     <>
                       <p className="text-sm line-through text-gray-500">
                         ₹{(item.price * item.quantity).toFixed(2)}
@@ -77,16 +294,14 @@ const BillingSummary: React.FC = () => {
                       <p className="text-green-600 font-semibold">
                         ₹
                         {(
-                          (item.discount_value ?? item.price) * item.quantity
+                          (item.price - (item.discount_value ?? (item.price * (item.percentage_input ?? 0) / 100))) * item.quantity
                         ).toFixed(2)}
                       </p>
                     </>
                   ) : (
-                    <>
-                      <p className="text-green-600 font-semibold">
-                        ₹{(item.price * item.quantity).toFixed(2)}
-                      </p>
-                    </>
+                    <p className="text-green-600 font-semibold">
+                      ₹{(item.price * item.quantity).toFixed(2)}
+                    </p>
                   )}
                 </div>
               </div>
@@ -96,7 +311,7 @@ const BillingSummary: React.FC = () => {
 
         {items.length > 0 && (
           <div className="flex flex-col gap-2">
-            <div className="flex justify-between items-center rounded-md">
+            <div className="flex justify-between items-center rounded-md mb-2">
               <div className="flex flex-col">
                 <div className="flex">
                   <p className="font-medium">Withdrawal Fee (5%)</p>
@@ -123,32 +338,52 @@ const BillingSummary: React.FC = () => {
                 <p className="text-gray-700">₹{feeAmount.toFixed(2)}</p>
               </div>
             </div>
-
-            <div className="flex justify-between items-center rounded-md mb-2">
-              <p className="font-medium">GST (18%)</p>
-              <p className="text-gray-700">₹{gst.toFixed(2)}</p>
-            </div>
+            {gstcompliance && (
+              <div className="flex justify-between items-center rounded-md mb-2">
+                <p className="font-medium">GST ({gstrate}%)</p>
+                <p className="text-gray-700">₹{gst.toFixed(2)}</p>
+              </div>
+            )}
           </div>
         )}
 
         {items.length > 0 && (
-          <Button
-            variant="tertiary"
-            className="flex justify-center items-center py-8 w-full border-2 border-gray-800"
-            onClick={handlePay}
-          >
-            <p className="font-semibold text-2xl">Pay</p>
-            <p className="font-bold text-2xl">₹{totalPayable.toFixed(2)}</p>
-          </Button>
+          <>
+            {!session ? (
+              <Button
+                variant="tertiary"
+                className="flex justify-center items-center py-8 w-full border-2 border-gray-800"
+                onClick={handleLogin}
+              >
+                <p className="font-semibold text-2xl">Login To Continue</p>
+              </Button>
+            ) : (
+              <Button
+                variant="tertiary"
+                className="flex justify-center items-center py-8 w-full border-2 border-gray-800"
+                onClick={handlePayment}
+              >
+                <p className="font-semibold text-2xl">Pay</p>
+                <p className="font-bold text-2xl">₹{totalPayable.toFixed(2)}</p>
+              </Button>
+            )}
+          </>
         )}
 
         {items.length > 0 && (
           <div className="py-2 rounded-md flex justify-center items-center">
-            <p className="flex justify-center items-center gap-2">
-              <RiDiscountPercentFill className="text-2xl" />
-              Wohooo! You’ve saved
-              <span className="font-semibold">₹{savings.toFixed(2)}</span>
-            </p>
+            {savings.toFixed(2) === "0.00" ? (
+              <p className="hidden items-center gap-2 sm:flex sm:justify-center">
+                <RiDiscountPercentFill className="text-2xl" />
+                Sorry No Savings
+              </p>
+            ) : (
+              <p className="flex justify-center items-center gap-2">
+                <RiDiscountPercentFill className="text-2xl" />
+                Wohooo! You’ve saved
+                <span className="font-semibold">₹{savings.toFixed(2)}</span>
+              </p>
+            )}
           </div>
         )}
       </div>

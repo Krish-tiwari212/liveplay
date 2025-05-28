@@ -12,9 +12,11 @@ import { Card, CardContent, CardHeader, CardTitle } from './ui/card';
 import { Button } from './ui/button';
 
 import Autoplay from "embla-carousel-autoplay";
+import { useRouter } from 'next/navigation';
 
 const Hero = () => {
   const { eventsArray } = data;
+  const router=useRouter()
   return (
     <div className="w-full px-4 py-6 md:px-6 lg:px-12 bg-[#141f29]">
       <Carousel
@@ -47,6 +49,7 @@ const Hero = () => {
                       </CardTitle>
                     </div>
                     <Button
+                      onClick={() => router.push(`${e.buttonRoute}`)}
                       variant="tertiary"
                       size="xs"
                       className={`ml-2 sm:ml-4 w-auto text-xs sm:text-sm md:text-base lg:text-lg ${

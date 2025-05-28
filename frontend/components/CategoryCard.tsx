@@ -57,15 +57,16 @@ interface CategoryCardProps {
 }
 
 const CategoryCard: React.FC<CategoryCardProps> = ({ category, participantsData, isAdded, onAdd }) => {
+  const { setIsCheckboxChecked, setItems,isCheckboxChecked } = useCartContext();
   const [searchOpen, setSearchOpen] = useState(false);
   const [selectedParticipant, setSelectedParticipant] = useState<Participant | null>(null);
   const [teamCode, setTeamCode] = useState('');
   const [teamName, setTeamName] = useState('');
   const [partner, setPartner] = useState('');
-  const [isCheckboxChecked, setIsCheckboxChecked] = useState(false);
   const [disablecheckbox,setdisablecheckbox]=useState(false)
   const [isAlertOpen, setIsAlertOpen] = useState(false);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
+  const [isCheckboxCheck, setIsCheckboxCheck] = useState(false);
 
   const { addItem, items, addMultipleItem, totalQuantity, reduceItem } = useCartContext();
 
@@ -125,30 +126,58 @@ const CategoryCard: React.FC<CategoryCardProps> = ({ category, participantsData,
 
     
     setdisablecheckbox(true);
-    const finalPrice =
-      !isCheckboxChecked && category.discount_value
-        ? category.discount_value
-        : category.price;
+
+   setIsCheckboxChecked((prev) => {
+     const updatedState = [
+       ...prev,
+       { id: category.id, checked: isCheckboxCheck }, // Assuming the checkbox is checked when added
+     ];
+
+     // Update localStorage
+     localStorage.setItem("checkboxes", JSON.stringify(updatedState));
+
+     return updatedState;
+   });
+
+   const finalPrice =
+   isCheckboxCheck
+     ? category.discount_value
+       ? category.price - category.discount_value
+       : category.percentage_input
+       ? category.price - (category.price * category.percentage_input) / 100
+       : category.price
+     : category.price;
 
     let finalCategory: Category = {
       ...category,
-      price: finalPrice,
+      price: category.price,
       teamName: teamName,
+      pairname: partner,
     };
-    console.log(finalPrice)
-    if (!isCheckboxChecked) {
-      const {  discount_code, ...rest } = finalCategory;
+    if (!isCheckboxCheck) {
+      const { discount_code, ...rest } = finalCategory;
       finalCategory = rest;
     }
+
     onAdd();
     addItem(finalCategory);
     // category.sport === "marathon"
     //   ? addMultipleItem(finalCategory)
     //   : addItem(finalCategory);
+
   };
 
   const handleRemoveFromCart = () => {
-    reduceItem(category.id);
+     reduceItem(category.id);
+
+     // Remove the item from the array and update localStorage
+     const updatedState = isCheckboxChecked.filter(
+       (item) => item.id !== category.id
+     );
+
+     // Ensure the item is removed from the state and localStorage
+     setIsCheckboxChecked(updatedState);
+     localStorage.setItem("checkboxes", JSON.stringify(updatedState));
     onAdd();
   };
 
@@ -181,9 +210,44 @@ const CategoryCard: React.FC<CategoryCardProps> = ({ category, participantsData,
       });
   };
 
-  useEffect(()=>{
-    console.log(category)
-  },[])
+  const handleTeamNameChange = (value: string) => {
+    setTeamName(value);
+    localStorage.setItem(`teamName-${category.id}`, value);
+  };
+
+  const handlePartnerNameChange = (value: string) => {
+    setPartner(value);
+    localStorage.setItem(`partnerName-${category.id}`, value);
+  };
+
+  const handleCheckboxChange = (categoryId: number|undefined, value: boolean) => {
+    setIsCheckboxCheck(!isCheckboxCheck);
+    
+  };
+
+
+  useEffect(() => {
+    const savedTeamName = localStorage.getItem(`teamName-${category.id}`);
+    const savedPartnerName = localStorage.getItem(`partnerName-${category.id}`);
+    const savedCheckboxes = localStorage.getItem("checkboxes");
+    if (savedCheckboxes) {
+      setIsCheckboxChecked(JSON.parse(savedCheckboxes));
+      setIsCheckboxCheck(
+        savedCheckboxes.length === 0
+          ? false
+          : isCheckboxChecked.some(
+              (item) => item.id === category.id && item.checked
+            )
+      );
+    }
+    
+    if (savedTeamName) setTeamName(savedTeamName);
+    if (savedPartnerName) setPartner(savedPartnerName);
+    // if (savedIsChecked) setIsCheckboxChecked(savedIsChecked);
+  }, [category.id]);
+
+
+
   return (
     <div className="border-2 border-[#141f29] p-4 rounded-lg shadow-lg w-full">
       <div
@@ -221,10 +285,13 @@ const CategoryCard: React.FC<CategoryCardProps> = ({ category, participantsData,
                               <Checkbox
                                 disabled={currentQuantity > 0}
                                 id="terms2"
-                                checked={isCheckboxChecked}
-                                onCheckedChange={() =>
-                                  setIsCheckboxChecked(!isCheckboxChecked)
-                                }
+                                checked={isCheckboxCheck} // If no checkboxes, set all as unchecked
+                                onCheckedChange={() => {
+                                  handleCheckboxChange(
+                                    category.id,
+                                    !isCheckboxCheck
+                                  );
+                                }}
                               />
                             </TooltipTrigger>
                             <TooltipContent className="bg-[#141f29] text-[#ccdb28]">
@@ -236,9 +303,9 @@ const CategoryCard: React.FC<CategoryCardProps> = ({ category, participantsData,
                         <Checkbox
                           disabled={currentQuantity > 0}
                           id="terms2"
-                          checked={isCheckboxChecked}
+                          checked={isCheckboxCheck} // If no checkboxes, set all as unchecked
                           onCheckedChange={() =>
-                            setIsCheckboxChecked(!isCheckboxChecked)
+                            handleCheckboxChange(category.id, !isCheckboxCheck)
                           }
                         />
                       )}
@@ -247,18 +314,23 @@ const CategoryCard: React.FC<CategoryCardProps> = ({ category, participantsData,
                 </div>
                 <div className="flex gap-2 items-center text-2xl">
                   <div>
-                    {isCheckboxChecked ? (
+                    {isCheckboxCheck ? (
                       <>
                         <span className="text-[#141f29] font-semibold">
-                          ₹{category.discount_value}
+                          ₹
+                          {category.discount_value
+                            ? (category.price - category.discount_value).toFixed(2)
+                            : category.percentage_input
+                            ? (category.price - (category.price * category.percentage_input) / 100).toFixed(2)
+                            : category.price.toFixed(2)}
                         </span>
                         <span className="line-through text-gray-500 ml-2">
-                          ₹{category.price}
+                          ₹{category.price.toFixed(2)}
                         </span>
                       </>
                     ) : (
                       <span className="text-[#141f29] font-semibold">
-                        ₹{category.price}
+                        ₹{category.price.toFixed(2)}
                       </span>
                     )}
                   </div>
@@ -312,23 +384,28 @@ const CategoryCard: React.FC<CategoryCardProps> = ({ category, participantsData,
             )
           ) : (
             <div className="mt-4 flex items-center absolute -bottom-2 right-0">
-              <Button
-                variant="tertiary"
-                className="ml-4 rounded text-lg font-bold flex gap-2 border-2 border-[#141f29]"
-                onClick={handleAddToCart}
-              >
-                {currentQuantity === 0 ? (
+              {currentQuantity === 0 ? (
+                <Button
+                  variant="tertiary"
+                  className="ml-4 rounded text-lg font-bold flex gap-2 border-2 border-[#141f29]"
+                  onClick={handleAddToCart}
+                >
                   <div className="flex justify-center items-center gap-2">
                     <FaPlus />
                     <h1>Add</h1>
                   </div>
-                ) : (
+                </Button>
+              ) : (
+                <Button
+                  variant="tertiary"
+                  className="ml-4 rounded text-lg font-bold flex gap-2 border-2 border-[#141f29]"
+                  onClick={handleRemoveFromCart}
+                >
                   <div className="flex justify-center items-center gap-2">
-                    <RiCheckDoubleFill />
-                    <h1>Added</h1>
+                    <h1>Remove</h1>
                   </div>
-                )}
-              </Button>
+                </Button>
+              )}
             </div>
           )}
         </div>
@@ -370,18 +447,18 @@ const CategoryCard: React.FC<CategoryCardProps> = ({ category, participantsData,
         {category.category_type === "Team" ? (
           <div className="flex flex-col">
             <h1 className="text-sm md:text-lg font-semibold">
-              Enter Team Name, Generate & Share Code
+              Enter Team Name
             </h1>
             <div className="my-4 flex items-center relative bg-[#ccdb28] rounded">
               <label className="block pl-2 text-nowrap">Team Name:</label>
               <Input
                 type="text"
                 value={teamName}
-                onChange={(e) => setTeamName(e.target.value)}
+                onChange={(e) => handleTeamNameChange(e.target.value)}
                 className="py-2  border-none rounded relative w-full bg-[#ccdb28] focus-visible:outline-none focus-visible:ring-0 focus-visible:ring-ring focus-visible:ring-offset-0"
                 placeholder="Enter Team Name"
               />
-              <Button
+              {/* <Button
                 size="sm"
                 className="ml-2 hidden sm:block h-full text-white absolute right-0"
                 onClick={handleGenerateTeamCode}
@@ -400,25 +477,25 @@ const CategoryCard: React.FC<CategoryCardProps> = ({ category, participantsData,
                 }
               >
                 {teamCode ? "Code" : "Code"}
-              </Button>
+              </Button> */}
             </div>
           </div>
         ) : (
           category.category_type === "Doubles" && (
             <div className="flex flex-col">
               <h1 className="text-sm md:text-lg font-semibold">
-                Enter Partner Name, Generate & Share Code
+                Enter Partner Name
               </h1>
               <div className="my-4 flex items-center relative bg-[#ccdb28] rounded">
                 <label className="block pl-2 text-nowrap">Partner Name:</label>
                 <Input
                   type="text"
                   value={partner}
-                  onChange={(e) => setPartner(e.target.value)}
+                  onChange={(e) => handlePartnerNameChange(e.target.value)}
                   className="py-2 border-none rounded relative w-full bg-[#ccdb28] focus-visible:outline-none focus-visible:ring-0 focus-visible:ring-ring focus-visible:ring-offset-0"
                   placeholder="Enter Partner Name"
                 />
-                <Button
+                {/* <Button
                   size="sm"
                   className="ml-2 hidden sm:block h-full text-white absolute right-0"
                   onClick={handleGeneratePartnerCode}
@@ -437,7 +514,7 @@ const CategoryCard: React.FC<CategoryCardProps> = ({ category, participantsData,
                   }
                 >
                   {teamCode ? "Code" : "Code"}
-                </Button>
+                </Button> */}
               </div>
             </div>
           )
@@ -514,8 +591,8 @@ const CategoryCard: React.FC<CategoryCardProps> = ({ category, participantsData,
               <AlertDialogTitle>Incomplete Information</AlertDialogTitle>
               <AlertDialogDescription>
                 {category.category_type === "Team"
-                  ? "Enter team name & generate team code before adding category to cart"
-                  : "Enter partner name & generate partner code before adding category to cart"}
+                  ? "Enter team name before adding category to cart"
+                  : "Enter partner name before adding category to cart"}
               </AlertDialogDescription>
             </AlertDialogHeader>
             <AlertDialogFooter>

@@ -29,10 +29,11 @@ const OvervieSidebarContentFeatures = [
 
 interface EnableFeaturesProps {
   handleNext: () => void;
+  eventId: string;
 }
 
 
-const EnableFeatures = ({ handleNext }: EnableFeaturesProps) => {
+const EnableFeatures = ({ handleNext, eventId }: EnableFeaturesProps) => {
   const { EventData, setEventData,editPage } = useEventContext();
   const time = new Date();
   time.setSeconds(time.getSeconds() + 1000000);
@@ -46,7 +47,7 @@ const EnableFeatures = ({ handleNext }: EnableFeaturesProps) => {
       <div className="flex flex-col bg-slate-200 overflow-hidden gap-5">
         <MyTimer expiryTimestamp={time} setFeatureData={setFeatureData} />
         <TshirtForParticipant setFeatureData={setFeatureData} />
-        <Drawfixtures setFeatureData={setFeatureData} />
+        {/* <Drawfixtures setFeatureData={setFeatureData} /> */}
         <QandA handleNext={handleNext} FeatureData={FeatureData} />
         <GSTCompliance handleNext={handleNext} FeatureData={FeatureData} />
 

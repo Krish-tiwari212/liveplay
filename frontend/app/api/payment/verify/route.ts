@@ -34,21 +34,42 @@ export async function POST(req: Request) {
     const payment = await response.json();
     const { eventId, userId, categories } = payment.notes;
 
-    // Create registration after successful payment
-    const { error: registrationError } = await supabase
+    // Insert into Participants table
+    const { error: participantError } = await supabase
       .from('participants')
       .insert({
         user_id: userId,
         event_id: eventId,
-        payment_id: razorpay_payment_id,
-        payment_status: 'completed',
-        amount_paid: payment.amount / 100,
+        payment_status: 'paid',
+        total_amount: payment.amount / 100,
         registration_date: new Date().toISOString(),
-        status: 'confirmed'
+        status: 'confirmed',
+        category_id: categories[0]["id"],
+        name: payment.notes.name,
+        group_id: payment.notes.group_id,
+        team_id: payment.notes.team_id
       });
 
-    if (registrationError) {
-      throw registrationError;
+    if (participantError) {
+      throw participantError;
+    }
+
+    // Insert into Payments table
+    const { error: paymentError } = await supabase
+      .from('payments')
+      .insert({
+        organizer_id: payment.notes.organizer_id,
+        event_id: eventId,
+        amount: payment.amount / 100,
+        currency: payment.currency,
+        payment_status: 'completed',
+        payment_method: payment.method,
+        transaction_id: razorpay_payment_id,
+        payment_date: new Date(payment.created_at).toISOString()
+      });
+
+    if (paymentError) {
+      throw paymentError;
     }
 
     return NextResponse.json({ success: true });

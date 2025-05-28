@@ -7,7 +7,8 @@ import { useEventContext } from '@/context/EventDataContext';
 import { HoverCard, HoverCardContent, HoverCardTrigger } from './ui/hover-card';
 
 interface LiveMatchTrackingProps{
-    handleNext:()=>void
+    handleNext:()=>void,
+    eventId:string
 }
 
 const elite = [
@@ -61,7 +62,7 @@ const elite = [
 ];
 
 
-const LiveMatchTracking = ({ handleNext }: LiveMatchTrackingProps) => {
+const LiveMatchTracking = ({ handleNext, eventId }: LiveMatchTrackingProps) => {
   
   const {
     EventData,
@@ -157,7 +158,8 @@ const LiveMatchTracking = ({ handleNext }: LiveMatchTrackingProps) => {
       ) : (
         <>
           <h1 className="text-3xl font-bold text-center justify-center mt-32">
-            Oh no !! You cannot access this exclusive feature of Live Scoring 🥲
+            Oh no !! You <span className='text-red-600'>cannot</span> access this exclusive feature of
+            Live Scoring 🥲
           </h1>
           <Button onClick={() => setIsbuttonClicked(true)}>Know Why 😓</Button>
         </>

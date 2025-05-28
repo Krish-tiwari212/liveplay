@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server';
-import { createClient } from '@/utils/supabase/server'
+import { createClient } from '@/utils/supabase/server';
 
 export async function POST(request: Request) {
   try {
@@ -7,30 +7,14 @@ export async function POST(request: Request) {
     const supabase = await createClient();
     const session = await supabase.auth.getSession();
     const organizerId = session.data.session?.user.id;
-    
+
     // Parse the incoming request and files
     const formData = await request.formData();
     console.log('Form data:', formData);
 
     // Extract event details and mobile banner
     const eventData = JSON.parse(formData.get('eventData') as string);
-    const mobileBanner = formData.get('mobileBanner') as File;
-
-    // Upload mobile banner to Supabase storage
-    let mobileBannerUrl = '';
-    if (mobileBanner && mobileBanner.size > 0) {
-      const { data: mobileBannerData, error: mobileBannerError } = await supabase.storage
-        .from('banners')
-        .upload(`mobile/${Date.now()}-${mobileBanner.name}`, mobileBanner);
-
-      if (mobileBannerError) {
-        console.error('Mobile banner upload error:', mobileBannerError);
-        return NextResponse.json({ error: `Mobile banner upload failed: ${mobileBannerError.message}` }, { status: 400 });
-      }
-
-      // Get mobile banner URL
-      mobileBannerUrl = supabase.storage.from('banners').getPublicUrl(mobileBannerData.path).data.publicUrl;
-    }
+    const mobileBannerUrl = formData.get('mobileBannerUrl') as string;
 
     // Insert event data using formData values
     const { data: event, error: eventError } = await supabase
@@ -109,6 +93,25 @@ export async function POST(request: Request) {
       if (categoryError) {
         console.error('Category insertion error:', categoryError);
         return NextResponse.json({ error: `Category insertion failed: ${categoryError.message}` }, { status: 400 });
+      }
+    }
+
+    const sponsors = JSON.parse(formData.get('sponsorLogos') as string);
+
+    if (sponsors && Array.isArray(sponsors)) {
+      for (const sponsor of sponsors) {
+        const { error: sponsorError } = await supabase
+          .from('sponsors')
+          .insert({
+            event_id: event.id,
+            name: sponsor.sponsor_Name,
+            image_url: sponsor.logoUrl,
+          });
+    
+        if (sponsorError) {
+          console.error('Sponsor insertion error:', sponsorError);
+          return NextResponse.json({ error: `Sponsor insertion failed: ${sponsorError.message}` }, { status: 400 });
+        }
       }
     }
 

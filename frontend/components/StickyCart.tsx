@@ -7,23 +7,32 @@ import { useCartContext } from "@/context/CartContext";
 
 const StickyCart = () => {
     
+  const { isCheckboxChecked } = useCartContext();
   const { items } = useCartContext();
   const [savings, setSavings] = useState<number>(0);
-    useEffect(() => {
-        const original = items.reduce(
-        (acc, item) => acc + item.price * item.quantity,
-        0
-        );
-        const discounted = items.reduce(
-        (acc, item) =>
-            acc + (item.discountedPrice ?? item.price) * item.quantity,
-        0
-        );
-        setSavings(original - discounted);
-        console.log(items)
-        console.log(original)
-        console.log(discounted)
-    }, [items]);
+
+  useEffect(() => {
+    const original = items.reduce(
+      (acc, item) => acc + item.price * item.quantity,
+      0
+    );
+  
+    const discounted = items.reduce((acc, item) => {
+      const discount = item.discount_value
+        ? item.discount_value
+        : item.percentage_input
+        ? (item.price * item.percentage_input) / 100
+        : 0;
+      return acc + (item.price - discount) * item.quantity;
+    }, 0);
+  
+    const amount = isCheckboxChecked ? discounted : original;
+    setSavings(original - amount);
+    console.log(items);
+    console.log(original);
+    console.log(discounted);
+  }, [items, isCheckboxChecked]);
+
   const scrollToCart = () => {
     const cartSection = document.getElementById("cart_section");
     if (cartSection) {

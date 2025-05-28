@@ -228,7 +228,8 @@ const AddCategory = ({ setCategoryData ,type,category}: AddCategoryProps) => {
           fromDate: categoryData.from_date,
           tillDate: categoryData.till_date,
           discountValue: showPercentageInput
-            ? (categoryData?.percentage_input/100)*categoryData.price
+            ? categoryData.price -
+              categoryData.price * (categoryData?.percentage_input / 100)
             : categoryData.amount_input,
         }
       : {};

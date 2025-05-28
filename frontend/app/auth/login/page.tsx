@@ -1,12 +1,11 @@
 "use client";
 
-import { useState, useRef } from "react";
+import { useState, useRef, Suspense } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
-
 import { Button } from "@/components/ui/button";
 import {
   Form,
@@ -21,6 +20,8 @@ import { useToast } from "@/hooks/use-toast";
 import { FaGoogle } from "react-icons/fa";
 import Image from "next/image";
 import Script from "next/script";
+import { useSearchParams } from "next/navigation";
+import { FaArrowLeft } from "react-icons/fa";
 
 // Define the schema for login validation
 const loginSchema = z.object({
@@ -29,10 +30,12 @@ const loginSchema = z.object({
 });
 
 const LoginForm = () => {
-  const router = useRouter();
   const { toast } = useToast();
   const [loading, setLoading] = useState(false);
   const turnstileRef = useRef<HTMLDivElement>(null);
+  const searchParams = useSearchParams();
+  const redirect = searchParams.get("redirect");
+  const router = useRouter();
 
   const form = useForm({
     resolver: zodResolver(loginSchema),
@@ -49,14 +52,6 @@ const LoginForm = () => {
     const turnstileInput = turnstileRef.current?.querySelector('input[type="hidden"]') as HTMLInputElement;
     if (turnstileInput) {
       token = turnstileInput.value;
-    } else {
-      toast({
-        title: "Verification Required",
-        description: "Please complete the verification challenge",
-        variant: "destructive",
-      });
-      setLoading(false);
-      return;
     }
 
     const response = await fetch("/api/auth/login", {
@@ -73,7 +68,7 @@ const LoginForm = () => {
         title: "Login Successful",
         description: "You are now logged in!",
       });
-      router.push("/");
+      router.push(redirect || "/");
     } else {
       toast({
         title: "Login Failed",
@@ -118,7 +113,6 @@ const LoginForm = () => {
         className="z-0"
       />
       
-
       <Script src="https://challenges.cloudflare.com/turnstile/v0/api.js" async defer />
       <Image
         src="/images/Logo.png"
@@ -128,6 +122,9 @@ const LoginForm = () => {
         className="z-20"
       />
       <div className="relative z-20 w-[90%] mx-auto sm:w-full max-w-md p-8 bg-white rounded shadow-md">
+        <Button variant="ghost" onClick={() => router.back()} className="float-left space-x-2 mb-4 -mt-2 -ml-2">
+          <FaArrowLeft />
+        </Button>
         <h2 className="text-2xl font-bold text-center mb-6">
           Login to Your Account
         </h2>
@@ -221,4 +218,10 @@ const LoginForm = () => {
   );
 };
 
-export default LoginForm;
+const LoginPage = () => (
+  <Suspense fallback={<div>Loading...</div>}>
+    <LoginForm />
+  </Suspense>
+);
+
+export default LoginPage;

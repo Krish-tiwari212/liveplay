@@ -1,12 +1,26 @@
-"use client"
+"use client";
 
-import { Checkbox } from '@/components/ui/checkbox';
-import React, { useEffect, useRef, useState } from 'react'
+import { Checkbox } from "@/components/ui/checkbox";
+import React, { useEffect, useRef, useState } from "react";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Currency, Loader } from 'lucide-react';
-import Image from 'next/image';
-import { Button } from './ui/button';
+import { Currency, Loader } from "lucide-react";
+import Image from "next/image";
+import { Button } from "./ui/button";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
+import {
+  InputOTP,
+  InputOTPGroup,
+  InputOTPSlot,
+} from "@/components/ui/input-otp";
 import {
   Select,
   SelectContent,
@@ -15,9 +29,11 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
-import { toast } from '@/hooks/use-toast';
-import { useEventContext } from '@/context/EventDataContext';
-
+import { toast } from "@/hooks/use-toast";
+import { useEventContext } from "@/context/EventDataContext";
+import { formatDate } from "date-fns";
+import {FaWhatsapp} from "react-icons/fa6";
+import { useUser } from "@/context/UserContext";
 
 const banks = [
   { name: "ABN AMRO", image: "/Indian Banks SVG Logos/Bank Name=ABN AMRO.svg" },
@@ -123,8 +139,7 @@ const banks = [
   },
   {
     name: "ESAF Small Finance Bank",
-    image:
-      "/Indian Banks SVG Logos/Bank Name=ESAF Small Finance Bank Ltd.svg",
+    image: "/Indian Banks SVG Logos/Bank Name=ESAF Small Finance Bank Ltd.svg",
   },
   {
     name: "Emirates NBD",
@@ -314,14 +329,13 @@ interface FormField {
   required?: boolean;
   checkbox?: CheckboxField;
   filecontnet?: filecontent;
-  fieldid:number;
+  fieldid: number;
 }
 
 interface CheckboxField {
   id: string;
   label: string;
 }
-
 
 interface filecontent {
   size: string;
@@ -334,27 +348,94 @@ interface KycFormsProps {
   buttonString?: string;
   onButtonClick?: () => void;
   handlePrev?: () => void;
-  prevDisabled?:boolean
-  nextDisabled?:boolean
+  prevDisabled?: boolean;
+  nextDisabled?: boolean;
 }
 
 const Kycforms: React.FC<KycFormsProps> = ({
   fields,
   buttonLabel,
   buttonString,
-  onButtonClick=()=>{},
-  handlePrev=()=>{},
+  onButtonClick = () => {},
+  handlePrev = () => {},
   prevDisabled,
-  nextDisabled
+  nextDisabled,
 }) => {
-  const {setUnlockEventCircle}=useEventContext()
-  const imageRefs = useRef<(HTMLInputElement | null)[]>([]);
+  const {user} = useUser();
+  const { setUnlockEventCircle } = useEventContext();
   const [isImageLoading, setIsImageLoading] = useState(false);
   const [userType, setUserType] = useState<"business" | "individual">(
     "business"
   );
-
+  const [imagePreviews, setImagePreviews] = useState({});
   const [formData, setFormData] = useState<{ [key: string]: string }>({});
+  const imageRefs = useRef({
+    mobileBanner: null,
+  });
+  const {KYCContent,setKYCContent}=useEventContext()
+  const [otpVisible, setOtpVisible] = useState(false);
+  const [otpValue, setOtpValue] = useState("");
+  const [otpVerified, setOtpVerified] = useState(false);
+
+  const handleSendOtp = async (contactNumber) => {
+    if (!contactNumber) {
+      toast({ title: "Contact Number Required", description: "Please enter your contact number to receive the OTP.", variant: "destructive" });
+      return;
+    }
+
+    const response = await fetch("/api/auth/send-otp", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ contact_number: contactNumber, user_id: user?.id }),
+    });
+
+    const result = await response.json();
+
+    if (response.ok) {
+      toast({ title: "OTP Sent", description: "An OTP has been sent to your contact number." });
+      setOtpVisible(true);
+    } else {
+      toast({ title: "OTP Sending Failed", description: result.error || "An error occurred. Please try again.", variant: "destructive" });
+    }
+  };
+
+  const handleVerifyOtp = async (contactNumber) => {
+    const response = await fetch("/api/auth/verify-otp", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ contact_number: contactNumber, otp: otpValue, user_id: user?.id }),
+    });
+
+    const result = await response.json();
+
+    if (response.ok) {
+      setOtpVerified(true);
+      toast({ title: "OTP Verified", description: "Your OTP has been verified successfully!" });
+      setOtpVisible(false);
+    } else {
+      toast({ title: "Invalid OTP", description: result.error || "The OTP you entered is incorrect. Please try again.", variant: "destructive" });
+    }
+  };
+
+  const handleFileChange =
+    (type: keyof typeof imagePreviews) =>
+    (event: React.ChangeEvent<HTMLInputElement>) => {
+      const file = event.target.files?.[0];
+      if (file) {
+        const reader = new FileReader();
+        setIsImageLoading(true);
+        reader.onloadend = () => {
+          const base64Data = reader.result as string;
+          setImagePreviews((prev) => ({ ...prev, [type]: base64Data }));
+          setFormData((prevData) => ({
+            ...prevData,
+            [type]: file,
+          }));
+          setIsImageLoading(false);
+        };
+        reader.readAsDataURL(file);
+      }
+    };
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
@@ -367,179 +448,286 @@ const Kycforms: React.FC<KycFormsProps> = ({
   const isFormValid = () => {
     return fields.every((field) => {
       if (field.required) {
-        return formData[field.name] && formData[field.name].trim() !== "";
+        const value = formData[field.name];
+        if (field.type !== "file" && (!value || value.trim() === "")) {
+          return false;
+        }
+        if (field.type === "file" && !formData[field.name]) {
+          return false;
+        }
+        return true;
       }
       return true;
     });
   };
-  const handlenext=(e:any)=>{
+
+  const handlenext = (e: any) => {
     e.preventDefault();
-    if (!isFormValid()){
+    if (!isFormValid()) {
       toast({
-        title:"Please Enter The required fields",
-        variant:"default"
-      })
-    }else{
+        title: "Please Enter The required fields",
+        variant: "default",
+      });
+    } else {
+      setKYCContent((prev) => ({ ...prev, ...formData }));
+      setFormData({});
       onButtonClick();
-    } 
-  }
-  useEffect(()=>{
-    setUnlockEventCircle({
-      fieldid:fields[0].fieldid,
-    })
-  },[])
+    }
+  };
+
+ useEffect(() => {
+   const filteredContent = Object.keys(KYCContent).reduce((acc, key) => {
+     const field = fields.find((field) => field.name === key);
+     if (field) {
+       acc[key] = KYCContent[key];
+       if (field.type === "file" && KYCContent[key]) {
+         const file = KYCContent[key] as File;
+         if (file && file instanceof File) {
+           const reader = new FileReader();
+           reader.onloadend = () => {
+             setImagePreviews((prev) => ({
+               ...prev,
+               [field.name]: reader.result as string,
+             }));
+           };
+           reader.readAsDataURL(file); 
+         }
+       }
+     }
+     return acc;
+   }, {} as { [key: string]: string });
+   setFormData((prevData) => ({
+     ...prevData,
+     ...filteredContent,
+   }));
+ }, [KYCContent, fields]);
+
   return (
-    <form className="bg-white shadow-2xl p-5 rounded-lg w-full relative mt-20">
-      {!prevDisabled && (
-        <button
-          onClick={(e) => {
-            e.preventDefault();
-            handlePrev();
-          }}
-        >
-          <Image
-            src="/icons/BackIcon.svg"
-            alt="backIcon"
-            width={20}
-            height={20}
-          />
-        </button>
-      )}
-      <div className="flex flex-wrap w-[90%] mx-auto">
-        {prevDisabled && (
-          <RadioGroup
-            defaultValue="business"
-            className="flex flex-col sm:flex-row gap-2"
-            onValueChange={(value) =>
-              setUserType(value as "business" | "individual")
-            }
+    <>
+      <form className="bg-white shadow-2xl p-5 rounded-lg w-full relative mt-8 lg:mt-16">
+        {!prevDisabled && (
+          <button
+            onClick={(e) => {
+              e.preventDefault();
+              handlePrev();
+            }}
           >
-            <Label>Are you a business or an individual</Label>
-            <div className="flex items-center space-x-2">
-              <RadioGroupItem value="business" id="business" />
-              <Label htmlFor="business">Business</Label>
-            </div>
-            <div className="flex items-center space-x-2">
-              <RadioGroupItem value="individual" id="individual" />
-              <Label htmlFor="individual">Individual</Label>
-            </div>
-          </RadioGroup>
+            <Image
+              src="/icons/BackIcon.svg"
+              alt="backIcon"
+              width={20}
+              height={20}
+            />
+          </button>
         )}
-        {fields.map((field, index) => (
-          <div key={field.id} className="w-full m-2 flex flex-col">
-            {field.type !== "file" && field.type !== "select" && (
-              <>
-                <label htmlFor={field.id}>
-                  {userType === "business" && field.label === "Full Name"
-                    ? "Business Name"
-                    : field.label}
-                </label>
+        <div className="flex flex-wrap w-[90%] mx-auto">
+          {prevDisabled && (
+            <>
+            <RadioGroup
+              defaultValue="business"
+              className="flex flex-col sm:flex-row gap-2"
+              onValueChange={(value) =>
+                setUserType(value as "business" | "individual")
+              }
+            >
+              <Label>Are you a business or an individual</Label>
+              <div className="flex items-center space-x-2">
+                <RadioGroupItem value="business" id="business" />
+                <Label htmlFor="business">Business</Label>
+              </div>
+              <div className="flex items-center space-x-2">
+                <RadioGroupItem value="individual" id="individual" />
+                <Label htmlFor="individual">Individual</Label>
+              </div>
+            </RadioGroup>
+            <div className="w-full m-2 flex flex-col">
+              <label htmlFor="contactNumber">Whatsapp Number</label>
+              <div className="flex gap-2 w-full">
                 <input
-                  id={field.id}
-                  type={field.type}
-                  name={field.name}
-                  placeholder={field.placeholder}
-                  required={field.required}
-                  value={formData[field.name] || ""}
+                  id="contactNumber"
+                  type="text"
+                  name="contactNumber"
+                  placeholder="Enter your whatsapp number"
+                  required
+                  value={formData.contactNumber || ""}
                   onChange={handleInputChange}
-                  className="h-10 p-2 bg-white border rounded-md text-sm shadow-2xl text-[#17202A] focus:border-[#17202A] focus:outline-none focus:shadow-lg"
+                  className="h-10 p-2 w-full bg-white border rounded-md text-sm shadow-2xl text-[#17202A] focus:border-[#17202A] focus:outline-none focus:shadow-lg"
                 />
-              </>
-            )}
-            {field.type === "file" && (
-              <div className="flex flex-col w-full mt-5">
-                <Label className="font-bold text-lg">
-                  {field.filecontnet?.label}
-                </Label>
-                <div
-                  className="flex items-center justify-center mt-1 h-[142px] w-full cursor-pointer flex-col gap-3 rounded-xl border-[3.2px] border-dashed border-gray-600  bg-white "
-                  onClick={() => imageRefs.current[index]?.click()}
-                >
-                  <Input
-                    type="file"
-                    className="hidden"
-                    ref={(el) => {
-                      imageRefs.current[index] = el;
-                    }}
+                <Button type="button" disabled={otpVerified} onClick={()=>{handleSendOtp(formData.contactNumber)}}>
+                  <FaWhatsapp />
+                  Verify
+                </Button>
+              </div>
+            </div>
+            </>
+          )}
+          {fields.map((field, i) => (
+            <div key={field.id} className="w-full m-2 flex flex-col">
+              {field.type !== "file" && field.type !== "select" && field.id !== "contactNumber" && (
+                <>
+                  <label htmlFor={field.id}>
+                    {userType === "business" && field.label === "Full Name"
+                      ? "Business Name"
+                      : field.label}
+                  </label>
+                  <input
+                    id={field.id}
+                    type={field.type}
+                    name={field.name}
+                    placeholder={field.placeholder}
+                    required={field.required}
+                    value={formData[field.name] || ""}
+                    onChange={handleInputChange}
+                    className="h-10 p-2 bg-white border rounded-md text-sm shadow-2xl text-[#17202A] focus:border-[#17202A] focus:outline-none focus:shadow-lg"
                   />
-                  {!isImageLoading ? (
-                    <Image
-                      src="/icons/upload-image.svg"
-                      alt="upload"
-                      width={40}
-                      height={40}
-                      className="invert"
+                </>
+              )}
+              {field.type === "file" && (
+                <div className="flex flex-col w-full mt-5" key={field.id}>
+                  <Label className="font-bold text-lg">
+                    {field.filecontnet?.label}
+                    <span className="text-red-500">*</span>
+                  </Label>
+                  <div
+                    className="flex items-center justify-center mt-1 h-[142px] w-full cursor-pointer flex-col gap-3 rounded-xl border-[3.2px] border-dashed border-gray-600  bg-white "
+                    onClick={() => imageRefs.current[field.name]?.click()}
+                  >
+                    <Input
+                      type="file"
+                      className="hidden"
+                      ref={(el) => (imageRefs.current[field.name] = el)}
+                      onChange={handleFileChange(
+                        field.name as keyof typeof imagePreviews
+                      )}
                     />
-                  ) : (
-                    <div className="text-16 flex items-center justify-center  font-medium text-gray-700 ">
-                      Uplaoding
-                      <Loader size={20} className="animate-spin ml-2" />
+                    {!isImageLoading ? (
+                      <Image
+                        src="/icons/upload-image.svg"
+                        alt="upload"
+                        width={40}
+                        height={40}
+                        className="invert"
+                      />
+                    ) : (
+                      <div className="text-16 flex items-center justify-center  font-medium text-gray-700 ">
+                        Uploading
+                        <Loader size={20} className="animate-spin ml-2" />
+                      </div>
+                    )}
+                    <div className="flex flex-col items-center gap-1">
+                      <h2 className="text-12 font-bold text-gray-400 ">
+                        Click to upload
+                      </h2>
+                      <p className="text-12 text-center font-bold text-gray-500 ">
+                        {field.filecontnet?.size}
+                      </p>
+                    </div>
+                  </div>
+                  {imagePreviews[field.name as keyof typeof imagePreviews] && (
+                    <div className="flex justify-center items-center py-2">
+                      <Image
+                        src={
+                          imagePreviews[field.name as keyof typeof imagePreviews]!
+                        }
+                        alt={`${field.name} preview`}
+                        width={400}
+                        height={400}
+                        className="rounded-md border-2"
+                      />
                     </div>
                   )}
-                  <div className="flex flex-col items-center gap-1">
-                    <h2 className="text-12 font-bold text-gray-400 ">
-                      Click to upload
-                    </h2>
-                    <p className="text-12 font-bold text-gray-500 text-center">
-                      {field.filecontnet?.size}
-                    </p>
+                </div>
+              )}
+              {field.type === "select" && (
+                <div className="w-full flex flex-col">
+                  <label htmlFor="bankName">{field.label}</label>
+                  <Select
+                    value={formData[field.name] || ""}
+                    onValueChange={(value) => {
+                      setFormData((prevData) => ({
+                        ...prevData,
+                        [field.name]: value,
+                      }));
+                    }}
+                  >
+                    <SelectTrigger className="h-10 bg-white border rounded-md text-sm shadow-2xl text-[#17202A] focus:border-[#17202A] focus:outline-none focus:shadow-lg">
+                      <SelectValue placeholder={field.placeholder} />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {banks.map((bank, i) => (
+                        <SelectItem
+                          key={bank.name}
+                          value={bank.name}
+                          className="flex items-center space-x-2"
+                        >
+                          <div className="flex items-center space-x-2">
+                            <img
+                              src={bank.image}
+                              alt={bank.image}
+                              className="h-4 w-4"
+                            />
+                            <span>{bank.name}</span>
+                          </div>
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </div>
+              )}
+              {field.checkbox && (
+                <div className="mt-2 mx-2 items-top flex justify-start space-x-2">
+                  <Checkbox id={field.checkbox.id} />
+                  <div className="flex flex-col leading-none">
+                    <label
+                      htmlFor={field.checkbox.id}
+                      className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
+                    >
+                      {field.checkbox.label}
+                    </label>
                   </div>
                 </div>
-              </div>
-            )}
-            {field.type === "select" && (
-              <div className="w-full flex flex-col">
-                <label htmlFor={field.id}>{field.label}</label>
-                <Select>
-                  <SelectTrigger className="h-10 bg-white border rounded-md text-sm shadow-2xl text-[#17202A] focus:border-[#17202A] focus:outline-none focus:shadow-lg">
-                    <SelectValue placeholder={field.placeholder} />
-                  </SelectTrigger>
-                  <SelectContent>
-                    {banks.map((bank, i) => (
-                      <SelectItem
-                        key={bank.name}
-                        value={bank.name}
-                        className="flex items-center space-x-2"
-                      >
-                        <div className="flex items-center space-x-2">
-                          <img
-                            src={bank.image}
-                            alt={bank.image}
-                            className="h-4 w-4"
-                          />
-                          <span>{bank.name}</span>
-                        </div>
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
-              </div>
-            )}
-            {field.checkbox && (
-              <div className="mt-2 mx-2 items-top flex justify-start space-x-2">
-                <Checkbox id={field.checkbox.id} />
-                <div className="flex flex-col leading-none">
-                  <label
-                    htmlFor={field.checkbox.id}
-                    className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
-                  >
-                    {field.checkbox.label}
-                  </label>
-                </div>
-              </div>
-            )}
+              )}
+            </div>
+          ))}
+        </div>
+        {buttonLabel && (
+          <Button onClick={(e) => handlenext(e)} className="mt-3 w-full">
+            {buttonLabel}
+          </Button>
+        )}
+      </form>
+      <Dialog open={otpVisible} onOpenChange={setOtpVisible}>
+        <DialogContent className="sm:max-w-[425px] h-[15rem]">
+          <DialogHeader>
+            <DialogTitle>Verify OTP</DialogTitle>
+            <DialogDescription>
+              Enter the OTP sent to your whatsapp number.
+            </DialogDescription>
+          </DialogHeader>
+          <div className="grid gap-4 py-4">
+            <InputOTP
+              maxLength={6}
+              value={otpValue}
+              onChange={(value) => setOtpValue(value)}
+            >
+              <InputOTPGroup>
+                <InputOTPSlot index={0} />
+                <InputOTPSlot index={1} />
+                <InputOTPSlot index={2} />
+                <InputOTPSlot index={3} />
+                <InputOTPSlot index={4} />
+                <InputOTPSlot index={5} />
+              </InputOTPGroup>
+            </InputOTP>
           </div>
-        ))}
-      </div>
-      {buttonLabel && (
-        <Button
-          onClick={(e)=>handlenext(e)}
-          className="mt-3 w-full"
-        >
-          {buttonLabel}
-        </Button>
-      )}
-    </form>
+          <DialogFooter>
+            <Button type="button" onClick={()=>{handleVerifyOtp(formData.contactNumber)}}>
+              Verify OTP
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+    </>
   );
 };
 

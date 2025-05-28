@@ -1,4 +1,4 @@
-"use client";
+// "use client";
 
 export default function ParticipantsPage() {
   return (
@@ -76,9 +76,10 @@ export default function ParticipantsPage() {
 //     if (eventId) {
 //       fetch(`/api/event/get_entries/${eventId}`)
 //         .then(response => response.json())
-//         .then(data => setParticipants(data.participants))
+//         .then(data => console.log("data"+data.participants))
 //         .catch(error => console.error(error));
 
+//         console.log(participants);
 //       fetch(`/api/event/get_by_id/${eventId}`)
 //         .then(response => response.json())
 //         .then(data => setEvent(data))
@@ -89,6 +90,10 @@ export default function ParticipantsPage() {
 //   const handleParticipantClick = (participant: Participant) => {
 //     setSelectedParticipant(participant);
 //   };
+
+//   useEffect(()=>{
+//     console.log(participants)
+//   },[])
 
 //   return (
 //     <div className="container mx-auto p-6 space-y-6">

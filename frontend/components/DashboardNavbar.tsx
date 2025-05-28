@@ -71,9 +71,6 @@ const Navbar = () => {
     setIsPopoverOpen(false);
   };
 
-  useEffect(() => {
-    console.log(user)
-  } , [user])  
 
 
   return (
@@ -92,7 +89,7 @@ const Navbar = () => {
       <div className="flex items-center">
         <Link href="/">
           <Button
-            className="w-full bg-[#141f29] text-[#ccdb28] border border-[#ccdb28] hover:bg-[#ccdb28] hover:text-[#141f29]"
+            className="w-full bg-[#141f29] text-[#ccdb28] border border-[#ccdb28] hover:bg-[#ccdb28] hover:text-[#141f29] hidden md:block"
             size="xs"
           >
             Home

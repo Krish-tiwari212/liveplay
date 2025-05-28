@@ -15,14 +15,23 @@ import { Popover, PopoverContent, PopoverTrigger } from "./ui/popover";
 import { useUser } from "@/context/UserContext";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "./ui/select";
 
-const MNavbar = () => {
+interface location {
+  latitude:number |null;
+  longitude: number|null
+}
+
+interface Mnavbar{
+  location?:location
+}
+
+const MNavbar = ({ location }: Mnavbar) => {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const { toast } = useToast();
   const router = useRouter();
   const supabase = createClient();
   const { user, loading, setUser } = useUser();
   const [isPopoverOpen, setIsPopoverOpen] = useState(false);
-  
+
   // State to control the Sheet (Navbar) open state
   const [isSheetOpen, setIsSheetOpen] = useState(false);
 
@@ -65,19 +74,22 @@ const MNavbar = () => {
 
   const handleButtonClick = (action: () => void) => {
     action();
-    setIsSheetOpen(false); 
+    setIsSheetOpen(false);
   };
 
   return (
     <div className="lg:hidden flex w-full items-center justify-between p-4 bg-[#17202A] text-white shadow-lg z-20">
       <div className="flex items-center gap-4">
-        <Sheet open={isSheetOpen} onOpenChange={setIsSheetOpen} >
+        <Sheet open={isSheetOpen} onOpenChange={setIsSheetOpen}>
           <SheetTrigger>
             <FaBars className="text-3xl text-[#ccdb28]" />
           </SheetTrigger>
-          <SheetContent className="bg-[#141f29] pt-16 border-none lg:hidden" side="top">
+          <SheetContent
+            className="bg-[#141f29] pt-16 border-none lg:hidden"
+            side="top"
+          >
             <div className="flex flex-col pt-10">
-              <Select>
+              {/* <Select>
                 <SelectTrigger className="w-full h-[30px] text-2xl bg-[#141f29] font-semibold text-[#ccdb28] border border-[#ccdb28] flex justify-center items-center py-8 mb-4">
                   <div className="flex justify-center items-center mr-2">
                     <MdLocationOn className="mr-2 text-2xl" />
@@ -89,15 +101,14 @@ const MNavbar = () => {
                   <SelectItem value="dark">Delhi</SelectItem>
                   <SelectItem value="system">Chennai</SelectItem>
                 </SelectContent>
-              </Select>
-              <Button
-                onClick={() =>
-                  handleButtonClick(() => router.push("/eventspage"))
-                }
-                className="w-full mb-4 bg-[#141f29] text-[#ccdb28] border border-[#ccdb28] text-2xl py-8"
-              >
-                Free Match Generator
-              </Button>
+              </Select> */}
+              <Link href={"/freematchgenerator"}>
+                <Button
+                  className="w-full mb-4 bg-[#141f29] text-[#ccdb28] border border-[#ccdb28] text-2xl py-8"
+                >
+                  Free Match Generator
+                </Button>
+              </Link>
               <Button
                 onClick={() =>
                   handleButtonClick(() => router.push("/createeventstaticpage"))

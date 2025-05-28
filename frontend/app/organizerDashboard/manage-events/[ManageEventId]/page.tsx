@@ -53,16 +53,16 @@ const ProgressBarCheckpointsManageEventID = [
     label: "Event Boosters",
     placement: 6,
   },
-  {
-    icon: <TbTournament />,
-    label: "Match Fixtures",
-    placement: 7,
-  },
-  {
-    icon: <MdLiveTv />,
-    label: "Live Score Updation",
-    placement: 8,
-  },
+  // {
+  //   icon: <TbTournament />,
+  //   label: "Live Match Tracker",
+  //   placement: 7,
+  // },
+  // {
+  //   icon: <MdLiveTv />,
+  //   label: "Live Score Updation",
+  //   placement: 8,
+  // },
 ];
 
 
@@ -226,36 +226,36 @@ const page = ({params}:any) => {
       <div className="relative">
         {EventEditData.enable_fixtures === true ? (
           <div className="mt-20 lg:mt-4 w-full rounded-lg">
-            {currentPage === 1 && <EventMatrics handleNext={handleNext} />}
-            {currentPage === 2 && <Report handleNext={handleNext} />}
+            {currentPage === 1 && <EventMatrics handleNext={handleNext} eventId={ManageEventId} />}
+            {currentPage === 2 && <Report handleNext={handleNext} eventId={ManageEventId} />}
             {currentPage === 3 && (
               <EventInformation
                 handleNext={handleNext}
                 ManageEventId={ManageEventId}
               />
             )}
-            {currentPage === 4 && <CategoryPreview handleNext={handleNext} />}
-            {currentPage === 5 && <EnableFeatures handleNext={handleNext} />}
-            {currentPage === 6 && <EventBoosters handleNext={handleNext} />}
-            {currentPage === 7 && (
-              <DrawCreation id={ManageEventId} handleNext={handleNext} />
-            )}
-            {currentPage === 8 && <LiveMatchTracking handleNext={handleNext} />}
+            {currentPage === 4 && <CategoryPreview handleNext={handleNext} eventId={ManageEventId} />}
+            {currentPage === 5 && <EnableFeatures handleNext={handleNext} eventId={ManageEventId} />}
+            {currentPage === 6 && <EventBoosters handleNext={handleNext} eventId={ManageEventId} />}
+            {/* {currentPage === 7 && (
+              <DrawCreation id={ManageEventId} handleNext={handleNext} eventId={ManageEventId} />
+            )} */}
+            {/* {currentPage === 7 && <LiveMatchTracking handleNext={handleNext} eventId={ManageEventId} />} */}
           </div>
         ) : (
           <div className="mt-20 lg:mt-4 w-full rounded-lg">
-            {currentPage === 1 && <EventMatrics handleNext={handleNext} />}
-            {currentPage === 2 && <Report handleNext={handleNext} />}
+            {currentPage === 1 && <EventMatrics handleNext={handleNext} eventId={ManageEventId} />}
+            {currentPage === 2 && <Report handleNext={handleNext} eventId={ManageEventId} />}
             {currentPage === 3 && (
               <EventInformation
                 handleNext={handleNext}
                 ManageEventId={ManageEventId}
               />
             )}
-            {currentPage === 4 && <CategoryPreview handleNext={handleNext} />}
-            {currentPage === 5 && <EnableFeatures handleNext={handleNext} />}
-            {currentPage === 6 && <EventBoosters handleNext={handleNext} />}
-            {currentPage === 7 && <LiveMatchTracking handleNext={handleNext} />}
+            {currentPage === 4 && <CategoryPreview handleNext={handleNext} eventId={ManageEventId} />}
+            {currentPage === 5 && <EnableFeatures handleNext={handleNext} eventId={ManageEventId} />}
+            {currentPage === 6 && <EventBoosters handleNext={handleNext} eventId={ManageEventId} />}
+            {/* {currentPage === 7 && <LiveMatchTracking handleNext={handleNext} eventId={ManageEventId} />} */}
           </div>
         )}
 

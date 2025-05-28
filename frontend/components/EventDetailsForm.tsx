@@ -100,6 +100,14 @@ const SportsType = [
     name: "Marathon",
     icon: <img src="/images/marathon.png" alt="Marathon" className="h-4 w-4" />,
   },
+  {
+    name: "Box Cricket",
+    icon: <img src="/images/cricket.png" alt="Cricket" className="h-4 w-4" />,
+  },
+  {
+    name: "Turf Football",
+    icon: <img src="/images/football.png" alt="Football" className="h-4 w-4" />,
+  },
 ];
 
 const requiredFields = [
@@ -141,6 +149,7 @@ const fields = [
         name: "event_name",
         placeholder: "Enter Event Title",
         required: true,
+        maxlength:100
       },
     ],
   },
@@ -219,15 +228,13 @@ const fields = [
         type: "text",
         name: "website_link",
         placeholder: "Enter Website Link",
-        required: true,
       },
       {
         id: "insta_link",
-        label: "Instagram Link",
+        label: "Instagram Username",
         type: "text",
         name: "insta_link",
-        placeholder: "Enter Link",
-        required: true,
+        placeholder: "Enter Username",
       },
     ],
   },
@@ -245,6 +252,7 @@ const EventDetailsForm: React.FC<EventDetailsFormProps> = ({
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
+    const today=new Date()
     if (
       name === "start_date" ||
       name === "end_date" ||
@@ -263,10 +271,20 @@ const EventDetailsForm: React.FC<EventDetailsFormProps> = ({
       const lastWithdrawalDate = new Date(
         name === "last_withdrawal_date" ? value : formData.last_withdrawal_date
       );
+      if (
+        startDate < today ||
+        endDate < today ||
+        lastRegistrationDate < today ||
+        lastWithdrawalDate < today
+      ) {
+        setShowDialog(true);
+        setDialogType("Pastdate");
+        return;
+      }
 
       if (startDate > endDate) {
         setShowDialog(true);
-        setDialogType("Eventdate")
+        setDialogType("Eventdate");
         return;
       }
       if (
@@ -405,6 +423,18 @@ const EventDetailsForm: React.FC<EventDetailsFormProps> = ({
             </AlertDialogAction>
           </AlertDialogContent>
         </AlertDialog>
+      ) : dialogType === "Pastdate" ? (
+        <AlertDialog open={showDialog} onOpenChange={setShowDialog}>
+          <AlertDialogContent>
+            <AlertDialogTitle>Error</AlertDialogTitle>
+            <AlertDialogDescription>
+              Please Enter Valid Dates
+            </AlertDialogDescription>
+            <AlertDialogAction onClick={() => setShowDialog(false)}>
+              OK
+            </AlertDialogAction>
+          </AlertDialogContent>
+        </AlertDialog>
       ) : (
         <AlertDialog open={showDialog} onOpenChange={setShowDialog}>
           <AlertDialogContent>
@@ -428,7 +458,6 @@ const EventDetailsForm: React.FC<EventDetailsFormProps> = ({
                   {field.label}
                 </Label>
                 <Select
-                  defaultValue={formData.sport || ""}
                   onValueChange={(value) => {
                     setFormData({
                       ...formData,
@@ -509,11 +538,16 @@ const EventDetailsForm: React.FC<EventDetailsFormProps> = ({
                   type={field.type}
                   name={field.name}
                   required={field.required}
+                  disabled={editPage === "manageEvent" && field.type === "date"}
                   value={
                     formData[field.name as keyof EventDetailsFormProps] || ""
                   }
                   onChange={handleChange}
-                  className="h-10 p-2 bg-white border rounded-md text-sm shadow-2xl text-[#17202A] focus:border-[#17202A] focus:outline-none focus:shadow-lg"
+                  className={`h-10 p-2 bg-white border rounded-md text-sm shadow-2xl text-[#17202A] focus:border-[#17202A] focus:outline-none focus:shadow-lg ${
+                    editPage === "manageEvent" && field.type === "date"
+                      ? "cursor-not-allowed opacity-60"
+                      : ""
+                  }`}
                 />
               </div>
             ))}
@@ -559,8 +593,9 @@ const EventDetailsForm: React.FC<EventDetailsFormProps> = ({
               <div className="w-full xl:w-[32%] flex flex-col" key={i}>
                 <Label className="text-[0.8rem]">
                   {field.label}
-                  <span className="text-red-500">*</span>
+                  {field.required && <span className="text-red-500">*</span>}
                 </Label>
+
                 <input
                   id={field.id}
                   type={field.type}
@@ -577,7 +612,7 @@ const EventDetailsForm: React.FC<EventDetailsFormProps> = ({
             ))}
           </div>
         </div>
-        <div className=" w-full mx-2 flex flex-col mb-6">
+        {/* <div className=" w-full mx-2 flex flex-col mb-6">
           <div className="mt-2 items-top flex justify-start  space-x-2">
             <Checkbox id="contactInfo" />
             <div className="flex flex-col leading-none">
@@ -592,7 +627,7 @@ const EventDetailsForm: React.FC<EventDetailsFormProps> = ({
               </p>
             </div>
           </div>
-        </div>
+        </div> */}
       </div>
       <div className="flex justify-center items-center">
         <Button

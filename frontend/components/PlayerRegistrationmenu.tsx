@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Input } from './ui/input';
 import {
   Select,
@@ -18,7 +18,8 @@ import {
   PaginationNext,
   PaginationPrevious,
 } from "@/components/ui/pagination";
-
+import { useSearchParams } from 'next/navigation';
+import { useEventContext } from '@/context/EventDataContext';
 
 const players: Player[] = [
   { id: 1, name: "Om Prakash - Akshay" },
@@ -53,34 +54,110 @@ const players: Player[] = [
   { id: 30, name: "Player 30" },
 ];
 
-const PlayerRegistrationmenu = () => {
+interface Participant {
+  id: string;
+  user_id: string;
+  name: string;
+  status: string;
+  registration_date: string;
+  user: {
+    id: string;
+    full_name: string;
+    email: string;
+    gender: string;
+    date_of_birth: string;
+  };
+}
+
+interface Category {
+  id?: number;
+  category_name?: string;
+  total_quantity?: string;
+  max_ticket_quantity?: string;
+  price?: number;
+  ticket_description?: string;
+  discount_code?: string;
+  discount?: boolean;
+  category_type?: string;
+  discountType?: string;
+  number_of_discounts?: string;
+  from_date?: string;
+  till_date?: string;
+  discount_value: number;
+  percentage_input?: string;
+  amount_input?: string;
+  gender?: string;
+  age_from?: string;
+  age_to?: string;
+  ageRangeOption?: string;
+  max_teams_size?: number;
+  sport?: string;
+  teamName?: string;
+  pairname?: string;
+}
+
+interface PlayerRegistrationmenuProps {
+  participants?: Participant[] | null;
+  dialog: boolean;
+  setDialog: React.Dispatch<React.SetStateAction<boolean>>;
+  dialogdata: Participant;
+  setdialogdata: React.Dispatch<React.SetStateAction<Participant>>;
+  categories: Category[];
+}
+
+const PlayerRegistrationmenu = ({
+  participants = [],
+  dialog,
+  setDialog,
+  dialogdata,
+  setdialogdata,
+  categories,
+}: PlayerRegistrationmenuProps) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [searchTerm, setSearchTerm] = useState('');
-  const [filteredPlayers, setFilteredPlayers] = useState<Player[]>(players);
+  const [searchTerm, setSearchTerm] = useState("");
+  console.log(participants);
+  const [filteredPlayers, setFilteredPlayers] =
+    useState<Participant[]>([]);
   const [currentPage, setCurrentPage] = useState(1);
+
+   useEffect(() => {
+     setFilteredPlayers(participants || []); 
+   }, [participants]);
+
   const playersPerPage = 14;
 
   const handleSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value;
     setSearchTerm(value);
-    // Reset to first page on search
     setCurrentPage(1);
-    const filtered = players.filter(player =>
+    const filtered = participants.filter((player) =>
       player.name.toLowerCase().includes(value.toLowerCase())
     );
     setFilteredPlayers(filtered);
   };
 
-  // Calculate total pages
   const totalPages = Math.ceil(filteredPlayers.length / playersPerPage);
 
-  // Get current players
   const indexOfLastPlayer = currentPage * playersPerPage;
   const indexOfFirstPlayer = indexOfLastPlayer - playersPerPage;
-  const currentPlayers = filteredPlayers.slice(indexOfFirstPlayer, indexOfLastPlayer);
+  const currentPlayers = filteredPlayers.slice(
+    indexOfFirstPlayer,
+    indexOfLastPlayer
+  );
 
   const paginate = (pageNumber: number) => setCurrentPage(pageNumber);
 
+  const gridColumns = 3;
+  const gridRows = Math.ceil(currentPlayers.length / gridColumns);
+  const getPlayerForCell = (row: number, col: number) => {
+    const index = row * gridColumns + col;
+    return currentPlayers[index];
+  };
+
+  const handlePlayerClick = (player: Participant) => {
+    setdialogdata(player);
+    setDialog(true);
+  };
   return (
     <div className="w-full h-full border rounded-lg">
       <div className="w-full p-6 bg-[#141f29] flex flex-wrap gap-4 rounded-t-lg">
@@ -94,15 +171,22 @@ const PlayerRegistrationmenu = () => {
           />
           <BsSearch className="absolute right-2 top-3" />
         </div>
-
         <Select>
           <SelectTrigger className="w-full md:max-w-[250px] border-2 border-[#ccdb28]">
-            <SelectValue placeholder="Men’s Double (35 entries)" />
+            <SelectValue placeholder="Select The Category" />
           </SelectTrigger>
           <SelectContent>
-            <SelectItem value="light">Light</SelectItem>
-            <SelectItem value="dark">Dark</SelectItem>
-            <SelectItem value="system">System</SelectItem>
+            {categories?.map((e, i) => (
+              <SelectItem
+                key={i}
+                value={e.category_name}
+                className="flex items-center space-x-2"
+              >
+                <div className="flex items-center space-x-2">
+                  <span>{e.category_name}</span>
+                </div>
+              </SelectItem>
+            ))}
           </SelectContent>
         </Select>
       </div>
@@ -121,6 +205,31 @@ const PlayerRegistrationmenu = () => {
         </div>
       </div>
       <div className="w-full">
+        {Array.from({ length: gridRows }).map((_, rowIndex) => (
+          <div
+            key={rowIndex}
+            className={`grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 pl-6 py-2 ${
+              rowIndex % 2 === 0 ? "bg-white" : "bg-[#e6eac5]"
+            }`}
+          >
+            {Array.from({ length: gridColumns }).map((_, colIndex) => {
+              const player = getPlayerForCell(rowIndex, colIndex);
+              return player ? (
+                <div
+                  key={colIndex}
+                  className="flex justify-start items-center cursor-pointer"
+                  onClick={() => handlePlayerClick(player)}
+                >
+                  <span>{player.name}</span>
+                </div>
+              ) : (
+                <div key={colIndex}></div>
+              );
+            })}
+          </div>
+        ))}
+      </div>
+      {/* <div className="w-full">
         {currentPlayers.map((player, index) => (
           <div
             key={player.id}
@@ -139,7 +248,7 @@ const PlayerRegistrationmenu = () => {
             </div>
           </div>
         ))}
-      </div>
+      </div> */}
       <Pagination>
         <PaginationContent>
           <PaginationItem>

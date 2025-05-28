@@ -51,6 +51,7 @@ import {
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { toast } from "@/hooks/use-toast";
+import { createClient } from '@/utils/supabase/client';
 
 interface EventCard {
   id: number;
@@ -67,6 +68,7 @@ export default function Home() {
   const { setTheme } = useAppContext();
   const { setDashboardName, UserType, setNotification } = useEventContext();
   const [events, setEvents] = useState<EventCard[]>([]);
+  const [eventDetails, setEventDetails] = useState({});
   const router = useRouter();
   const [isLoading, setIsLoading] = useState(true);
   const { user } = useUser();
@@ -74,24 +76,110 @@ export default function Home() {
   const [data, setData] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [hasOrganizerDetails, setHasOrganizerDetails] = useState(false);
+  const [registrations, setRegistrations] = useState({});
+  const [sales, setSales] = useState({});
+  const [views, setViews] = useState({});
+  const [interested, setInterested] = useState({});
+  const [totalViews, setTotalViews] = useState(0);
+  const [totalSales, setTotalSales] = useState(0);
+  const [totalRegistrations, setTotalRegistrations] = useState(0);
+  const [totalInterested, setTotalInterested] = useState(0);
+  const supabase = createClient();
 
-  const handleCopy = (text: string) => {
-    navigator.clipboard
-      .writeText(text)
-      .then(() => {
-        toast({
-          title: "Link copied to clipboard!",
-          variant: "default",
-        });
-      })
-      .catch((error) => {
-        console.error("Error copying text: ", error);
-        toast({
-          title: "Failed to copy link. Please try again.",
-          variant: "destructive",
-        });
-      });
+  const fetchEventDetails = async (eventId) => {
+    const { data: registrationsData, error: registrationsError } = await supabase
+      .from('participants')
+      .select('*')
+      .eq('event_id', eventId);
+
+    const { data: salesData, error: salesError } = await supabase
+      .from('participants')
+      .select('total_amount')
+      .eq('event_id', eventId);
+
+    const { data: interestedData, error: interestedError } = await supabase
+      .from('user_event_likes')
+      .select('*')
+      .eq('event_id', eventId);
+
+    const { data: viewsData, error: viewsError } = await supabase
+      .from('event_views')
+      .select('*')
+      .eq('event_id', eventId);
+
+    if (registrationsError || salesError || interestedError) {
+      console.error('Error fetching event details:', registrationsError || salesError || interestedError);
+      return;
+    }
+
+    const totalSalesForEvent = salesData.reduce((acc, curr) => acc + parseFloat(curr.total_amount), 0);
+
+    setRegistrations(prev => ({ ...prev, [eventId]: registrationsData.length }));
+    setSales(prev => ({ ...prev, [eventId]: totalSalesForEvent }));
+    setInterested(prev => ({ ...prev, [eventId]: interestedData.length }));
+    // Assuming views are fetched from another table or API
+    setViews(prev => ({...prev, [eventId]: viewsData?.length})); // Replace with actual views fetching logic
+    setTotalViews(prev => prev + (viewsData?.length || 0));
+    setTotalSales(prev => prev + totalSalesForEvent);
+    setTotalRegistrations(prev => prev + registrationsData.length);
+    setTotalInterested(prev => prev + interestedData.length);
   };
+
+  useEffect(() => {
+    const fetchEvents = async () => {
+      try {
+        const userId = user?.id;
+        if (!userId) {
+          setIsLoading(false);
+          return;
+        }
+
+        const url = `/api/event/all_events?organizer_id=${userId}`;
+        const response = await fetch(url);
+
+        if (!response.ok) {
+          throw new Error('Network response was not ok');
+        }
+
+        const data = await response.json();
+        setEvents(data.events || []);
+
+        const eventDetailsPromises = data.events.map(event => fetchEventDetails(event.id));
+        await Promise.all(eventDetailsPromises);
+      } catch (error) {
+        console.error('Error fetching events:', error);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    fetchEvents();
+  }, [user?.id]);
+
+  useEffect(() => {
+    const fetchOrganizerDetails = async () => {
+      if (!user?.id) {
+        console.error('User ID is not available');
+        return;
+      }
+
+      const { data, error } = await supabase
+        .from('organizer_details')
+        .select('user_id')
+        .eq('user_id', user.id)
+        .single();
+      console.log(data);
+      if (error) {
+        console.error('Error fetching organizer details:', error);
+      } else {
+        console.log('Fetched organizer details:', data);
+        setHasOrganizerDetails(!!data);
+      }
+    };
+
+    fetchOrganizerDetails();
+  }, [user?.id]);
 
   useEffect(() => {
     const interval = setInterval(() => {
@@ -100,6 +188,7 @@ export default function Home() {
 
     return () => clearInterval(interval);
   }, []);
+
   useEffect(() => {
     const matchMedia = window.matchMedia("(prefers-color-scheme: dark)");
     const handleThemeChange = (e: MediaQueryListEvent) => {
@@ -138,33 +227,24 @@ export default function Home() {
     console.log(UserType);
   }, []);
 
-  useEffect(() => {
-    const fetchEvents = async () => {
-      try {
-        const userId = user?.id;
-        if (!userId) {
-          setIsLoading(false);
-          return;
-        }
+  const handleCopy = (text: string) => {
+    navigator.clipboard
+      .writeText(text)
+      .then(() => {
+        toast({
+          title: "Link copied to clipboard!",
+          variant: "default",
+        });
+      })
+      .catch((error) => {
+        console.error("Error copying text: ", error);
+        toast({
+          title: "Failed to copy link. Please try again.",
+          variant: "destructive",
+        });
+      });
+  };
 
-        const url = `/api/event/all_events?organizer_id=${userId}`;
-        const response = await fetch(url);
-        
-        if (!response.ok) {
-          throw new Error("Network response was not ok");
-        }
-        
-        const data = await response.json();
-        setEvents(data.events || []);
-      } catch (error) {
-        console.error("Error fetching events:", error);
-      } finally {
-        setIsLoading(false);
-      }
-    };
-
-    fetchEvents();
-  }, [user?.id]);
   return (
     <div className="flex flex-col m-3">
       <section className="mt-4 bg-[#17202A] sm:h-[9rem] shadow-xl rounded-lg p-4 relative mb-4 flex sm:gap-8 flex-col sm:flex-row ">
@@ -178,17 +258,19 @@ export default function Home() {
           </h1>
         </div>
         <div className={`flex flex-col sm:flex-row gap-4 sm:py-2`}>
-          <Button
-            onClick={() => router.push(`/organizerDashboard/kyc/${user?.id}`)}
-            variant="tertiary"
-            size="xs"
-            className={`text-sm sm:text-md shadow-md shadow-gray-500 ${
-              isRed ? "text-red-500" : ""
-            }`}
-          >
-            <FaUnlockAlt className="mr-2 text-xl" />
-            Unlock Event Earnings
-          </Button>
+          {!hasOrganizerDetails && (
+            <Button
+              onClick={() => router.push(`/organizerDashboard/kyc/${user?.id}`)}
+              variant="tertiary"
+              size="xs"
+              className={`text-sm sm:text-md shadow-md shadow-gray-500 ${
+                isRed ? "text-red-500" : ""
+              }`}
+            >
+              <FaUnlockAlt className="mr-2 text-xl" />
+              Unlock Event Earnings
+            </Button>
+          )}
           <Button
             onClick={() => router.push("/organizerDashboard/create_event")}
             variant="tertiary"
@@ -204,7 +286,7 @@ export default function Home() {
               <h1 className="font-semibold text-lg">Event Sales</h1>
               <div className="flex justify-start items-center text-xl gap-2">
                 <TbCoinRupeeFilled />
-                <h1 className="">{data.totalEntryFeesCollected || 0}</h1>
+                <h1 className="">{totalSales || 0}</h1>
               </div>
             </CardContent>
           </Card>
@@ -213,7 +295,7 @@ export default function Home() {
               <h1 className="font-semibold text-lg">Event Views</h1>
               <div className="flex justify-start items-center text-xl gap-2">
                 <FaRegEye />
-                <h1 className="">{data.totalEventViews || 0}</h1>
+                <h1 className="">{totalViews || 0}</h1>
               </div>
             </CardContent>
           </Card>
@@ -231,7 +313,7 @@ export default function Home() {
               <h1 className="font-semibold text-lg">Event Registrations</h1>
               <div className="flex justify-start items-center text-xl gap-2">
                 <FaPeopleGroup />
-                <h1 className="">{data.totalNumberOfRegistrations || 0}</h1>
+                <h1 className="">{totalRegistrations || 0}</h1>
               </div>
             </CardContent>
           </Card>
@@ -243,7 +325,7 @@ export default function Home() {
             <h1 className="font-semibold text-lg">Event Sales</h1>
             <div className="flex justify-start items-center text-xl gap-2">
               <TbCoinRupeeFilled />
-              <h1 className="">0</h1>
+              <h1 className="">{totalSales}</h1>
             </div>
           </CardContent>
         </Card>
@@ -252,7 +334,7 @@ export default function Home() {
             <h1 className="font-semibold text-lg">Event Views</h1>
             <div className="flex justify-start items-center text-xl gap-2">
               <FaRegEye />
-              <h1 className="">0</h1>
+              <h1 className="">{totalViews}</h1>
             </div>
           </CardContent>
         </Card>
@@ -270,7 +352,7 @@ export default function Home() {
             <h1 className="font-semibold text-lg">Event Registrations</h1>
             <div className="flex justify-start items-center text-xl gap-2">
               <FaPeopleGroup />
-              <h1 className="">0</h1>
+              <h1 className="">{totalRegistrations}</h1>
             </div>
           </CardContent>
         </Card>
@@ -311,7 +393,9 @@ export default function Home() {
                 <h3 className="text-xl font-semibold mb-2">No Events Yet</h3>
                 <p className="mb-4">You haven't created any events yet.</p>
                 <Button
-                  onClick={() => router.push("/organizerDashboard/create_event")}
+                  onClick={() =>
+                    router.push("/organizerDashboard/create_event")
+                  }
                   variant="tertiary"
                   size="lg"
                   className="text-sm sm:text-md shadow-md shadow-gray-500"
@@ -359,19 +443,19 @@ export default function Home() {
                         <div className="flex flex-col justify-between">
                           <span className="flex gap-2 items-center">
                             <p className="font-semibold ">Sales:</p>{" "}
-                            {data.totalEntryFeesCollected || "0"}
+                            {sales[event.id] || "0"}
                           </span>
                           <span className="flex gap-2 items-center">
                             <p className="font-semibold ">Views:</p>{" "}
-                            {data.totalEventViews || "0"}
+                            {views[event.id] || "0"}
                           </span>
                           <span className="flex gap-2 items-center">
                             <p className="font-semibold ">Registrations:</p>{" "}
-                            {data.totalNumberOfRegistrations || "0"}
+                            {registrations[event.id] || "0"}
                           </span>
                           <span className="flex gap-2 items-center">
                             <p className="font-semibold ">Interested:</p>{" "}
-                            {data.totalInterestedPeople || "0"}
+                            {interested[event.id] || "0"}
                           </span>
                           {/* <TooltipProvider>
                           <Tooltip>
@@ -454,7 +538,7 @@ export default function Home() {
                               </Label>
                               <Input
                                 id="link"
-                                defaultValue={`/event/${event.id}/share-link`}
+                                defaultValue={`${window.location.origin}/eventspage?event_id=${event.id}`}
                                 readOnly
                               />
                             </div>
@@ -463,7 +547,9 @@ export default function Home() {
                               size="sm"
                               className="px-3"
                               onClick={() =>
-                                handleCopy(`/event/${event.id}/share-link`)
+                                handleCopy(
+                                  `${window.location.origin}/eventspage?event_id=${event.id}`
+                                )
                               }
                             >
                               <span className="sr-only">Copy</span>

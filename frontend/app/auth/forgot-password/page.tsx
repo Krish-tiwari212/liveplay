@@ -17,6 +17,7 @@ import {
 import { Input } from "@/components/ui/input";
 import { useToast } from "@/hooks/use-toast";
 import Image from "next/image";
+import { FaArrowLeft } from "react-icons/fa";
 
 // Validation schema for form fields
 const formSchema = z.object({
@@ -49,7 +50,6 @@ const ForgetPasswordForm = () => {
 
     if (response.ok) {
       toast({ title: "Email Sent", description: "A password reset link has been sent to your email!" });
-      router.push("/login");
     } else {
       toast({ title: "Request Failed", description: result.error || "An error occurred. Please try again.", variant: "destructive" });
     }
@@ -71,6 +71,9 @@ const ForgetPasswordForm = () => {
         height={350}
       />
       <div className="w-full max-w-md p-8 bg-white rounded shadow-md">
+        <Button variant="ghost" onClick={() => router.back()} className="float-left space-x-2 mb-4 -mt-2 -ml-2">
+          <FaArrowLeft />
+        </Button>
         <h2 className="text-2xl font-bold text-center mb-6">Forgot Password</h2>
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">

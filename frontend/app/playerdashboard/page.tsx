@@ -8,6 +8,8 @@ import Link from "next/link";
 import { FaCalendarAlt, FaPlus, FaRegEye, FaStar } from "react-icons/fa";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { createClient } from "@/utils/supabase/client";
+import JoinTeamDialog from "@/components/JoinTeamDialog";
+import { FiCopy } from "react-icons/fi";
 import {
   FaHandHoldingDollar,
   FaIndianRupeeSign,
@@ -15,7 +17,7 @@ import {
   FaPeopleGroup,
 } from "react-icons/fa6";
 import { LiaStreetViewSolid } from "react-icons/lia";
-import { IoEnterOutline, IoTicketOutline } from "react-icons/io5";
+import { IoEnterOutline, IoInformationCircle, IoTicketOutline } from "react-icons/io5";
 import EventCard from "@/components/EventCard";
 import data from "@/data";
 import { Button } from "@/components/ui/button";
@@ -61,6 +63,8 @@ import { BiLike } from "react-icons/bi";
 import { Input } from "@/components/ui/input";
 import { Copy } from "lucide-react";
 import { FaSmile } from "react-icons/fa";
+import html2canvas from "html2canvas";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 
 interface EventCard {
   id: number;
@@ -79,36 +83,6 @@ interface Category {
   price: string;
 }
 
-
-const EventDetails = () => {
-  return (
-    <Card className="bg-gray-100 rounded-lg shadow-md p-5 mb-5 flex flex-col sm:flex-row">
-      <img
-        src="/images/img3.jpeg"
-        alt="Event"
-        className="w-full sm:w-1/3 md:w-1/4 rounded-lg"
-      />
-      <div className="flex-1 sm:pl-5">
-        <div className="flex justify-between items-start pt-2 sm:pt-0">
-          <div className="text-start">
-            <p className="text-sm text-gray-500">Basketball</p>
-            <h2 className="text-xl font-bold">Krish Event</h2>
-            <p className="text-gray-800">Maratha Mandir: Mumbai Central</p>
-            <p className="text-sm text-gray-600">Tue, 01 Nov | 11:30 am</p>
-          </div>
-        </div>
-        <hr className="my-3 border-gray-300" />
-        <div className="flex justify-between">
-          <div className="text-start">
-            <p className="text-sm text-gray-500">Organizer</p>
-            <p className="font-bold">Krish</p>
-          </div>
-        </div>
-      </div>
-    </Card>
-  );
-};
-
 export default function Home() {
   const { setTheme } = useAppContext();
   const { user } = useUser();
@@ -118,8 +92,11 @@ export default function Home() {
     setNotification,
     completeprofileDialog,
     setCompleteprofileDialog,
+    profileCompleted,
+    setProfileCompleted
   } = useEventContext();
   const [events, setEvents] = useState<EventCard[]>([]);
+  const [registeredEvents, setRegisteredEvents] = useState<EventCard[]>([]);
   const [categories, setCategories] = useState<Category[]>([]);
   const [selectedEvent, setSelectedEvent] = useState<number | null>(null);
   const [isLoading, setIsLoading] = useState(true);
@@ -148,8 +125,161 @@ export default function Home() {
   const [isThankYouOpen, setIsThankYouOpen] = useState(false);
   const [averageRating, setAverageRating] = useState<number | null>(null);
   const [isEventPassOpen, setIsEventPassOpen] = useState(false);
+  const [event, setEvent] = useState(null);
+  const [organizerName, setOrganizerName] = useState('');
+  const [teamDetails, setTeamDetails] = useState(null);
+  const [participantdetails, setParticipantdetails] = useState(null);
+  const [isLeader, setIsLeader] = useState(false);
+  const [participantId, setParticipantId] = useState(null);
+  const [eventId, setEventId] = useState(null);
+  const [teamMembers, setTeamMembers] = useState([]);
+  const [interestedEvents, setInterestedEvents] = useState([]);
+  const [pastEvents, setPastEvents] = useState([]);
+  const [copySuccess, setCopySuccess] = useState('');
 
+  const handleCopyTeamCode = () => {
+    navigator.clipboard.writeText(teamDetails.team_code)
+      .then(() => {
+        setCopySuccess('Team code copied to clipboard!');
+        setTimeout(() => setCopySuccess(''), 2000);
+      })
+      .catch(err => {
+        console.error('Failed to copy: ', err);
+      });
+  };
 
+  useEffect(() => {
+    const fetchPastEvents = async () => {
+      if (!user) return;
+
+      try {
+        // Fetch participant entries for the given user ID
+        const { data: participantEntries, error: participantError } = await supabase
+          .from('participants')
+          .select('event_id')
+          .eq('user_id', user.id);
+
+        if (participantError) throw participantError;
+
+        if (!participantEntries || participantEntries.length === 0) {
+          setPastEvents([]);
+          return;
+        }
+
+        const eventIds = participantEntries.map(entry => entry.event_id);
+
+        // Fetch event details using the event IDs and check if the event has ended
+        const { data: events, error: eventsError } = await supabase
+          .from('events')
+          .select('*')
+          .in('id', eventIds)
+          .lt('end_date', new Date().toISOString()); // Check if the event has ended
+
+        if (eventsError) throw eventsError;
+
+        setPastEvents(events);
+      } catch (error) {
+        console.error('Error fetching past events:', error);
+      }
+    };
+
+    fetchPastEvents();
+  }, [user, supabase]);
+
+  useEffect(() => {
+    const fetchLikedEvents = async () => {
+      if (!user) return;
+
+      try {
+        // Fetch liked event IDs
+        const { data: likedEvents, error: likedEventsError } = await supabase
+          .from('user_event_likes')
+          .select('event_id')
+          .eq('user_id', user.id);
+
+        if (likedEventsError) throw likedEventsError;
+
+        // Fetch details of each liked event
+        const eventDetailsPromises = likedEvents.map(async (likedEvent) => {
+          const { data: eventData, error: eventError } = await supabase
+            .from('events')
+            .select('*')
+            .eq('id', likedEvent.event_id)
+            .single();
+
+          if (eventError) throw eventError;
+
+          return eventData;
+        });
+
+        const eventDetails = await Promise.all(eventDetailsPromises);
+        setInterestedEvents(eventDetails);
+      } catch (error) {
+        console.error('Error fetching liked events:', error);
+      }
+    };
+
+    fetchLikedEvents();
+  }, [user, supabase]);
+
+    const fetchEventData = async (eventId) => {
+      try {
+        // Fetch event data
+        const { data: eventData, error: eventError } = await supabase
+          .from('events')
+          .select('*')
+          .eq('id', eventId)
+          .single();
+
+        if (eventError) throw eventError;
+
+        setEvent(eventData);
+
+        // Fetch organizer name
+        const { data: organizerData, error: organizerError } = await supabase
+          .from('users')
+          .select('full_name')
+          .eq('id', eventData.organizer_id)
+          .single();
+
+        if (organizerError) throw organizerError;
+
+        setOrganizerName(organizerData.full_name);
+      } catch (error) {
+        console.error('Error fetching event data:', error);
+      }
+    };
+
+  const EventDetails = () => {
+    return (
+      <Card className="bg-gray-100 rounded-lg shadow-md p-5 mb-5 flex flex-col sm:flex-row">
+        <img
+          src={event.desktop_cover_image_url}
+          alt="Event"
+          className="w-full sm:w-1/3 md:w-1/4 rounded-lg"
+        />
+        <div className="flex-1 sm:pl-5">
+          <div className="flex justify-between items-start pt-2 sm:pt-0">
+            <div className="text-start">
+              <p className="text-sm text-gray-500">{event.sport}</p>
+              <h2 className="text-xl font-bold">{event.event_name}</h2>
+              <p className="text-gray-800">{event.venue_name}: {event.city}</p>
+              <p className="text-sm text-gray-600">
+                {new Date(event.start_date).toLocaleDateString()} | {event.start_time}
+              </p>
+            </div>
+          </div>
+          <hr className="my-3 border-gray-300" />
+          <div className="flex justify-between">
+            <div className="text-start">
+              <p className="text-sm text-gray-500">Organizer</p>
+              <p className="font-bold">{organizerName}</p>
+            </div>
+          </div>
+        </div>
+      </Card>
+    );
+  };
 
   useEffect(() => {
     const interval = setInterval(() => {
@@ -212,6 +342,7 @@ export default function Home() {
           setUserDetails(data);
         }
       }
+
     };
     console.log(userDetails);
 
@@ -242,7 +373,7 @@ export default function Home() {
     fetchEvents();
   }, []);
 
-  const handleWithdrawClick = async (eventId: number) => {
+  const handleWithdrawClick = async (eventId: string) => {
     setIsModalOpen(true);
     try {
       const response = await fetch(`/api/event/categories/${eventId}`);
@@ -261,6 +392,28 @@ export default function Home() {
     }
   };
 
+  useEffect(() => {
+    const fetchRegisteredEvents = async () => {
+      if (!user?.id) return;
+      try {
+        const response = await fetch(`/api/event/registered_events/${user?.id}`);
+        if (!response.ok) {
+          throw new Error("Network response was not ok");
+        }
+        const data = await response.json();
+        setRegisteredEvents(data.events);
+      } catch (error) {
+        console.error("Error fetching registered events:", error);
+        toast({
+          title:
+            "Failed to fetch registered events. Please check your network connection.",
+          variant: "destructive",
+        });
+      }
+    }
+    fetchRegisteredEvents();
+  }, [user?.id]);
+
   const handleConfirmWithdraw = async () => {
     if (selectedEventForWithdraw) {
       setIsAlertOpen(false);
@@ -271,44 +424,104 @@ export default function Home() {
     }
   };
 
-  const handleWithdrawFromCategory = (categoryName: string) => {
-    setSelectedEventForWithdraw(categoryName);
-    setIsAlertOpen(true);
-  };
-
-  const handlefeedbacksubmit = () => {
+  const handleFeedbackSubmit = async () => {
     setIsAlertOpen(false);
     setFeedbackDisable(false);
-
+  
     const total = OrganizerConduct + EventManagement + Refreshments;
     const avg = total / 3;
     setAverageRating(avg);
-
-    setIsThankYouOpen(true);
-
-    toast({
-      title: "Feedback submitted successfully",
-    });
-  };
-
-  const handleViewRegistrationClick = async (eventId: number) => {
-    
-    setIsRegistrationModalOpen(true);
+  
+    const feedbackData = {
+      userId: user?.id,
+      feedbackText: "", 
+      ratingOrganizerConduct: OrganizerConduct,
+      ratingEventManagement: EventManagement,
+      ratingVenueLocation: Refreshments,
+    };
+  
     try {
-      const response = await fetch(`/api/event/categories/${eventId}`);
-      if (!response.ok) {
-        throw new Error("Network response was not ok");
-      }
+      const response = await fetch(`/api/event/feedback/${selectedEventForFeedback}`, { // Assuming you have the event ID stored in `eventId`
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(feedbackData),
+      });
+  
       const data = await response.json();
-      setRegisteredCategories(data.categories);
+  
+      if (response.ok) {
+        setIsThankYouOpen(true);
+        toast({
+          title: "Feedback submitted successfully",
+        });
+      } else {
+        toast({
+          title: "Error submitting feedback",
+          description: data.error || "Something went wrong",
+          variant: "destructive",
+        });
+        console.error('Error submitting feedback:', data);
+      }
     } catch (error) {
-      console.error("Error fetching registered categories:", error);
       toast({
-        title:
-          "Failed to fetch registered categories. Please check your network connection.",
+        title: "Error",
+        description: error.message || "Failed to submit feedback",
         variant: "destructive",
       });
+      console.error('Error submitting feedback:', error);
     }
+  };
+
+  useEffect(() => {
+    const fetchParticipantId = async () => {
+      if (user?.id) {
+        const { data, error } = await supabase
+          .from('participants')
+          .select('id')
+          .eq('user_id', user?.id)
+          .eq('event_id', eventId)
+          .single();
+
+        if (error) {
+          console.error('Error fetching participant ID:', error);
+        } else {
+          setParticipantId(data.id);
+        }
+      }
+    };
+
+    fetchParticipantId();
+  }, [user?.id, eventId]);
+
+  useEffect(() => {
+    const fetchParticipantData = async () => {
+      if (user?.id) {
+        const { data, error } = await supabase
+          .from("participants") // Table where participant details are stored
+          .select("*") // Fetch all participant details
+          .eq("user_id", user?.id) // Filters by the user's ID
+          .eq("event_id", eventId) // Filters by the event ID
+          .single(); // Expects a single result
+
+        if (error) {
+          console.error("Error fetching participant data:", error);
+        } else {
+          setParticipantdetails(data); 
+          console.log(data)// Sets the fetched participant data in state
+        }
+      }
+    };
+
+    fetchParticipantData();
+  }, [user?.id, eventId]);
+
+
+  const handleViewRegistrationClick = async (eventId: number) => {
+    await fetchEventData(eventId);
+    setEventId(eventId);
+    setIsRegistrationModalOpen(true);
   };
 
   const formatDate = (dateString: string): string => {
@@ -341,7 +554,267 @@ export default function Home() {
     }
   };
 
+  const groupedCategories = registeredCategories.reduce((acc, category) => {
+    if (!acc[category.category_type]) {
+      acc[category.category_type] = [];
+    }
+    acc[category.category_type].push(category);
+    return acc;
+  }, {});
+  const [selectedTab, setSelectedTab] = useState(
+    Object.keys(groupedCategories).length > 0 ? Object.keys(groupedCategories)[0] : ''
+  );
 
+  useEffect(() => {
+    const fetchCategoriesAndTeamDetails = async () => {
+      try {
+        // Fetch participant data
+        const { data: participantData, error: participantError } = await supabase
+          .from('participants')
+          .select('*')
+          .eq('id', participantId)
+          .single();
+  
+        if (participantError) {
+          console.error(participantError);
+          return;
+        }
+  
+        // Fetch all event categories
+        const { data: categoriesData, error: categoriesError } = await supabase
+          .from('event_categories')
+          .select('*')
+          .eq('event_id', eventId);
+  
+        if (categoriesError) {
+          console.error(categoriesError);
+          return;
+        }
+  
+        // Filter categories based on participant's registered category_id
+        const registeredCategories = categoriesData.filter(category => participantData.category_ids.includes(category.id));
+        setRegisteredCategories(registeredCategories);
+        setSelectedTab(registeredCategories.length > 0 ? registeredCategories[0].category_type : '');
+  
+        // Fetch team details if the participant is part of a team
+        if (participantData.team_ids && participantData.team_ids.length > 0) {
+          const firstTeamId = participantData.team_ids[0];
+          console.log(firstTeamId);
+          const { data: teamData, error: teamError } = await supabase
+            .from('teams')
+            .select('*')
+            .eq('id', firstTeamId)
+            .single();
+  
+          if (teamError) {
+            console.error(teamError);
+            return;
+          }
+  
+          setTeamDetails([teamData]);
+          setIsLeader(participantData.leader); // Assuming the first participant is the leader
+  
+          const { data: teamMembersData, error: teamMembersError } = await supabase
+            .from('participants')
+            .select('id, name')
+            .in('id', teamData.participant_ids);
+  
+          if (teamMembersError) {
+            console.error(teamMembersError);
+            return;
+          }
+  
+          setTeamMembers(teamMembersData);
+        }
+      } catch (error) {
+        console.error('Error fetching categories and team details:', error);
+      }
+    };
+  
+    if (isRegistrationModalOpen) {
+      fetchCategoriesAndTeamDetails();
+    }
+  }, [isRegistrationModalOpen, participantId, eventId]);
+  
+  useEffect(() => {
+    const fetchTeamDetailsByCategory = async () => {
+      try {
+        console.log(selectedTab);
+        // Fetch team details based on the selected category type
+  
+        const { data: participantData, error: participantError } = await supabase
+          .from('participants')
+          .select('*')
+          .eq('id', participantId)
+          .single();
+  
+        if (participantError) {
+          console.error(participantError);
+          return;
+        }
+  
+        if (participantData.team_ids && participantData.team_ids.length > 0) {
+          const teamDetailsPromises = participantData.team_ids.map(async (teamId) => {
+            const { data: teamData, error: teamError } = await supabase
+              .from('teams')
+              .select('*')
+              .eq('id', teamId)
+              .eq('category_type', selectedTab)
+              .maybeSingle();
+  
+            if (teamError) {
+              console.error(`Error fetching team with id ${teamId}:`, teamError);
+              return null;
+            }
+  
+            return teamData;
+          });
+  
+          const teamDetails = await Promise.all(teamDetailsPromises);
+          const validTeamDetails = teamDetails.filter(team => team !== null);
+          setTeamDetails(validTeamDetails[0]);
+  
+          if (validTeamDetails.length > 0) {
+            setIsLeader(participantData.leader); // Assuming the first participant is the leader
+  
+            const teamMembersPromises = validTeamDetails.map(async (team) => {
+              const { data: teamMembersData, error: teamMembersError } = await supabase
+                .from('participants')
+                .select('id, name')
+                .in('id', team.participant_ids);
+  
+              if (teamMembersError) {
+                console.error(`Error fetching members for team with id ${team.id}:`, teamMembersError);
+                return [];
+              }
+  
+              return teamMembersData;
+            });
+  
+            const teamMembers = await Promise.all(teamMembersPromises);
+            setTeamMembers(teamMembers.flat());
+          }
+        }
+      } catch (error) {
+        console.error('Error fetching team details by category:', error);
+      }
+    };
+  
+    if (selectedTab) {
+      fetchTeamDetailsByCategory();
+    }
+  }, [selectedTab]);
+
+  const handleWithdrawFromCategory = async (categoryName) => {
+    setIsAlertOpen(true);
+    try {
+      // Fetch the category ID based on the category name
+      const { data: categoryData, error: categoryError } = await supabase
+        .from('event_categories')
+        .select('id')
+        .eq('category_name', categoryName)
+        .single();
+  
+      if (categoryError) {
+        console.error(categoryError);
+        return;
+      }
+  
+      const categoryId = categoryData.id;
+  
+      // Update the participant's record to remove the category
+      const { error: updateError } = await supabase
+        .from('participants')
+        .update({ category_id: null })
+        .eq('id', participantId)
+        .eq('category_id', categoryId);
+  
+      if (updateError) {
+        console.error(updateError);
+        return;
+      }
+      setSelectedEventForWithdraw(categoryName);
+
+      
+    } catch (error) {
+      console.error('Error withdrawing from category:', error);
+    }
+  };
+  
+  const handleRemoveTeamMember = async (memberId) => {
+    try {
+      // Fetch the current team details
+      const { data: teamData, error: teamError } = await supabase
+        .from('teams')
+        .select('participant_ids')
+        .eq('id', teamDetails.id)
+        .single();
+  
+      if (teamError) {
+        console.error(teamError);
+        return;
+      }
+  
+      const updatedParticipantIds = teamData.participant_ids.filter(id => id !== memberId);
+  
+      // Update the team record to remove the specified member
+      const { error: updateError } = await supabase
+        .from('teams')
+        .update({ participant_ids: updatedParticipantIds })
+        .eq('id', teamDetails.id);
+  
+      if (updateError) {
+        console.error(updateError);
+        return;
+      }
+
+      const { error: removeParticipantError } = await supabase
+        .from('participants')
+        .delete()
+        .eq('id', memberId);
+      
+      if (removeParticipantError) {
+        console.error(removeParticipantError);
+        return;
+      }
+
+      setIsRegistrationModalOpen(false);
+
+    } catch (error) {
+      console.error('Error removing team member:', error);
+    }
+  };
+
+  const downloadImage = () => {
+    const div = document.getElementById("Event_pass"); // Your div's ID
+    html2canvas(div, {
+      scale: 1, // Ensure the scale is set to 1 to preserve the original size
+      width: div.offsetWidth, // Use the div's current width
+      height: div.offsetHeight, // Use the div's current height
+      x: 0, // Capture the full div from the left
+      y: 0, // Capture the full div from the top
+    }).then((canvas) => {
+      // Create an image from the canvas
+      const imgData = canvas.toDataURL("image/png");
+
+      // Create a temporary link element
+      const link = document.createElement("a");
+      link.href = imgData;
+      link.download = "Event Pass.png"; // You can change the filename here
+      link.click();
+    });
+  };
+
+  const [isWithdrawModalOpen, setIsWithdrawModalOpen] = useState(false);
+
+  const handleWithdraw = async () => {
+    // Add your withdrawal logic here
+    // For example, call an API to process the withdrawal
+    // After successful withdrawal, show a success message
+    console.log('Withdrawal successful');
+    setIsWithdrawModalOpen(false);
+  };
+  
   return (
     <div className="flex flex-col m-3">
       {/* <div className={`flex flex-col sm:flex-row gap-2 sm:gap-4`}>
@@ -401,44 +874,7 @@ export default function Home() {
           >
             Event Feedback
           </Button>
-          <Dialog>
-            <DialogTrigger asChild>
-              <Button
-                variant="tertiary"
-                size="xs"
-                className="text-sm sm:text-md"
-              >
-                Enter Pair / Team Code
-              </Button>
-            </DialogTrigger>
-            <DialogContent className="sm:max-w-md h-auto">
-              <AlertDialogHeader>
-                <DialogTitle>Enter Code</DialogTitle>
-                <DialogDescription>
-                  Please Enter Team Code to Join the Team
-                </DialogDescription>
-              </AlertDialogHeader>
-              <div className="flex items-center space-x-2">
-                <div className="grid flex-1 gap-2">
-                  <Label htmlFor="link" className="sr-only">
-                    Enter Code
-                  </Label>
-                  <Input id="team_code" readOnly />
-                </div>
-                <Button type="button" size="sm" className="px-3">
-                  <span className="sr-only">Proceed</span>
-                  <IoEnterOutline />
-                </Button>
-              </div>
-              <DialogFooter className="sm:justify-start">
-                <DialogClose asChild>
-                  <Button type="button" variant="secondary">
-                    Close
-                  </Button>
-                </DialogClose>
-              </DialogFooter>
-            </DialogContent>
-          </Dialog>
+          <JoinTeamDialog userId={user?.id} />
         </div>
         <div className="absolute hidden left-4 -bottom-8 md:flex flex-wrap gap-4 w-full">
           <Card className="w-auto shadow-xl">
@@ -446,7 +882,7 @@ export default function Home() {
               <h1 className="font-semibold text-lg">Events Participated</h1>
               <div className="flex justify-start items-center text-xl gap-2">
                 <MdEventRepeat className="" />
-                <h1 className="">0</h1>
+                <h1 className="">{registeredEvents.length}</h1>
               </div>
             </CardContent>
           </Card>
@@ -457,7 +893,7 @@ export default function Home() {
               </h1>
               <div className="flex justify-start items-center text-xl gap-2">
                 <BiLike className="" />
-                <h1 className="">0</h1>
+                <h1 className="">{interestedEvents.length}</h1>
               </div>
             </CardContent>
           </Card>
@@ -469,7 +905,7 @@ export default function Home() {
             <h1 className="font-semibold text-lg">Events Participated</h1>
             <div className="flex justify-start items-center text-xl gap-2">
               <MdEventRepeat className="" />
-              <h1 className="">0</h1>
+              <h1 className="">{registeredEvents.length}</h1>
             </div>
           </CardContent>
         </Card>
@@ -478,13 +914,13 @@ export default function Home() {
             <h1 className="font-semibold text-lg">Events I’m interested in</h1>
             <div className="flex justify-start items-center text-xl gap-2">
               <BiLike className="" />
-              <h1 className="">0</h1>
+              <h1 className="">{interestedEvents.length}</h1>
             </div>
           </CardContent>
         </Card>
       </section>
       <section className="mt-8 bg-white shadow-md rounded-lg px-4 pt-4">
-        <h2 className="text-xl font-semibold mb-2">Upcoming Events</h2>
+        <h2 className="text-xl font-semibold mb-2">Registered Events</h2>
         <div className="flex space-x-4 overflow-x-auto pb-8">
           {isLoading ? (
             <div className="flex space-x-4">
@@ -507,7 +943,7 @@ export default function Home() {
               ))}
             </div>
           ) : (
-            events.map((event, i) => (
+            registeredEvents.map((event, i) => (
               <React.Fragment key={event.id}>
                 <Card className="shadow-md cursor-pointer hover:shadow-2xl flex-none min-w-[240px] max-w-[270px] sm:min-w-[450px] sm:max-w-[550px] border-2 border-gray-800">
                   <CardContent className="py-4 flex flex-col sm:flex-row gap-4 h-full">
@@ -560,7 +996,7 @@ export default function Home() {
                         >
                           Withdraw From Event
                         </button> */}
-                        {i % 2 == 0 && (
+                        {/* {i % 2 == 0 && (
                           <span className="flex gap-1 text-sm text-gray-800">
                             <h1
                               className={`underline ${
@@ -570,7 +1006,7 @@ export default function Home() {
                               Match Fixtures are live
                             </h1>
                           </span>
-                        )}
+                        )} */}
                       </div>
                     </div>
                   </CardContent>
@@ -604,7 +1040,7 @@ export default function Home() {
               ))}
             </div>
           ) : (
-            events.map((event, i) => (
+            interestedEvents.map((event, i) => (
               <React.Fragment key={event.id}>
                 <Card className="shadow-md cursor-pointer hover:shadow-2xl flex-none min-w-[240px] max-w-[270px] sm:min-w-[450px] sm:max-w-[550px] border-2 border-gray-800">
                   <CardContent className="py-4 flex flex-col sm:flex-row gap-4 h-full">
@@ -647,7 +1083,9 @@ export default function Home() {
                       <div className="flex flex-col justify-center items-center gap-2 mt-2">
                         <button
                           className="text-sm bg-[#17202A] text-[#CDDC29] hover:text-white py-1 w-full rounded-lg hover:shadow-xl"
-                          onClick={() => router.push("/")}
+                          onClick={() =>
+                            router.push("/eventspage?event_id=" + event.id)
+                          }
                         >
                           Register Now
                         </button>
@@ -687,7 +1125,7 @@ export default function Home() {
               ))}
             </div>
           ) : (
-            events.map((event, i) => (
+            pastEvents.map((event, i) => (
               <React.Fragment key={event.id}>
                 <Card className="shadow-md cursor-pointer hover:shadow-2xl flex-none min-w-[240px] max-w-[270px] sm:min-w-[550px] border-2 border-gray-800">
                   <CardContent className="py-4 flex flex-col sm:flex-row gap-4 h-full">
@@ -705,34 +1143,28 @@ export default function Home() {
                     </div>
                     <div className="flex flex-col flex-[1] justify-between">
                       <div>
-                        <div className="flex flex-col items-start mb-2">
-                          <h3 className="font-bold text-md line-clamp-2">
-                            {event.event_name}
-                          </h3>
-                          <span className="text-[0.8rem] flex gap-1">
-                            <h1 className="font-bold">By</h1>{" "}
-                            {event.organizer_name || "Mohit"}
-                          </span>
+                          <div className="flex flex-col items-start mb-2">
+                            <h3 className="font-bold text-md line-clamp-2">
+                              {event.event_name}
+                            </h3>
+                            <span className="text-[0.8rem] flex gap-1">
+                              <h1 className="font-bold">By</h1>{" "}
+                              {event.organizer_name || "Mohit"}
+                            </span>
+                          </div>
+                          <div className="flex flex-col justify-between ">
+                            <span className="flex gap-1">
+                              <h1 className="font-bold">Venue:</h1>
+                              {event.venue_name || ""}
+                            </span>
+                            <span className="flex gap-1 whitespace-nowrap">
+                              <h1 className="font-bold">Event Date:</h1>
+                              {event.start_date
+                                ? formatDate(event.start_date)
+                                : "20th Nov 2024"}
+                            </span>
+                          </div>
                         </div>
-                        <div className="flex flex-col justify-between ">
-                          <span className="flex gap-1">
-                            <h1 className="font-bold">Sales:</h1>
-                            100000
-                          </span>
-                          <span className="flex gap-1 whitespace-nowrap">
-                            <h1 className="font-bold">Views:</h1>
-                            10000
-                          </span>
-                          <span className="flex gap-1 whitespace-nowrap">
-                            <h1 className="font-bold">Registrations:</h1>
-                            10000
-                          </span>
-                          <span className="flex gap-1 whitespace-nowrap">
-                            <h1 className="font-bold">Interested:</h1>
-                            1000
-                          </span>
-                        </div>
-                      </div>
                       <div className="flex flex-col justify-between items-center gap-2 mt-2">
                         <button
                           className="text-sm bg-[#17202A] text-[#CDDC29] hover:text-white py-1 w-full rounded-lg hover:shadow-xl"
@@ -757,7 +1189,7 @@ export default function Home() {
         </div>
       </section>
 
-      {/* {isModalOpen && (
+      {isModalOpen && (
         <Dialog open={isModalOpen} onOpenChange={setIsModalOpen}>
           <DialogTrigger asChild>
             <Button className="hidden">Open</Button>
@@ -808,65 +1240,170 @@ export default function Home() {
             </Button>
           </DialogContent>
         </Dialog>
-      )} */}
-      {isRegistrationModalOpen && (
-        <Dialog
-          open={isRegistrationModalOpen}
-          onOpenChange={setIsRegistrationModalOpen}
-        >
+      )}
+      {isWithdrawModalOpen && (
+        <Dialog open={isWithdrawModalOpen} onOpenChange={setIsWithdrawModalOpen}>
           <DialogTrigger asChild>
             <Button className="hidden">Open</Button>
           </DialogTrigger>
-          <DialogContent className="w-[90%] sm:max-w-2xl p-4 flex flex-col justify-between h-auto">
+          <DialogContent className="w-[90%] sm:max-w-md p-4 flex flex-col justify-between h-auto">
             <DialogHeader>
-              <EventDetails />
-              <DialogTitle className="text-lg font-semibold flex justify-between">
-                <h1>My Registered Categories</h1>
-                <Button size="xs" onClick={() => setIsEventPassOpen(true)}>
-                  Event Pass
-                </Button>
-              </DialogTitle>
-              <DialogDescription className="text-sm text-gray-500">
-                Below are the categories you have registered for this event.
+              <DialogTitle className="text-lg font-semibold">Withdraw from Event</DialogTitle>
+              <DialogDescription className="text-sm text-gray-500 text-start">
+                Are you sure you want to withdraw from this event? You will receive an instant refund upon successful withdrawal.
               </DialogDescription>
-
-              <div className="space-y-4">
-                {registeredCategories.map((category) => (
-                  <div className="flex justify-between gap-2" key={category.id}>
-                    <div className="flex flex-col p-2 border rounded-md shadow-sm w-full">
-                      <span className="font-medium">
-                        {category.category_name} - Rs. {category.price}
-                      </span>
-                    </div>
-                    <Button
-                      className="px-3 py-1 text-sm"
-                      onClick={() =>
-                        handleWithdrawFromCategory(category.category_name)
-                      }
-                    >
-                      Withdraw
-                    </Button>
-                  </div>
-                ))}
-              </div>
             </DialogHeader>
-            <div className="flex justify-between">
-              <Button
-                variant="outline"
-                onClick={() => setIsRegistrationModalOpen(false)}
-              >
-                Close
+            <div className="flex justify-between mt-4">
+              <Button variant="outline" onClick={() => setIsWithdrawModalOpen(false)}>
+                No
               </Button>
-              <Button
-                className="px-4 py-2 rounded"
-                onClick={() => router.push("/cart")}
-              >
-                Register for More Categories
+              <Button className="px-4 py-2 rounded" onClick={handleWithdraw}>
+                Yes
               </Button>
             </div>
           </DialogContent>
         </Dialog>
       )}
+      {isRegistrationModalOpen && (
+      <Dialog open={isRegistrationModalOpen} onOpenChange={setIsRegistrationModalOpen}>
+        <DialogTrigger asChild>
+          <Button className="hidden">Open</Button>
+        </DialogTrigger>
+        <DialogContent className="w-[90%] sm:max-w-2xl p-4 flex flex-col justify-between h-auto">
+          <DialogHeader>
+            <EventDetails />
+            <DialogTitle className="text-lg font-semibold flex justify-between">
+              <h1>My Registered Categories</h1>
+              <Button size="xs" onClick={() => setIsEventPassOpen(true)}>
+                Event Pass
+              </Button>
+            </DialogTitle>
+            <DialogDescription className="text-sm text-gray-500 text-start">
+              Below are the categories you have registered for this event.
+            </DialogDescription>
+
+            <Tabs defaultValue={selectedTab} onValueChange={setSelectedTab} className="w-full">
+              <TabsList className="grid w-full grid-cols-2">
+                {Object.keys(groupedCategories).map((categoryType) => (
+                  <TabsTrigger key={categoryType} value={categoryType}>
+                    {categoryType}
+                  </TabsTrigger>
+                ))}
+              </TabsList>
+              {Object.keys(groupedCategories).map((categoryType) => (
+                <TabsContent key={categoryType} value={categoryType}>
+                  <div className="space-y-4">
+                    {groupedCategories[categoryType].map((category) => (
+                      <div className="flex justify-between gap-2" key={category.id}>
+                        <div className="flex flex-col p-2 border rounded-md shadow-sm w-full">
+                          <span className="font-medium text-start">
+                            {category.category_name} - Rs. {category.price}
+                          </span>
+                        </div>
+                        {isLeader && (
+                          <Button
+                            className="px-3 py-1 text-sm"
+                            onClick={() => setIsWithdrawModalOpen(true)}
+                          >
+                            Withdraw
+                          </Button>
+                        )}
+                      </div>
+                    ))}
+                  </div>
+                </TabsContent>
+              ))}
+            </Tabs>
+
+            {teamDetails && (
+              <div className="mt-4">
+                <h2 className="text-start text-lg font-semibold mb-2">
+                  {participantdetails ? "Partner" : "Team Members"}
+                </h2>
+                <div className="space-y-2">
+                  {teamMembers.map((member) => (
+                    <div
+                      className="flex items-center justify-between p-3 border rounded-md shadow-sm bg-white"
+                      key={member.id}
+                    >
+                      <div className="flex items-center space-x-3">
+                        <div className="w-10 h-10 bg-gray-200 rounded-full flex items-center justify-center">
+                          <span className="text-lg font-semibold text-gray-700">
+                            {member.name.charAt(0)}
+                          </span>
+                        </div>
+                        <span className="text-sm font-medium text-gray-800">
+                          {member.name}
+                        </span>
+                      </div>
+                      {isLeader && member.id !== participantId && (
+                        <Button
+                          className="px-3 py-1 text-sm bg-red-500 text-white rounded-md hover:bg-red-600"
+                          onClick={() => handleRemoveTeamMember(member.id)}
+                        >
+                          Remove
+                        </Button>
+                      )}
+                    </div>
+                  ))}
+                </div>
+                {selectedTab !== "Singles" && (
+                  <>
+                    <div className="mt-4 flex items-center justify-between p-3 border rounded-md shadow-sm bg-white">
+                      <div className="flex justify-center items-center gap-2">
+                        <TooltipProvider>
+                          <Tooltip>
+                            <TooltipTrigger>
+                              <IoInformationCircle className="text-xl " />
+                            </TooltipTrigger>
+                            <TooltipContent className="bg-[#141f29] text-[#ccdb28]">
+                              <p>
+                                Share this code with Your Team or Your Partner
+                              </p>
+                            </TooltipContent>
+                          </Tooltip>
+                        </TooltipProvider>
+                        <div className="flex items-start space-x-3">
+                          <span className="text-sm font-medium text-gray-800">
+                            {participantdetails
+                              ? `Partner Code: ${teamDetails.team_code}`
+                              : `Team Code: ${teamDetails.team_code}`}
+                          </span>
+                        </div>
+                      </div>
+
+                      <Button
+                        className="px-3 py-1 text-sm rounded-md flex items-center"
+                        onClick={handleCopyTeamCode}
+                      >
+                        <FiCopy className="mr-2" /> Copy
+                      </Button>
+                    </div>
+                    {copySuccess && (
+                      <div className="mt-2 text-green-500">{copySuccess}</div>
+                    )}
+                  </>
+                )}
+              </div>
+            )}
+          </DialogHeader>
+          <div className="flex justify-between">
+            <Button
+              variant="outline"
+              onClick={() => setIsRegistrationModalOpen(false)}
+            >
+              Close
+            </Button>
+            <Button
+              className="px-4 py-2 rounded"
+              onClick={() => router.push(`/eventspage?event_id=${eventId}`)}
+            >
+              Register for More Categories
+            </Button>
+          </div>
+        </DialogContent>
+      </Dialog>
+    )}
       {completeprofileDialog && (
         <Dialog onOpenChange={handleCloseDialog} open={completeprofileDialog}>
           <DialogTitle>Complete Your Profile</DialogTitle>
@@ -933,7 +1470,7 @@ export default function Home() {
               <Button variant="outline" onClick={handleCloseFeedbackDialog}>
                 Close
               </Button>
-              <Button variant="default" onClick={handlefeedbacksubmit}>
+              <Button variant="default" onClick={handleFeedbackSubmit}>
                 Submit
               </Button>
             </div>
@@ -961,7 +1498,10 @@ export default function Home() {
       )}
       {isEventPassOpen && (
         <Dialog open={isEventPassOpen} onOpenChange={setIsEventPassOpen}>
-          <DialogContent className="w-[90%] max-w-md flex flex-col items-center h-auto p-4 rounded-md">
+          <DialogContent
+            id="Event_pass"
+            className="w-[90%] max-w-md flex flex-col items-center h-auto p-4 rounded-md"
+          >
             <div
               className="w-full h-96 bg-cover bg-center rounded-lg shadow-xl flex items-center justify-center relative"
               style={{
@@ -982,7 +1522,7 @@ export default function Home() {
                     Event Name
                   </p>
                   <h1 className="text-[11px] sm:text-[14px]">
-                    Summer Basketball Tournament Pro League
+                    {event.event_name}
                   </h1>
                 </div>
                 <div className=" leading-tight">
@@ -990,49 +1530,59 @@ export default function Home() {
                     Category Name
                   </p>
                   <h1 className="text-[11px] sm:text-[14px]">
-                    Mens Singles (Open)
+                    {registeredCategories[0].category_name}
                   </h1>
                 </div>
                 <div className=" leading-tight">
                   <p className="text-[10px] sm:text-[12px] font-semibold text-[#64758B]">
                     Player
                   </p>
-                  <h1 className="text-[11px] sm:text-[14px]">Roshan</h1>
+                  <h1 className="text-[11px] sm:text-[14px]">
+                    {teamMembers[0].name}
+                  </h1>
                 </div>
                 <div className=" leading-tight">
                   <p className="text-[10px] sm:text-[12px] font-semibold text-[#64758B]">
-                    Team Name
+                    {participantdetails ? "Doubles" : "Team"}
                   </p>
-                  <h1 className="text-[11px] sm:text-[14px]">N/A</h1>
+                  <h1 className="text-[11px] sm:text-[14px]">
+                    {participantdetails.partner_name
+                      ? teamMembers[1]?.name || participantdetails.partner_name
+                      : teamDetails.team_name}
+                  </h1>
                 </div>
                 <div className=" leading-tight">
                   <p className="text-[10px] sm:text-[12px] font-semibold text-[#64758B]">
                     Venue
                   </p>
                   <h1 className="text-[11px] sm:text-[14px]">
-                    Major Chand Lal Stadium
+                    {event.venue_name}
                   </h1>
                 </div>
               </div>
               <div className="absolute bottom-0 w-[90%] h-[55%] ">
-                <div className="leading-tight -rotate-90 absolute -right-10 bottom-20 ">
+                <div className="leading-tight -rotate-90 absolute -right-6 bottom-16 ">
                   <p className="text-[10px] sm:text-[12px] font-semibold text-[#64758B]">
                     Event Date
                   </p>
                   <h1 className="text-[11px] sm:text-[14px]">
-                    20-22 December, 2024
+                    {formatDate(event.start_date)}
                   </h1>
                 </div>
               </div>
             </div>
-
-            <Button
-              variant="default"
-              className=""
-              onClick={() => setIsEventPassOpen(false)}
-            >
-              Close
-            </Button>
+            <div className="flex items-center justify-between w-full">
+              <Button
+                variant="default"
+                className=""
+                onClick={() => setIsEventPassOpen(false)}
+              >
+                Close
+              </Button>
+              <Button variant="default" className="" onClick={downloadImage}>
+                Download
+              </Button>
+            </div>
           </DialogContent>
         </Dialog>
       )}

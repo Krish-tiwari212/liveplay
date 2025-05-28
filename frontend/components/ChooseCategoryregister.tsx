@@ -39,7 +39,13 @@ const participantsData: Participant[] = [
   { id: "3", name: "Team Alpha", contact: "alpha@team.com" },
 ];
 
-const ChooseCategoryRegister: React.FC = ({ eventid }: IntrinsicAttributes) => {
+interface ChooseCategoryRegisterprops {
+  eventid: string | null;
+}
+
+const ChooseCategoryRegister = ({
+  eventid,
+}:ChooseCategoryRegisterprops ) => {
   const { addItem, items } = useCartContext();
   const [registeredCategories, setRegisteredCategories] = useState<Category[]>(
     []
@@ -62,7 +68,6 @@ const ChooseCategoryRegister: React.FC = ({ eventid }: IntrinsicAttributes) => {
           throw new Error("Network response was not ok");
         }
         const data = await response.json();
-        // console.log(data.categories);
         setRegisteredCategories(data.categories);
       } catch (error) {
         console.error("Error fetching registered categories:", error);
@@ -75,7 +80,6 @@ const ChooseCategoryRegister: React.FC = ({ eventid }: IntrinsicAttributes) => {
     };
     fetchcategory();
   }, []);
-
   return (
     <div className="w-full lg:w-1/2 relative h-full space-y-4 px-5 sm:px-12">
       <h1 className="text-2xl text-gray-800 font-semibold">Choose Category</h1>

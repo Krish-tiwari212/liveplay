@@ -30,6 +30,7 @@ liveplay.in is not liable for any injury, loss, damage, or disputes arising from
   {
     title: "User Conduct",
     data: `Users must not engage in any illegal activities or use the platform to harass or defraud others. Users agree to indemnify and hold harmless liveplay.in, its partners and affiliates from any claims, damages or losses arising out of breaches of these terms, misuse of the platform or participation in events. 
+
 The platform reserves the right to terminate user access or accounts without prior notice in the event of a breach of these terms.`,
   },
   {
@@ -45,21 +46,20 @@ Pro and Elite organizers get a featured listing for their event, prominently dis
   {
     title: "Privacy and Data Collection",
     data: `Types of user data collected include name, contact details, payment information, and identification documents for organizers. User data is collected solely for facilitating account creation, payments, and event participation. Details of data usage are available in the Privacy Policy. User data is shared with event organizers for participants who have registered for their events. 
-Data may also be shared with third parties for analytics and advertising purposes. Appropriate security measures are taken to protect user data. liveplay.in ensures that personal user data is securely handled and protected.`,
+Data may also be shared with third parties for analytics and advertising purposes. Appropriate security measures are taken to protect user data. liveplay.in ensures that personal user data is securely handled and protected`,
   },
   {
     title: "Payment Methods",
     data: `Payments may be made via UPI, Credit/Debit Cards, Net Banking and other available payment modes. 
-Our payment aggregators comply with PCI-DSS (Payment Card Industry Data Security Standard) norms in India, ensuring that all transactions are conducted securely. liveplay.in does not store any payment-related information on its servers. All payment details are handled by the payment aggregators, which adhere to PCI-DSS compliance standards for data security. `,
+Our payment aggregators comply with PCI-DSS (Payment Card Industry Data Security Standard) norms in India, ensuring that all transactions are conducted securely. liveplay.in does not store any payment-related information on its servers. All payment details are handled by the payment aggregators, which adhere to PCI-DSS compliance standards for data security.`,
   },
   {
     title: "Intellectual Property",
-    data: `Any disputes arising from the use of liveplay.in will be resolved exclusively through arbitration in Pune, Maharashtra, India, in accordance with the Arbitration and Conciliation Act, 1996.`,
+    data: `All content, trademarks, and software on the platform are the exclusive property of liveplay.in. Users may not reproduce, modify, or distribute platform content without prior written consent.`,
   },
   {
     title: "Dispute Resolution",
-    data: `Payments may be made via UPI, Credit/Debit Cards, Net Banking and other available payment modes. 
-Our payment aggregators comply with PCI-DSS (Payment Card Industry Data Security Standard) norms in India, ensuring that all transactions are conducted securely. liveplay.in does not store any payment-related information on its servers. All payment details are handled by the payment aggregators, which adhere to PCI-DSS compliance standards for data security.`,
+    data: `Any disputes arising from the use of liveplay.in will be resolved exclusively through arbitration in Pune, Maharashtra, India, in accordance with the Arbitration and Conciliation Act, 1996.`,
   },
   {
     title: "Limitation of Liability",
@@ -97,9 +97,11 @@ const page = () => {
       <p className="mb-10 text-sm md:text-lg">
         For any questions or concerns regarding these terms, please contact us
         at
-        <span className="font-bold hover:underline mx-1 cursor-pointer">
-          teamsupport@liveplay.in
-        </span>
+        <a href="mailto:teamsupport@liveplay.in">
+          <span className="font-bold hover:underline mx-1 cursor-pointer">
+            teamsupport@liveplay.in
+          </span>
+        </a>
       </p>
     </div>
   );

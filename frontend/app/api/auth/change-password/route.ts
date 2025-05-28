@@ -1,45 +1,33 @@
 import { NextResponse } from 'next/server';
 import { createClient } from '@/utils/supabase/server';
 
-interface UpdatePasswordRequest {
-  userId: string;
-  currentPassword: string;
-  newPassword: string;
-  confirmPassword: string;
+interface ChangePasswordRequest {
+  password: string;
+  token_hash: string;
 }
 
 export async function POST(request: Request) {
-  const supabase = await createClient();
-
   try {
-    const { userId, currentPassword, newPassword, confirmPassword }: UpdatePasswordRequest = await request.json();
+    const { password }: ChangePasswordRequest = await request.json();
 
-    if (newPassword !== confirmPassword) {
-      return NextResponse.json({ error: 'New password and confirm password do not match' }, { status: 400 });
+    if (!password) {
+      return NextResponse.json({ error: 'Password and token hash are required' }, { status: 400 });
     }
 
-    // Verify the current password
-    const { data: user, error: userError } = await supabase.auth.api.signInWithPassword({
-      email: userId, // Assuming userId is the email
-      password: currentPassword,
+    const supabase = await createClient();
+
+    // Update the user's password
+    const { data, error } = await supabase.auth.updateUser({
+      password,
     });
 
-    if (userError) {
-      return NextResponse.json({ error: 'Current password is incorrect' }, { status: 400 });
+    if (error) {
+      return NextResponse.json({ error: error.message }, { status: 400 });
     }
 
-    // Update the password
-    const { error: updateError } = await supabase.auth.api.updateUser(user.access_token, {
-      password: newPassword,
-    });
-
-    if (updateError) {
-      return NextResponse.json({ error: updateError.message }, { status: 400 });
-    }
-
-    return NextResponse.json({ message: 'Password updated successfully' }, { status: 200 });
-
+    return NextResponse.json({ message: 'Password changed successfully' }, { status: 200 });
   } catch (error) {
+    console.error('Error changing password:', error);
     return NextResponse.json({ error: 'Server error' }, { status: 500 });
   }
 }

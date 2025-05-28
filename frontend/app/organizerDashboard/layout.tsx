@@ -1,4 +1,4 @@
-"use client"
+"use client";
 
 import Navbar from "@/components/DashboardNavbar";
 import "../globals.css";
@@ -10,14 +10,14 @@ import { EventProvider, useEventContext } from "@/context/EventDataContext";
 import { UserProvider, useUser } from '@/context/UserContext';
 import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
-
+import { createClient } from '@/utils/supabase/client';
 
 export default function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  const [navexpanded, setnavexpanded] = useState(false)
+  const [navexpanded, setnavexpanded] = useState(false);
 
   return (
     <UserProvider>
@@ -54,24 +54,50 @@ function KYCWrapper({ children }: { children: React.ReactNode }) {
   const router = useRouter();
 
   useEffect(() => {
-    const isKYCPage = window.location.pathname.includes('/kyc');
-    if (isKYCPage) {
-      setShowKYCPopup(false);
-      return;
-    }
+    const fetchOrganizerDetails = async () => {
+      const supabase = createClient();
 
-    if (!kycCompleted && user) {
-      setShowKYCPopup(true);
-    }
+      if (!user?.id) {
+        console.error('User ID is not available');
+        return;
+      }
 
-    const interval = setInterval(() => {
-      const currentIsKYCPage = window.location.pathname.includes('/kyc');
-      if (!kycCompleted && user && !currentIsKYCPage) {
+      const { data, error } = await supabase
+        .from('organizer_details')
+        .select('user_id')
+        .eq('user_id', user.id)
+        .single();
+
+      if (error) {
+        console.error('Error fetching organizer details:', error);
+      } else {
+        if (data) {
+          setShowKYCPopup(false);
+          return;
+        }
+      }
+
+      const isKYCPage = window.location.pathname.includes('/kyc');
+      if (isKYCPage) {
+        setShowKYCPopup(false);
+        return;
+      }
+
+      if (!kycCompleted && user) {
         setShowKYCPopup(true);
       }
-    }, 3 * 60 * 1000); 
 
-    return () => clearInterval(interval);
+      const interval = setInterval(() => {
+        const currentIsKYCPage = window.location.pathname.includes('/kyc');
+        if (!kycCompleted && user && !currentIsKYCPage) {
+          setShowKYCPopup(true);
+        }
+      }, 3 * 60 * 1000);
+
+      return () => clearInterval(interval);
+    };
+
+    fetchOrganizerDetails();
   }, [user, kycCompleted]);
 
   return (

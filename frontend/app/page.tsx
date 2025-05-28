@@ -20,12 +20,38 @@ import { FaTrophy } from "react-icons/fa";
 import { IoArrowForwardCircle } from "react-icons/io5";
 import { Button } from "@/components/ui/button";
 import HeroFeatures from "@/components/HeroFeatures";
+import { useRouter } from 'next/navigation';
 
+interface location {
+  latitude: number | null;
+  longitude: number | null;
+}
 export default function Home() {
+   const [location, setLocation] = useState<location>({
+     latitude: null,
+     longitude: null,
+   });
+   const router=useRouter()
+
+   useEffect(() => {
+     if (navigator.geolocation) {
+       navigator.geolocation.getCurrentPosition(
+         (position) => {
+           const { latitude, longitude } = position.coords;
+           setLocation({ latitude, longitude });
+         },
+         (error) => {
+           console.error("Error fetching location:", error.message);
+         }
+       );
+     } else {
+       console.warn("Geolocation is not supported by this browser.");
+     }
+   }, []);
   return (
     <UserProvider>
-      <MNavbar />
-      <Navbar />
+      <MNavbar location={location} />
+      <Navbar location={location} />
       <HeroChangingTagLine ishero={true} />
       <Hero />
       <CardCarousel />
@@ -41,22 +67,27 @@ export default function Home() {
           <p className="text-[16px] md:text-2xl text-[#141f29] mb-4 md:mb-6">
             Generate match fixtures for your event
           </p>
-          <Button className="mb-6 text-lg">Start Generating Fixtures</Button>
+          <Button
+            className="mb-6 text-lg"
+            onClick={() => router.push("/freematchgenerator")}
+          >
+            Start Generating Fixtures
+          </Button>
           <ul className="text-start text-[#141f29] space-y-2 lg:ml-32 text-[16px] md:text-2xl  ">
-            <li className="flex gap-4 items-center">
+            <li className="flex gap-4 items-center ">
               <IoArrowForwardCircle className="flex-none" />
               <h1>No Signup needed</h1>
             </li>
-            <li className="flex gap-4 ">
+            <li className="flex gap-4 items-center ">
               <FaTrophy className="flex-none" /> <h1>10+ Sports</h1>
             </li>
-            <li className="flex gap-4">
+            <li className="flex gap-4 items-center ">
               <MdEvent className="flex-none" />
               <h1>Team events / Singles events / Doubles Events</h1>
             </li>
-            <li className="flex gap-4 ">
+            <li className="flex gap-4 items-center ">
               <TbListDetails className="flex-none" />
-              <h1>Knockouts, Group Playoffs & Round Robin</h1>
+              <h1>Supports Knockouts Format</h1>
             </li>
           </ul>
         </div>

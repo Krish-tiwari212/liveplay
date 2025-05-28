@@ -19,7 +19,7 @@ export async function middleware(request: NextRequest) {
   // Your existing login/signup redirect logic
   if (user && (pathname === '/auth/login' || pathname === '/auth/sign-up')) {
     const url = request.nextUrl.clone();
-    url.pathname = '/organizerDashboard';  
+    url.pathname = '/';  
     return NextResponse.redirect(url);
   }
 

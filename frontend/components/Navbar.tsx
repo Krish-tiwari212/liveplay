@@ -17,12 +17,18 @@ import {
 import { Button } from './ui/button';
 import { RiLoginCircleFill } from 'react-icons/ri';
 
+interface location {
+  latitude: number|null;
+  longitude: number|null;
+}
 
-const Navbar = () => {
+interface NavbarProps {
+  location?: location;
+}
+
+const Navbar = ({ location }: NavbarProps) => {
   const supabase = createClient();
   const [isLoggedIn, setIsLoggedIn] = useState(false);
-
-  
 
   useEffect(() => {
     const checkLoginStatus = async () => {
@@ -64,7 +70,7 @@ const Navbar = () => {
   const scrollToSection = (sectionId: string) => {
     const section = document.getElementById(sectionId);
     if (section) {
-      section.scrollIntoView({ behavior: 'smooth' });
+      section.scrollIntoView({ behavior: "smooth" });
     }
   };
 
@@ -82,7 +88,7 @@ const Navbar = () => {
             height={200}
           />
         </div>
-        <Select>
+        {/* <Select>
           <SelectTrigger className="w-[120px] h-[30px] bg-[#141f29] font-semibold text-[#ccdb28] border border-[#ccdb28]">
             <MdLocationOn className="mr-1" />
             <SelectValue placeholder="Location" />
@@ -92,18 +98,17 @@ const Navbar = () => {
             <SelectItem value="dark">Delhi</SelectItem>
             <SelectItem value="system">Chennai</SelectItem>
           </SelectContent>
-        </Select>
+        </Select> */}
       </div>
       <div className="flex items-center gap-4">
-        <Button
-          onClick={() => {
-            scrollToSection("hero-features");
-          }}
-          size="xs"
-          className="w-full bg-[#141f29] text-[#ccdb28] border border-[#ccdb28]"
-        >
-          Free Match Generator
-        </Button>
+        <Link href={"/freematchgenerator"}>
+          <Button
+            size="xs"
+            className="w-full bg-[#141f29] text-[#ccdb28] border border-[#ccdb28]"
+          >
+            Free Match Generator
+          </Button>
+        </Link>
         <Button
           onClick={() => {
             router.push("/createeventstaticpage");
@@ -149,6 +154,6 @@ const Navbar = () => {
       </div>
     </div>
   );
-}
+};
 
 export default Navbar;

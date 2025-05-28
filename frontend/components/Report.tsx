@@ -42,9 +42,11 @@ import { Button } from "./ui/button";
 import { FaPeopleGroup } from "react-icons/fa6";
 import { PieChartDemo } from "./PieChart";
 import { BiLike } from "react-icons/bi";
+import { createClient } from "@/utils/supabase/client";
 
 interface ReportProps {
   handleNext: () => void;
+  eventId: string;
 }
 
 const data = [
@@ -60,16 +62,18 @@ const data = [
   },
 ];
 
-const Report = ({ handleNext }: ReportProps) => {
+const Report = ({ handleNext, eventId }: ReportProps) => {
   const [data, setData] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [participants, setParticipants] = useState([]);
+  const supabase = createClient();
 
   useEffect(() => {
     const fetchData = async () => {
       try {
         const response = await fetch(
-          "/api/event/categories/d262e530-8109-4d6f-9c9d-e74f92a28806"
+          `/api/event/categories/${eventId}`
         );
         if (!response.ok) {
           throw new Error("Network response was not ok");
@@ -197,160 +201,60 @@ const Report = ({ handleNext }: ReportProps) => {
     description: "Shows the number of participants per category. ",
   };
 
-  const participants = [
-    {
-      name: "Alice Smith",
-      address: "123 Main St",
-      city: "New York",
-      pincode: "10001",
-      dob: "1990-01-01",
-      gender: "Female",
-      bloodGroup: "A+",
-      contact: "1234567890",
-      email: "alice@example.com",
-      registrationDate: "2023-02-15",
-      category: "Category 1",
-      partnerName: "Partner A",
-      teamName: "Team Alpha",
-    },
-    {
-      name: "Bob Johnson",
-      address: "456 Elm St",
-      city: "Los Angeles",
-      pincode: "90001",
-      dob: "1985-05-15",
-      gender: "Male",
-      bloodGroup: "B+",
-      contact: "1234567890",
-      email: "bob@example.com",
-      registrationDate: "2023-03-10",
-      category: "Category 2",
-      partnerName: "Partner B",
-      teamName: "Team Beta",
-    },
-    {
-      name: "Charlie Brown",
-      address: "789 Oak St",
-      city: "Chicago",
-      pincode: "60601",
-      dob: "1992-07-20",
-      gender: "Male",
-      bloodGroup: "O+",
-      contact: "1234567890",
-      email: "charlie@example.com",
-      registrationDate: "2023-04-05",
-      category: "Category 3",
-      partnerName: "Partner C",
-      teamName: "Team Gamma",
-    },
-    {
-      name: "Diana Prince",
-      address: "321 Pine St",
-      city: "Miami",
-      pincode: "33101",
-      dob: "1988-03-30",
-      gender: "Female",
-      bloodGroup: "AB+",
-      contact: "1234567890",
-      email: "diana@example.com",
-      registrationDate: "2023-01-20",
-      category: "Category 1",
-      partnerName: "Partner D",
-      teamName: "Team Delta",
-    },
-    {
-      name: "Ethan Hunt",
-      address: "654 Maple St",
-      city: "Seattle",
-      pincode: "98101",
-      dob: "1980-11-11",
-      gender: "Male",
-      bloodGroup: "A-",
-      contact: "1234567890",
-      email: "ethan@example.com",
-      registrationDate: "2023-02-25",
-      category: "Category 2",
-      partnerName: "Partner E",
-      teamName: "Team Epsilon",
-    },
-    {
-      name: "Fiona Gallagher",
-      address: "987 Birch St",
-      city: "Boston",
-      pincode: "02101",
-      dob: "1995-09-09",
-      gender: "Female",
-      bloodGroup: "B-",
-      contact: "1234567890",
-      email: "fiona@example.com",
-      registrationDate: "2023-03-15",
-      category: "Category 3",
-      partnerName: "Partner F",
-      teamName: "Team Zeta",
-    },
-    {
-      name: "George Costanza",
-      address: "159 Cedar St",
-      city: "San Francisco",
-      pincode: "94101",
-      dob: "1975-12-12",
-      gender: "Male",
-      bloodGroup: "O-",
-      contact: "1234567890",
-      email: "george@example.com",
-      registrationDate: "2023-04-01",
-      category: "Category 1",
-      partnerName: "Partner G",
-      teamName: "Team Eta",
-    },
-    {
-      name: "Hannah Baker",
-      address: "753 Spruce St",
-      city: "Austin",
-      pincode: "73301",
-      dob: "1998-05-05",
-      gender: "Female",
-      bloodGroup: "AB-",
-      contact: "1234567890",
-      email: "hannah@example.com",
-      registrationDate: "2023-04-10",
-      category: "Category 2",
-      partnerName: "Partner H",
-      teamName: "Team Theta",
-    },
-    {
-      name: "Ian Malcolm",
-      address: "852 Willow St",
-      city: "Denver",
-      pincode: "80201",
-      dob: "1965-06-06",
-      gender: "Male",
-      bloodGroup: "A+",
-      contact: "1234567890",
-      email: "ian@example.com",
-      registrationDate: "2023-04-15",
-      category: "Category 3",
-      partnerName: "Partner I",
-      teamName: "Team Iota",
-    },
-    {
-      name: "Julia Roberts",
-      address: "963 Fir St",
-      city: "Phoenix",
-      pincode: "85001",
-      dob: "1970-04-04",
-      gender: "Female",
-      bloodGroup: "B+",
-      contact: "1234567890",
-      email: "julia@example.com",
-      registrationDate: "2023-04-20",
-      category: "Category 1",
-      partnerName: "Partner J",
-      teamName: "Team Kappa",
-    },
-  ];
+  useEffect(() => {
+    const fetchParticipantsData = async () => {
+      try {
+        // Fetch participants data
+        const { data: participantsData, error: participantsError } = await supabase
+          .from('participants')
+          .select('*')
+          .eq('event_id', eventId);
+  
+        if (participantsError) throw participantsError;
+  
+        if (!participantsData || participantsData.length === 0) {
+          setParticipants([]);
+          return;
+        }
+        // Fetch user details for each participant
+        const participantsWithDetails = await Promise.all(
+          participantsData.map(async (participant) => {
+            const { data: userData, error: userError } = await supabase
+              .from('users')
+              .select('*')
+              .eq('id', participant.user_id)
+              .single();
+  
+            if (userError) throw userError;
+  
+            return {
+              name: userData.full_name,
+              address: userData.address,
+              city: userData.city,
+              pincode: userData.pincode,
+              dob: userData.date_of_birth,
+              gender: userData.gender,
+              bloodGroup: userData.blood_group,
+              contact: userData.contact_number,
+              email: userData.email,
+              registrationDate: participant.registration_date,
+              category: participant.category_id, // Assuming category_id maps to a category name
+              partnerName: participant.partner_name, // Assuming partner_name is a field in participants
+              teamName: participant.team_id, // Assuming team_id maps to a team name
+            };
+          })
+        );
+  
+        setParticipants(participantsWithDetails);
+      } catch (error) {
+        console.error('Error fetching participants data:', error);
+      }
+    };
+  
+    fetchParticipantsData();
+  }, [eventId]);
 
-  const noOfParticipants = Object.keys(participants[0]).length - 1;
+  const noOfParticipants = participants.length > 0 ? Object.keys(participants[0]).length - 1 : 0;
   return (
     <div className=" text-gray-800 px-2 sm:px-5  pb-10">
       <h1 className="text-3xl text-gray-800 font-bold mb-4 sm:mb-8">

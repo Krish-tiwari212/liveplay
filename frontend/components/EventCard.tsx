@@ -1,13 +1,22 @@
 "use client";
 import { cn } from "@/lib/utils";
 import Image from "next/image";
-import { useState } from "react";
-import { HiCurrencyRupee, HiOutlineCalendar, HiOutlineClock, HiOutlineCurrencyDollar, HiOutlineMapPin } from "react-icons/hi2";
+import { useState, useEffect } from "react";
+import {
+  HiCurrencyRupee,
+  HiOutlineCalendar,
+  HiOutlineClock,
+  HiOutlineCurrencyDollar,
+  HiOutlineMapPin,
+} from "react-icons/hi2";
 import { Button } from "./ui/button";
 import { BiLike } from "react-icons/bi";
 import { useRouter } from "next/navigation";
 import { VscGraph } from "react-icons/vsc";
 import Link from "next/link";
+import { createClient } from "@/utils/supabase/client";
+import { Badge } from "./ui/badge";
+import { RiDiscountPercentLine, RiStarSmileFill } from "react-icons/ri";
 
 interface EventCategory {
   id: number;
@@ -35,34 +44,146 @@ interface EventCardProps {
 
 const EventCard = ({ id, eventDetails }: EventCardProps) => {
   const [isLiked, setIsLiked] = useState(false);
+  const [likeCount, setLikeCount] = useState(0);
   const router = useRouter();
+  const supabase = createClient();
+  const [session, setSession] = useState(null);
+  const [registrations, setRegistrations] = useState(0);
+
+  useEffect(() => {
+    const getRegistrations = async () => {
+      const { data, error } = await supabase
+        .from("participants")
+        .select("*")
+        .eq("event_id", id);
+
+      if (error) {
+        console.error("Error fetching registrations:", error);
+        return;
+      }
+      setRegistrations(data.length);
+    };
+    getRegistrations();
+  }, [id]);
+
+  useEffect(() => {
+    const checkSession = async () => {
+      const {
+        data: { session: currentSession },
+      } = await supabase.auth.getSession();
+      setSession(currentSession);
+    };
+
+    checkSession();
+  }, []);
+
+  useEffect(() => {
+    const fetchLikeStatus = async () => {
+      if (!session) return;
+
+      const user = session.user;
+      if (!user) return;
+
+      const { data, error } = await supabase
+        .from("user_event_likes")
+        .select("*")
+        .eq("user_id", user.id)
+        .eq("event_id", id)
+        .single();
+
+      if (error) {
+        return;
+      }
+
+      if (data) {
+        setIsLiked(true);
+      }
+    };
+
+    const fetchLikeCount = async () => {
+      const { data, error } = await supabase
+        .from("user_event_likes")
+        .select("*", { count: "exact" })
+        .eq("event_id", id);
+
+      if (error) {
+        return;
+      }
+
+      setLikeCount(data.length);
+    };
+
+    fetchLikeStatus();
+    fetchLikeCount();
+  }, [id, supabase, session]);
+
+  const handleLike = async () => {
+    if (!session) {
+      router.push("/auth/login");
+      return;
+    }
+
+    const user = session.user;
+    if (!user) {
+      console.error("User not authenticated");
+      return;
+    }
+
+    if (isLiked) {
+      const { error } = await supabase
+        .from("user_event_likes")
+        .delete()
+        .eq("user_id", user.id)
+        .eq("event_id", id);
+
+      if (error) {
+        return;
+      }
+
+      setLikeCount(likeCount - 1);
+    } else {
+      const { error } = await supabase.from("user_event_likes").insert([
+        {
+          user_id: user.id,
+          event_id: id,
+        },
+      ]);
+
+      if (error) {
+        return;
+      }
+
+      setLikeCount(likeCount + 1);
+    }
+
+    setIsLiked(!isLiked);
+  };
 
   // Format date
-  const formattedDate = new Intl.DateTimeFormat('en-US', {
-    year: 'numeric',
-    month: 'long',
-    day: 'numeric',
+  const formattedDate = new Intl.DateTimeFormat("en-US", {
+    year: "numeric",
+    month: "long",
+    day: "numeric",
   }).format(new Date(eventDetails.start_date));
 
   // Format time
-  const formattedTime = new Intl.DateTimeFormat('en-US', {
-    hour: 'numeric',
-    minute: 'numeric',
+  const formattedTime = new Intl.DateTimeFormat("en-US", {
+    hour: "numeric",
+    minute: "numeric",
     hour12: true,
   }).format(new Date(`1970-01-01T${eventDetails.start_time}`));
 
   // Get minimum price from categories
-  const minPrice = eventDetails.categories.length > 0
-    ? Math.min(...eventDetails.categories.map(cat => cat.price))
-    : 0;
+  const minPrice =
+    eventDetails.categories.length > 0
+      ? Math.min(...eventDetails.categories.map((cat) => cat.price))
+      : 0;
 
   return (
     <div className="max-w-[500px] cursor-pointer h border border-black w-full group/card rounded-lg overflow-hidden shadow-lg bg-white">
       <Link href={`/eventspage?event_id=${id}`}>
         <div
-          className={cn(
-            "relative h-52 w-full bg-cover bg-center rounded-t-lg"
-          )}
+          className={cn("relative h-52 w-full bg-cover bg-center rounded-t-lg")}
           style={{
             backgroundImage: `url(${eventDetails.desktop_cover_image_url})`,
           }}
@@ -77,10 +198,18 @@ const EventCard = ({ id, eventDetails }: EventCardProps) => {
 
       <div className="bg-white px-4 py-1 flex flex-col justify-between">
         <div>
+          <div className="flex space-x-2">
           <div className="bg-[#E6EAC5] text-black text-xs px-2 py-1 rounded inline-block">
             {eventDetails.sport}
           </div>
-          <h1 className="font-bold text-xl text-gray-900 line-clamp-2 h-[60px]">
+          {eventDetails.categories.some((cat) => cat.has_discount) && (
+            <Badge className="bg-[#E6EAC5] text-[#F3524F] text-xs flex items-center">
+              <RiDiscountPercentLine className="mr-2" />
+              Early Bird Discount
+            </Badge>
+          )}
+          </div>
+          <h1 className="font-bold text-xl text-gray-900 line-clamp-2">
             {eventDetails.event_name}
           </h1>
           <p className="text-[#64758B] text-nowrap">
@@ -100,11 +229,13 @@ const EventCard = ({ id, eventDetails }: EventCardProps) => {
                 <HiCurrencyRupee className="text-lg" />
                 STARTING FROM: ₹{minPrice}
               </p>
-              <Link href={`/eventspage?event_id=${id}`}>
+              <Link href={`/eventregistrationpage?event_id=${id}`}>
                 <p className="text-gray-500 text-[12px] flex items-center gap-1 cursor-pointer hover:underline text-nowrap">
                   <VscGraph className="text-lg" />
-                  Categories:
-                  <span className="text-blue-600">{eventDetails.categories.length}</span>
+                  Registrations:
+                  <span className="text-blue-600 font-semibold text-[14px] ">
+                    {registrations || 0}
+                  </span>
                 </p>
               </Link>
             </div>
@@ -119,17 +250,22 @@ const EventCard = ({ id, eventDetails }: EventCardProps) => {
             >
               View Matches
             </Button>
-            <Button
-              variant="outline"
-              size="xs"
-              className={`text-[12px] border border-black hover:bg-[#ccdb28] hover:text-black flex justify-center items-center gap-1 px-2 ${
-                isLiked ? "bg-[#ccdb28] text-black" : ""
-              }`}
-              onClick={() => setIsLiked(!isLiked)}
-            >
-              {isLiked ? "Liked" : "Like"}
-              <BiLike className="" />
-            </Button>
+            <div className="flex gap-2 justify-center items-center">
+              <Button
+                variant="outline"
+                size="xs"
+                className={`text-[12px] border border-black hover:bg-[#ccdb28] hover:text-black flex justify-center items-center gap-1 px-2 ${
+                  isLiked ? "bg-[#ccdb28] text-black" : ""
+                }`}
+                onClick={handleLike}
+              >
+                {isLiked ? "Liked" : "Like"}
+                <BiLike className="" />
+              </Button>
+              <p className="text-[12px] mt-[0.4rem] text-gray-500">
+                {likeCount} Likes
+              </p>
+            </div>
           </div>
           <Button
             onClick={() => router.push(`/choosecategory/${id}`)}

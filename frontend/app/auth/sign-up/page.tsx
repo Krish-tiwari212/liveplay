@@ -19,6 +19,8 @@ import { Input } from "@/components/ui/input";
 import { useToast } from "@/hooks/use-toast";
 import { FaGoogle } from "react-icons/fa";
 import Image from "next/image";
+import { Checkbox } from "@/components/ui/checkbox";
+import { FaArrowLeft } from "react-icons/fa";
 
 const formSchema = z
   .object({
@@ -87,121 +89,137 @@ const SignUpForm = () => {
   };
 
   return (
-    <div
-      className="flex flex-col gap-4 items-center justify-center min-h-screen bg-gray-50"
-      style={{
-        backgroundImage: "url('/images/background.svg')",
-        backgroundSize: "cover",
-        backgroundPosition: "center",
-      }}
-    >
+    <div className="relative flex flex-col gap-4 items-center justify-center min-h-screen bg-gray-50">
+      {/* Background Image */}
       <Image
-        src="/images/Logo.png"
-        alt="/images/Logo.png"
-        width={300}
-        height={300}
+        src="/images/background.svg"
+        alt="Background"
+        layout="fill"
+        objectFit="cover"
+        priority
+        className="absolute top-0 left-0 z-0"
       />
-      <div className="w-[90%] mx-auto sm:w-full max-w-lg p-8 bg-white rounded shadow-md">
-        <h2 className="text-2xl font-bold text-center mb-6">
-          Create Your Account
-        </h2>
-        <div className="w-full flex justify-center mb-2">
-          <Button
-            onClick={handleGoogleSignup}
-            className="w-full bg-white text-black border border-gray-300 flex items-center justify-center space-x-2 hover:bg-slate-200"
-          >
-            <Image
-              src="/images/google.svg"
-              alt="/images/google.svg"
-              width="20"
-              height="20"
-              className="text-xl"
-            />
-            <span>Sign up with Google</span>
+      
+      <div className="relative z-10 flex flex-col gap-4 items-center justify-center min-h-screen bg-transparent">
+        <Image
+          src="/images/Logo.png"
+          alt="Logo"
+          width={300}
+          height={300}
+          priority
+          className="z-10"
+        />
+        <div className="w-[90%] mx-auto sm:w-full max-w-lg p-8 bg-white rounded shadow-md z-10">
+          <Button variant="ghost" onClick={() => router.back()} className="float-left space-x-2 mb-4 -mt-2 -ml-2">
+            <FaArrowLeft />
           </Button>
-        </div>
-        <div className="relative my-2">
-          <div className="absolute inset-0 flex items-center">
-            <div className="w-full border-t border-gray-300"></div>
-          </div>
-          <div className="relative flex justify-center text-sm">
-            <span className="px-2 bg-white text-gray-500">or</span>
-          </div>
-        </div>
-        <Form {...form}>
-          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-2">
-            <FormField
-              control={form.control}
-              name="full_name"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Full Name</FormLabel>
-                  <FormControl>
-                    <Input placeholder="Enter your full name" {...field} />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-            <FormField
-              control={form.control}
-              name="email"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Email</FormLabel>
-                  <FormControl>
-                    <Input
-                      type="email"
-                      placeholder="Enter your email"
-                      {...field}
-                    />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-            <FormField
-              control={form.control}
-              name="password"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Password</FormLabel>
-                  <FormControl>
-                    <Input
-                      type="password"
-                      placeholder="Enter your password"
-                      {...field}
-                    />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-            <FormField
-              control={form.control}
-              name="confirmPassword"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Confirm Password</FormLabel>
-                  <FormControl>
-                    <Input
-                      type="password"
-                      placeholder="Confirm your password"
-                      {...field}
-                    />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-            <Button type="submit" disabled={loading} className="w-full">
-              {loading ? "Signing up..." : "Sign Up"}
+          <h2 className="text-2xl font-bold text-center mb-6">
+            Create Your Account
+          </h2>
+          <div className="w-full flex justify-center mb-2">
+            <Button
+              onClick={handleGoogleSignup}
+              className="w-full bg-white text-black border border-gray-300 flex items-center justify-center space-x-2 hover:bg-slate-200"
+            >
+              <Image
+                src="/images/google.svg"
+                alt="Google"
+                width="20"
+                height="20"
+                className="text-xl"
+              />
+              <span>Sign up with Google</span>
             </Button>
-          </form>
-        </Form>
-        <Link href="/auth/login" className=" text-center block mt-2">
-          Already have an account? <span className="font-bold">Login here</span>
-        </Link>
+          </div>
+          <div className="relative my-2">
+            <div className="absolute inset-0 flex items-center">
+              <div className="w-full border-t border-gray-300"></div>
+            </div>
+            <div className="relative flex justify-center text-sm">
+              <span className="px-2 bg-white text-gray-500">or</span>
+            </div>
+          </div>
+          <Form {...form}>
+            <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-2">
+              <FormField
+                control={form.control}
+                name="full_name"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Full Name</FormLabel>
+                    <FormControl>
+                      <Input placeholder="Enter your full name" {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={form.control}
+                name="email"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Email</FormLabel>
+                    <FormControl>
+                      <Input
+                        type="email"
+                        placeholder="Enter your email"
+                        {...field}
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={form.control}
+                name="password"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Password</FormLabel>
+                    <FormControl>
+                      <Input
+                        type="password"
+                        placeholder="Enter your password"
+                        {...field}
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={form.control}
+                name="confirmPassword"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Confirm Password</FormLabel>
+                    <FormControl>
+                      <Input
+                        type="password"
+                        placeholder="Confirm your password"
+                        {...field}
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <div className="flex items-center">
+                <input type="checkbox" id="terms" className="mr-2 border-3" />
+                <label htmlFor="terms" className="text-sm font-bold text-gray-600">
+                  Agree with the <a href="/policies/termsandcondition" className="text-blue-600">Terms & Conditions</a> of using liveplay.in
+                </label>
+              </div>
+              <Button type="submit" disabled={loading} className="w-full">
+                {loading ? "Signing up..." : "Sign Up"}
+              </Button>
+            </form>
+          </Form>
+          <Link href="/auth/login" className=" text-center block mt-2">
+            Already have an account? <span className="font-bold">Login here</span>
+          </Link>
+        </div>
       </div>
     </div>
   );

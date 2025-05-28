@@ -3,127 +3,54 @@
 import { Button } from '@/components/ui/button'
 import { Card } from '@/components/ui/card'
 import { Input } from '@/components/ui/input'
-import { HiOutlineInbox, HiOutlineUserAdd, HiOutlineUserRemove, HiOutlineQuestionMarkCircle, HiOutlinePlay } from 'react-icons/hi'; // Import icons
+import { HiOutlineInbox, HiOutlineUserAdd, HiOutlineUserRemove, HiOutlineQuestionMarkCircle } from 'react-icons/hi';
 import React, { useEffect, useState } from 'react'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { FaTimes } from 'react-icons/fa';
 import { useEventContext } from '@/context/EventDataContext';
-
-const notifications = [
-  {
-    id: 1,
-    message: "User XYZ has registered for category ABC in event PQR.",
-    category: "New Registration",
-    unread: true,
-    time: "10:00 AM",
-  },
-  {
-    id: 2,
-    message: "User XYZ has withdrawn from category ABC in event PQR.",
-    category: "Participant Withdrawal",
-    unread: false,
-    time: "11:00 AM",
-  },
-  {
-    id: 3,
-    message: "User XYZ asked a question.",
-    category: "Q&A Question",
-    unread: true,
-    time: "12:00 PM",
-  },
-  {
-    id: 4,
-    message: "Event PQR is now live on liveplay.in!",
-    category: "Live Event",
-    unread: false,
-    time: "1:00 PM",
-  },
-  {
-    id: 5,
-    message: "Event PQR was canceled. Refunds are being processed.",
-    category: "Canceled Event",
-    unread: false,
-    time: "2:00 PM",
-  },
-  {
-    id: 6,
-    message: "User ABC has registered for category DEF in event XYZ.",
-    category: "New Registration",
-    unread: true,
-    time: "3:00 PM",
-  },
-  {
-    id: 7,
-    message: "User DEF has withdrawn from category GHI in event XYZ.",
-    category: "Participant Withdrawal",
-    unread: false,
-    time: "4:00 PM",
-  },
-  {
-    id: 8,
-    message: "User GHI asked a question about event XYZ.",
-    category: "Q&A Question",
-    unread: true,
-    time: "5:00 PM",
-  },
-  {
-    id: 9,
-    message: "Event XYZ is now live on liveplay.in!",
-    category: "Live Event",
-    unread: false,
-    time: "6:00 PM",
-  },
-  {
-    id: 10,
-    message: "Event XYZ was canceled. Refunds are being processed.",
-    category: "Canceled Event",
-    unread: false,
-    time: "7:00 PM",
-  },
-  {
-    id: 11,
-    message: "User JKL has registered for category MNO in event PQR.",
-    category: "New Registration",
-    unread: true,
-    time: "8:00 AM",
-  },
-  {
-    id: 12,
-    message: "User MNO has withdrawn from category PQR in event XYZ.",
-    category: "Participant Withdrawal",
-    unread: true,
-    time: "9:00 AM",
-  },
-  {
-    id: 13,
-    message: "User OPQ asked a question about event ABC.",
-    category: "Q&A Question",
-    unread: true,
-    time: "10:30 AM",
-  },
-  {
-    id: 14,
-    message: "Event ABC is now live on liveplay.in!",
-    category: "Live Event",
-    unread: false,
-    time: "11:30 AM",
-  },
-  {
-    id: 15,
-    message: "Event ABC was canceled. Refunds are being processed.",
-    category: "Canceled Event",
-    unread: false,
-    time: "12:30 PM",
-  },
-];
+import { useUser } from '@/context/UserContext';
+import { createClient } from '@/utils/supabase/client';
 
 const page = () => {
+  const supabase = createClient();
+  const { user } = useUser();
   const [selectedCategory, setSelectedCategory] = useState<string>("Inbox");
   const { setDashboardName, setNotification } = useEventContext();
 
-  const [notificationsState, setNotificationsState] = useState(notifications);
+  const [notificationsState, setNotificationsState] = useState([]);
   const [reply, setReply] = useState<{ [key: number]: string }>({}); 
   const [replyVisible, setReplyVisible] = useState<{ [key: number]: boolean }>({}); 
+
+  const fetchEventsAndQnA = async () => {
+    const { data: events, error } = await supabase
+      .from('events')
+      .select('id')
+      .eq('organizer_id', user?.id); // Replace with actual user ID
+
+    if (error) {
+      console.error('Error fetching events:', error);
+      return;
+    }
+
+    const qnaPromises = events.map(event =>
+      fetch(`/api/event/fetch-qna/${event.id}`).then(res => res.json())
+    );
+
+    const qnaResponses = await Promise.all(qnaPromises);
+    const qnaQuestions = qnaResponses.flatMap(response => response.questions.map(question => ({
+      id: question.id,
+      message: question.question_text,
+      category: "Q&A Question",
+      unread: true,
+      time: new Date(question.created_at).toLocaleTimeString(),
+    })));
+
+    setNotificationsState(qnaQuestions);
+  };
+
+  useEffect(() => {
+    setDashboardName("Notifications");
+    fetchEventsAndQnA();
+  }, []);
 
   const filteredNotifications =
     selectedCategory === "Inbox"
@@ -140,10 +67,26 @@ const page = () => {
     );
   };
 
-  const handleReplySubmit = (id: number) => {
-    markAsRead(id);
-    console.log(`Reply to notification ${id}: ${reply[id]}`);
-    setReplyVisible((prev) => ({ ...prev, [id]: false })); 
+  const handleReplySubmit = async (id: number) => {
+    try {
+      const response = await fetch(`/api/event/answer/${id}`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ answerText: reply[id] }),
+      });
+  
+      if (!response.ok) {
+        throw new Error('Failed to submit reply');
+      }
+  
+      markAsRead(id);
+      console.log(`Reply to notification ${id}: ${reply[id]}`);
+      setReplyVisible((prev) => ({ ...prev, [id]: false }));
+    } catch (error) {
+      console.error('Error submitting reply:', error);
+    }
   };
 
   const handleReplyLater = (id: number) => {
@@ -158,14 +101,9 @@ const page = () => {
     );
   };
 
-  useEffect(() => {
-    setDashboardName("Notifications");
-    setNotification(notifications);
-  }, []);
-
   return (
-    <div className="flex m-3 bg-white rounded-md md:h-[36rem]">
-      <div className="hidden md:flex w-1/3 xl:w-1/4 bg-[#17202a] p-4 rounded-l-md flex-col justify-between h-full">
+    <div className="flex m-3 bg-white rounded-md min-h-screen">
+      <div className="hidden md:flex w-1/3 xl:w-1/4 bg-[#17202a] p-4 rounded-l-md flex-col justify-between min-h-screen">
         <ul className="space-y-2">
           <li
             className={` flex items-center transition-colors rounded-md px-4 py-2 duration-200 hover:text-cad927 ${
@@ -222,8 +160,8 @@ const page = () => {
       <main className="flex-1 p-4 overflow-y-auto">
         <Tabs defaultValue="unread" className="w-full">
           <TabsList className="mb-2">
-            <TabsTrigger value="read">Read</TabsTrigger>
             <TabsTrigger value="unread">Unread</TabsTrigger>
+            <TabsTrigger value="read">Read</TabsTrigger>
           </TabsList>
           <TabsContent value="read">
             {filteredNotifications
@@ -331,4 +269,4 @@ const page = () => {
   );
 }
 
-export default page
+export default page;

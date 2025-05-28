@@ -129,12 +129,12 @@ const page = () => {
             </SheetTrigger>
             <SheetContent className="bg-[#141f29] pt-16 border-none" side="top">
               <div className="px-2 py-4">
-                <Button
+                {/* <Button
                   onClick={() => scrollToSection("hero")}
                   className="w-full mb-4 bg-[#141f29] text-[#ccdb28] border border-[#ccdb28] text-2xl py-8"
                 >
                   Home
-                </Button>
+                </Button> */}
                 <Button
                   onClick={() => scrollToSection("pricing")}
                   className="w-full mb-4 bg-[#141f29] text-[#ccdb28] border border-[#ccdb28] text-2xl py-8"
@@ -148,7 +148,7 @@ const page = () => {
                   Features
                 </Button>
                 <Button
-                  onClick={() => scrollToSection("freeMatchGenerator")}
+                  onClick={() => scrollToSection("/freeMatchGenerator")}
                   className="w-full mb-4 bg-[#141f29] text-[#ccdb28] border border-[#ccdb28] text-2xl py-8"
                 >
                   Free Match Generator
@@ -227,12 +227,12 @@ const page = () => {
           </PopoverContent>
         </Popover>
         <div className="lg:flex space-x-4 hidden">
-          <Button
+          {/* <Button
             onClick={() => scrollToSection("hero")}
             className="bg-[#141f29] text-[#ccdb28] border border-[#ccdb28]"
           >
             Home
-          </Button>
+          </Button> */}
           <Button
             onClick={() => scrollToSection("pricing")}
             className="bg-[#141f29] text-[#ccdb28] border border-[#ccdb28]"
@@ -263,21 +263,34 @@ const page = () => {
           </Button>
         </div>
       </nav>
+      import Image from 'next/image';
       <div
         id="hero"
-        style={{ backgroundImage: "url('/images/createeventbanner1.svg')" }}
         className="relative flex flex-col items-start pt-32 px-4 sm:px-8 text-white min-h-[500px] bg-cover bg-center w-full font-lato"
       >
         <div className="absolute left-0 top-0 w-full h-full bg-gradient-to-b from-[#141f29] via-black/50 to-transparent opacity-60"></div>
+
+        {/* NextImage component for the banner */}
+        <div className="absolute left-0 top-0 w-full h-full">
+          <Image
+            src="/images/createeventbanner1.svg"
+            alt="Event Banner"
+            layout="fill"
+            objectFit="cover"
+            className="z-0"
+            priority
+          />
+        </div>
+
         <div className="z-10">
           <h1 className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-semibold mb-6">
             We <span className="text-[#ccdb28]">guarantee</span> your event
             success.
           </h1>
-          <p className="text-sm sm:text-xl md:text-2xl mb-1 font-semibold ">
+          <p className="text-sm sm:text-xl md:text-2xl mb-1 font-semibold">
             More visibility, more registrations, more earnings{" "}
             <br className="sm:hidden" />
-            <span className="text-[#ccdb28] mx-1">all in one</span>platform
+            <span className="text-[#ccdb28] mx-1">all in one</span> platform
           </p>
           <p className="text-sm sm:text-xl md:text-2xl mb-12 font-semibold">
             Publish your event in under
@@ -455,7 +468,7 @@ const page = () => {
             Payments powered by
           </p>
           <div className="flex flex-col sm:flex-row justify-center items-center xl:space-x-4 mt-2">
-            <Image
+            {/* <Image
               src="/images/payment1 (1).svg"
               alt="PayU"
               width={200}
@@ -468,7 +481,7 @@ const page = () => {
               width={200}
               height={90}
               priority
-            />
+            /> */}
             <Image
               src="/images/payment1 (3).svg"
               alt="Razorpay"
@@ -490,22 +503,27 @@ const page = () => {
           <p className="text-[16px] md:text-2xl text-[#141f29] mb-4 md:mb-6">
             Generate match fixtures for your event
           </p>
-          <Button className="mb-6 text-lg">Start Generating Fixtures</Button>
+          <Button
+            className="mb-6 text-lg"
+            onClick={() => router.push("/freematchgenerator")}
+          >
+            Start Generating Fixtures
+          </Button>
           <ul className="text-left text-[#141f29] space-y-2 ld:mx-12 text-[16px] md:text-2xl">
             <li className="flex gap-4 items-center">
-              <IoArrowForwardCircle className="flex-none" />{" "}
+              <IoArrowForwardCircle className="flex-none" />
               <h1>No Signup needed</h1>
             </li>
             <li className="flex gap-4 items-center">
               <FaTrophy className="flex-none" /> <h1>10+ Sports</h1>
             </li>
             <li className="flex gap-4 items-center">
-              <MdEvent className="flex-none" />{" "}
+              <MdEvent className="flex-none" />
               <h1>Team events / Singles events / Doubles Events</h1>
             </li>
             <li className="flex gap-4 items-center">
-              <TbListDetails className="flex-none" />{" "}
-              <h1>Knockouts, Group Playoffs & Round Robin</h1>
+              <TbListDetails className="flex-none" />
+              <h1>Support Knockouts Format</h1>
             </li>
           </ul>
         </div>
@@ -515,8 +533,9 @@ const page = () => {
           src="/images/createeventbanner2.svg"
           alt="Create Event Banner"
           fill
-          style={{ objectFit: 'cover' }}
+          style={{ objectFit: "cover" }}
           className="absolute top-0 left-0 z-0"
+          priority
         />
         <div className="absolute bg-[#141f29] opacity-60 w-full min-h-[300px] z-10"></div>
         <div className="z-20">

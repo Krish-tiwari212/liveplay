@@ -38,7 +38,9 @@ const QnaSectionEventpage = ({ isright, eventId }: QnaSectionEventpageProps) => 
   const supabase = createClient();
   const indexOfLastQuestion = currentPage * questionsPerPage;
   const indexOfFirstQuestion = indexOfLastQuestion - questionsPerPage;
-  const currentQuestions = questions.slice(indexOfFirstQuestion, indexOfLastQuestion);
+  const currentQuestions = questions
+  .filter((qa) => qa.answers && qa.answers.length > 0)
+  .slice(indexOfFirstQuestion, indexOfLastQuestion);
   const totalPages = Math.ceil(questions.length / questionsPerPage);
 
   const paginate = (pageNumber: number) => setCurrentPage(pageNumber);
@@ -116,7 +118,7 @@ const QnaSectionEventpage = ({ isright, eventId }: QnaSectionEventpageProps) => 
       
       setIsThankYouOpen(true);
       setQuestion("");
-      fetchQuestions(); // Refresh questions list
+      fetchQuestions(); 
     } catch (error) {
       toast({
         title: "Error",
